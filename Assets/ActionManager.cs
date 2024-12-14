@@ -4,7 +4,22 @@ using UnityEngine;
 
 public class ActionManager : MonoBehaviour
 {
-    // Start is called before the first frame update
+    [HideInInspector] public ActionManager i;
+
+    public void Move()
+    {
+
+    }
+
+    void Singleton()
+    {
+        if (i != null) { Destroy(null); } else { i = this; }
+        DontDestroyOnLoad(this);
+    }
+    private void Awake()
+    {
+        Singleton();
+    }
     void Start()
     {
         
