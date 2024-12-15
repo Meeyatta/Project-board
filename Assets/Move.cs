@@ -2,11 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-
-public class BoardManager : MonoBehaviour
+public class Move : Action
 {
-    [SerializeField] public Column[] Board = new Column[10];
-    [HideInInspector] public static BoardManager i;
+    [HideInInspector] public static Move i;
     void Singleton()
     {
         if (i != null) { Destroy(null); } else { i = this; }
@@ -17,6 +15,11 @@ public class BoardManager : MonoBehaviour
         Singleton();
 
 
+    }
+    public IEnumerator Move_Unit(Unit u, Vector2 pos)
+    {
+        yield return new WaitForSeconds(3);
+        yield return null;
     }
     void Start()
     {
