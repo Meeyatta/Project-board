@@ -2,25 +2,30 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-
 public class BoardManager : MonoBehaviour
 {
-    [SerializeField] public Column[] Board = new Column[10];
-    [HideInInspector] public static BoardManager i;
-    void Singleton()
-    {
-        if (i != null) { Destroy(null); } else { i = this; }
-        DontDestroyOnLoad(this);
-    }
+    public Vector2 Size;
+    public GameObject Tile;
+    [SerializeField] Grid Grid_;
     private void Awake()
     {
-        Singleton();
-
-
+        Grid_ = GetComponent<Grid>();
+    }
+    void BuildBoard()
+    {
+        for (int x = 0; x < Size.x; x++)
+        {
+            for (int y = 0; y < Size.y; y++)
+            {
+                var pos = Grid_.GetCellCenterWorld(new Vector3Int(x, y));
+                Instantiate(Tile, pos, Quaternion.identity);
+            }
+        }
     }
     void Start()
     {
         
+        BuildBoard();
     }
 
     // Update is called once per frame
