@@ -4,33 +4,48 @@ using UnityEngine;
 
 public class BoardManager : MonoBehaviour
 {
-    public Vector2 Size;
-    public GameObject Tile;
-    [SerializeField] Grid Grid_;
+    public List<Column> Board;
+    public int Width;
+    public int Height;
+
     private void Awake()
     {
-        Grid_ = GetComponent<Grid>();
-    }
-    void BuildBoard()
-    {
-        for (int x = 0; x < Size.x; x++)
+        Board = new List<Column>();
+        for (int x = 0; x < Width; x++)
         {
-            for (int y = 0; y < Size.y; y++)
+            Column column = new Column();
+            column.Cells = new List<Cell>();
+
+            for (int y = 0; y < Height; y++)
             {
-                var pos = Grid_.GetCellCenterWorld(new Vector3Int(x, y));
-                Instantiate(Tile, pos, Quaternion.identity);
+                Cell cell = new Cell();
+                cell.Coordinates = new Vector2Int(x, y);
+                column.Cells.Add(cell);
             }
+            Board.Add(column);
         }
     }
-    void Start()
+    public void Print()
     {
-        
-        BuildBoard();
+        for (int y = 0; y < Height; y++)
+        {
+            string line = "|";
+            for (int x = 0; x < Width; x++)
+            {
+                if (Board[x].Cells[y].CurUnit != null)
+                {
+                    line += "O|";
+                }
+                else
+                {
+                    line += "_|";
+                }
+            }
+            Debug.Log(line);
+        }
     }
-
-    // Update is called once per frame
-    void Update()
+    private void Update()
     {
-        
+        if (Input.GetKeyDown("p")) { Print(); }
     }
 }
