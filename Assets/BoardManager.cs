@@ -12,6 +12,8 @@ public class BoardManager : MonoBehaviour
     public int Width;
     public int Height;
 
+    public GameObject CellsObj;
+    public GameObject BoardCellObj;
     public List<Column> Board;
     
     public static BoardManager Instance;
@@ -29,11 +31,17 @@ public class BoardManager : MonoBehaviour
     }
     private void Awake()
     {
+        
         Singleton();
         //Build();
     }
     void Build()
     {
+      foreach (Transform t in CellsObj.transform)
+        {
+            Destroy(t.gameObject);
+        }
+        
         Board = new List<Column>();
         for (int x = 0; x < Width; x++)
         {
@@ -44,10 +52,11 @@ public class BoardManager : MonoBehaviour
             {
                 Cell cell = new Cell();
                 cell.Coordinates = new Vector2Int(x, y);
-                cell.Position = new Vector3(InBetweenSpace + x * (InBetweenSpace + CellSize), DefaultY, -1 * (InBetweenSpace + y * (InBetweenSpace + CellSize)) );
-
-
+                cell.Position = CellsObj.transform.position + new Vector3(InBetweenSpace + x * (InBetweenSpace + CellSize), DefaultY, -1 * (InBetweenSpace + y * (InBetweenSpace + CellSize)) );
                 column.Cells.Add(cell);
+
+                BoardCell newCell = Instantiate(BoardCellObj, cell.Position, Quaternion.identity, CellsObj.transform).GetComponent<BoardCell>();
+                newCell.Coordinates = cell.Coordinates;
             }
             Board.Add(column);
         }
@@ -85,24 +94,26 @@ public class BoardManager : MonoBehaviour
         if (poss.Count == 0) { Debug.LogWarning("WARNING: UNIT '" + unit.UnitName + "' NOT FOUND"); return null; }
         return poss;
     }
-    List<Vector3> Get_AllPositions(List<Vector2Int> l)
-    {
-        List<Vector3> vv = new List<Vector3>();
-        foreach (Vector2Int v in l)
-        {
-            vv.Add(Board[v.x].Cells[v.y].Position);
-        }
-        return vv;
-    }
-    Vector3 Get_AveragePosition(List <Vector3> l)
-    {
-        float avX = 0; float avY = 0; float avZ = 0;
-        foreach (Vector3 v in l) { avX += v.x; avY += v.y; avZ += v.z; }
 
-        return new Vector3(avX / l.Count, avY / l.Count, avZ / l.Count);
+    Vector3 BoardToWorldPosition(List<Vector2Int> poss)
+    {
+        Vector3 newP = new Vector3();
+        foreach (Vector2Int v in poss)
+        {
+            newP.x += Board[v.x].Cells[v.y].Position.x;
+            newP.y += Board[v.x].Cells[v.y].Position.y;
+            newP.z += Board[v.x].Cells[v.y].Position.z;
+        }
+
+        newP.x /= poss.Count; newP.y /= poss.Count; newP.z /= poss.Count;
+
+        return newP;
+
     }
     public IEnumerator MoveUnit(Unit unit, List<Vector2Int> newPos)
     {
+        
+
         foreach (Vector2Int v in newPos)
         {
             if (v.x >= Board.Count || v.y >= Board[0].Cells.Count) { Debug.LogError("ERROR: POSITION '" + v + "' OUT OF BOUNDS"); yield break; }
@@ -118,8 +129,9 @@ public class BoardManager : MonoBehaviour
         {
             Board[v.x].Cells[v.y].CurUnit = unit;
         }
-
-        unit.gameObject.transform.position = Get_AveragePosition(Get_AllPositions(newPos));
+        Debug.Log("First position: " + Board[newPos[0].x].Cells[newPos[0].y].Position);
+        Debug.Log("Average position: " + BoardToWorldPosition(newPos));
+        unit.gameObject.transform.localPosition = Board[newPos[0].x].Cells[newPos[0].y].Position;
 
         yield break;
     }
