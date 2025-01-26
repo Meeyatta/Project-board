@@ -131,7 +131,8 @@ public class BoardManager : MonoBehaviour
         }
         Debug.Log("First position: " + Board[newPos[0].x].Cells[newPos[0].y].Position);
         Debug.Log("Average position: " + BoardToWorldPosition(newPos));
-        unit.gameObject.transform.localPosition = Board[newPos[0].x].Cells[newPos[0].y].Position;
+
+        unit.gameObject.transform.localPosition = Board[newPos[0].x].Cells[newPos[0].y].Position + unit.ModelOffset;
 
         yield break;
     }
