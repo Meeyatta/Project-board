@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 //Main script, handles all of the actions what can be done with units
 public class GameManager : MonoBehaviour
@@ -13,6 +14,18 @@ public class GameManager : MonoBehaviour
     public Coroutine GoingThroughActions;
     public Coroutine SelectCoroutine;
     public Dictionary<IEnumerator, string> ActionQueue = new Dictionary<IEnumerator, string>();
+
+    #region Events 
+    public UnityEvent<List<Unit>> ShowMovementEvent;
+    void OnEnable()
+    {
+        
+    }
+    void OnDisable()
+    {
+        
+    }
+    #endregion Events
 
     void Singleton()
     {
@@ -77,17 +90,17 @@ public class GameManager : MonoBehaviour
         IEnumerator Select(List<Vector2Int> CellsCoordinates)
         {
             if (CellsCoordinates.Count == 0) Debug.LogError("INVALID ACTION PARAMETERS - SELECT(CellCoordinates)");
-
+            
             Vector2Int coords = CellsCoordinates[0];
+            Debug.Log("SELECTED ON" + coords);
 
             CurUnitSelected = BoardManager.Instance.Board[coords.x].Cells[coords.y].CurUnit;
             Unit ogUnit = CurUnitSelected;
 
-            //TODO: make unit's moveset show up on board
-            Debug.Log("SELECTED ON" + coords);
+            List<Unit> us = new List<Unit>(); us.Add(CurUnitSelected);
+            ShowMovementEvent.Invoke(us);   
 
             yield return new WaitForSeconds(0.01f);
-
             while (CurUnitSelected != null && ogUnit == CurUnitSelected)
             {
                 Debug.Log("IS SELECTING A UNIT");

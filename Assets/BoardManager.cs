@@ -31,7 +31,7 @@ public class BoardManager : MonoBehaviour
 
     #region Events 
     public UnityEvent<Vector2Int> ClickEvent;
-    void OnEnable()
+    void Start()
     {
         ClickEvent.AddListener(GameManager.Instance.CellClickHandle);
     }
@@ -119,11 +119,15 @@ public class BoardManager : MonoBehaviour
         return poss;
     }
 
-    Vector3 BoardToWorldPosition(List<Vector2Int> poss)
+    public Vector3? BoardToWorldPosition(List<Vector2Int> poss)
     {
+
         Vector3 newP = new Vector3();
         foreach (Vector2Int v in poss)
         {
+            if (v.x < 0 || v.x >= Board.Count) { return null; }
+            if (v.y < 0 || v.x >= Board[v.x].Cells.Count) { return null; }
+
             newP.x += Board[v.x].Cells[v.y].Position.x;
             newP.y += Board[v.x].Cells[v.y].Position.y;
             newP.z += Board[v.x].Cells[v.y].Position.z;
