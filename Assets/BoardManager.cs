@@ -1,6 +1,17 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
+
+/*
+ LIST OF USEFUL FUNCTIONS IN THIS SCRIPT:
+
+    Build() - Rebuilds all the cells both in the table and in the scene. Doing so sets all cells as unoccupied, must copy the table and Cells object to keep the changes
+    Print() - Prints current board and units on it in the console
+    Get_UnitPositions(Unit unit) - takes a Unit and return's it's position on the board
+    BoardToWorldPosition(List<Vector2Int> poss) - Returns the Vector3 position of a cell under coordinates
+    IEnumerator MoveUnit(Unit unit, List<Vector2Int> newPos) - Moves the "unit" to the newPos (If newPos can be moved to)
+ */
 
 public class BoardManager : MonoBehaviour
 {
@@ -17,6 +28,19 @@ public class BoardManager : MonoBehaviour
     public List<Column> Board;
     
     public static BoardManager Instance;
+
+    #region Events 
+    public UnityEvent<Vector2Int> ClickEvent;
+    void OnEnable()
+    {
+        ClickEvent.AddListener(GameManager.Instance.CellClickHandle);
+    }
+    void OnDisable()
+    {
+        ClickEvent.RemoveListener(GameManager.Instance.CellClickHandle);
+    }
+    #endregion Events
+
     void Singleton()
     {
         if (Instance != null)

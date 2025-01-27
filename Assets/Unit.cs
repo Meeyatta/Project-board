@@ -6,6 +6,7 @@ using UnityEngine;
 public class Unit : MonoBehaviour
 {
     public string UnitName;
+    public Moveset CurMoveset;
     public Vector3 ModelOffset;
     void Start()
     {
