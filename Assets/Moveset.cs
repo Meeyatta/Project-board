@@ -6,5 +6,12 @@ using UnityEngine;
 //Stores the relative coordinates of cells the unit can move to
 public class Moveset : ScriptableObject
 {
-    public List<Vector2Int> Positions;
+    [System.Serializable]
+    public class Line{
+        public string Direction;
+        public List<Vector2Int> Positions;
+    }
+
+    public bool IsEvading;
+    public List<Line> Lines;
 }

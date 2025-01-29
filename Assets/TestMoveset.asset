@@ -12,8 +12,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a44b5f0d9f677e94192ee6ba489e1cc2, type: 3}
   m_Name: TestMoveset
   m_EditorClassIdentifier: 
-  Positions:
-  - {x: 0, y: 1}
-  - {x: 1, y: 0}
-  - {x: 0, y: -1}
-  - {x: -1, y: 0}
+  IsEvading: 0
+  Lines:
+  - Direction: Up
+    Positions:
+    - {x: 0, y: 1}
+    - {x: 0, y: 2}
+  - Direction: Right
+    Positions:
+    - {x: 1, y: 0}
+    - {x: 2, y: 0}
+  - Direction: Down
+    Positions:
+    - {x: 0, y: -1}
+    - {x: 0, y: -2}
+  - Direction: left
+    Positions:
+    - {x: -1, y: 0}
+    - {x: -2, y: 0}

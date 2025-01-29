@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.Events;
 
 /*
- LIST OF USEFUL FUNCTIONS IN THIS SCRIPT:
+  Functionality:
 
     Build() - Rebuilds all the cells both in the table and in the scene. Doing so sets all cells as unoccupied, must copy the table and Cells object to keep the changes
     Print() - Prints current board and units on it in the console
@@ -118,15 +118,25 @@ public class BoardManager : MonoBehaviour
         if (poss.Count == 0) { Debug.LogWarning("WARNING: UNIT '" + unit.UnitName + "' NOT FOUND"); return null; }
         return poss;
     }
+    public bool AreCellsOccupied(List<Vector2Int> poss)
+    {
+        foreach(Vector2Int p in poss)
+        {
+            if (IsInBounds(p))
+            {
+                if (Board[p.x].Cells[p.y].CurUnit != null) { return false; }
+            }     
+        }
 
+        return true;
+    }
     public Vector3? BoardToWorldPosition(List<Vector2Int> poss)
     {
 
         Vector3 newP = new Vector3();
         foreach (Vector2Int v in poss)
         {
-            if (v.x < 0 || v.x >= Board.Count) { return null; }
-            if (v.y < 0 || v.x >= Board[v.x].Cells.Count) { return null; }
+            if (!IsInBounds(v)) return null;
 
             newP.x += Board[v.x].Cells[v.y].Position.x;
             newP.y += Board[v.x].Cells[v.y].Position.y;
@@ -180,5 +190,11 @@ public class BoardManager : MonoBehaviour
 
         foreach (Column c in Board) { foreach (Cell cc in c.Cells) { Debug.DrawRay(cc.Position, Vector3.up, Color.red); } }
     }
+    public bool IsInBounds(Vector2Int v)
+    {
+        if (v.x < 0 || v.x >= Board.Count) { return false; }
+        if (v.y < 0 || v.x >= Board[v.x].Cells.Count) { return false; }
 
+        return true;
+    }
 }

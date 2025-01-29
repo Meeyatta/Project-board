@@ -2,13 +2,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
+using System.Linq;
 
 //Main script, handles all of the actions what can be done with units
 public class GameManager : MonoBehaviour
 {
     
 
-    public enum AcionType { Move, Select };
+    public enum AcionType { Move, Select, ForcedMove };
     public Unit CurUnitSelected; //What unit is currently selected, if no unit - should be null
     public static GameManager Instance;
     public Coroutine GoingThroughActions;
@@ -17,6 +18,7 @@ public class GameManager : MonoBehaviour
 
     #region Events 
     public UnityEvent<List<Unit>> ShowMovementEvent;
+    public UnityEvent<List<Unit>> HideMovementEvent;
     void OnEnable()
     {
         
@@ -54,7 +56,7 @@ public class GameManager : MonoBehaviour
     {
         switch (type)
         {
-            //Move the unit to the coordinates, Requires: (ActionTargetUnit, CellsCoordinates)
+            //Move the unit to the coordinates if it can move there with it's moveset, Requires: (ActionTargetUnit, CellsCoordinates)
             #region Move(ActionTargetUnit, CellsCoordinates)
             case AcionType.Move:
                 ActionQueue.Add( Move(ActionTargetUnit, CellsCoordinates), "Move");             
@@ -69,6 +71,13 @@ public class GameManager : MonoBehaviour
                 break;
             #endregion Select(CellCoordinates)
 
+            //Move the unit to the coordinates, doesn't check for unit's moveset Requires: (ActionTargetUnit, CellsCoordinates)
+            #region ForcedMove(ActionTargetUnit, CellsCoordinates)
+            case AcionType.ForcedMove:
+                ActionQueue.Add(Move(ActionTargetUnit, CellsCoordinates), "Move");
+                break;
+            #endregion Move(ActionTargetUnit, CellsCoordinates)
+
             //Means I forgot to make an action for this type
             #region Default(...)
             default:
@@ -82,8 +91,49 @@ public class GameManager : MonoBehaviour
         {
             if (ActionTargetUnit == null || CellsCoordinates.Count == 0) Debug.LogError("INVALID ACTION PARAMETERS - MOVE(ActionTargetUnit, CellCoordinates)");
 
-            yield return StartCoroutine(BoardManager.Instance.MoveUnit(ActionTargetUnit, CellsCoordinates));
-            Debug.Log("MOVED TO " + CellsCoordinates);
+            List<Vector2Int> possiblePosses = new List<Vector2Int>();
+
+            #region Setup Possible positionds from unit's moveset
+            foreach (Vector2Int v in BoardManager.Instance.Get_UnitPositions(ActionTargetUnit))
+                {
+                    foreach (var vl in ActionTargetUnit.CurMoveset.Lines)
+                    {
+                        foreach (Vector2Int vv in vl.Positions)
+                        {
+                            possiblePosses.Add(v + vv);
+                        }
+                    }
+                }
+            #endregion
+            //Stopped working at this
+            #region Remove positions obscured by obstacles
+            foreach (var line in ActionTargetUnit.CurMoveset.Lines)
+            {
+                for (int i = line.Positions.Count-1; i > 0; i--)
+                {
+                    List<Vector2Int> curI = new List<Vector2Int>(); curI.Add(line.Positions[i]);
+                    if (BoardManager.Instance.AreCellsOccupied(curI))
+                    {
+                        for (int ii = i; ii < line.Positions.Count; ii++)
+                        {
+                            foreach (Vector2Int unitPos in BoardManager.Instance.Get_UnitPositions(ActionTargetUnit))
+                            {
+                                possiblePosses.Remove(unitPos + line.Positions[ii]);
+                            }
+                        }
+                    }
+                }
+            }
+            #endregion
+            Debug.Log(BoardManager.Instance.AreCellsOccupied(possiblePosses));
+        
+
+            bool both = possiblePosses.Intersect(CellsCoordinates).Any();
+            if (both)
+            {
+                yield return StartCoroutine(BoardManager.Instance.MoveUnit(ActionTargetUnit, CellsCoordinates));
+                Debug.Log("HAS BEEN MOVED TO " + CellsCoordinates);
+            }
 
             yield return new WaitForSeconds(0.001f);
         }
@@ -106,8 +156,18 @@ public class GameManager : MonoBehaviour
                 Debug.Log("IS SELECTING A UNIT");
                 yield return new WaitForSeconds(0.01f);
             }
+            HideMovementEvent.Invoke(us);
         }
+        IEnumerator ForcedMove(Unit ActionTargetUnit, List<Vector2Int> CellsCoordinates)
+        {
+            if (ActionTargetUnit == null || CellsCoordinates.Count == 0) Debug.LogError("INVALID ACTION PARAMETERS - MOVE(ActionTargetUnit, CellCoordinates)");
 
+
+            yield return StartCoroutine(BoardManager.Instance.MoveUnit(ActionTargetUnit, CellsCoordinates));
+            Debug.Log("MOVED TO " + CellsCoordinates);
+
+            yield return new WaitForSeconds(0.001f);
+        }
     public void CellClickHandle(Vector2Int coords)
     {
         Debug.Log("SOMEONE CLICKED THE CELL ON " + coords);
