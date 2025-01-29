@@ -85,26 +85,18 @@ public class EffectManager : MonoBehaviour
         foreach (Unit u in units)
         {
             List<GameObject> ePu = new List<GameObject>();
-            foreach (var vl in u.CurMoveset.Lines)
+            foreach (var v in GameManager.Instance.GetPossibleMovement(u))
             {
-                foreach (Vector2Int v in vl.Positions)
-                {
-                    List<Vector2Int> offsetted = new List<Vector2Int>(); offsetted = BoardManager.Instance.Get_UnitPositions(u); if (offsetted.Count == 0) { return; }
-                    for (int i = 0; i < offsetted.Count; i++) { offsetted[i] += v; }
-
-                    Vector3? result = BoardManager.Instance.BoardToWorldPosition(offsetted); if (result.HasValue)
-                    {
-                        GameObject overlay = InstantiateFromPool("Movement", result.Value, Quaternion.identity);
-                        ePu.Add(overlay);
-                    }
-                }
-                           
+                List<Vector2Int> single = new List<Vector2Int>(); single.Add(v);
+                GameObject overlay = InstantiateFromPool("Movement", BoardManager.Instance.BoardToWorldPosition(single).Value, Quaternion.identity);
+                ePu.Add(overlay);                 
             }
             if (!UnitEffectsToHide.ContainsKey(u)) { UnitEffectsToHide.Add(u, ePu); }         
         }
     }
     void HideMovement(List<Unit> units)
     {
+        Debug.Log("Hid movement");
         foreach (Unit u in units)
         {
             if (!UnitEffectsToHide.ContainsKey(u)) return;

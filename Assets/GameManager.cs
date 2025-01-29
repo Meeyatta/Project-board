@@ -91,45 +91,11 @@ public class GameManager : MonoBehaviour
         {
             if (ActionTargetUnit == null || CellsCoordinates.Count == 0) Debug.LogError("INVALID ACTION PARAMETERS - MOVE(ActionTargetUnit, CellCoordinates)");
 
-            List<Vector2Int> possiblePosses = new List<Vector2Int>();
+            Debug.Log("---Possible movement:");
 
-            #region Setup Possible positionds from unit's moveset
-            foreach (Vector2Int v in BoardManager.Instance.Get_UnitPositions(ActionTargetUnit))
-                {
-                    foreach (var vl in ActionTargetUnit.CurMoveset.Lines)
-                    {
-                        foreach (Vector2Int vv in vl.Positions)
-                        {
-                            possiblePosses.Add(v + vv);
-                        }
-                    }
-                }
-            #endregion
-            //Stopped working at this
-            #region Remove positions obscured by obstacles
-            foreach (var line in ActionTargetUnit.CurMoveset.Lines)
-            {
-                for (int i = line.Positions.Count-1; i > 0; i--)
-                {
-                    List<Vector2Int> curI = new List<Vector2Int>(); curI.Add(line.Positions[i]);
-                    if (BoardManager.Instance.AreCellsOccupied(curI))
-                    {
-                        for (int ii = i; ii < line.Positions.Count; ii++)
-                        {
-                            foreach (Vector2Int unitPos in BoardManager.Instance.Get_UnitPositions(ActionTargetUnit))
-                            {
-                                possiblePosses.Remove(unitPos + line.Positions[ii]);
-                            }
-                        }
-                    }
-                }
-            }
-            #endregion
-            Debug.Log(BoardManager.Instance.AreCellsOccupied(possiblePosses));
-        
+            bool has = GetPossibleMovement(ActionTargetUnit).Intersect(CellsCoordinates).Any();
 
-            bool both = possiblePosses.Intersect(CellsCoordinates).Any();
-            if (both)
+            if (has)
             {
                 yield return StartCoroutine(BoardManager.Instance.MoveUnit(ActionTargetUnit, CellsCoordinates));
                 Debug.Log("HAS BEEN MOVED TO " + CellsCoordinates);
@@ -144,19 +110,25 @@ public class GameManager : MonoBehaviour
             Vector2Int coords = CellsCoordinates[0];
             Debug.Log("SELECTED ON" + coords);
 
-            CurUnitSelected = BoardManager.Instance.Board[coords.x].Cells[coords.y].CurUnit;
-            Unit ogUnit = CurUnitSelected;
 
-            List<Unit> us = new List<Unit>(); us.Add(CurUnitSelected);
-            ShowMovementEvent.Invoke(us);   
+            Unit ogUnit = CurUnitSelected; List<Unit> us = new List<Unit>();
 
+            if (CurUnitSelected != BoardManager.Instance.Board[coords.x].Cells[coords.y].CurUnit) 
+            {
+                CurUnitSelected = BoardManager.Instance.Board[coords.x].Cells[coords.y].CurUnit;
+                ogUnit = CurUnitSelected;
+                us.Add(CurUnitSelected);
+                ShowMovementEvent.Invoke(us);
+            }
+
+            
             yield return new WaitForSeconds(0.01f);
             while (CurUnitSelected != null && ogUnit == CurUnitSelected)
             {
                 Debug.Log("IS SELECTING A UNIT");
-                yield return new WaitForSeconds(0.01f);
+                yield return new WaitForSeconds(0.001f);
             }
-            HideMovementEvent.Invoke(us);
+            if (us.Count >0) { HideMovementEvent.Invoke(us); }          
         }
         IEnumerator ForcedMove(Unit ActionTargetUnit, List<Vector2Int> CellsCoordinates)
         {
@@ -168,6 +140,34 @@ public class GameManager : MonoBehaviour
 
             yield return new WaitForSeconds(0.001f);
         }
+    
+    public List<Vector2Int> GetPossibleMovement(Unit unit)
+    {
+
+        List<Vector2Int> res = new List<Vector2Int>();
+
+        #region Checking if a line crosses through another unit
+        foreach (Vector2Int unitP in BoardManager.Instance.Get_UnitPositions(unit))
+        {
+            foreach (Moveset.Line line in unit.CurMoveset.Lines)
+            {
+                for (int i = 0; i < line.Positions.Count; i++)
+                {
+                    if (!BoardManager.Instance.IsInBounds(line.Positions[i] + unitP)) { break; }
+                    int x = line.Positions[i].x; int y = line.Positions[i].y;
+
+                    //Debug.Log("     " + (unitP.x + x) + " " + (unitP.y + y) + " cur unit- " + BoardManager.Instance.Board[unitP.x + x].Cells[unitP.y + y].CurUnit);
+
+                    if (BoardManager.Instance.Board[unitP.x + x].Cells[unitP.y + y].CurUnit != null && !line.IsEvading) { break; }
+
+                    res.Add(line.Positions[i] + unitP);
+                }
+            }
+        }   
+        #endregion
+
+        return res;
+    }
     public void CellClickHandle(Vector2Int coords)
     {
         Debug.Log("SOMEONE CLICKED THE CELL ON " + coords);
