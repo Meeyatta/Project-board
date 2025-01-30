@@ -102,7 +102,7 @@ public class BoardManager : MonoBehaviour
                     line += "_|";
                 }
             }
-            Debug.Log(line);
+            Debug.Log(y + ")" + line);
         }
     }
     public List<Vector2Int> Get_UnitPositions(Unit unit)
@@ -167,8 +167,8 @@ public class BoardManager : MonoBehaviour
         {
             Board[v.x].Cells[v.y].CurUnit = unit;
         }
-        Debug.Log("First position: " + Board[newPos[0].x].Cells[newPos[0].y].Position);
-        Debug.Log("Average position: " + BoardToWorldPosition(newPos));
+        //Debug.Log("First position: " + Board[newPos[0].x].Cells[newPos[0].y].Position);
+        //Debug.Log("Average position: " + BoardToWorldPosition(newPos));
 
         unit.gameObject.transform.localPosition = Board[newPos[0].x].Cells[newPos[0].y].Position + unit.ModelOffset;
 

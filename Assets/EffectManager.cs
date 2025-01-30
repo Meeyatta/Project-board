@@ -85,11 +85,14 @@ public class EffectManager : MonoBehaviour
         foreach (Unit u in units)
         {
             List<GameObject> ePu = new List<GameObject>();
-            foreach (var v in GameManager.Instance.GetPossibleMovement(u))
+            foreach (var vv in GameManager.Instance.GetPossibleMovement(u))
             {
-                List<Vector2Int> single = new List<Vector2Int>(); single.Add(v);
-                GameObject overlay = InstantiateFromPool("Movement", BoardManager.Instance.BoardToWorldPosition(single).Value, Quaternion.identity);
-                ePu.Add(overlay);                 
+                foreach (var v in vv)
+                {
+                    List<Vector2Int> single = new List<Vector2Int>(); single.Add(v);
+                    GameObject overlay = InstantiateFromPool("Movement", BoardManager.Instance.BoardToWorldPosition(single).Value, Quaternion.identity);
+                    ePu.Add(overlay);
+                }                         
             }
             if (!UnitEffectsToHide.ContainsKey(u)) { UnitEffectsToHide.Add(u, ePu); }         
         }

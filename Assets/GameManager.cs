@@ -59,7 +59,7 @@ public class GameManager : MonoBehaviour
             //Move the unit to the coordinates if it can move there with it's moveset, Requires: (ActionTargetUnit, CellsCoordinates)
             #region Move(ActionTargetUnit, CellsCoordinates)
             case AcionType.Move:
-                ActionQueue.Add( Move(ActionTargetUnit, CellsCoordinates), "Move");             
+                ActionQueue.Add(Action_Move.Instance.Move(ActionTargetUnit, CellsCoordinates), "Move");             
                 break;
             #endregion Move(ActionTargetUnit, CellsCoordinates)
 
@@ -67,14 +67,14 @@ public class GameManager : MonoBehaviour
             //  This one should be called with StartCoroutine instead of yield return, because unit can be selected while other actions are done
             #region Select(CellsCoordinates)
             case AcionType.Select:
-                SelectCoroutine = StartCoroutine( Select(CellsCoordinates) );
+                SelectCoroutine = StartCoroutine( Action_Select.Instance.Select(CellsCoordinates) );
                 break;
             #endregion Select(CellCoordinates)
 
             //Move the unit to the coordinates, doesn't check for unit's moveset Requires: (ActionTargetUnit, CellsCoordinates)
             #region ForcedMove(ActionTargetUnit, CellsCoordinates)
             case AcionType.ForcedMove:
-                ActionQueue.Add(Move(ActionTargetUnit, CellsCoordinates), "Move");
+                ActionQueue.Add(Action_Move.Instance.Move(ActionTargetUnit, CellsCoordinates), "Move");
                 break;
             #endregion Move(ActionTargetUnit, CellsCoordinates)
 
@@ -87,82 +87,53 @@ public class GameManager : MonoBehaviour
         }
         yield return null;
     }
-        IEnumerator Move(Unit ActionTargetUnit, List<Vector2Int> CellsCoordinates)
-        {
-            if (ActionTargetUnit == null || CellsCoordinates.Count == 0) Debug.LogError("INVALID ACTION PARAMETERS - MOVE(ActionTargetUnit, CellCoordinates)");
 
-            Debug.Log("---Possible movement:");
-
-            bool has = GetPossibleMovement(ActionTargetUnit).Intersect(CellsCoordinates).Any();
-
-            if (has)
-            {
-                yield return StartCoroutine(BoardManager.Instance.MoveUnit(ActionTargetUnit, CellsCoordinates));
-                Debug.Log("HAS BEEN MOVED TO " + CellsCoordinates);
-            }
-
-            yield return new WaitForSeconds(0.001f);
-        }
-        IEnumerator Select(List<Vector2Int> CellsCoordinates)
-        {
-            if (CellsCoordinates.Count == 0) Debug.LogError("INVALID ACTION PARAMETERS - SELECT(CellCoordinates)");
-            
-            Vector2Int coords = CellsCoordinates[0];
-            Debug.Log("SELECTED ON" + coords);
-
-
-            Unit ogUnit = CurUnitSelected; List<Unit> us = new List<Unit>();
-
-            if (CurUnitSelected != BoardManager.Instance.Board[coords.x].Cells[coords.y].CurUnit) 
-            {
-                CurUnitSelected = BoardManager.Instance.Board[coords.x].Cells[coords.y].CurUnit;
-                ogUnit = CurUnitSelected;
-                us.Add(CurUnitSelected);
-                ShowMovementEvent.Invoke(us);
-            }
-
-            
-            yield return new WaitForSeconds(0.01f);
-            while (CurUnitSelected != null && ogUnit == CurUnitSelected)
-            {
-                Debug.Log("IS SELECTING A UNIT");
-                yield return new WaitForSeconds(0.001f);
-            }
-            if (us.Count >0) { HideMovementEvent.Invoke(us); }          
-        }
         IEnumerator ForcedMove(Unit ActionTargetUnit, List<Vector2Int> CellsCoordinates)
         {
             if (ActionTargetUnit == null || CellsCoordinates.Count == 0) Debug.LogError("INVALID ACTION PARAMETERS - MOVE(ActionTargetUnit, CellCoordinates)");
 
 
             yield return StartCoroutine(BoardManager.Instance.MoveUnit(ActionTargetUnit, CellsCoordinates));
-            Debug.Log("MOVED TO " + CellsCoordinates);
+            //Debug.Log("MOVED TO " + CellsCoordinates);
 
             yield return new WaitForSeconds(0.001f);
         }
-    
-    public List<Vector2Int> GetPossibleMovement(Unit unit)
-    {
 
-        List<Vector2Int> res = new List<Vector2Int>();
+        IEnumerator Attack(Unit ActionTargetUnit)
+        {
+            yield return null;
+        }
+
+
+        public List<List<Vector2Int>> GetPossibleMovement(Unit unit)
+    {
+       // Debug.Log("Possible movement positions:");
+        List<List<Vector2Int>> res = new List<List<Vector2Int>>();
 
         #region Checking if a line crosses through another unit
-        foreach (Vector2Int unitP in BoardManager.Instance.Get_UnitPositions(unit))
-        {
-            foreach (Moveset.Line line in unit.CurMoveset.Lines)
+        foreach (Moveset.Line line in unit.CurMoveset.Lines)
             {
                 for (int i = 0; i < line.Positions.Count; i++)
                 {
-                    if (!BoardManager.Instance.IsInBounds(line.Positions[i] + unitP)) { break; }
-                    int x = line.Positions[i].x; int y = line.Positions[i].y;
+                    string lineS = "";
+                    List<Vector2Int> iPositions = new List<Vector2Int>();
+                    foreach (Vector2Int unitP in BoardManager.Instance.Get_UnitPositions(unit))
+                    {
+                        if (!BoardManager.Instance.IsInBounds(line.Positions[i] + unitP)) { break; }
+                        int x = line.Positions[i].x; int y = line.Positions[i].y;
+                        if (BoardManager.Instance.Board[unitP.x + x].Cells[unitP.y + y].CurUnit != null && !line.IsEvading) { break; }
 
-                    //Debug.Log("     " + (unitP.x + x) + " " + (unitP.y + y) + " cur unit- " + BoardManager.Instance.Board[unitP.x + x].Cells[unitP.y + y].CurUnit);
+                        //Debug.Log("     " + (unitP.x + x) + " " + (unitP.y + y) + " cur unit- " + BoardManager.Instance.Board[unitP.x + x].Cells[unitP.y + y].CurUnit);
+                        lineS += line.Positions[i] + unitP + " ";
+                        iPositions.Add(line.Positions[i] + unitP);
+                    }
 
-                    if (BoardManager.Instance.Board[unitP.x + x].Cells[unitP.y + y].CurUnit != null && !line.IsEvading) { break; }
-
-                    res.Add(line.Positions[i] + unitP);
+                    //For some reason sometimes the code can decide to select positions what the unit shouldn't physically be able to fit in, which leads to problems, so this check fixes that
+                    // this issue will probbly come up sooner but fuck it I guess. Future me I hope this smug comment was worth your patience 
+                    if (iPositions.Count == BoardManager.Instance.Get_UnitPositions(unit).Count) { res.Add(iPositions); }            
+                    //Debug.Log(i + ": " + lineS);
                 }
-            }
+            
         }   
         #endregion
 
@@ -170,7 +141,7 @@ public class GameManager : MonoBehaviour
     }
     public void CellClickHandle(Vector2Int coords)
     {
-        Debug.Log("SOMEONE CLICKED THE CELL ON " + coords);
+        //Debug.Log("SOMEONE CLICKED THE CELL ON " + coords);
         StartCoroutine(CellClickCoroutine(coords));
     }
     IEnumerator CellClickCoroutine(Vector2Int coords)

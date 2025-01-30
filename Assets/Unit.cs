@@ -8,6 +8,13 @@ public class Unit : MonoBehaviour
     public string UnitName;
     public Moveset CurMoveset;
     public Vector3 ModelOffset;
+
+    public Animator Anim;
+
+    private void Awake()
+    {
+        Anim = GetComponent<Animator>();
+    }
     void Start()
     {
         
