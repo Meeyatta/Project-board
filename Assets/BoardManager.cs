@@ -11,6 +11,7 @@ using UnityEngine.Events;
     Get_UnitPositions(Unit unit) - takes a Unit and return's it's position on the board
     BoardToWorldPosition(List<Vector2Int> poss) - Returns the Vector3 position of a cell under coordinates
     IEnumerator MoveUnit(Unit unit, List<Vector2Int> newPos) - Moves the "unit" to the newPos (If newPos can be moved to)
+    Get_AllUnitsOnBoard() - Returns a list of all units on board cells
  */
 
 public class BoardManager : MonoBehaviour
@@ -104,6 +105,19 @@ public class BoardManager : MonoBehaviour
             }
             Debug.Log(y + ")" + line);
         }
+    }
+    public List<Unit> Get_AllUnitsOnBoard()
+    {
+        List<Unit> units = new List<Unit>();
+        foreach (var v in Board)
+        {
+            foreach (var c in v.Cells)
+            {
+                if (c.CurUnit != null) { units.Add(c.CurUnit); }
+            }
+        }
+
+        return units;
     }
     public List<Vector2Int> Get_UnitPositions(Unit unit)
     {

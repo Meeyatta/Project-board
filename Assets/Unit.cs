@@ -2,14 +2,20 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+//CellGuide - list of lines which hold coordinats relative to the unit, used for moveset and attack zones
+
 [System.Serializable]
 public class Unit : MonoBehaviour
 {
     public string UnitName;
-    public Moveset CurMoveset;
+    public CellGuide CurMoveset;
+    public CellGuide CurAttackZone;
+    public List<Keyword> Keywords = new List<Keyword>();
+
     public Vector3 ModelOffset;
 
-    public Animator Anim;
+    public enum Keyword { Enemy, Player };
+    [HideInInspector] public Animator Anim;
 
     private void Awake()
     {

@@ -99,7 +99,7 @@ public class EffectManager : MonoBehaviour
     }
     void HideMovement(List<Unit> units)
     {
-        Debug.Log("Hid movement");
+        //Debug.Log("Hid movement");
         foreach (Unit u in units)
         {
             if (!UnitEffectsToHide.ContainsKey(u)) return;
