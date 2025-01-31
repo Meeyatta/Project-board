@@ -46,7 +46,7 @@ public class Action_Attack : MonoBehaviour
 
                 List<Vector2Int> positions = BoardManager.Instance.Get_UnitPositions(temp[i]);
                 Vector2Int lastPositioni = BoardManager.Instance.Get_UnitPositions(temp[i])[positions.Count - 1];
-                Vector2Int lastPositionip = BoardManager.Instance.Get_UnitPositions(temp[i])[positions.Count - 1];
+                Vector2Int lastPositionip = BoardManager.Instance.Get_UnitPositions(temp[i+1])[positions.Count - 1];
 
                 int xi = lastPositioni.x;
                 int yi = lastPositioni.y;
