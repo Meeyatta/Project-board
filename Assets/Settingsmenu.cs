@@ -112,7 +112,7 @@ public class Settingsmenu : MonoBehaviour
         //Music Volume
         Mixer.SetFloat("VolumeMusic", Mathf.Log10(MusicVolume) * 20);
 
-        Debug.Log(string.Format("Applied settings - {0} {1} {2} {3} {4} {5}", Resolution, Graphics, VSync, Fullscreen, MasterVolume, MusicVolume));
+        //Debug.Log(string.Format("Applied settings - {0} {1} {2} {3} {4} {5}", Resolution, Graphics, VSync, Fullscreen, MasterVolume, MusicVolume));
 
     }
     public void Toggle(InputAction.CallbackContext context)

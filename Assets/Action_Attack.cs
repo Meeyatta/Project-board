@@ -84,18 +84,33 @@ public class Action_Attack : MonoBehaviour
 
 
     }
+    IEnumerator DamageAll(Unit source, List<Unit.Keyword> keywords)
+    {
+        List<Unit> targets = GameManager.Instance.GetPossibleTargets(source, keywords);
+
+        yield return new WaitForSeconds(1);
+    }
+    IEnumerator Damage(Unit target)
+    {
+        //TODO : funtionality and differentiate cell guide for movement and attack
+        yield return new WaitForSeconds(1);
+    }
+    IEnumerator Kill(Unit target)
+    {
+        yield return new WaitForSeconds(0.1f);
+    }
     public IEnumerator Attack(List<Unit> ActionTargetUnits)
     {
         Debug.Log("Actually reached sorting it");
 
-        foreach (var v in OrderedUnits(ActionTargetUnits))
+        foreach (var unit in OrderedUnits(ActionTargetUnits))
         {
-            Animator anim = v.Anim;
+            Animator anim = unit.Anim;
             anim.SetTrigger(AttackAnimTrigger);
 
             while (!anim.GetBool("IsAttacking"))
             {
-                Debug.Log("Waiting for the bool");
+                //Debug.Log("Waiting for the bool");
                 yield return new WaitForSeconds(0.01f);
             }
 
@@ -105,7 +120,11 @@ public class Action_Attack : MonoBehaviour
                 yield return new WaitForSeconds(0.01f);
             }
             //At the end of animation, damage all of the units
+            List<Unit.Keyword> keywords = new List<Unit.Keyword>(); 
+            if (unit.Keywords.Contains(Unit.Keyword.Player)) { keywords.Add(Unit.Keyword.Enemy); } 
+            else { keywords.Add(Unit.Keyword.Player); } 
 
+            yield return StartCoroutine(DamageAll(unit, keywords));
         }
 
 

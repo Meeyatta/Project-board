@@ -10,6 +10,8 @@ public class Unit : MonoBehaviour
     public string UnitName;
     public CellGuide CurMoveset;
     public CellGuide CurAttackZone;
+    public int MaxHealth;
+    public int CurrentHealth;
     public List<Keyword> Keywords = new List<Keyword>();
 
     public Vector3 ModelOffset;
@@ -23,7 +25,7 @@ public class Unit : MonoBehaviour
     }
     void Start()
     {
-        
+        CurrentHealth = MaxHealth;
     }
 
     // Update is called once per frame
