@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 using System.Linq;
+using UnityEditor;
 
 //Main script, handles all of the actions what can be done with units
 
@@ -153,7 +154,7 @@ public class GameManager : MonoBehaviour
             List<List<Vector2Int>> res = new List<List<Vector2Int>>();
 
             #region Checking if a line crosses through another unit
-            foreach (CellGuide.Line line in unit.CurMoveset.Lines)
+            foreach (Moveset.Line line in unit.CurMoveset.Lines)
                 {
                     for (int i = 0; i < line.Positions.Count; i++)
                     {
@@ -187,7 +188,9 @@ public class GameManager : MonoBehaviour
         List<Unit> res = new List<Unit>();
 
         #region This goes through each individaul line and stops if it encounters a unit
-        foreach (CellGuide.Line line in source.CurAttackZone.Lines)
+        if (source.CurAttackZone.Lines.Count == 0) { return res; }
+
+        foreach (var line in source.CurAttackZone.Lines)
         {
             for (int i = 0; i < line.Positions.Count; i++)
             {
@@ -242,7 +245,8 @@ public class GameManager : MonoBehaviour
     {
         yield return new WaitForSeconds(0.001f); //For some reason this is vital, otherwise Unity shits itself trying to assign and end a Coroutine at the same time 
 
-        if (CurUnitSelected != null && BoardManager.Instance.Board[coords.x].Cells[coords.y].CurUnit == null) //If have a unit and cell is unoccupied - a)move it to the cell, otherwise - b)select a unit on that cell
+        //If have a unit and cell is unoccupied - a)move it to the cell, otherwise - b)select a unit on that cell
+        if (CurUnitSelected != null && BoardManager.Instance.Board[coords.x].Cells[coords.y].CurUnit == null) 
         { //a)
 
             List<Vector2Int> nCoords = new List<Vector2Int>(); nCoords.Add(coords);
@@ -258,7 +262,16 @@ public class GameManager : MonoBehaviour
             {
                 List<Vector2Int> nCoords = new List<Vector2Int>(); nCoords.Add(coords);
 
-                yield return StartCoroutine(Action(AcionType.Select, null, null, nCoords));
+                //If the selected unit is a player unit - aa) select it, otherwise - bb) TODO:
+                if (BoardManager.Instance.Board[coords.x].Cells[coords.y].CurUnit.Keywords.Contains(Unit.Keyword.Player))
+                { //aa)
+                    yield return StartCoroutine(Action(AcionType.Select, null, null, nCoords));
+                }
+                else
+                {
+                    yield return new WaitForSeconds(0.1f);
+                }
+
             }
             else
             {

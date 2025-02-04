@@ -48,14 +48,17 @@ public class Settingsmenu : MonoBehaviour
 
         for (int i = 0; i < ress.Length; i++)
         {
-            Resolutions.Add(ress[i]);
+            if (ress[i].refreshRateRatio.numerator == CurRefreshRate.numerator)
+            {
+                Resolutions.Add(ress[i]);
+            }
         }
 
         int curRes = 0;
         List<string> ResOptions = new List<string>();
         for (int i = 0; i < ress.Length; i++)
         {
-            string option = Resolutions[i].width + "x" + Resolutions[i].height + " " + Resolutions[i].refreshRateRatio + " Hz";
+            string option = Resolutions[i].width + "x" + Resolutions[i].height;
             ResOptions.Add(option);
             if (Screen.currentResolution.width == Resolutions[i].width && Screen.currentResolution.height == Resolutions[i].height)
             {

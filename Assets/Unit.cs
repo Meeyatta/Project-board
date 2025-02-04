@@ -8,8 +8,8 @@ using UnityEngine;
 public class Unit : MonoBehaviour
 {
     public string UnitName;
-    public CellGuide CurMoveset;
-    public CellGuide CurAttackZone;
+    public Moveset CurMoveset;
+    public AttackZone CurAttackZone;
     public int MaxHealth;
     public int CurrentHealth;
     public List<Keyword> Keywords = new List<Keyword>();

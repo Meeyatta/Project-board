@@ -23,7 +23,36 @@ public class Action_Attack : MonoBehaviour
         Singleton();
     }
 
-    //TODO: Sorting doesn't work as it should, the order of attacking units is wrong
+    public IEnumerator Attack(List<Unit> ActionTargetUnits)
+    {
+        Debug.Log("Actually reached sorting it");
+
+        foreach (var unit in OrderedUnits(ActionTargetUnits))
+        {
+            Animator anim = unit.Anim;
+            anim.SetTrigger(AttackAnimTrigger);
+
+            while (!anim.GetBool("IsAttacking"))
+            {
+                yield return new WaitForSeconds(0.01f);
+            }
+
+            while (anim.GetBool("IsAttacking"))
+            {
+                yield return new WaitForSeconds(0.01f);
+            }
+            //At the end of animation, damage all of the units
+            List<Unit.Keyword> keywords = new List<Unit.Keyword>();
+            if (unit.Keywords.Contains(Unit.Keyword.Player)) { keywords.Add(Unit.Keyword.Enemy); }
+            else { keywords.Add(Unit.Keyword.Player); }
+
+            yield return StartCoroutine(DamageAllInRange(unit, keywords));
+        }
+
+
+        yield return new WaitForSeconds(0.001f);
+    }
+
     List<Unit> OrderedUnits(List<Unit> ActionTargetUnit)
     {
         Debug.Log("We got to sorting units");
@@ -34,8 +63,8 @@ public class Action_Attack : MonoBehaviour
         //The sorting algoryth doesn't work for a single element, so this needs to be done
         if (temp.Count <= 1) { return temp; }
 
+        #region Sorting algorythm
         long justincase = 999999;
-
         bool needsSorting = true;
         while (needsSorting && justincase > 0)
         {
@@ -46,7 +75,7 @@ public class Action_Attack : MonoBehaviour
 
                 List<Vector2Int> positions = BoardManager.Instance.Get_UnitPositions(temp[i]);
                 Vector2Int lastPositioni = BoardManager.Instance.Get_UnitPositions(temp[i])[positions.Count - 1];
-                Vector2Int lastPositionip = BoardManager.Instance.Get_UnitPositions(temp[i+1])[positions.Count - 1];
+                Vector2Int lastPositionip = BoardManager.Instance.Get_UnitPositions(temp[i + 1])[positions.Count - 1];
 
                 int xi = lastPositioni.x;
                 int yi = lastPositioni.y;
@@ -78,56 +107,38 @@ public class Action_Attack : MonoBehaviour
             }
         }
 
-        //if (justincase == 0) { Debug.Log("THE LOOP IS INFINITE"); } else { Debug.Log(justincase); }
+        #endregion
 
         return temp;
 
-
     }
-    IEnumerator DamageAll(Unit source, List<Unit.Keyword> keywords)
+    IEnumerator DamageAllInRange(Unit source, List<Unit.Keyword> keywords)
     {
         List<Unit> targets = GameManager.Instance.GetPossibleTargets(source, keywords);
 
-        yield return new WaitForSeconds(1);
-    }
-    IEnumerator Damage(Unit target)
-    {
-        //TODO : funtionality and differentiate cell guide for movement and attack
-        yield return new WaitForSeconds(1);
-    }
-    IEnumerator Kill(Unit target)
-    {
-        yield return new WaitForSeconds(0.1f);
-    }
-    public IEnumerator Attack(List<Unit> ActionTargetUnits)
-    {
-        Debug.Log("Actually reached sorting it");
 
-        foreach (var unit in OrderedUnits(ActionTargetUnits))
+        foreach (Unit target in targets) 
         {
-            Animator anim = unit.Anim;
-            anim.SetTrigger(AttackAnimTrigger);
-
-            while (!anim.GetBool("IsAttacking"))
-            {
-                //Debug.Log("Waiting for the bool");
-                yield return new WaitForSeconds(0.01f);
-            }
-
-            while (anim.GetBool("IsAttacking"))
-            {
-                Debug.Log("Bool is true");
-                yield return new WaitForSeconds(0.01f);
-            }
-            //At the end of animation, damage all of the units
-            List<Unit.Keyword> keywords = new List<Unit.Keyword>(); 
-            if (unit.Keywords.Contains(Unit.Keyword.Player)) { keywords.Add(Unit.Keyword.Enemy); } 
-            else { keywords.Add(Unit.Keyword.Player); } 
-
-            yield return StartCoroutine(DamageAll(unit, keywords));
+            yield return StartCoroutine(Damage(target, source.CurAttackZone.Damage, source));
         }
 
-
-        yield return new WaitForSeconds(0.001f);
+        yield return new WaitForSeconds(1);
     }
+    IEnumerator Damage(Unit target, int damage, Unit source)
+    {
+        target.CurrentHealth = Mathf.Clamp(target.CurrentHealth - damage, 0, target.CurrentHealth);
+
+        if (target.CurrentHealth <= 0) { yield return StartCoroutine(Kill(target, source)); }
+
+        yield return new WaitForSeconds(0.1f);
+    }
+    IEnumerator Kill(Unit target, Unit source)
+    {
+        Debug.Log(target.UnitName + " has been killed by " + source.UnitName);
+        yield return new WaitForSeconds(0.1f);
+        target.gameObject.SetActive(false);
+
+        yield return new WaitForSeconds(0.1f);
+    }
+    
 }
