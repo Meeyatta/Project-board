@@ -188,6 +188,7 @@ public class BoardManager : MonoBehaviour
 
         yield break;
     }
+   
     private void Update()
     {
         if (Input.GetKeyDown("p")) { Print(); }

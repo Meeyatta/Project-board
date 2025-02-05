@@ -2,8 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
-using System.Linq;
-using UnityEditor;
 
 //Main script, handles all of the actions what can be done with units
 
@@ -32,22 +30,23 @@ public class GameManager : MonoBehaviour
     public class ActionSlot
     {
         public IEnumerator IEnum;
-        public string Name;
+        public ActionType Type;
 
-        public ActionSlot(IEnumerator e, string n)
+        public ActionSlot(IEnumerator e, ActionType t)
         {
             IEnum = e;
-            Name = n;
+            Type = t;
         }
     }
 
-    public enum AcionType { Attack, KeywordedAttack ,Move, Select, ForcedMove };
+    public enum ActionType { Attack, KeywordedAttack, Move, ForcedMove, SelectUnit, SelectPosition, Place };
     public Unit CurUnitSelected; //What unit is currently selected, if no unit - should be null
     public static GameManager Instance;
     public Coroutine GoingThroughActions;
     public Coroutine SelectCoroutine;
+    public ActionSlot CurrentAction;
     public Queue<ActionSlot> ActionQueue = new Queue<ActionSlot>();
-
+    
     #region Events 
     public UnityEvent<List<Unit>> ShowMovementEvent;
     public UnityEvent<List<Unit>> HideMovementEvent;
@@ -81,14 +80,14 @@ public class GameManager : MonoBehaviour
     //Can be called by a variety of things to initiate a variety of actions. PLEASE REMEMBER TO PUT IN BRACKETS WHAT INFO IS NEEDED TO DO THE ACTION
         /*TODO : Separate this function into several smaller ones with different required parameters, since currently the function has a lot of parametres used only by a singluar type of action,
         which is messy and needs a bunch of null statements */
-    public IEnumerator Action(AcionType type, List<Unit> ActionTargetUnits, List<Unit.Keyword> keywords,  List<Vector2Int> CellsCoordinates)
+    public IEnumerator Action(ActionType type, List<Unit> ActionTargetUnits, List<Unit.Keyword> keywords,  List<Vector2Int> CellsCoordinates, GameObject Object)
     {
         switch (type)
         {
             //Move the unit to the coordinates if it can move there with it's moveset, Requires: (ActionTargetUnit, CellsCoordinates)
             #region Move(ActionTargetUnits, CellsCoordinates)
-            case AcionType.Move:
-                ActionSlot move = new ActionSlot(Action_Move.Instance.Move(ActionTargetUnits[0], CellsCoordinates), "Move");
+            case ActionType.Move:
+                ActionSlot move = new ActionSlot(Action_Move.Instance.Move(ActionTargetUnits[0], CellsCoordinates), ActionType.Move);
                 ActionQueue.Enqueue(move);             
                 break;
             #endregion Move(ActionTargetUnits, CellsCoordinates)
@@ -96,35 +95,54 @@ public class GameManager : MonoBehaviour
             //Set a unit under coordinates as a Current selected unit by the player, Requires: (CellsCoordinates)
             //  This one should be called with StartCoroutine instead of yield return, because unit can be selected while other actions are done
             #region Select(CellsCoordinates)
-            case AcionType.Select:
-                SelectCoroutine = StartCoroutine( Action_Select.Instance.Select(CellsCoordinates) );
+            case ActionType.SelectUnit:
+                SelectCoroutine = StartCoroutine( Action_SelectUnit.Instance.Select(CellsCoordinates) );
                 break;
             #endregion Select(CellCoordinates)
 
             //Move the unit to the coordinates, doesn't check for unit's moveset Requires: (ActionTargetUnit, CellsCoordinates)
             //TODO: Separate into a unique script, currently the corotuine in inside GameManager
             #region ForcedMove(ActionTargetUnits, CellsCoordinates)
-            case AcionType.ForcedMove:
-                ActionSlot forcedmove = new ActionSlot(ForcedMove(ActionTargetUnits[0], CellsCoordinates), "Forced Move");
+            case ActionType.ForcedMove:
+                ActionSlot forcedmove = new ActionSlot(ForcedMove(ActionTargetUnits[0], CellsCoordinates), ActionType.ForcedMove);
                 ActionQueue.Enqueue(forcedmove);
                 break;
             #endregion ForcedMove(ActionTargetUnits, CellsCoordinates)
 
             //Make a target unit initiate an attack on all units in it's attack zone
             #region Attack(ActionTargetUnits)
-            case AcionType.Attack:
-                ActionSlot attack = new ActionSlot(Action_Attack.Instance.Attack(ActionTargetUnits), "Attack");
+            case ActionType.Attack:
+                ActionSlot attack = new ActionSlot(Action_Attack.Instance.Attack(ActionTargetUnits), ActionType.Attack);
                 ActionQueue.Enqueue(attack);
                 break;
             #endregion Attack(ActionTargetUnits)
-
+                
             //Make all units with specific keywords initiate an attack on all units in their individual attack zones
             #region KeywordedAttack(Keywords)
-            case AcionType.KeywordedAttack:
-                ActionSlot keywordedattack = new ActionSlot(Action_Attack.Instance.Attack(GroupUnitsByKeywords(BoardManager.Instance.Get_AllUnitsOnBoard(), keywords)), "Attack");
+            case ActionType.KeywordedAttack:
+                ActionSlot keywordedattack = 
+                    new ActionSlot(Action_Attack.Instance.Attack(
+                        GroupUnitsByKeywords(BoardManager.Instance.Get_AllUnitsOnBoard(), keywords)), ActionType.KeywordedAttack);
+
                 ActionQueue.Enqueue(keywordedattack);
                 break;
             #endregion KeywordedAttack(Keywords)
+
+            //Place a specific unit on coordinates present on the board
+            #region Place(GameObject Object, Vector2Int CellsCoordinates)
+            case ActionType.Place:
+                ActionSlot place = new ActionSlot(Action_Place.Instance.Place(Object, CellsCoordinates), ActionType.Place);
+                ActionQueue.Enqueue(place);
+                break;
+            #endregion Create(GameObject Object, Vector2Int CellsCoordinates)
+
+            //Create a prefab of a specific unit and select a position for it to be placed on
+            #region PlayerSelectingPosition(GameObject Object)
+            case ActionType.SelectPosition:
+                ActionSlot position = new ActionSlot(Action_SelectPosition.Instance.SelectPosition(Object), ActionType.SelectPosition);
+                ActionQueue.Enqueue(position);
+                break;
+            #endregion Create(GameObject prefab, Vector2Int CellsCoordinates)
 
             //Means I forgot to make an action for this type
             #region Default(...)
@@ -258,7 +276,7 @@ public class GameManager : MonoBehaviour
             List<Vector2Int> nCoords = new List<Vector2Int>(); nCoords.Add(coords);
 
             List<Unit> unitToList = new List<Unit>();unitToList.Add(CurUnitSelected);
-            yield return StartCoroutine(Action(AcionType.Move, unitToList, null, nCoords));
+            yield return StartCoroutine(Action(ActionType.Move, unitToList, null, nCoords, null));
             CurUnitSelected = null;
 
         }
@@ -271,7 +289,7 @@ public class GameManager : MonoBehaviour
                 //If the selected unit is a player unit - aa) select it, otherwise - bb) TODO:
                 if (BoardManager.Instance.Board[coords.x].Cells[coords.y].CurUnit.Keywords.Contains(Unit.Keyword.Player))
                 { //aa)
-                    yield return StartCoroutine(Action(AcionType.Select, null, null, nCoords));
+                    yield return StartCoroutine(Action(ActionType.SelectUnit, null, null, nCoords, null));
                 }
                 else
                 {
@@ -295,7 +313,8 @@ public class GameManager : MonoBehaviour
 
         while (ActionQueue.Count > 0)
         {
-            yield return StartCoroutine(ActionQueue.Dequeue().IEnum);
+            CurrentAction = ActionQueue.Dequeue();
+            yield return StartCoroutine(CurrentAction.IEnum);
             yield return new WaitForSeconds(0.0001f);
         }
         ActionQueue.Clear();
@@ -310,17 +329,19 @@ public class GameManager : MonoBehaviour
     }
     private void Update()
     {
+        if (CurrentAction != null && CurrentAction.Type == ActionType.SelectPosition) { Debug.Log("IS SELECTING A POSITION"); }
+
         if (Input.GetKeyDown("q"))
         {
             Debug.Log("CURRENT ACTION QUEUE:");
-            foreach (var a in ActionQueue) { Debug.Log(a.Name); }
+            foreach (var a in ActionQueue) { Debug.Log(a.Type); }
 
         }
         if (Input.GetKeyDown("a"))
         {
             Debug.Log("PRESSED THE ATTACK BUTTON");
             List<Unit.Keyword> k = new List<Unit.Keyword>();k.Add(Unit.Keyword.Player);
-            StartCoroutine(Action(AcionType.KeywordedAttack, null, k, null));
+            StartCoroutine(Action(ActionType.KeywordedAttack, null, k, null, null));
         }
     }
 }
