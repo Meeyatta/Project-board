@@ -38,12 +38,13 @@ public class GameManager : MonoBehaviour
             Type = t;
         }
     }
-
+    public GameObject TESTunittocreate;
+    public UnityEvent<Vector2Int> ClickBackEvent;
     public enum ActionType { Attack, KeywordedAttack, Move, ForcedMove, SelectUnit, SelectPosition, Place };
     public Unit CurUnitSelected; //What unit is currently selected, if no unit - should be null
     public static GameManager Instance;
-    public Coroutine GoingThroughActions;
-    public Coroutine SelectCoroutine;
+    public Coroutine C_GoingThroughActions;
+    public Coroutine C_UnitSelect;
     public ActionSlot CurrentAction;
     public Queue<ActionSlot> ActionQueue = new Queue<ActionSlot>();
     
@@ -96,7 +97,7 @@ public class GameManager : MonoBehaviour
             //  This one should be called with StartCoroutine instead of yield return, because unit can be selected while other actions are done
             #region Select(CellsCoordinates)
             case ActionType.SelectUnit:
-                SelectCoroutine = StartCoroutine( Action_SelectUnit.Instance.Select(CellsCoordinates) );
+                C_UnitSelect = StartCoroutine( Action_SelectUnit.Instance.Select(CellsCoordinates) );
                 break;
             #endregion Select(CellCoordinates)
 
@@ -128,16 +129,16 @@ public class GameManager : MonoBehaviour
                 break;
             #endregion KeywordedAttack(Keywords)
 
-            //Place a specific unit on coordinates present on the board
-            #region Place(GameObject Object, Vector2Int CellsCoordinates)
+            //Create a specific unit on coordinates present on the board
+            #region Create(GameObject Object, Vector2Int CellsCoordinates)
             case ActionType.Place:
-                ActionSlot place = new ActionSlot(Action_Place.Instance.Place(Object, CellsCoordinates), ActionType.Place);
-                ActionQueue.Enqueue(place);
+                ActionSlot create = new ActionSlot(Action_Place.Instance.Place(Object, CellsCoordinates), ActionType.Place);
+                ActionQueue.Enqueue(create);
                 break;
             #endregion Create(GameObject Object, Vector2Int CellsCoordinates)
 
             //Create a prefab of a specific unit and select a position for it to be placed on
-            #region PlayerSelectingPosition(GameObject Object)
+            #region PlayerSelectPosition(GameObject Object)
             case ActionType.SelectPosition:
                 ActionSlot position = new ActionSlot(Action_SelectPosition.Instance.SelectPosition(Object), ActionType.SelectPosition);
                 ActionQueue.Enqueue(position);
@@ -269,40 +270,50 @@ public class GameManager : MonoBehaviour
     {
         yield return new WaitForSeconds(0.001f); //For some reason this is vital, otherwise Unity shits itself trying to assign and end a Coroutine at the same time 
 
-        //If have a unit and cell is unoccupied - a)move it to the cell, otherwise - b)select a unit on that cell
-        if (CurUnitSelected != null && BoardManager.Instance.Board[coords.x].Cells[coords.y].CurUnit == null) 
-        { //a)
-
-            List<Vector2Int> nCoords = new List<Vector2Int>(); nCoords.Add(coords);
-
-            List<Unit> unitToList = new List<Unit>();unitToList.Add(CurUnitSelected);
-            yield return StartCoroutine(Action(ActionType.Move, unitToList, null, nCoords, null));
-            CurUnitSelected = null;
-
+        //If we are currently selecting a position for something - a1)   b1) work normally
+        if (CurrentAction != null && CurrentAction.Type == ActionType.SelectPosition) 
+        { //a1
+            ClickBackEvent.Invoke(coords);
         }
         else
-        { //b)
-            if (BoardManager.Instance.Board[coords.x].Cells[coords.y].CurUnit != null) //Check whenever there is a unit on a clicked cell
-            {
+        { //b1
+            //If have a unit and cell is unoccupied - a)move it to the cell, otherwise - b)select a unit on that cell
+            if (CurUnitSelected != null && BoardManager.Instance.Board[coords.x].Cells[coords.y].CurUnit == null)
+            { //a)
+
                 List<Vector2Int> nCoords = new List<Vector2Int>(); nCoords.Add(coords);
 
-                //If the selected unit is a player unit - aa) select it, otherwise - bb) TODO:
-                if (BoardManager.Instance.Board[coords.x].Cells[coords.y].CurUnit.Keywords.Contains(Unit.Keyword.Player))
-                { //aa)
-                    yield return StartCoroutine(Action(ActionType.SelectUnit, null, null, nCoords, null));
-                }
-                else
-                {
-                    yield return new WaitForSeconds(0.1f);
-                }
+                List<Unit> unitToList = new List<Unit>(); unitToList.Add(CurUnitSelected);
+                yield return StartCoroutine(Action(ActionType.Move, unitToList, null, nCoords, null));
+                CurUnitSelected = null;
 
             }
             else
-            {
-                Debug.Log("HAVE NOTHING SELECTED, " + coords + " HAS NO UNITS ");
-                //No unit on that cell, do nothing
+            { //b)
+                if (BoardManager.Instance.Board[coords.x].Cells[coords.y].CurUnit != null) //Check whenever there is a unit on a clicked cell
+                {
+                    List<Vector2Int> nCoords = new List<Vector2Int>(); nCoords.Add(coords);
+
+                    //If the selected unit is a player unit - aa) select it, otherwise - bb) TODO:
+                    if (BoardManager.Instance.Board[coords.x].Cells[coords.y].CurUnit.Keywords.Contains(Unit.Keyword.Player))
+                    { //aa)
+                        yield return StartCoroutine(Action(ActionType.SelectUnit, null, null, nCoords, null));
+                    }
+                    else
+                    {
+                        yield return new WaitForSeconds(0.1f);
+                    }
+
+                }
+                else
+                {
+                    Debug.Log("HAVE NOTHING SELECTED, " + coords + " HAS NO UNITS ");
+                    //No unit on that cell, do nothing
+                }
             }
         }
+
+        
         yield return null;
     }
 
@@ -318,18 +329,25 @@ public class GameManager : MonoBehaviour
             yield return new WaitForSeconds(0.0001f);
         }
         ActionQueue.Clear();
-        GoingThroughActions = null;
+        CurrentAction = null;
+        C_GoingThroughActions = null;
     }
     private void FixedUpdate()
     {
-        while (ActionQueue.Count > 0 && GoingThroughActions == null)
+        while (ActionQueue.Count > 0 && C_GoingThroughActions == null)
         {
-            GoingThroughActions = StartCoroutine(GoThroughActions());
+            C_GoingThroughActions = StartCoroutine(GoThroughActions());
         }
     }
     private void Update()
     {
-        if (CurrentAction != null && CurrentAction.Type == ActionType.SelectPosition) { Debug.Log("IS SELECTING A POSITION"); }
+        
+
+        if (Input.GetKeyDown("c")) 
+        {
+            Debug.Log("Placing a unit"); 
+            StartCoroutine(Action(ActionType.SelectPosition, null, null, null, TESTunittocreate));
+        }
 
         if (Input.GetKeyDown("q"))
         {
