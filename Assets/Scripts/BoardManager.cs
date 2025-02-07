@@ -147,7 +147,7 @@ public class BoardManager : MonoBehaviour
     public Vector3? BoardToWorldPosition(List<Vector2Int> poss)
     {
 
-        Vector3 newP = new Vector3();
+        Vector3 newP = Vector3.zero;
         foreach (Vector2Int v in poss)
         {
             if (!IsInBounds(v)) return null;

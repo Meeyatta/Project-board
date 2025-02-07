@@ -8,6 +8,7 @@ using UnityEngine;
 public class Unit : MonoBehaviour
 {
     public string UnitName;
+    public UnitSize Size;
     public Moveset CurMoveset;
     public AttackZone CurAttackZone;
     public int MaxHealth;
