@@ -4,12 +4,12 @@ using UnityEngine;
 using UnityEngine.Events;
 using System.Linq;
 
-public class Action_SelectPosition : MonoBehaviour
+public class SelectPosition : MonoBehaviour
 {
     public Unit CurUnit;
     public UnityEvent<List<Vector2Int>> ESendPositionBack;
     public bool IsAwaitingAClickBack = true;
-    public static Action_SelectPosition Instance;
+    public static SelectPosition Instance;
     void Singleton()
     {
         if (Instance != null)
@@ -42,7 +42,7 @@ public class Action_SelectPosition : MonoBehaviour
 
         ESendPositionBack.Invoke(nv);
     }
-    public IEnumerator SelectPosition(Unit unit)
+    public IEnumerator Selecting(Unit unit)
     {
         GameManager.Instance.ClickBackEvent.AddListener(StopWaiting);
         CurUnit = unit;
