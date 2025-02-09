@@ -40,18 +40,21 @@ public class GameManager : MonoBehaviour
     }
     public GameObject TESTunittocreate;
     public UnityEvent<List<Vector2Int>> ClickBackEvent;
-    public enum ActionType { Attack, KeywordedAttack, Move, ForcedMove, SelectUnit, SelectPosition, Create };
+    public enum ActionType { Attack, KeywordedAttack, Move, ForcedMove, SelectUnit, PlayerCreate };
     public Unit CurUnitSelected; //What unit is currently selected, if no unit - should be null
     public static GameManager Instance;
     public Coroutine C_GoingThroughActions;
     public Coroutine C_UnitSelect;
-    public bool Is_AwaitingData; //If another actions needs to wait for player input to send info to other actions
+    public IEnumerator I_PositionSelect;
     public ActionSlot CurrentAction;
     public Queue<ActionSlot> ActionQueue = new Queue<ActionSlot>();
     
     #region Events 
     public UnityEvent<List<Unit>> ShowMovementEvent;
     public UnityEvent<List<Unit>> HideMovementEvent;
+
+    public UnityEvent<List<Unit>> ShowPlacementEvent;
+    public UnityEvent<List<Unit>> HidePlacementEvent;
     void OnEnable()
     {
         
@@ -131,24 +134,10 @@ public class GameManager : MonoBehaviour
             #endregion KeywordedAttack(Keywords)
 
             //Create a specific unit on coordinates present on the board
-            #region Create(GameObject Object, Vector2Int CellsCoordinates)
-            case ActionType.Create:
-                //Create a unit as an object, it's not on the board yet, so it should be hidden
-                Unit unit = 
-                    Instantiate(Object, Vector3.zero, Quaternion.identity).GetComponent<Unit>();
-
-                //Add a listener what executes after players selects a position and returns it
-                Action_SelectPosition.Instance.ESendPositionBack.AddListener(StartAwaiting_ListOfPositions);
-                Is_AwaitingData = true;
-
-                //Start the action to select a position
-                ActionSlot position = new ActionSlot(Action_SelectPosition.Instance.SelectPosition(unit), ActionType.SelectPosition);
-                ActionQueue.Enqueue(position);
-
-                //Waiting until we have the data
-                while (Is_AwaitingData) { yield return new WaitForSeconds(0.1f); }
-
-                //Place a unit on said selected position
+            #region PlayerCreate(GameObject Object)
+            case ActionType.PlayerCreate:
+                ActionSlot playercreate = new ActionSlot(Action_PlayerCreate.Instance.PlayerCreate(Object), ActionType.PlayerCreate);
+                ActionQueue.Enqueue(playercreate);
 
                 break;
             #endregion Create(GameObject Object, Vector2Int CellsCoordinates)
@@ -162,11 +151,7 @@ public class GameManager : MonoBehaviour
         }
         yield return null;
     }
-    void StartAwaiting_ListOfPositions(List<Vector2Int> v2)
-    {
-        Is_AwaitingData = false;
-        Action_SelectPosition.Instance.ESendPositionBack.RemoveListener(StartAwaiting_ListOfPositions);
-    }
+
         IEnumerator ForcedMove(Unit ActionTargetUnit, List<Vector2Int> CellsCoordinates)
         {
             if (ActionTargetUnit == null || CellsCoordinates.Count == 0) Debug.LogError("INVALID ACTION PARAMETERS - MOVE(ActionTargetUnit, CellCoordinates)");
@@ -283,8 +268,9 @@ public class GameManager : MonoBehaviour
         yield return new WaitForSeconds(0.001f); //For some reason this is vital, otherwise Unity shits itself trying to assign and end a Coroutine at the same time 
 
         //If we are currently selecting a position for something - a1)   b1) work normally
-        if (CurrentAction != null && CurrentAction.Type == ActionType.SelectPosition)
+        if (I_PositionSelect != null)
         { //a1
+            Debug.Log(CurrentAction.Type);  //<- Important note, current action is stored in a separate field, not in the queue
             List<Vector2Int> nCoords = new List<Vector2Int>(); nCoords.Add(coords);
             ClickBackEvent.Invoke(nCoords);
         }
@@ -354,12 +340,12 @@ public class GameManager : MonoBehaviour
     }
     private void Update()
     {
-        
+        Debug.Log(I_PositionSelect);
 
         if (Input.GetKeyDown("c")) 
         {
             Debug.Log("Placing a unit"); 
-            StartCoroutine(Action(ActionType.Create, null, null, null, TESTunittocreate));
+            StartCoroutine(Action(ActionType.PlayerCreate, null, null, null, TESTunittocreate));
         }
 
         if (Input.GetKeyDown("q"))
