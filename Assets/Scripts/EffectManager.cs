@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.VFX;
 
 
 //Handles visual effects in the game
@@ -23,6 +24,7 @@ public class EffectManager : MonoBehaviour
     public Dictionary<Unit, List<GameObject>> UnitEffectsToHide = new Dictionary<Unit, List<GameObject>>();
 
     public GameObject EffectsObj;
+    public Dictionary<Unit, List<GameObject>> PlacementEffectsToHide = new Dictionary<Unit, List<GameObject>>();
 
     [System.Serializable]
     public class Pool
@@ -90,26 +92,53 @@ public class EffectManager : MonoBehaviour
     {
         if (CurPlacement == null)
         {
+            foreach (Unit u in units)
+            {
+                List<Vector2Int> v2 = BoardManager.Instance.CursorToCellPosition();
+                for (int i = 1; i < u.Size.Positions.Count; i++) { v2.Add(u.Size.Positions[i]); }
+
+                Vector3 curPos = BoardManager.Instance.BoardToWorldPosition(v2).Value;
+
+                List<GameObject> list = new List<GameObject>();
+                foreach (var v in v2)
+                {
+                    list.Add(InstantiateFromPool(Tag.Placement, curPos, Quaternion.identity));
+                }
+                if (!PlacementEffectsToHide.ContainsKey(u)) { PlacementEffectsToHide.Add(u, list); }
+            }
+
             CurPlacement = StartCoroutine(ShowingPlacement(units));
         }
     }
     void StopShowingPlacement(List<Unit> units)
     {
-        StopCoroutine(CurPlacement);
+        foreach (var v in PlacementEffectsToHide) 
+        {
+            if (units.Contains(v.Key)) { foreach (var vv in v.Value) { DestroyToPool(vv); } }
+        }
+        PlacementEffectsToHide.Clear();
+
+        if (CurPlacement != null) StopCoroutine(CurPlacement);
         CurPlacement = null;
     }
     IEnumerator ShowingPlacement(List<Unit> units)
     {
+        yield return new WaitForSeconds(0.1f);
         while (CurPlacement != null)
         {
-
-            //TODO: Adda function what dynamically converts player cursor position to board cell position and uses it to set the position of the effect
-            foreach (Unit u in units)
+            foreach (var v in PlacementEffectsToHide)
             {
-                //TODO: Place an effect to an according position
+                for (int i = 0; i < v.Key.Size.Positions.Count; i++)
+                {
+                    List<Vector2Int> posP = new List<Vector2Int>();
+                    if (BoardManager.Instance.CursorToCellPosition().Count <= 0) { continue; }
+                    posP.Add(BoardManager.Instance.CursorToCellPosition()[0] + v.Key.Size.Positions[i]);
+                    v.Value[i].transform.position = BoardManager.Instance.BoardToWorldPosition(posP).Value;
+                }
+                yield return new WaitForSeconds(0.01f);
             }
 
-            yield return new WaitForSeconds(0.01f);
+            Debug.Log("Stopped showing placement");
         }
     }
     void ShowMovement(List<Unit> units)
@@ -124,9 +153,9 @@ public class EffectManager : MonoBehaviour
                     List<Vector2Int> single = new List<Vector2Int>(); single.Add(v);
                     GameObject overlay = InstantiateFromPool(Tag.Movement, BoardManager.Instance.BoardToWorldPosition(single).Value, Quaternion.identity);
                     ePu.Add(overlay);
-                }                         
-            }
-            if (!UnitEffectsToHide.ContainsKey(u)) { UnitEffectsToHide.Add(u, ePu); }         
+                }
+                if (!UnitEffectsToHide.ContainsKey(u)) { UnitEffectsToHide.Add(u, ePu); }
+            }       
         }
     }
     void HideMovement(List<Unit> units)

@@ -340,11 +340,9 @@ public class GameManager : MonoBehaviour
     }
     private void Update()
     {
-        Debug.Log(I_PositionSelect);
 
         if (Input.GetKeyDown("c")) 
-        {
-            Debug.Log("Placing a unit"); 
+        { 
             StartCoroutine(Action(ActionType.PlayerCreate, null, null, null, TESTunittocreate));
         }
 

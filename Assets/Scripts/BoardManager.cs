@@ -12,11 +12,12 @@ using UnityEngine.Events;
     BoardToWorldPosition(List<Vector2Int> poss) - Returns the Vector3 position of a cell under coordinates
     IEnumerator MoveUnit(Unit unit, List<Vector2Int> newPos) - Moves the "unit" to the newPos (If newPos can be moved to)
     Get_AllUnitsOnBoard() - Returns a list of all units on board cells
+    CursorToCellPosition() - Returns the cell under the player's cursor
  */
 
 public class BoardManager : MonoBehaviour
 {
-    public Unit TestUnit; 
+    public LayerMask CellMask;
 
     public float DefaultY;
     public float CellSize;
@@ -81,6 +82,7 @@ public class BoardManager : MonoBehaviour
                 column.Cells.Add(cell);
 
                 BoardCell newCell = Instantiate(BoardCellObj, cell.Position, Quaternion.identity, CellsObj.transform).GetComponent<BoardCell>();
+                newCell.gameObject.name = "Cell " + cell.Coordinates.ToString();
                 newCell.Coordinates = cell.Coordinates;
             }
             Board.Add(column);
@@ -106,6 +108,26 @@ public class BoardManager : MonoBehaviour
             Debug.Log(y + ")" + line);
         }
     }
+    public List<Vector2Int> CursorToCellPosition()
+    {
+        List<Vector2Int> res = new List<Vector2Int>();
+
+
+        Vector3 v = Input.mousePosition;
+        v.z = 999999;
+        Vector3 cPos = Camera.main.ScreenToWorldPoint(v);
+        RaycastHit hit;
+        Physics.Raycast(Camera.main.transform.position, cPos, out hit, CellMask);
+
+        Vector2Int lastCell;
+        if (hit.transform != null)
+        {
+            res.Add(WorldToBoardPosition(hit.transform.gameObject.transform.position));
+        }
+
+        return res;
+    }
+
     public List<Unit> Get_AllUnitsOnBoard()
     {
         List<Unit> units = new List<Unit>();
@@ -143,6 +165,14 @@ public class BoardManager : MonoBehaviour
         }
 
         return true;
+    }
+    public Vector2Int WorldToBoardPosition(Vector3 pos)
+    {
+
+        float fx = (pos.x - CellsObj.transform.position.x - InBetweenSpace) / (InBetweenSpace + CellSize); int x = (int) fx;
+        float fy = (CellsObj.transform.position.z - pos.z - InBetweenSpace) / (InBetweenSpace + CellSize); int y = (int) fy;
+
+        return new Vector2Int(x, y);
     }
     public Vector3? BoardToWorldPosition(List<Vector2Int> poss)
     {
@@ -201,17 +231,11 @@ public class BoardManager : MonoBehaviour
    
     private void Update()
     {
+
         if (Input.GetKeyDown("p")) { Print(); }
 
         if (Input.GetKeyDown("b")) { Build(); }
 
-        if (Input.GetKeyDown("m")) 
-        {
-            Debug.Log("MOVED THE UNIT");
-            List<Vector2Int> newPoss = new List<Vector2Int>();
-            foreach (Vector2Int v2 in Get_UnitPositions(TestUnit)) { newPoss.Add(v2 + new Vector2Int(1, 0)); }
-            StartCoroutine( MoveUnit(TestUnit, newPoss) ); 
-        }
 
         foreach (Column c in Board) { foreach (Cell cc in c.Cells) { Debug.DrawRay(cc.Position, Vector3.up, Color.red); } }
     }

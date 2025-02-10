@@ -27,7 +27,7 @@ public class Action_PlayerCreate : MonoBehaviour
         //Create a unit as an object, it's not on the board yet, so it should be hidden
         Unit unit =
             Instantiate(Object, Vector3.zero, Quaternion.identity).GetComponent<Unit>();
-
+        List<Unit> unitList = new List<Unit>(); unitList.Add(unit);
 
 
         //Add a listener what executes after players selects a position and returns it
@@ -43,6 +43,7 @@ public class Action_PlayerCreate : MonoBehaviour
         SelectPosition.Instance.ESendPositionBack.AddListener(StartAwaiting_ListOfPositions);
 
         //Start the action to select a position
+        GameManager.Instance.ShowPlacementEvent.Invoke(unitList);
         GameManager.Instance.I_PositionSelect = SelectPosition.Instance.Selecting(unit);
         yield return StartCoroutine(GameManager.Instance.I_PositionSelect);
         GameManager.Instance.I_PositionSelect = null;
@@ -51,6 +52,7 @@ public class Action_PlayerCreate : MonoBehaviour
         while (isAwaitingData) { yield return new WaitForSeconds(0.1f); }
 
         //Place a unit on said selected position
+        GameManager.Instance.HidePlacementEvent.Invoke(unitList);
         yield return StartCoroutine(BoardManager.Instance.PlaceUnit(unit, positions));
 
         yield return new WaitForSeconds(0.001f);

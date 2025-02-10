@@ -38,14 +38,16 @@ public class Action_PlayerSpawn : MonoBehaviour
             SelectPosition.Instance.ESendPositionBack.RemoveListener(StartAwaiting_ListOfPositions);
         }
 
-        //Add a listener what executes after players selects a position and returns it
-        SelectPosition.Instance.ESendPositionBack.AddListener(StartAwaiting_ListOfPositions);
-
         //Start the action to select a position
+        List<Unit> unitList = new List<Unit>(); unitList.Add(unit);
+        GameManager.Instance.ShowPlacementEvent.Invoke(unitList);
+        SelectPosition.Instance.ESendPositionBack.AddListener(StartAwaiting_ListOfPositions); //Add a listener what executes after players
+                                                                                              //selects a position and returns it
         yield return StartCoroutine(SelectPosition.Instance.Selecting(unit));
 
-        //Waiting until we have the data
+        //Waiting until we have the data, then hide the effects
         while (Is_AwaitingData) { Debug.Log("Awaiting data"); yield return new WaitForSeconds(0.1f); }
+        GameManager.Instance.HidePlacementEvent.Invoke(unitList);
 
         //Place a unit on said selected position
         foreach (Vector2Int vv in v)
