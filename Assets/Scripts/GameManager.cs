@@ -187,7 +187,7 @@ public class GameManager : MonoBehaviour
                                 break;
                             }
                             
-                            Debug.Log("     " + (unitP.x + x) + " " + (unitP.y + y) + " cur unit - " + BoardManager.Instance.Board[unitP.x + x].Cells[unitP.y + y].CurUnit);
+                            //Debug.Log("     " + (unitP.x + x) + " " + (unitP.y + y) + " cur unit - " + BoardManager.Instance.Board[unitP.x + x].Cells[unitP.y + y].CurUnit);
                             lineS += line.Positions[i] + unitP + " ";
                             iPositions.Add(line.Positions[i] + unitP);                          
                         }
@@ -268,7 +268,7 @@ public class GameManager : MonoBehaviour
         yield return new WaitForSeconds(0.001f); //For some reason this is vital, otherwise Unity shits itself trying to assign and end a Coroutine at the same time 
 
         //If we are currently selecting a position for something - a1)   b1) work normally
-        if (I_PositionSelect != null)
+        if (CurrentAction.Type == ActionType.PlayerCreate && Action_PlayerCreate.Instance.IsWaitingForData)
         { //a1
             Debug.Log(CurrentAction.Type);  //<- Important note, current action is stored in a separate field, not in the queue
             List<Vector2Int> nCoords = new List<Vector2Int>(); nCoords.Add(coords);

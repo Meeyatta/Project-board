@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -30,7 +31,7 @@ public class BoardManager : MonoBehaviour
     public List<Column> Board;
     
     public static BoardManager Instance;
-
+    List<Vector2Int> lastPres = new List<Vector2Int> { new Vector2Int(-90,-90) };
     #region Events 
     public UnityEvent<Vector2Int> ClickEvent;
     void Start()
@@ -120,11 +121,16 @@ public class BoardManager : MonoBehaviour
         Physics.Raycast(Camera.main.transform.position, cPos, out hit, CellMask);
 
         Vector2Int lastCell;
-        if (hit.transform != null)
+        if (hit.transform != null && hit.transform.tag == "Cell")
         {
             res.Add(WorldToBoardPosition(hit.transform.gameObject.transform.position));
         }
+        else
+        {
+            res = lastPres;
+        }
 
+        lastPres = res;
         return res;
     }
 

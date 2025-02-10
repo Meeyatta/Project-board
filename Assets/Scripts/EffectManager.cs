@@ -97,7 +97,9 @@ public class EffectManager : MonoBehaviour
                 List<Vector2Int> v2 = BoardManager.Instance.CursorToCellPosition();
                 for (int i = 1; i < u.Size.Positions.Count; i++) { v2.Add(u.Size.Positions[i]); }
 
-                Vector3 curPos = BoardManager.Instance.BoardToWorldPosition(v2).Value;
+                //Safeguard in case the position is actually null
+                Vector3 curPos = new Vector3(-90, -90, -90);
+                if (BoardManager.Instance.CursorToCellPosition()[0].x > -50) { curPos = BoardManager.Instance.BoardToWorldPosition(v2).Value; }
 
                 List<GameObject> list = new List<GameObject>();
                 foreach (var v in v2)
@@ -133,12 +135,14 @@ public class EffectManager : MonoBehaviour
                     List<Vector2Int> posP = new List<Vector2Int>();
                     if (BoardManager.Instance.CursorToCellPosition().Count <= 0) { continue; }
                     posP.Add(BoardManager.Instance.CursorToCellPosition()[0] + v.Key.Size.Positions[i]);
-                    v.Value[i].transform.position = BoardManager.Instance.BoardToWorldPosition(posP).Value;
+
+                    //Safeguard in case the position is actually null
+                    if (BoardManager.Instance.CursorToCellPosition()[0].x < -50) { v.Value[i].transform.position = new Vector3(-90, -90, -90); }
+                    else { v.Value[i].transform.position = BoardManager.Instance.BoardToWorldPosition(posP).Value; }
                 }
                 yield return new WaitForSeconds(0.01f);
             }
 
-            Debug.Log("Stopped showing placement");
         }
     }
     void ShowMovement(List<Unit> units)
