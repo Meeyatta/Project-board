@@ -162,6 +162,23 @@ public class BoardManager : MonoBehaviour
         return newP;
 
     }
+
+    //Places unit onto cells under the positions (So doesn't change the position the unit is currently occupying)
+    public IEnumerator PlaceUnit(Unit unit, List<Vector2Int> newPos)
+    {
+        foreach (Vector2Int v in newPos)
+        {
+            Board[v.x].Cells[v.y].CurUnit = unit;
+        }
+        //Debug.Log("First position: " + Board[newPos[0].x].Cells[newPos[0].y].Position);
+        //Debug.Log("Average position: " + BoardToWorldPosition(newPos));
+
+        unit.gameObject.transform.localPosition = Board[newPos[0].x].Cells[newPos[0].y].Position + unit.ModelOffset;
+
+        yield break;
+    }
+
+    //Moves unit from it's original position to the new one
     public IEnumerator MoveUnit(Unit unit, List<Vector2Int> newPos)
     {
         
@@ -177,14 +194,7 @@ public class BoardManager : MonoBehaviour
             Board[v.x].Cells[v.y].CurUnit = null;
         }
 
-        foreach (Vector2Int v in newPos)
-        {
-            Board[v.x].Cells[v.y].CurUnit = unit;
-        }
-        //Debug.Log("First position: " + Board[newPos[0].x].Cells[newPos[0].y].Position);
-        //Debug.Log("Average position: " + BoardToWorldPosition(newPos));
-
-        unit.gameObject.transform.localPosition = Board[newPos[0].x].Cells[newPos[0].y].Position + unit.ModelOffset;
+        yield return StartCoroutine(PlaceUnit(unit, newPos));
 
         yield break;
     }

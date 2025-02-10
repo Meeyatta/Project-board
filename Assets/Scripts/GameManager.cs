@@ -38,21 +38,23 @@ public class GameManager : MonoBehaviour
             Type = t;
         }
     }
-    
     public GameObject TESTunittocreate;
-    
     public UnityEvent<List<Vector2Int>> ClickBackEvent;
-    public enum ActionType { Attack, KeywordedAttack, Move, ForcedMove, SelectUnit, PlayerSpawn };
+    public enum ActionType { Attack, KeywordedAttack, Move, ForcedMove, SelectUnit, PlayerCreate };
     public Unit CurUnitSelected; //What unit is currently selected, if no unit - should be null
     public static GameManager Instance;
     public Coroutine C_GoingThroughActions;
     public Coroutine C_UnitSelect;
+    public IEnumerator I_PositionSelect;
     public ActionSlot CurrentAction;
     public Queue<ActionSlot> ActionQueue = new Queue<ActionSlot>();
     
     #region Events 
     public UnityEvent<List<Unit>> ShowMovementEvent;
     public UnityEvent<List<Unit>> HideMovementEvent;
+
+    public UnityEvent<List<Unit>> ShowPlacementEvent;
+    public UnityEvent<List<Unit>> HidePlacementEvent;
     void OnEnable()
     {
         
@@ -131,13 +133,14 @@ public class GameManager : MonoBehaviour
                 break;
             #endregion KeywordedAttack(Keywords)
 
-            //Waits for the player to select a position on the board, then spawns a unit on it
-            #region PlayerSpawn(GameObject Object)
-            case ActionType.PlayerSpawn:
-                ActionSlot playerspawn =
-                    new ActionSlot(Action_PlayerSpawn.Instance.PlayerSpawn(Object), ActionType.PlayerSpawn);
+            //Create a specific unit on coordinates present on the board
+            #region PlayerCreate(GameObject Object)
+            case ActionType.PlayerCreate:
+                ActionSlot playercreate = new ActionSlot(Action_PlayerCreate.Instance.PlayerCreate(Object), ActionType.PlayerCreate);
+                ActionQueue.Enqueue(playercreate);
+
                 break;
-            #endregion PlayerSpawn(GameObject Object)
+            #endregion Create(GameObject Object, Vector2Int CellsCoordinates)
 
             //Means I forgot to make an action for this type
             #region Default(...)
@@ -148,7 +151,7 @@ public class GameManager : MonoBehaviour
         }
         yield return null;
     }
-    
+
         IEnumerator ForcedMove(Unit ActionTargetUnit, List<Vector2Int> CellsCoordinates)
         {
             if (ActionTargetUnit == null || CellsCoordinates.Count == 0) Debug.LogError("INVALID ACTION PARAMETERS - MOVE(ActionTargetUnit, CellCoordinates)");
@@ -265,8 +268,9 @@ public class GameManager : MonoBehaviour
         yield return new WaitForSeconds(0.001f); //For some reason this is vital, otherwise Unity shits itself trying to assign and end a Coroutine at the same time 
 
         //If we are currently selecting a position for something - a1)   b1) work normally
-        if (CurrentAction != null && SelectPosition.Instance.IsAwaitingAClickBack)
+        if (I_PositionSelect != null)
         { //a1
+            Debug.Log(CurrentAction.Type);  //<- Important note, current action is stored in a separate field, not in the queue
             List<Vector2Int> nCoords = new List<Vector2Int>(); nCoords.Add(coords);
             ClickBackEvent.Invoke(nCoords);
         }
@@ -336,12 +340,12 @@ public class GameManager : MonoBehaviour
     }
     private void Update()
     {
-        
+        Debug.Log(I_PositionSelect);
 
         if (Input.GetKeyDown("c")) 
         {
             Debug.Log("Placing a unit"); 
-            StartCoroutine(Action(ActionType.PlayerSpawn, null, null, null, TESTunittocreate));
+            StartCoroutine(Action(ActionType.PlayerCreate, null, null, null, TESTunittocreate));
         }
 
         if (Input.GetKeyDown("q"))

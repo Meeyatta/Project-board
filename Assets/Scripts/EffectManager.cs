@@ -27,13 +27,17 @@ public class EffectManager : MonoBehaviour
     [System.Serializable]
     public class Pool
     {
-        public string Tag;
+        public Tag Tag;
         public GameObject Prefab;
         public int Size;
         public Transform Parent;
     }
+    public enum Tag { Movement, Placement };
     public List<Pool> Pools = new List<Pool>();
-    public Dictionary<string, Queue<GameObject>> CurrentPools = new Dictionary<string, Queue<GameObject>>();
+    public Dictionary<Tag, Queue<GameObject>> CurrentPools = new Dictionary<Tag, Queue<GameObject>>();
+
+    //Placement specific
+    Coroutine CurPlacement;
 
      
     void Start()
@@ -43,6 +47,9 @@ public class EffectManager : MonoBehaviour
         #region EventsAdd
         GameManager.Instance.ShowMovementEvent.AddListener(ShowMovement);
         GameManager.Instance.HideMovementEvent.AddListener(HideMovement);
+
+        GameManager.Instance.ShowPlacementEvent.AddListener(StartShowingPlacement);
+        GameManager.Instance.HidePlacementEvent.AddListener(StopShowingPlacement);
         #endregion EventsAdd
         foreach (Pool p in Pools)
         {
@@ -79,7 +86,32 @@ public class EffectManager : MonoBehaviour
     {
         Singleton();
     }
+    void StartShowingPlacement(List<Unit> units)
+    {
+        if (CurPlacement == null)
+        {
+            CurPlacement = StartCoroutine(ShowingPlacement(units));
+        }
+    }
+    void StopShowingPlacement(List<Unit> units)
+    {
+        StopCoroutine(CurPlacement);
+        CurPlacement = null;
+    }
+    IEnumerator ShowingPlacement(List<Unit> units)
+    {
+        while (CurPlacement != null)
+        {
 
+            //TODO: Adda function what dynamically converts player cursor position to board cell position and uses it to set the position of the effect
+            foreach (Unit u in units)
+            {
+                //TODO: Place an effect to an according position
+            }
+
+            yield return new WaitForSeconds(0.01f);
+        }
+    }
     void ShowMovement(List<Unit> units)
     {
         foreach (Unit u in units)
@@ -90,7 +122,7 @@ public class EffectManager : MonoBehaviour
                 foreach (var v in vv)
                 {
                     List<Vector2Int> single = new List<Vector2Int>(); single.Add(v);
-                    GameObject overlay = InstantiateFromPool("Movement", BoardManager.Instance.BoardToWorldPosition(single).Value, Quaternion.identity);
+                    GameObject overlay = InstantiateFromPool(Tag.Movement, BoardManager.Instance.BoardToWorldPosition(single).Value, Quaternion.identity);
                     ePu.Add(overlay);
                 }                         
             }
@@ -111,9 +143,9 @@ public class EffectManager : MonoBehaviour
             UnitEffectsToHide.Remove(u);
         }
     }
-    public GameObject InstantiateFromPool(string tag, Vector3 position, Quaternion rotation) 
+    public GameObject InstantiateFromPool(Tag tag, Vector3 position, Quaternion rotation) 
     {
-        if (!CurrentPools.ContainsKey(tag)) { Debug.LogWarning("No tag in pools named " + tag); return null; }
+        if (!CurrentPools.ContainsKey(Tag.Movement)) { Debug.LogWarning("No tag in pools named " + tag); return null; }
 
         GameObject obj = CurrentPools[tag].Dequeue();
 
