@@ -348,11 +348,7 @@ public class GameManager : MonoBehaviour
     private void Update()
     {
 
-        if (Input.GetKeyDown("c")) 
-        {
-            ActionParameters parameters = new ActionParameters(ActionType.PlayerCreate, null, null, null, TESTunittocreate);
-            StartCoroutine(Action(parameters));
-        }
+
 
         if (Input.GetKeyDown("q"))
         {
