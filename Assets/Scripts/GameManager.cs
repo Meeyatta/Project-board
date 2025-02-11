@@ -82,17 +82,21 @@ public class GameManager : MonoBehaviour
         Singleton();
     }
 
+    public void ActionWrapper(ActionParameters parameters)
+    {
+        StartCoroutine( Action(parameters) );
+    }
     //Can be called by a variety of things to initiate a variety of actions. PLEASE REMEMBER TO PUT IN BRACKETS WHAT INFO IS NEEDED TO DO THE ACTION
         /*TODO : Separate this function into several smaller ones with different required parameters, since currently the function has a lot of parametres used only by a singluar type of action,
         which is messy and needs a bunch of null statements */
-    public IEnumerator Action(ActionType type, List<Unit> ActionTargetUnits, List<Unit.Keyword> keywords,  List<Vector2Int> CellsCoordinates, GameObject Object)
+    public IEnumerator Action(ActionParameters parameters)
     {
-        switch (type)
+        switch (parameters.Type)
         {
             //Move the unit to the coordinates if it can move there with it's moveset, Requires: (ActionTargetUnit, CellsCoordinates)
             #region Move(ActionTargetUnits, CellsCoordinates)
             case ActionType.Move:
-                ActionSlot move = new ActionSlot(Action_Move.Instance.Move(ActionTargetUnits[0], CellsCoordinates), ActionType.Move);
+                ActionSlot move = new ActionSlot(Action_Move.Instance.Move(parameters.ActionTargetUnits[0], parameters.CellsCoordinates), ActionType.Move);
                 ActionQueue.Enqueue(move);             
                 break;
             #endregion Move(ActionTargetUnits, CellsCoordinates)
@@ -101,7 +105,7 @@ public class GameManager : MonoBehaviour
             //  This one should be called with StartCoroutine instead of yield return, because unit can be selected while other actions are done
             #region Select(CellsCoordinates)
             case ActionType.SelectUnit:
-                C_UnitSelect = StartCoroutine( Action_SelectUnit.Instance.Select(CellsCoordinates) );
+                C_UnitSelect = StartCoroutine( Action_SelectUnit.Instance.Select(parameters.CellsCoordinates) );
                 break;
             #endregion Select(CellCoordinates)
 
@@ -109,7 +113,7 @@ public class GameManager : MonoBehaviour
             //TODO: Separate into a unique script, currently the corotuine in inside GameManager
             #region ForcedMove(ActionTargetUnits, CellsCoordinates)
             case ActionType.ForcedMove:
-                ActionSlot forcedmove = new ActionSlot(ForcedMove(ActionTargetUnits[0], CellsCoordinates), ActionType.ForcedMove);
+                ActionSlot forcedmove = new ActionSlot(ForcedMove(parameters.ActionTargetUnits[0], parameters.CellsCoordinates), ActionType.ForcedMove);
                 ActionQueue.Enqueue(forcedmove);
                 break;
             #endregion ForcedMove(ActionTargetUnits, CellsCoordinates)
@@ -117,7 +121,7 @@ public class GameManager : MonoBehaviour
             //Make a target unit initiate an attack on all units in it's attack zone
             #region Attack(ActionTargetUnits)
             case ActionType.Attack:
-                ActionSlot attack = new ActionSlot(Action_Attack.Instance.Attack(ActionTargetUnits), ActionType.Attack);
+                ActionSlot attack = new ActionSlot(Action_Attack.Instance.Attack(parameters.ActionTargetUnits), ActionType.Attack);
                 ActionQueue.Enqueue(attack);
                 break;
             #endregion Attack(ActionTargetUnits)
@@ -127,7 +131,7 @@ public class GameManager : MonoBehaviour
             case ActionType.KeywordedAttack:
                 ActionSlot keywordedattack = 
                     new ActionSlot(Action_Attack.Instance.Attack(
-                        GroupUnitsByKeywords(BoardManager.Instance.Get_AllUnitsOnBoard(), keywords)), ActionType.KeywordedAttack);
+                        GroupUnitsByKeywords(BoardManager.Instance.Get_AllUnitsOnBoard(), parameters.Keywords)), ActionType.KeywordedAttack);
 
                 ActionQueue.Enqueue(keywordedattack);
                 break;
@@ -136,7 +140,7 @@ public class GameManager : MonoBehaviour
             //Create a specific unit on coordinates present on the board
             #region PlayerCreate(GameObject Object)
             case ActionType.PlayerCreate:
-                ActionSlot playercreate = new ActionSlot(Action_PlayerCreate.Instance.PlayerCreate(Object), ActionType.PlayerCreate);
+                ActionSlot playercreate = new ActionSlot(Action_PlayerCreate.Instance.PlayerCreate(parameters.Object), ActionType.PlayerCreate);
                 ActionQueue.Enqueue(playercreate);
 
                 break;
@@ -152,7 +156,7 @@ public class GameManager : MonoBehaviour
         yield return null;
     }
 
-        IEnumerator ForcedMove(Unit ActionTargetUnit, List<Vector2Int> CellsCoordinates)
+    IEnumerator ForcedMove(Unit ActionTargetUnit, List<Vector2Int> CellsCoordinates)
         {
             if (ActionTargetUnit == null || CellsCoordinates.Count == 0) Debug.LogError("INVALID ACTION PARAMETERS - MOVE(ActionTargetUnit, CellCoordinates)");
 
@@ -283,7 +287,9 @@ public class GameManager : MonoBehaviour
                 List<Vector2Int> nCoords = new List<Vector2Int>(); nCoords.Add(coords);
 
                 List<Unit> unitToList = new List<Unit>(); unitToList.Add(CurUnitSelected);
-                yield return StartCoroutine(Action(ActionType.Move, unitToList, null, nCoords, null));
+
+                ActionParameters parameters = new ActionParameters(ActionType.Move, unitToList, null, nCoords, null);
+                yield return StartCoroutine(Action(parameters));
                 CurUnitSelected = null;
 
             }
@@ -296,7 +302,8 @@ public class GameManager : MonoBehaviour
                     //If the selected unit is a player unit - aa) select it, otherwise - bb) TODO:
                     if (BoardManager.Instance.Board[coords.x].Cells[coords.y].CurUnit.Keywords.Contains(Unit.Keyword.Player))
                     { //aa)
-                        yield return StartCoroutine(Action(ActionType.SelectUnit, null, null, nCoords, null));
+                        ActionParameters parameters = new ActionParameters(ActionType.SelectUnit, null, null, nCoords, null);
+                        yield return StartCoroutine(Action(parameters));
                     }
                     else
                     {
@@ -342,8 +349,9 @@ public class GameManager : MonoBehaviour
     {
 
         if (Input.GetKeyDown("c")) 
-        { 
-            StartCoroutine(Action(ActionType.PlayerCreate, null, null, null, TESTunittocreate));
+        {
+            ActionParameters parameters = new ActionParameters(ActionType.PlayerCreate, null, null, null, TESTunittocreate);
+            StartCoroutine(Action(parameters));
         }
 
         if (Input.GetKeyDown("q"))
@@ -356,7 +364,9 @@ public class GameManager : MonoBehaviour
         {
             Debug.Log("PRESSED THE ATTACK BUTTON");
             List<Unit.Keyword> k = new List<Unit.Keyword>();k.Add(Unit.Keyword.Player);
-            StartCoroutine(Action(ActionType.KeywordedAttack, null, k, null, null));
+
+            ActionParameters parameters = new ActionParameters(ActionType.KeywordedAttack, null, k, null, null);
+            StartCoroutine(Action(parameters));
         }
     }
 }
