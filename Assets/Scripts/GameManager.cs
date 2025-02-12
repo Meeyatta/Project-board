@@ -272,10 +272,10 @@ public class GameManager : MonoBehaviour
         yield return new WaitForSeconds(0.001f); //For some reason this is vital, otherwise Unity shits itself trying to assign and end a Coroutine at the same time 
 
         //If we are currently selecting a position for something - a1)   b1) work normally
-        if (CurrentAction.Type == ActionType.PlayerCreate && Action_PlayerCreate.Instance.IsWaitingForData)
+        if (CurrentAction != null && CurrentAction.Type == ActionType.PlayerCreate && Action_PlayerCreate.Instance.IsWaitingForData)
         { //a1
             Debug.Log(CurrentAction.Type);  //<- Important note, current action is stored in a separate field, not in the queue
-            List<Vector2Int> nCoords = new List<Vector2Int>(); nCoords.Add(coords);
+            List<Vector2Int> nCoords = new List<Vector2Int>() { coords };
             ClickBackEvent.Invoke(nCoords);
         }
         else

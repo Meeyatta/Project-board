@@ -52,9 +52,26 @@ public class Action_PlayerCreate : MonoBehaviour
         //Waiting until we have the data
         while (IsWaitingForData) { yield return new WaitForSeconds(0.1f); }
 
-        //Place a unit on said selected position
+        //Check if can place a unit there
+
+        bool ViablePos = true;
+        foreach (var v in positions) 
+        {
+            if (!BoardManager.Instance.IsInBounds(v)) { ViablePos = false; break; }
+
+            if (BoardManager.Instance.Board[v.x].Cells[v.y].CurUnit != null) { ViablePos = false; break; }
+        }
+
+        //Place a unit on said selected positions if they are viable
         GameManager.Instance.HidePlacementEvent.Invoke(unitList);
-        yield return StartCoroutine(BoardManager.Instance.PlaceUnit(unit, positions));
+        if (ViablePos) 
+        {
+            yield return StartCoroutine(BoardManager.Instance.PlaceUnit(unit, positions));
+        }
+        else
+        {
+            Debug.Log("Non viable position");
+        }
 
         yield return new WaitForSeconds(0.001f);
     }

@@ -188,6 +188,8 @@ public class BoardManager : MonoBehaviour
         {
             if (!IsInBounds(v)) return null;
 
+            Debug.Log("newP " + v);
+
             newP.x += Board[v.x].Cells[v.y].Position.x;
             newP.y += Board[v.x].Cells[v.y].Position.y;
             newP.z += Board[v.x].Cells[v.y].Position.z;
@@ -246,9 +248,9 @@ public class BoardManager : MonoBehaviour
         foreach (Column c in Board) { foreach (Cell cc in c.Cells) { Debug.DrawRay(cc.Position, Vector3.up, Color.red); } }
     }
     public bool IsInBounds(Vector2Int v)
-    {
+    {      
         if (v.x < 0 || v.x >= Board.Count) { return false; }
-        if (v.y < 0 || v.x >= Board[v.x].Cells.Count) { return false; }
+        if (v.y < 0 || v.y >= Board[v.x].Cells.Count) { return false; }
 
         return true;
     }

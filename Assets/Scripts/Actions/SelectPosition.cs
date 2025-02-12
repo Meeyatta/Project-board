@@ -34,7 +34,7 @@ public class SelectPosition : MonoBehaviour
         {
             for (int i = 0; i < CurUnit.Size.Positions.Count; i++)
             {
-                nv.Add(v[i] + CurUnit.Size.Positions[i]);
+                nv.Add(v[0] + CurUnit.Size.Positions[i]);
                 //Debug.Log("Will send " + (v[i] + CurUnit.Size.Positions[i]) + " back to GameManager");
             }
         }

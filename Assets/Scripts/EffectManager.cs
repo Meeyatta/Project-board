@@ -104,7 +104,7 @@ public class EffectManager : MonoBehaviour
                 List<GameObject> list = new List<GameObject>();
                 foreach (var v in v2)
                 {
-                    list.Add(InstantiateFromPool(Tag.Placement, curPos, Quaternion.identity));
+                    list.Add(InstantiateFromPool(Tag.Placement, curPos, Quaternion.identity));                
                 }
                 if (!PlacementEffectsToHide.ContainsKey(u)) { PlacementEffectsToHide.Add(u, list); }
             }
@@ -130,6 +130,19 @@ public class EffectManager : MonoBehaviour
         {
             foreach (var v in PlacementEffectsToHide)
             {
+                bool allApplicable = true;
+                for (int i = 0; i < v.Key.Size.Positions.Count; i++)
+                {
+                    Vector2Int totalPos = BoardManager.Instance.CursorToCellPosition()[0] + v.Key.Size.Positions[i];
+
+                    if (!BoardManager.Instance.IsInBounds(totalPos))
+                    {
+                        allApplicable = false; 
+                        break;  
+                    }
+                    //if (BoardManager.Instance.Board[totalPos.x].Cells[totalPos.y].CurUnit != null) { allApplicable = false; break; }
+                }
+
                 for (int i = 0; i < v.Key.Size.Positions.Count; i++)
                 {
                     List<Vector2Int> posP = new List<Vector2Int>();
@@ -137,8 +150,13 @@ public class EffectManager : MonoBehaviour
                     posP.Add(BoardManager.Instance.CursorToCellPosition()[0] + v.Key.Size.Positions[i]);
 
                     //Safeguard in case the position is actually null
-                    if (BoardManager.Instance.CursorToCellPosition()[0].x < -50) { v.Value[i].transform.position = new Vector3(-90, -90, -90); }
-                    else { v.Value[i].transform.position = BoardManager.Instance.BoardToWorldPosition(posP).Value; }
+                    if (BoardManager.Instance.CursorToCellPosition()[0].x < -50) 
+                    { v.Value[i].transform.position = new Vector3(-90, -90, -90); }
+
+                    if (allApplicable) { v.Value[i].transform.position = BoardManager.Instance.BoardToWorldPosition(posP).Value; }
+                    else { /* TODO: Make it so the color of the placement changes if it is not applicable */
+                        Debug.Log("Pos " + v.Key.Size.Positions[i] + " is not applicable");
+                    }
                 }
                 yield return new WaitForSeconds(0.01f);
             }
