@@ -39,7 +39,7 @@ public class GameManager : MonoBehaviour
         }
     }
     public GameObject TESTunittocreate;
-    public UnityEvent<List<Vector2Int>> ClickBackEvent;
+    public UnityEvent<Vector2Int> ClickBackEvent;
     public enum ActionType { Attack, KeywordedAttack, Move, ForcedMove, SelectUnit, PlayerCreate };
     public Unit CurUnitSelected; //What unit is currently selected, if no unit - should be null
     public static GameManager Instance;
@@ -96,7 +96,7 @@ public class GameManager : MonoBehaviour
             //Move the unit to the coordinates if it can move there with it's moveset, Requires: (ActionTargetUnit, CellsCoordinates)
             #region Move(ActionTargetUnits, CellsCoordinates)
             case ActionType.Move:
-                ActionSlot move = new ActionSlot(Action_Move.Instance.Move(parameters.ActionTargetUnits[0], parameters.CellsCoordinates), ActionType.Move);
+                ActionSlot move = new ActionSlot(Action_Move.Move(parameters.ActionTargetUnits[0], parameters.CellsCoordinates), ActionType.Move);
                 ActionQueue.Enqueue(move);             
                 break;
             #endregion Move(ActionTargetUnits, CellsCoordinates)
@@ -275,8 +275,7 @@ public class GameManager : MonoBehaviour
         if (CurrentAction != null && CurrentAction.Type == ActionType.PlayerCreate && Action_PlayerCreate.Instance.IsWaitingForData)
         { //a1
             Debug.Log(CurrentAction.Type);  //<- Important note, current action is stored in a separate field, not in the queue
-            List<Vector2Int> nCoords = new List<Vector2Int>() { coords };
-            ClickBackEvent.Invoke(nCoords);
+            ClickBackEvent.Invoke(coords);
         }
         else
         { //b1

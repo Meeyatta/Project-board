@@ -94,12 +94,11 @@ public class EffectManager : MonoBehaviour
         {
             foreach (Unit u in units)
             {
-                List<Vector2Int> v2 = BoardManager.Instance.CursorToCellPosition();
-                for (int i = 1; i < u.Size.Positions.Count; i++) { v2.Add(u.Size.Positions[i]); }
+                List<Vector2Int> v2 = BoardManager.Instance.SingleCellToFullSize(u);
 
                 //Safeguard in case the position is actually null
                 Vector3 curPos = new Vector3(-90, -90, -90);
-                if (BoardManager.Instance.CursorToCellPosition()[0].x > -50) { curPos = BoardManager.Instance.BoardToWorldPosition(v2).Value; }
+                if (BoardManager.Instance.SingleCellToFullSize(u)[0].x > -50) { curPos = BoardManager.Instance.BoardToWorldPosition(v2).Value; }
 
                 List<GameObject> list = new List<GameObject>();
                 foreach (var v in v2)
@@ -133,30 +132,37 @@ public class EffectManager : MonoBehaviour
                 bool allApplicable = true;
                 for (int i = 0; i < v.Key.Size.Positions.Count; i++)
                 {
-                    Vector2Int totalPos = BoardManager.Instance.CursorToCellPosition()[0] + v.Key.Size.Positions[i];
-
-                    if (!BoardManager.Instance.IsInBounds(totalPos))
+                    Debug.Log("Transformed cursor to board position of " + v.Key.UnitName);
+                    List<Vector2Int> totalPos = BoardManager.Instance.SingleCellToFullSize(v.Key);
+                    foreach (var p in totalPos) 
                     {
-                        allApplicable = false; 
-                        break;  
+                        if (!BoardManager.Instance.IsInBounds(p))
+                        {
+                            allApplicable = false;
+                            break;
+                        }
                     }
+                    
                     //if (BoardManager.Instance.Board[totalPos.x].Cells[totalPos.y].CurUnit != null) { allApplicable = false; break; }
                 }
 
-                for (int i = 0; i < v.Key.Size.Positions.Count; i++)
+                for (int i = 0; i < BoardManager.Instance.SingleCellToFullSize(v.Key).Count; i++)
                 {
-                    List<Vector2Int> posP = new List<Vector2Int>();
-                    if (BoardManager.Instance.CursorToCellPosition().Count <= 0) { continue; }
-                    posP.Add(BoardManager.Instance.CursorToCellPosition()[0] + v.Key.Size.Positions[i]);
+                    List<Vector2Int> sTl = new List<Vector2Int>(); sTl.Add(BoardManager.Instance.SingleCellToFullSize(v.Key)[i]);
+                    v.Value[i].transform.position = BoardManager.Instance.BoardToWorldPosition(sTl).Value;
 
-                    //Safeguard in case the position is actually null
-                    if (BoardManager.Instance.CursorToCellPosition()[0].x < -50) 
-                    { v.Value[i].transform.position = new Vector3(-90, -90, -90); }
+                    //List<Vector2Int> posP = new List<Vector2Int>();
+                    //if (BoardManager.Instance.CursorToCellPosition() == null) { continue; }
+                    //posP.Add(BoardManager.Instance.CursorToCellPosition() + v.Key.Size.Positions[i]);
 
-                    if (allApplicable) { v.Value[i].transform.position = BoardManager.Instance.BoardToWorldPosition(posP).Value; }
-                    else { /* TODO: Make it so the color of the placement changes if it is not applicable */
-                        Debug.Log("Pos " + v.Key.Size.Positions[i] + " is not applicable");
-                    }
+                    ////Safeguard in case the position is actually null
+                    //if (BoardManager.Instance.CursorToCellPosition().x < -50) 
+                    //{ v.Value[i].transform.position = new Vector3(-90, -90, -90); }
+
+                    //if (allApplicable) { v.Value[i].transform.position = BoardManager.Instance.BoardToWorldPosition(BoardManager.Instance.SingleCellToFullSize(v.Key)).Value; }
+                    //else { /* TODO: Make it so the color of the placement changes if it is not applicable */
+                    //    Debug.Log("Pos " + v.Key.Size.Positions[i] + " is not applicable");
+                    //}
                 }
                 yield return new WaitForSeconds(0.01f);
             }

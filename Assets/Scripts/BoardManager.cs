@@ -31,7 +31,7 @@ public class BoardManager : MonoBehaviour
     public List<Column> Board;
     
     public static BoardManager Instance;
-    List<Vector2Int> lastPres = new List<Vector2Int> { new Vector2Int(-90,-90) };
+    Vector2Int lastPres = new Vector2Int(-90, -90);
     #region Events 
     public UnityEvent<Vector2Int> ClickEvent;
     void Start()
@@ -109,9 +109,38 @@ public class BoardManager : MonoBehaviour
             Debug.Log(y + ")" + line);
         }
     }
-    public List<Vector2Int> CursorToCellPosition()
+
+    public List<Vector2Int> SingleCellToFullSize(Unit unit)
     {
-        List<Vector2Int> res = new List<Vector2Int>();
+
+        Vector2Int single = CursorToCellPosition();
+        //Go through each cell
+        for (int i = 0; i < unit.Size.Positions.Count; i++)
+        {
+            //Find positions of other cells relative to this cell
+            List<Vector2Int> relativePoss = new List<Vector2Int>();
+            for (int ii = 0; ii < unit.Size.Positions.Count; ii++)
+            {
+                //Add this positions to form possible coordinates
+                Debug.Log(ii + " - " + (single + unit.Size.Positions[i] - unit.Size.Positions[ii]));
+                relativePoss.Add(single + unit.Size.Positions[i] - unit.Size.Positions[ii]);
+            }
+
+            bool areAll = true;
+            foreach (var pos in relativePoss)
+            {
+                if (!BoardManager.Instance.IsInBounds(pos)) { areAll = false; }
+            }
+
+            //If all of these coordinates are within a border, return  these positions
+            if (areAll) { return relativePoss; }
+        }
+        return null;
+    }
+
+    public Vector2Int CursorToCellPosition()
+    {
+        Vector2Int res = Vector2Int.zero;
 
 
         Vector3 v = Input.mousePosition;
@@ -120,10 +149,9 @@ public class BoardManager : MonoBehaviour
         RaycastHit hit;
         Physics.Raycast(Camera.main.transform.position, cPos, out hit, CellMask);
 
-        Vector2Int lastCell;
         if (hit.transform != null && hit.transform.tag == "Cell")
         {
-            res.Add(WorldToBoardPosition(hit.transform.gameObject.transform.position));
+            res = WorldToBoardPosition(hit.transform.gameObject.transform.position);
         }
         else
         {
@@ -188,7 +216,7 @@ public class BoardManager : MonoBehaviour
         {
             if (!IsInBounds(v)) return null;
 
-            Debug.Log("newP " + v);
+            //Debug.Log("newP " + v);
 
             newP.x += Board[v.x].Cells[v.y].Position.x;
             newP.y += Board[v.x].Cells[v.y].Position.y;

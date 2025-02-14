@@ -4,27 +4,11 @@ using UnityEngine;
 using UnityEngine.Events;
 using System.Linq;
 
-public class Action_Move : MonoBehaviour
+public static class Action_Move 
 {
-    public static Action_Move Instance;
-    void Singleton()
-    {
-        if (Instance != null)
-        {
-            Destroy(this);
-        }
-        else
-        {
-            Instance = this;
-        }
-        DontDestroyOnLoad(this);
-    }
-    private void Awake()
-    {
-        Singleton();
-    }
 
-    public IEnumerator Move(Unit ActionTargetUnit, List<Vector2Int> CellsCoordinates)
+
+    public static IEnumerator Move(Unit ActionTargetUnit, List<Vector2Int> CellsCoordinates)
     {
         if (ActionTargetUnit == null || CellsCoordinates.Count == 0) Debug.LogError("INVALID ACTION PARAMETERS - MOVE(ActionTargetUnit, CellCoordinates)");
 
@@ -44,7 +28,7 @@ public class Action_Move : MonoBehaviour
 
         if (newPoss.Count > 0)
         {
-            yield return StartCoroutine(BoardManager.Instance.MoveUnit(ActionTargetUnit, newPoss));
+            yield return GameManager.Instance.StartCoroutine(BoardManager.Instance.MoveUnit(ActionTargetUnit, newPoss));
         }
 
         yield return new WaitForSeconds(0.001f);

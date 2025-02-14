@@ -2,48 +2,31 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Action_PlayerSpawn : MonoBehaviour
+public static class Action_PlayerSpawn 
 {
-    public static Action_PlayerSpawn Instance;
-    void Singleton()
-    {
-        if (Instance != null)
-        {
-            Destroy(this);
-        }
-        else
-        {
-            Instance = this;
-        }
-        DontDestroyOnLoad(this);
-    }
-    private void Awake()
-    {
-        Singleton();
-    }
 
-    public IEnumerator PlayerSpawn(GameObject Object)
+    public static IEnumerator PlayerSpawn(GameObject obj)
     {
         //Create a unit as an object, it's not on the board yet, so it should be hidden
         Unit unit =
-            Instantiate(Object, Vector3.zero, Quaternion.identity).GetComponent<Unit>();
+            Object.Instantiate(obj, Vector3.zero, Quaternion.identity).GetComponent<Unit>();
 
         //Make it so we can receive a list of positions and save it
         bool Is_AwaitingData = true;
         List<Vector2Int> v = new List<Vector2Int>();
-        void StartAwaiting_ListOfPositions(List<Vector2Int> v2)
+        void GetListOfPositions(List<Vector2Int> v2)
         {
             Is_AwaitingData = false;
             v = v2;
-            SelectPosition.Instance.ESendPositionBack.RemoveListener(StartAwaiting_ListOfPositions);
+            SelectPosition.Instance.ESendPositionBack.RemoveListener(GetListOfPositions);
         }
 
         //Start the action to select a position
         List<Unit> unitList = new List<Unit>(); unitList.Add(unit);
         GameManager.Instance.ShowPlacementEvent.Invoke(unitList);
-        SelectPosition.Instance.ESendPositionBack.AddListener(StartAwaiting_ListOfPositions); //Add a listener what executes after players
+        SelectPosition.Instance.ESendPositionBack.AddListener(GetListOfPositions); //Add a listener what executes after players
                                                                                               //selects a position and returns it
-        yield return StartCoroutine(SelectPosition.Instance.Selecting(unit));
+        yield return GameManager.Instance.StartCoroutine(SelectPosition.Instance.Selecting(unit));
 
         //Waiting until we have the data, then hide the effects
         while (Is_AwaitingData) { Debug.Log("Awaiting data"); yield return new WaitForSeconds(0.1f); }

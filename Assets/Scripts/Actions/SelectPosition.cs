@@ -25,24 +25,25 @@ public class SelectPosition : MonoBehaviour
     {
         Singleton();
     }
-    void StopWaiting(List<Vector2Int> v)
-    {
-        List<Vector2Int> nv = new List<Vector2Int>();
-        IsAwaitingAClickBack = false;
 
-        if (v.Count == 1 && CurUnit != null) 
-        {
-            for (int i = 0; i < CurUnit.Size.Positions.Count; i++)
-            {
-                nv.Add(v[0] + CurUnit.Size.Positions[i]);
-                //Debug.Log("Will send " + (v[i] + CurUnit.Size.Positions[i]) + " back to GameManager");
-            }
-        }
-
-        ESendPositionBack.Invoke(nv);
-    }
     public IEnumerator Selecting(Unit unit)
     {
+        void StopWaiting(Vector2Int v)
+        {
+            List<Vector2Int> nv = new List<Vector2Int>();
+            IsAwaitingAClickBack = false;
+
+            if (CurUnit != null)
+            {
+                for (int i = 0; i < CurUnit.Size.Positions.Count; i++)
+                {
+                    nv.Add(v + CurUnit.Size.Positions[i]);
+                    //Debug.Log("Will send " + (v[i] + CurUnit.Size.Positions[i]) + " back to GameManager");
+                }
+            }
+
+            ESendPositionBack.Invoke(nv);
+        }
         GameManager.Instance.ClickBackEvent.AddListener(StopWaiting);
         CurUnit = unit;
 
