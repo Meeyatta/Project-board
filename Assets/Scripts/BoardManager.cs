@@ -110,7 +110,7 @@ public class BoardManager : MonoBehaviour
         }
     }
 
-    public List<Vector2Int> SingleCellToFullSize(Unit unit)
+    public List<Vector2Int> ClosestUnitPosToCursor(Unit unit)
     {
 
         Vector2Int single = CursorToCellPosition();
@@ -122,7 +122,7 @@ public class BoardManager : MonoBehaviour
             for (int ii = 0; ii < unit.Size.Positions.Count; ii++)
             {
                 //Add this positions to form possible coordinates
-                Debug.Log(ii + " - " + (single + unit.Size.Positions[i] - unit.Size.Positions[ii]));
+                //Debug.Log(ii + " - " + (single + unit.Size.Positions[i] - unit.Size.Positions[ii]));
                 relativePoss.Add(single + unit.Size.Positions[i] - unit.Size.Positions[ii]);
             }
 
@@ -149,9 +149,18 @@ public class BoardManager : MonoBehaviour
         RaycastHit hit;
         Physics.Raycast(Camera.main.transform.position, cPos, out hit, CellMask);
 
-        if (hit.transform != null && hit.transform.tag == "Cell")
+        if (hit.transform != null)
         {
-            res = WorldToBoardPosition(hit.transform.gameObject.transform.position);
+            if (hit.transform.tag == "Cell")
+            {
+                res = WorldToBoardPosition(hit.transform.gameObject.transform.position);
+            }
+            else
+            {
+                //Debug.Log("Cursor is not on a board " + hit.transform.position);
+                //Debug.DrawLine(Camera.main.transform.position, cPos, Color.red);
+                res = CellClosestToCursor(hit.point);
+            }
         }
         else
         {
@@ -161,7 +170,18 @@ public class BoardManager : MonoBehaviour
         lastPres = res;
         return res;
     }
+    Vector2Int CellClosestToCursor(Vector3 hitPosition)
+    {
+        Vector2Int res = new Vector2Int(0, 0);
+        float minDist = Mathf.Infinity;
+        for (int x = 0; x < Board.Count; x++) { for (int y = 0; y < Board[x].Cells.Count; y++) 
+            { 
+                if (Board[x].Cells[y].CurUnit != null) { continue; }
+                if (Vector3.Distance(Board[x].Cells[y].Position, hitPosition) < minDist) { minDist = Vector3.Distance(Board[x].Cells[y].Position, hitPosition); res = new Vector2Int(x, y); }
+        } }
 
+        return res;
+    }
     public List<Unit> Get_AllUnitsOnBoard()
     {
         List<Unit> units = new List<Unit>();
@@ -212,6 +232,7 @@ public class BoardManager : MonoBehaviour
     {
 
         Vector3 newP = Vector3.zero;
+        if (poss.Count <= 0) { return newP; }
         foreach (Vector2Int v in poss)
         {
             if (!IsInBounds(v)) return null;

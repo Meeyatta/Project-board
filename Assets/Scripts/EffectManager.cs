@@ -94,18 +94,36 @@ public class EffectManager : MonoBehaviour
         {
             foreach (Unit u in units)
             {
-                List<Vector2Int> v2 = BoardManager.Instance.SingleCellToFullSize(u);
 
-                //Safeguard in case the position is actually null
-                Vector3 curPos = new Vector3(-90, -90, -90);
-                if (BoardManager.Instance.SingleCellToFullSize(u)[0].x > -50) { curPos = BoardManager.Instance.BoardToWorldPosition(v2).Value; }
+                List<Vector2Int> v2 = new List<Vector2Int>();
+                v2 = BoardManager.Instance.ClosestUnitPosToCursor(u);
 
-                List<GameObject> list = new List<GameObject>();
-                foreach (var v in v2)
+                //Works if the cursor is inside a board
+                if (v2 != null && v2.Count > 0)
                 {
-                    list.Add(InstantiateFromPool(Tag.Placement, curPos, Quaternion.identity));                
+                    //Safeguard in case the position is actually null
+                    Vector3 curPos = new Vector3(-90, -90, -90);
+                    curPos = BoardManager.Instance.BoardToWorldPosition(v2).Value;
+
+                    List<GameObject> list = new List<GameObject>();
+                    foreach (var v in v2)
+                    {
+                        list.Add(InstantiateFromPool(Tag.Placement, curPos, Quaternion.identity));
+                    }
+
+                    if (!PlacementEffectsToHide.ContainsKey(u)) { PlacementEffectsToHide.Add(u, list); }
                 }
-                if (!PlacementEffectsToHide.ContainsKey(u)) { PlacementEffectsToHide.Add(u, list); }
+                //If the cursor is outside of the board, spawn them, but do it really far away
+                else
+                {
+                    List<GameObject> list = new List<GameObject>();
+                    for (int i = 0; i < u.Size.Positions.Count; i++)
+                    {
+                        list.Add(InstantiateFromPool(Tag.Placement, new Vector3(-99,-99,-99), Quaternion.identity));
+                    }
+                    if (!PlacementEffectsToHide.ContainsKey(u)) { PlacementEffectsToHide.Add(u, list); }
+                }
+                
             }
 
             CurPlacement = StartCoroutine(ShowingPlacement(units));
@@ -127,28 +145,13 @@ public class EffectManager : MonoBehaviour
         yield return new WaitForSeconds(0.1f);
         while (CurPlacement != null)
         {
+            yield return new WaitForSeconds(0.01f);
             foreach (var v in PlacementEffectsToHide)
             {
-                bool allApplicable = true;
-                for (int i = 0; i < v.Key.Size.Positions.Count; i++)
+                if (BoardManager.Instance.ClosestUnitPosToCursor(v.Key) == null) { continue; }
+                for (int i = 0; i < BoardManager.Instance.ClosestUnitPosToCursor(v.Key).Count; i++)
                 {
-                    Debug.Log("Transformed cursor to board position of " + v.Key.UnitName);
-                    List<Vector2Int> totalPos = BoardManager.Instance.SingleCellToFullSize(v.Key);
-                    foreach (var p in totalPos) 
-                    {
-                        if (!BoardManager.Instance.IsInBounds(p))
-                        {
-                            allApplicable = false;
-                            break;
-                        }
-                    }
-                    
-                    //if (BoardManager.Instance.Board[totalPos.x].Cells[totalPos.y].CurUnit != null) { allApplicable = false; break; }
-                }
-
-                for (int i = 0; i < BoardManager.Instance.SingleCellToFullSize(v.Key).Count; i++)
-                {
-                    List<Vector2Int> sTl = new List<Vector2Int>(); sTl.Add(BoardManager.Instance.SingleCellToFullSize(v.Key)[i]);
+                    List<Vector2Int> sTl = new List<Vector2Int>(); sTl.Add(BoardManager.Instance.ClosestUnitPosToCursor(v.Key)[i]);
                     v.Value[i].transform.position = BoardManager.Instance.BoardToWorldPosition(sTl).Value;
 
                     //List<Vector2Int> posP = new List<Vector2Int>();
@@ -168,6 +171,7 @@ public class EffectManager : MonoBehaviour
             }
 
         }
+        yield return new WaitForSeconds(0.01f);
     }
     void ShowMovement(List<Unit> units)
     {
