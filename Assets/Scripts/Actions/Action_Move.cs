@@ -6,9 +6,7 @@ using System.Linq;
 
 public static class Action_Move 
 {
-
-
-    public static IEnumerator Move(Unit ActionTargetUnit, List<Vector2Int> CellsCoordinates)
+  public static IEnumerator Move(Unit ActionTargetUnit, List<Vector2Int> CellsCoordinates)
     {
         if (ActionTargetUnit == null || CellsCoordinates.Count == 0) Debug.LogError("INVALID ACTION PARAMETERS - MOVE(ActionTargetUnit, CellCoordinates)");
 

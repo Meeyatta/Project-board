@@ -1,78 +1,83 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.Events;
 
-public class Action_PlayerCreate : MonoBehaviour
+public static class Action_PlayerCreate
 {
-    public bool IsWaitingForData;
-    public static Action_PlayerCreate Instance;
-    void Singleton()
+    public static bool IsWaitingForData;
+    static bool ShouldCancel = false;
+    static void Cancel()
     {
-        if (Instance != null)
-        {
-            Destroy(this);
-        }
-        else
-        {
-            Instance = this;
-        }
-        DontDestroyOnLoad(this);
+        ShouldCancel = true;
     }
-    private void Awake()
+    public static IEnumerator PlayerCreate(GameObject Object)
     {
-        Singleton();
-    }
+        GameManager.Instance.CancelEvent.AddListener(Cancel);
 
-    public IEnumerator PlayerCreate(GameObject Object)
-    {
         //Create a unit as an object, it's not on the board yet, so it should be hidden
         Unit unit =
-            Instantiate(Object, Vector3.zero, Quaternion.identity).GetComponent<Unit>();
+            GameManager.Instantiate(Object, Vector3.zero, Quaternion.identity).GetComponent<Unit>();
         List<Unit> unitList = new List<Unit>(); unitList.Add(unit);
 
 
         //Add a listener what executes after players selects a position and returns it
         List<Vector2Int> positions = new List<Vector2Int>();
 
+        if (ShouldCancel)
+        {
+            Debug.Log("PLAYERCREATE ACTION IS CANCELED");
+            ShouldCancel = false;
+            GameManager.Instance.HidePlacementEvent.Invoke(unitList);
+            GameManager.Instance.CancelEvent.RemoveListener(Cancel);
+            yield break;
+        }
+
         void StartAwaiting_ListOfPositions(List<Vector2Int> v2)
         {
             IsWaitingForData = false;
             positions = v2;
-            SelectPosition.Instance.ESendPositionBack.RemoveListener(StartAwaiting_ListOfPositions);
+            Action_SelectPosition.ESendPositionBack.RemoveListener(StartAwaiting_ListOfPositions);
         }
-        SelectPosition.Instance.ESendPositionBack.AddListener(StartAwaiting_ListOfPositions);
+        UnityEvent<List<Vector2Int>> newEv = new UnityEngine.Events.UnityEvent<List<Vector2Int>>() { };
+        Action_SelectPosition.ESendPositionBack = newEv;
+        Action_SelectPosition.ESendPositionBack.AddListener(StartAwaiting_ListOfPositions);
         IsWaitingForData = true;
 
         //Start the action to select a position
         GameManager.Instance.ShowPlacementEvent.Invoke(unitList);
-        GameManager.Instance.I_PositionSelect = SelectPosition.Instance.Selecting(unit);
-        yield return StartCoroutine(GameManager.Instance.I_PositionSelect);
+        GameManager.Instance.I_PositionSelect = Action_SelectPosition.Selecting(unit);
+        yield return GameManager.Instance.StartCoroutine(GameManager.Instance.I_PositionSelect);
         GameManager.Instance.I_PositionSelect = null;
 
         //Waiting until we have the data
-        while (IsWaitingForData) { yield return new WaitForSeconds(0.1f); }
+        while (IsWaitingForData && !ShouldCancel) { Debug.Log(ShouldCancel); yield return new WaitForSeconds(0.01f); }
 
-        //Check if can place a unit there
+            //Check if can place a unit there
+            bool ViablePos = true;
+            foreach (var v in positions)
+            {
+                if (!BoardManager.Instance.IsInBounds(v)) { ViablePos = false; break; }
 
-        bool ViablePos = true;
-        foreach (var v in positions) 
-        {
-            if (!BoardManager.Instance.IsInBounds(v)) { ViablePos = false; break; }
+                if (BoardManager.Instance.Board[v.x].Cells[v.y].CurUnit != null) { ViablePos = false; break; }
+            }
 
-            if (BoardManager.Instance.Board[v.x].Cells[v.y].CurUnit != null) { ViablePos = false; break; }
-        }
+            //Place a unit on said selected positions if they are viable
+            GameManager.Instance.HidePlacementEvent.Invoke(unitList);
+            if (ViablePos)
+            {
+                yield return GameManager.Instance.StartCoroutine(BoardManager.Instance.PlaceUnit(unit, positions));
+            }
+            else
+            {
+                Debug.Log("Non viable position");
+            }
 
-        //Place a unit on said selected positions if they are viable
-        GameManager.Instance.HidePlacementEvent.Invoke(unitList);
-        if (ViablePos) 
-        {
-            yield return StartCoroutine(BoardManager.Instance.PlaceUnit(unit, positions));
-        }
-        else
-        {
-            Debug.Log("Non viable position");
-        }
 
+
+        ShouldCancel = false;
+        GameManager.Instance.CancelEvent.RemoveListener(Cancel);
         yield return new WaitForSeconds(0.001f);
     }
 

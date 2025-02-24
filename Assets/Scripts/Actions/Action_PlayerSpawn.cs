@@ -18,15 +18,15 @@ public static class Action_PlayerSpawn
         {
             Is_AwaitingData = false;
             v = v2;
-            SelectPosition.Instance.ESendPositionBack.RemoveListener(GetListOfPositions);
+            Action_SelectPosition.ESendPositionBack.RemoveListener(GetListOfPositions);
         }
 
         //Start the action to select a position
         List<Unit> unitList = new List<Unit>(); unitList.Add(unit);
         GameManager.Instance.ShowPlacementEvent.Invoke(unitList);
-        SelectPosition.Instance.ESendPositionBack.AddListener(GetListOfPositions); //Add a listener what executes after players
+        Action_SelectPosition.ESendPositionBack.AddListener(GetListOfPositions); //Add a listener what executes after players
                                                                                               //selects a position and returns it
-        yield return GameManager.Instance.StartCoroutine(SelectPosition.Instance.Selecting(unit));
+        yield return GameManager.Instance.StartCoroutine(Action_SelectPosition.Selecting(unit));
 
         //Waiting until we have the data, then hide the effects
         while (Is_AwaitingData) { Debug.Log("Awaiting data"); yield return new WaitForSeconds(0.1f); }

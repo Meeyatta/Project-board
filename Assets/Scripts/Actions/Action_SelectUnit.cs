@@ -2,27 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Action_SelectUnit : MonoBehaviour
+public static class Action_SelectUnit
 {
-    public static Action_SelectUnit Instance;
-    void Singleton()
-    {
-        if (Instance != null)
-        {
-            Destroy(this);
-        }
-        else
-        {
-            Instance = this;
-        }
-        DontDestroyOnLoad(this);
-    }
-    private void Awake()
-    {
-        Singleton();
-    }
-
-    public IEnumerator Select(List<Vector2Int> CellsCoordinates)
+    public static IEnumerator Select(List<Vector2Int> CellsCoordinates)
     {
         if (CellsCoordinates.Count == 0) Debug.LogError("INVALID ACTION PARAMETERS - SELECT(CellCoordinates)");
 

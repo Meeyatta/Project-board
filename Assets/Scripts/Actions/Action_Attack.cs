@@ -2,30 +2,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Action_Attack : MonoBehaviour
+public static class Action_Attack 
 {
     const string AttackAnimTrigger = "attack";
-    public static Action_Attack Instance;
-    void Singleton()
-    {
-        if (Instance != null)
-        {
-            Destroy(this);
-        }
-        else
-        {
-            Instance = this;
-        }
-        DontDestroyOnLoad(this);
-    }
-    private void Awake()
-    {
-        Singleton();
-    }
 
-    public IEnumerator Attack(List<Unit> ActionTargetUnits)
+    public static IEnumerator Attack(List<Unit> ActionTargetUnits)
     {
-        Debug.Log("Actually reached sorting it");
 
         foreach (var unit in OrderedUnits(ActionTargetUnits))
         {
@@ -46,16 +28,15 @@ public class Action_Attack : MonoBehaviour
             if (unit.Keywords.Contains(Unit.Keyword.Player)) { keywords.Add(Unit.Keyword.Enemy); }
             else { keywords.Add(Unit.Keyword.Player); }
 
-            yield return StartCoroutine(DamageAllInRange(unit, keywords));
+            yield return GameManager.Instance.StartCoroutine(DamageAllInRange(unit, keywords));
         }
 
 
         yield return new WaitForSeconds(0.001f);
     }
 
-    List<Unit> OrderedUnits(List<Unit> ActionTargetUnit)
+    public static List<Unit> OrderedUnits(List<Unit> ActionTargetUnit)
     {
-        Debug.Log("We got to sorting units");
         //TODO: Fix this absolutely terrible sorting algorythm to something better
 
         List<Unit> temp = ActionTargetUnit;
@@ -112,27 +93,27 @@ public class Action_Attack : MonoBehaviour
         return temp;
 
     }
-    IEnumerator DamageAllInRange(Unit source, List<Unit.Keyword> keywords)
+    public static IEnumerator DamageAllInRange(Unit source, List<Unit.Keyword> keywords)
     {
         List<Unit> targets = GameManager.Instance.GetPossibleTargets(source, keywords);
 
 
         foreach (Unit target in targets) 
         {
-            yield return StartCoroutine(Damage(target, source.CurAttackZone.Damage, source));
+            yield return GameManager.Instance.StartCoroutine(Damage(target, source.CurAttackZone.Damage, source));
         }
 
         yield return new WaitForSeconds(1);
     }
-    IEnumerator Damage(Unit target, int damage, Unit source)
+    public static IEnumerator Damage(Unit target, int damage, Unit source)
     {
         target.CurrentHealth = Mathf.Clamp(target.CurrentHealth - damage, 0, target.CurrentHealth);
 
-        if (target.CurrentHealth <= 0) { yield return StartCoroutine(Kill(target, source)); }
+        if (target.CurrentHealth <= 0) { yield return GameManager.Instance.StartCoroutine(Kill(target, source)); }
 
         yield return new WaitForSeconds(0.1f);
     }
-    IEnumerator Kill(Unit target, Unit source)
+    public static IEnumerator Kill(Unit target, Unit source)
     {
         Debug.Log(target.UnitName + " has been killed by " + source.UnitName);
         yield return new WaitForSeconds(0.1f);

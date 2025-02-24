@@ -4,36 +4,19 @@ using UnityEngine;
 using UnityEngine.Events;
 using System.Linq;
 
-public class Action_Place : MonoBehaviour
+public static class Action_Place
 {
-    public static Action_Place Instance;
-    void Singleton()
-    {
-        if (Instance != null)
-        {
-            Destroy(this);
-        }
-        else
-        {
-            Instance = this;
-        }
-        DontDestroyOnLoad(this);
-    }
-    private void Awake()
-    {
-        Singleton();
-    }
 
-    public IEnumerator Place(GameObject Object,List<Vector2Int> CellsCoordinates)
+
+    public static IEnumerator Place(Unit unit,List<Vector2Int> CellsCoordinates)
     {
         if (!BoardManager.Instance.BoardToWorldPosition(CellsCoordinates).HasValue) 
         {
-            Debug.LogError("INVALID PLACING POSITION FOR " + Object.name); yield return null; 
+            Debug.LogError("INVALID PLACING POSITION FOR " + unit.name); yield return null; 
         }
 
-        Object.transform.position = BoardManager.Instance.BoardToWorldPosition(CellsCoordinates).Value;
-        Object.transform.rotation = Quaternion.identity;
-        Unit u = Object.GetComponent<Unit>();
+        unit.transform.position = BoardManager.Instance.BoardToWorldPosition(CellsCoordinates).Value;
+        unit.transform.rotation = Quaternion.identity;
 
         bool canPlace = true; 
         foreach (Vector2Int v in CellsCoordinates) 
@@ -41,8 +24,8 @@ public class Action_Place : MonoBehaviour
             if (BoardManager.Instance.Board[v.x].Cells[v.y].CurUnit != null) { canPlace = false; break; } 
         }
 
-        if (canPlace) { foreach (Vector2Int v in CellsCoordinates) { BoardManager.Instance.Board[v.x].Cells[v.y].CurUnit = u; } }
-        else { Debug.LogError("INVALID PLACING POSITION FOR " + Object.name); }
+        if (canPlace) { foreach (Vector2Int v in CellsCoordinates) { BoardManager.Instance.Board[v.x].Cells[v.y].CurUnit = unit; } }
+        else { Debug.LogError("INVALID PLACING POSITION FOR " + unit.name); }
 
         yield return new WaitForSeconds(0.001f);
     }

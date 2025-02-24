@@ -4,17 +4,24 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Events;
 
+#region Functionality:
 /*
-  Functionality:
+    void Build() - Rebuilds all the cells both in the table and in the scene. Doing so sets all cells as unoccupied, 
+        must copy the table and Cells object to keep the changes
 
-    Build() - Rebuilds all the cells both in the table and in the scene. Doing so sets all cells as unoccupied, must copy the table and Cells object to keep the changes
-    Print() - Prints current board and units on it in the console
-    Get_UnitPositions(Unit unit) - takes a Unit and return's it's position on the board
-    BoardToWorldPosition(List<Vector2Int> poss) - Returns the Vector3 position of a cell under coordinates
+    void Print() - Prints current board and units on it in the console
+    List<Vector2Int> Get_UnitPositions(Unit unit) - takes a Unit and return's it's position on the board
+    Vector3? BoardToWorldPosition(List<Vector2Int> poss) - Returns the Vector3 position of a cell under coordinates
     IEnumerator MoveUnit(Unit unit, List<Vector2Int> newPos) - Moves the "unit" to the newPos (If newPos can be moved to)
-    Get_AllUnitsOnBoard() - Returns a list of all units on board cells
-    CursorToCellPosition() - Returns the cell under the player's cursor
+    List<Unit> Get_AllUnitsOnBoard() - Returns a list of all units on board cells
+    Vector2Int CellClosestToPosition(Vector3 hitPosition) - Returns a singular cell closest to the used Vector3
+    Vector2Int CursorToCellPosition() - Returns the cell under the player's cursor
+    List<Vector2Int> ClosestUnitPosToCursor(Unit unit) - Returns the positions of the space where unit can be placed closest to the cursor
+    bool AreCellsOccupied(List<Vector2Int> poss) - Checks if any of the cells are occupied
+    Vector2Int WorldToBoardPosition(Vector3 pos) - Converts Vector3 position to a position on the board
+    bool IsInBounds(Vector2Int v) - Returns true if the position is within bounds of the board
  */
+#endregion
 
 public class BoardManager : MonoBehaviour
 {
@@ -62,6 +69,10 @@ public class BoardManager : MonoBehaviour
         Singleton();
         //Build();
     }
+    /*
+        Rebuilds all the cells both in the table and in the scene. Doing so sets all cells as unoccupied,
+        (must copy the table and Cells object to keep the changes)
+    */
     void Build()
     {
       foreach (Transform t in CellsObj.transform)
@@ -89,6 +100,48 @@ public class BoardManager : MonoBehaviour
             Board.Add(column);
         }
     }
+
+    public List<Vector2Int> SortPoss(List<Vector2Int> l)
+    {
+        List<Vector2Int> temp = l;
+
+        //The sorting algoryth doesn't work for a single element, so this needs to be done
+        if (temp.Count <= 1) { return temp; }
+
+        #region Sorting algorythm
+        long justincase = 999999;
+        bool needsSorting = true;
+        while (needsSorting && justincase > 0)
+        {
+            needsSorting = false;
+            justincase--;
+            for (int i = 0; i < temp.Count-1; i++) 
+            {
+                Vector2Int Cur = temp[i];
+                Vector2Int Nex = temp[i + 1];
+
+                if (Cur.y > Nex.y) 
+                {
+                    needsSorting = true;
+
+                    temp[i] = Nex;
+                    temp[i+1] = Cur;
+                }
+                if (Cur.y == Nex.y && Cur.x > Nex.x)
+                {
+                    needsSorting = true;
+
+                    temp[i] = Nex;
+                    temp[i+1] = Cur;
+                }
+            }
+        }
+        #endregion
+
+        return temp;
+    }
+
+    //Prints current board and units on it in the console
     public void Print()
     {
         Debug.Log("-----------------------------");
@@ -110,6 +163,131 @@ public class BoardManager : MonoBehaviour
         }
     }
 
+    //Takes a Unit and return's it's position on the board
+    public List<Vector2Int> Get_UnitPositions(Unit unit)
+    {
+        List<Vector2Int> poss = new List<Vector2Int>();
+        foreach (Column co in Board)
+        {
+            foreach (Cell ce in co.Cells)
+            {
+                if (ce.CurUnit == unit) { poss.Add(ce.Coordinates); }
+            }
+        }
+        if (poss.Count == 0) { Debug.LogWarning("WARNING: UNIT '" + unit.UnitName + "' NOT FOUND"); return null; }
+        return poss;
+    }
+
+    //Returns the Vector3 position of a cell under coordinates
+    public Vector3? BoardToWorldPosition(List<Vector2Int> poss)
+    {
+
+        Vector3 newP = Vector3.zero;
+        if (poss.Count <= 0) { return newP; }
+        foreach (Vector2Int v in poss)
+        {
+            if (!IsInBounds(v)) return null;
+
+
+            newP.x += Board[v.x].Cells[v.y].Position.x;
+            newP.y += Board[v.x].Cells[v.y].Position.y;
+            newP.z += Board[v.x].Cells[v.y].Position.z;
+        }
+
+        newP.x /= poss.Count; newP.y /= poss.Count; newP.z /= poss.Count;
+
+        return newP;
+
+    }
+
+    //Moves the "unit" to the newPos (If newPos can be moved to)
+    public IEnumerator MoveUnit(Unit unit, List<Vector2Int> newPos)
+    {
+        foreach (Vector2Int v in newPos)
+        {
+            if (v.x >= Board.Count || v.y >= Board[0].Cells.Count) { Debug.LogError("ERROR: POSITION '" + v + "' OUT OF BOUNDS"); yield break; }
+        }
+
+        List<Vector2Int> oldPos = Get_UnitPositions(unit);
+        foreach (Vector2Int v in oldPos)
+        {
+            Board[v.x].Cells[v.y].CurUnit = null;
+        }
+
+        yield return StartCoroutine(PlaceUnit(unit, newPos));
+
+        yield break;
+    }
+
+    //Returns a list of all units on board cells
+    public List<Unit> Get_AllUnitsOnBoard()
+    {
+        List<Unit> units = new List<Unit>();
+        foreach (var v in Board)
+        {
+            foreach (var c in v.Cells)
+            {
+                if (c.CurUnit != null) { units.Add(c.CurUnit); }
+            }
+        }
+
+        return units;
+    }
+    
+    //Returns the cell under the player's cursor
+    public Vector2Int CursorToCellPosition()
+    {
+        Vector2Int res = Vector2Int.zero;
+
+
+        Vector3 v = Input.mousePosition;
+        v.z = 999999;
+        Vector3 cPos = Camera.main.ScreenToWorldPoint(v);
+        RaycastHit hit;
+        Physics.Raycast(Camera.main.transform.position, cPos, out hit, CellMask);
+
+        if (hit.transform != null)
+        {
+            if (hit.transform.tag == "Cell")
+            {
+                res = WorldToBoardPosition(hit.transform.gameObject.transform.position);
+            }
+            else
+            {
+                //Debug.Log("Cursor is not on a board " + hit.transform.position);
+                //Debug.DrawLine(Camera.main.transform.position, cPos, Color.red);
+                res = CellClosestToPosition(hit.point);
+            }
+        }
+        else
+        {
+            res = lastPres;
+        }
+
+        lastPres = res;
+        return lastPres;
+    }
+
+    //Returns a singular cell closest to the used Vector3
+    Vector2Int CellClosestToPosition(Vector3 hitPosition)
+    {
+        Vector2Int res = new Vector2Int(0, 0);
+        float minDist = Mathf.Infinity;
+        for (int x = 0; x < Board.Count; x++)
+        {
+            for (int y = 0; y < Board[x].Cells.Count; y++)
+            {
+                if (Board[x].Cells[y].CurUnit != null) { continue; }
+                if (Vector3.Distance(Board[x].Cells[y].Position, hitPosition) < minDist) 
+                { 
+                    minDist = Vector3.Distance(Board[x].Cells[y].Position, hitPosition); 
+                    res = new Vector2Int(x, y); 
+                }
+            }
+        }
+        return res;
+    }
+    //Returns the positions of the space where unit can be placed closest to the cursor
     public List<Vector2Int> ClosestUnitPosToCursor(Unit unit)
     {
 
@@ -132,82 +310,18 @@ public class BoardManager : MonoBehaviour
                 if (!BoardManager.Instance.IsInBounds(pos)) { areAll = false; }
             }
 
+            
             //If all of these coordinates are within a border, return  these positions
-            if (areAll) { return relativePoss; }
+            if (areAll)
+            {
+                return relativePoss; 
+            }
         }
         return null;
     }
 
-    public Vector2Int CursorToCellPosition()
-    {
-        Vector2Int res = Vector2Int.zero;
-
-
-        Vector3 v = Input.mousePosition;
-        v.z = 999999;
-        Vector3 cPos = Camera.main.ScreenToWorldPoint(v);
-        RaycastHit hit;
-        Physics.Raycast(Camera.main.transform.position, cPos, out hit, CellMask);
-
-        if (hit.transform != null)
-        {
-            if (hit.transform.tag == "Cell")
-            {
-                res = WorldToBoardPosition(hit.transform.gameObject.transform.position);
-            }
-            else
-            {
-                //Debug.Log("Cursor is not on a board " + hit.transform.position);
-                //Debug.DrawLine(Camera.main.transform.position, cPos, Color.red);
-                res = CellClosestToCursor(hit.point);
-            }
-        }
-        else
-        {
-            res = lastPres;
-        }
-
-        lastPres = res;
-        return res;
-    }
-    Vector2Int CellClosestToCursor(Vector3 hitPosition)
-    {
-        Vector2Int res = new Vector2Int(0, 0);
-        float minDist = Mathf.Infinity;
-        for (int x = 0; x < Board.Count; x++) { for (int y = 0; y < Board[x].Cells.Count; y++) 
-            { 
-                if (Board[x].Cells[y].CurUnit != null) { continue; }
-                if (Vector3.Distance(Board[x].Cells[y].Position, hitPosition) < minDist) { minDist = Vector3.Distance(Board[x].Cells[y].Position, hitPosition); res = new Vector2Int(x, y); }
-        } }
-
-        return res;
-    }
-    public List<Unit> Get_AllUnitsOnBoard()
-    {
-        List<Unit> units = new List<Unit>();
-        foreach (var v in Board)
-        {
-            foreach (var c in v.Cells)
-            {
-                if (c.CurUnit != null) { units.Add(c.CurUnit); }
-            }
-        }
-
-        return units;
-    }
-    public List<Vector2Int> Get_UnitPositions(Unit unit)
-    {
-        List<Vector2Int> poss = new List<Vector2Int>();
-        foreach (Column co in Board)
-        {
-            foreach (Cell ce in co.Cells)
-            {
-                if (ce.CurUnit == unit) { poss.Add(ce.Coordinates); }
-            }
-        }
-        if (poss.Count == 0) { Debug.LogWarning("WARNING: UNIT '" + unit.UnitName + "' NOT FOUND"); return null; }
-        return poss;
-    }
+    
+    //Checks if any of the cells are occupied
     public bool AreCellsOccupied(List<Vector2Int> poss)
     {
         foreach(Vector2Int p in poss)
@@ -220,87 +334,58 @@ public class BoardManager : MonoBehaviour
 
         return true;
     }
+    
+    //Converts Vector3 position to a position on the board
     public Vector2Int WorldToBoardPosition(Vector3 pos)
     {
+        for (int xi = 0; xi < Board.Count; xi++)
+        {
+            for (int yi = 0; yi < Board[xi].Cells.Count; yi++)
+            {
+                if (Board[xi].Cells[yi].Position == pos)
+                {
+                    Debug.Log(new Vector2Int(xi, yi)); return new Vector2Int(xi, yi); 
+                }
+            }
+        }
 
         float fx = (pos.x - CellsObj.transform.position.x - InBetweenSpace) / (InBetweenSpace + CellSize); int x = (int) fx;
         float fy = (CellsObj.transform.position.z - pos.z - InBetweenSpace) / (InBetweenSpace + CellSize); int y = (int) fy;
 
+        Debug.Log(new Vector2Int(x, y));
         return new Vector2Int(x, y);
-    }
-    public Vector3? BoardToWorldPosition(List<Vector2Int> poss)
-    {
-
-        Vector3 newP = Vector3.zero;
-        if (poss.Count <= 0) { return newP; }
-        foreach (Vector2Int v in poss)
-        {
-            if (!IsInBounds(v)) return null;
-
-            //Debug.Log("newP " + v);
-
-            newP.x += Board[v.x].Cells[v.y].Position.x;
-            newP.y += Board[v.x].Cells[v.y].Position.y;
-            newP.z += Board[v.x].Cells[v.y].Position.z;
-        }
-
-        newP.x /= poss.Count; newP.y /= poss.Count; newP.z /= poss.Count;
-
-        return newP;
-
     }
 
     //Places unit onto cells under the positions (So doesn't change the position the unit is currently occupying)
     public IEnumerator PlaceUnit(Unit unit, List<Vector2Int> newPos)
     {
-        foreach (Vector2Int v in newPos)
+        if (newPos == null || newPos.Count <= 0) yield break;
+
+        List<Vector2Int> s = SortPoss(newPos);
+        foreach (Vector2Int v in s)
         {
             Board[v.x].Cells[v.y].CurUnit = unit;
         }
-        //Debug.Log("First position: " + Board[newPos[0].x].Cells[newPos[0].y].Position);
-        //Debug.Log("Average position: " + BoardToWorldPosition(newPos));
 
-        unit.gameObject.transform.localPosition = Board[newPos[0].x].Cells[newPos[0].y].Position + unit.ModelOffset;
-
-        yield break;
-    }
-
-    //Moves unit from it's original position to the new one
-    public IEnumerator MoveUnit(Unit unit, List<Vector2Int> newPos)
-    {
+        unit.gameObject.transform.position = BoardToWorldPosition(s).Value + unit.ModelOffset;
         
-
-        foreach (Vector2Int v in newPos)
-        {
-            if (v.x >= Board.Count || v.y >= Board[0].Cells.Count) { Debug.LogError("ERROR: POSITION '" + v + "' OUT OF BOUNDS"); yield break; }
-        }
-
-        List<Vector2Int> oldPos = Get_UnitPositions(unit);
-        foreach (Vector2Int v in oldPos)
-        {
-            Board[v.x].Cells[v.y].CurUnit = null;
-        }
-
-        yield return StartCoroutine(PlaceUnit(unit, newPos));
-
-        yield break;
+        yield return new WaitForSeconds(0.1f);
     }
-   
-    private void Update()
-    {
 
-        if (Input.GetKeyDown("p")) { Print(); }
-
-        if (Input.GetKeyDown("b")) { Build(); }
-
-
-        foreach (Column c in Board) { foreach (Cell cc in c.Cells) { Debug.DrawRay(cc.Position, Vector3.up, Color.red); } }
-    }
+    //Returns true if the position is within bounds of the board
     public bool IsInBounds(Vector2Int v)
-    {      
+    {
         if (v.x < 0 || v.x >= Board.Count) { return false; }
         if (v.y < 0 || v.y >= Board[v.x].Cells.Count) { return false; }
 
         return true;
     }
+    private void Update()
+    {
+        if (Input.GetKeyDown("p")) { Print(); }
+
+        if (Input.GetKeyDown("b")) { Build(); }
+
+    }
+    
 }
