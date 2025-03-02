@@ -5,12 +5,19 @@ using UnityEngine;
 public static class Action_Attack 
 {
     const string AttackAnimTrigger = "attack";
+    public static bool IsAbleToAttack(Unit u)
+    {
+        if (!BoardManager.Instance.IsOnBoard(u)) { return false; }
 
+        return true;
+    }
     public static IEnumerator Attack(List<Unit> ActionTargetUnits)
     {
 
         foreach (var unit in OrderedUnits(ActionTargetUnits))
         {
+            if (!IsAbleToAttack(unit)) { continue; }
+
             Animator anim = unit.Anim;
             anim.SetTrigger(AttackAnimTrigger);
 

@@ -149,23 +149,14 @@ public class EffectManager : MonoBehaviour
             foreach (var v in PlacementEffectsToHide)
             {
                 if (BoardManager.Instance.ClosestUnitPosToCursor(v.Key) == null) { continue; }
-                for (int i = 0; i < BoardManager.Instance.ClosestUnitPosToCursor(v.Key).Count; i++)
+
+                List<Vector2Int> poss = BoardManager.Instance.ClosestUnitPosToCursor(v.Key);
+                for (int i = 0; i < poss.Count; i++)
                 {
-                    List<Vector2Int> sTl = new List<Vector2Int>(); sTl.Add(BoardManager.Instance.ClosestUnitPosToCursor(v.Key)[i]);
+                    Debug.Log("Showing placement pos " + i + " " + poss[i]);
+                    List<Vector2Int> sTl = new List<Vector2Int>(); sTl.Add(poss[i]);
                     v.Value[i].transform.position = BoardManager.Instance.BoardToWorldPosition(sTl).Value;
 
-                    //List<Vector2Int> posP = new List<Vector2Int>();
-                    //if (BoardManager.Instance.CursorToCellPosition() == null) { continue; }
-                    //posP.Add(BoardManager.Instance.CursorToCellPosition() + v.Key.Size.Positions[i]);
-
-                    ////Safeguard in case the position is actually null
-                    //if (BoardManager.Instance.CursorToCellPosition().x < -50) 
-                    //{ v.Value[i].transform.position = new Vector3(-90, -90, -90); }
-
-                    //if (allApplicable) { v.Value[i].transform.position = BoardManager.Instance.BoardToWorldPosition(BoardManager.Instance.SingleCellToFullSize(v.Key)).Value; }
-                    //else { /* TODO: Make it so the color of the placement changes if it is not applicable */
-                    //    Debug.Log("Pos " + v.Key.Size.Positions[i] + " is not applicable");
-                    //}
                 }
                 yield return new WaitForSeconds(0.01f);
             }

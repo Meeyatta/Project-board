@@ -1,8 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Events;
+using System.Linq;
 
 #region Functionality:
 /*
@@ -20,6 +20,8 @@ using UnityEngine.Events;
     bool AreCellsOccupied(List<Vector2Int> poss) - Checks if any of the cells are occupied
     Vector2Int WorldToBoardPosition(Vector3 pos) - Converts Vector3 position to a position on the board
     bool IsInBounds(Vector2Int v) - Returns true if the position is within bounds of the board
+    bool IsOnBoard(Unit u) - Returns true if unit is on board
+    List<Unit> Get_AllUnitsWithKeyword(Unit.Keyword keyword) - returns a list of units with specified keyword
  */
 #endregion
 
@@ -64,11 +66,11 @@ public class BoardManager : MonoBehaviour
         DontDestroyOnLoad(this);
     }
     private void Awake()
-    {
-        
+    {       
         Singleton();
         //Build();
     }
+
     /*
         Rebuilds all the cells both in the table and in the scene. Doing so sets all cells as unoccupied,
         (must copy the table and Cells object to keep the changes)
@@ -290,7 +292,6 @@ public class BoardManager : MonoBehaviour
     //Returns the positions of the space where unit can be placed closest to the cursor
     public List<Vector2Int> ClosestUnitPosToCursor(Unit unit)
     {
-
         Vector2Int single = CursorToCellPosition();
         //Go through each cell
         for (int i = 0; i < unit.Size.Positions.Count; i++)
@@ -319,8 +320,7 @@ public class BoardManager : MonoBehaviour
         }
         return null;
     }
-
-    
+   
     //Checks if any of the cells are occupied
     public bool AreCellsOccupied(List<Vector2Int> poss)
     {
@@ -343,8 +343,7 @@ public class BoardManager : MonoBehaviour
             for (int yi = 0; yi < Board[xi].Cells.Count; yi++)
             {
                 if (Board[xi].Cells[yi].Position == pos)
-                {
-                    Debug.Log(new Vector2Int(xi, yi)); return new Vector2Int(xi, yi); 
+                {                    return new Vector2Int(xi, yi); 
                 }
             }
         }
@@ -379,6 +378,41 @@ public class BoardManager : MonoBehaviour
         if (v.y < 0 || v.y >= Board[v.x].Cells.Count) { return false; }
 
         return true;
+    }
+
+    //Returns true if unit is on board
+    public bool IsOnBoard(Unit u)
+    {
+        foreach(var i in Board)
+        {
+            foreach (var c in i.Cells)
+            {
+                if (c.CurUnit == u)
+                {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    //Returns a list of units with specified keyword
+    public List<Unit> Get_AllUnitsWithKeywords(List<Unit.Keyword> keywords)
+    {
+        List<Unit> units = new List<Unit>();
+
+        foreach (var i in Board)
+        {
+            foreach (var c in i.Cells)
+            {
+                if (c.CurUnit.Keywords.Intersect<Unit.Keyword>(keywords).Any())
+                {
+                    units.Add(c.CurUnit);
+                }
+            }
+        }
+
+        return units;
     }
     private void Update()
     {

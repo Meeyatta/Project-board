@@ -14,6 +14,8 @@ using UnityEngine.InputSystem;
         Attack(ActionTargetUnits) - Make a target unit initiate an attack on all units in it's attack zone
         KeywordedAttack(Keywords) - Make all units with specific keywords initiate an attack on all units in their individual attack zones
         PlayerCreate(Object) - Awaits for player's input on cell coordinates, then places the unit on these coordinates
+
+        A_Score(ActionTargetUnits) - Ability: A_Score, checks for units nearby, adds points to player if only player units, adds points to enem if only enemy units
 */
 
 /*
@@ -42,7 +44,7 @@ public class GameManager : MonoBehaviour
     public GameObject TESTunittocreate;
     public UnityEvent<Vector2Int> ClickBackEvent;
     [HideInInspector] public UnityEvent CancelEvent;
-    public enum ActionType { Attack, KeywordedAttack, Move, Place, SelectUnit, PlayerCreate };
+    public enum ActionType { Attack, KeywordedAttack, Move, Place, SelectUnit, PlayerCreate, Score };
     public Unit CurUnitSelected; //What unit is currently selected, if no unit - should be null
     public static GameManager Instance;
     public Coroutine C_GoingThroughActions;
@@ -87,7 +89,6 @@ public class GameManager : MonoBehaviour
     public void ActionWrapper(ActionParameters parameters)
     {
         StartCoroutine( Action(parameters) );
-
     }
     /*
         Can be called by a variety of things to initiate a variety of actions. 
@@ -156,6 +157,17 @@ public class GameManager : MonoBehaviour
             case ActionType.PlayerCreate:
                 ActionSlot playercreate = new ActionSlot(Action_PlayerCreate.PlayerCreate(parameters.Object), ActionType.PlayerCreate);
                 ActionQueue.Enqueue(playercreate);
+
+                break;
+            #endregion Create(GameObject Object, Vector2Int CellsCoordinates)
+
+            /* --ABILITIES-- */
+
+            //Ability: A_Scoring, checks for units nearby, adds points to player if only player units, adds points to enem if only enemy units
+            #region Score(GameObject Object)
+            case ActionType.Score:
+                ActionSlot score = new ActionSlot(Ability_Score.Score(parameters.ActionTargetUnits), ActionType.Score);
+                ActionQueue.Enqueue(score);
 
                 break;
             #endregion Create(GameObject Object, Vector2Int CellsCoordinates)

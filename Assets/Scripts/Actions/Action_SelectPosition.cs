@@ -22,19 +22,36 @@ public static class Action_SelectPosition
 
         void StopWaiting(Vector2Int v)
         {
-            List<Vector2Int> nv = new List<Vector2Int>();
             IsAwaitingAClickBack = false;
 
             if (CurUnit != null)
             {
                 for (int i = 0; i < CurUnit.Size.Positions.Count; i++)
                 {
-                    nv.Add(v + CurUnit.Size.Positions[i]);
+                    List<Vector2Int> nv = new List<Vector2Int>();
+
+                    for (int ii = 0; ii < unit.Size.Positions.Count; ii++)
+                    {
+                        nv.Add(v + unit.Size.Positions[i] - unit.Size.Positions[ii]);
+                    }
                     //Debug.Log("Will send " + (v[i] + CurUnit.Size.Positions[i]) + " back to GameManager");
+
+                    bool areAll = true;
+                    foreach (var pos in nv)
+                    {
+                        if (!BoardManager.Instance.IsInBounds(pos)) { areAll = false; }
+                    }
+
+                    //If all of these coordinates are within a border, return  these positions
+                    if (areAll)
+                    {
+                        ESendPositionBack.Invoke(nv);
+                    }
+
                 }
+
             }
 
-            ESendPositionBack.Invoke(nv);
         }
         GameManager.Instance.ClickBackEvent.AddListener(StopWaiting);
         CurUnit = unit;

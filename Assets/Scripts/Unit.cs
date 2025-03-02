@@ -17,7 +17,7 @@ public class Unit : MonoBehaviour
 
     public Vector3 ModelOffset;
 
-    public enum Keyword { Enemy, Player };
+    public enum Keyword { Enemy, Player, Objective };
     [HideInInspector] public Animator Anim;
 
     private void Awake()

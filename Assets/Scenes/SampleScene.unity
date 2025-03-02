@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 705507994}
-  m_IndirectSpecularColor: {r: 0.172768, g: 0.21589169, b: 0.29782546, a: 1}
+  m_IndirectSpecularColor: {r: 0.17276844, g: 0.21589246, b: 0.2978263, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -37674,34 +37674,39 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 11416984, guid: c080686877cf77f42a1a078076d57fe5, type: 3}
       propertyPath: textList.Array.size
-      value: 4
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 11416984, guid: c080686877cf77f42a1a078076d57fe5, type: 3}
       propertyPath: textList.Array.data[0].s
-      value: "Multicell units' models are placed in the middle of a \nsingle top
-        left cell instead of in the middle of all the cells"
+      value: Add objectives
       objectReference: {fileID: 0}
     - target: {fileID: 11416984, guid: c080686877cf77f42a1a078076d57fe5, type: 3}
       propertyPath: textList.Array.data[1].s
-      value: Units outside the board are also selected to attack
+      value: Add objective score tracking
       objectReference: {fileID: 0}
     - target: {fileID: 11416984, guid: c080686877cf77f42a1a078076d57fe5, type: 3}
       propertyPath: textList.Array.data[2].s
-      value: "Test whenever unit evading movement works with \nmulticell units"
+      value: Add event for win or loss
       objectReference: {fileID: 0}
     - target: {fileID: 11416984, guid: c080686877cf77f42a1a078076d57fe5, type: 3}
       propertyPath: textList.Array.data[3].s
-      value: Add obstacles to the placement menu
+      value: Add a system for units to check other units around them
       objectReference: {fileID: 0}
     - target: {fileID: 11416984, guid: c080686877cf77f42a1a078076d57fe5, type: 3}
       propertyPath: textList.Array.data[4].s
-      value: 'Turn all action scripts into static classes (Move, Attack,
-
-        )'
+      value: Add abilities
       objectReference: {fileID: 0}
     - target: {fileID: 11416984, guid: c080686877cf77f42a1a078076d57fe5, type: 3}
       propertyPath: textList.Array.data[5].s
-      value: Make damage update unit's health in real time
+      value: Add a check what removes all objectives what don't need scoring
+      objectReference: {fileID: 0}
+    - target: {fileID: 11416984, guid: c080686877cf77f42a1a078076d57fe5, type: 3}
+      propertyPath: textList.Array.data[6].s
+      value: Add functionality to add points appropriately
+      objectReference: {fileID: 0}
+    - target: {fileID: 11416984, guid: c080686877cf77f42a1a078076d57fe5, type: 3}
+      propertyPath: textList.Array.data[7].s
+      value: Create an objective unit and add it to the menu
       objectReference: {fileID: 0}
     - target: {fileID: 11416984, guid: c080686877cf77f42a1a078076d57fe5, type: 3}
       propertyPath: textList.Array.data[0].show
@@ -37712,16 +37717,28 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 11416984, guid: c080686877cf77f42a1a078076d57fe5, type: 3}
+      propertyPath: textList.Array.data[2].show
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 11416984, guid: c080686877cf77f42a1a078076d57fe5, type: 3}
       propertyPath: textList.Array.data[5].show
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 11416984, guid: c080686877cf77f42a1a078076d57fe5, type: 3}
-      propertyPath: textList.Array.data[0].state
+      propertyPath: textList.Array.data[6].show
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 11416984, guid: c080686877cf77f42a1a078076d57fe5, type: 3}
-      propertyPath: textList.Array.data[1].state
+      propertyPath: textList.Array.data[7].show
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 11416984, guid: c080686877cf77f42a1a078076d57fe5, type: 3}
+      propertyPath: textList.Array.data[0].state
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 11416984, guid: c080686877cf77f42a1a078076d57fe5, type: 3}
+      propertyPath: textList.Array.data[1].state
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 11416984, guid: c080686877cf77f42a1a078076d57fe5, type: 3}
       propertyPath: textList.Array.data[2].state
@@ -37737,6 +37754,14 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 11416984, guid: c080686877cf77f42a1a078076d57fe5, type: 3}
       propertyPath: textList.Array.data[5].state
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 11416984, guid: c080686877cf77f42a1a078076d57fe5, type: 3}
+      propertyPath: textList.Array.data[6].state
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 11416984, guid: c080686877cf77f42a1a078076d57fe5, type: 3}
+      propertyPath: textList.Array.data[7].state
       value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 11416984, guid: c080686877cf77f42a1a078076d57fe5, type: 3}
@@ -37757,11 +37782,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 11416984, guid: c080686877cf77f42a1a078076d57fe5, type: 3}
       propertyPath: textList.Array.data[4].deleteQuestion
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 11416984, guid: c080686877cf77f42a1a078076d57fe5, type: 3}
       propertyPath: textList.Array.data[5].deleteQuestion
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -106910,6 +106935,37 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1.28, y: 0.27, z: 1.27}
   m_Center: {x: 0.04, y: 0.36, z: 0.04}
+--- !u!1 &1031662068
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1031662069}
+  m_Layer: 0
+  m_Name: AbilityManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1031662069
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1031662068}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1553121778}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1036804730
 GameObject:
   m_ObjectHideFlags: 0
@@ -163427,6 +163483,7 @@ Transform:
   - {fileID: 1126938938}
   - {fileID: 944037227}
   - {fileID: 218350630}
+  - {fileID: 1031662069}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1555817339
