@@ -153,7 +153,7 @@ public class EffectManager : MonoBehaviour
                 List<Vector2Int> poss = BoardManager.Instance.ClosestUnitPosToCursor(v.Key);
                 for (int i = 0; i < poss.Count; i++)
                 {
-                    Debug.Log("Showing placement pos " + i + " " + poss[i]);
+                    //Debug.Log("Showing placement pos " + i + " " + poss[i]);
                     List<Vector2Int> sTl = new List<Vector2Int>(); sTl.Add(poss[i]);
                     v.Value[i].transform.position = BoardManager.Instance.BoardToWorldPosition(sTl).Value;
 
@@ -169,7 +169,7 @@ public class EffectManager : MonoBehaviour
         foreach (Unit u in units)
         {
             List<GameObject> ePu = new List<GameObject>();
-            foreach (var vv in GameManager.Instance.GetPossibleMovement(u))
+            foreach (var vv in GameManager.Instance.Get_PossibleMovement(u))
             {
                 foreach (var v in vv)
                 {

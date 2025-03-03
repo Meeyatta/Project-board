@@ -26,13 +26,20 @@ public class AbilityManager : MonoBehaviour
 
     IEnumerator CheckForAbilities()
     {
-        yield return new WaitForSeconds(0.01f);
+        yield return new WaitForSeconds(0.01f); 
 
-        if (Ability_Score.Check() != null && Ability_Score.Check().Count >= 1) 
+        List<Unit> all = BoardManager.Instance.Get_AllUnitsOnBoard();
+        foreach (var v in all)
         {
-            ActionParameters parameters = new ActionParameters(GameManager.ActionType.Score, Ability_Score.Check(), null, null, null);
-            yield return StartCoroutine(GameManager.Instance.Action(parameters));
+            if (Ability_Score.Check(v))
+            {
+                List<Unit> s = new List<Unit> { v };
+                ActionParameters parameters = new ActionParameters(GameManager.ActionType.A_Score, s, null, null, null);
+                yield return StartCoroutine(GameManager.Instance.Action(parameters));
+            }
         }
+
+        
 
         CurAbilities = null;
         yield return new WaitForSeconds(0.01f);
@@ -40,9 +47,13 @@ public class AbilityManager : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if (CurAbilities != null)
+        if (CurAbilities == null)
         {
             CurAbilities = StartCoroutine(CheckForAbilities());
+        }
+        else
+        {
+            //Debug.Log("CurAbilities is not null");
         }
     }
 

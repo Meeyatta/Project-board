@@ -12,7 +12,7 @@ public static class Action_Move
 
 
         List<Vector2Int> newPoss = new List<Vector2Int>();
-        foreach (List<Vector2Int> l in GameManager.Instance.GetPossibleMovement(ActionTargetUnit))
+        foreach (List<Vector2Int> l in GameManager.Instance.Get_PossibleMovement(ActionTargetUnit))
         {
             if (l.Intersect<Vector2Int>(CellsCoordinates).Any()) { newPoss = l; break; }
         }

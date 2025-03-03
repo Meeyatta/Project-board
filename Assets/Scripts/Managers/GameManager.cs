@@ -24,7 +24,7 @@ using UnityEngine.InputSystem;
         List<Unit> GetPossibleTargets(Unit source, List<Unit.Keyword> keywords) - Returns all possible units what a source (unit) can 
             affect using their current attack Zones
         bool UnitHasAllKeywords(Unit u, List<Unit.Keyword> keywords) - returns true if unit has all of the keywords in "keywords"
-        List<Unit> GroupUnitsByKeywords(List<Unit> all, List<Unit.Keyword> keywords) - Groups units from a list into a different list only if
+        List<Unit> Get_OnlyUnitsWithKeywords(List<Unit> all, List<Unit.Keyword> keywords) - Groups units from a list into a different list only if
             they have the keywords in "keywords"
 */
 
@@ -44,7 +44,7 @@ public class GameManager : MonoBehaviour
     public GameObject TESTunittocreate;
     public UnityEvent<Vector2Int> ClickBackEvent;
     [HideInInspector] public UnityEvent CancelEvent;
-    public enum ActionType { Attack, KeywordedAttack, Move, Place, SelectUnit, PlayerCreate, Score };
+    public enum ActionType { Attack, KeywordedAttack, Move, Place, SelectUnit, PlayerCreate, A_Score };
     public Unit CurUnitSelected; //What unit is currently selected, if no unit - should be null
     public static GameManager Instance;
     public Coroutine C_GoingThroughActions;
@@ -146,7 +146,7 @@ public class GameManager : MonoBehaviour
             case ActionType.KeywordedAttack:
                 ActionSlot keywordedattack = 
                     new ActionSlot(Action_Attack.Attack(
-                        GetOnlyUnitsWithKeywords(BoardManager.Instance.Get_AllUnitsOnBoard(), parameters.Keywords)), ActionType.KeywordedAttack);
+                        Get_OnlyUnitsWithKeywords(BoardManager.Instance.Get_AllUnitsOnBoard(), parameters.Keywords)), ActionType.KeywordedAttack);
 
                 ActionQueue.Enqueue(keywordedattack);
                 break;
@@ -164,9 +164,9 @@ public class GameManager : MonoBehaviour
             /* --ABILITIES-- */
 
             //Ability: A_Scoring, checks for units nearby, adds points to player if only player units, adds points to enem if only enemy units
-            #region Score(GameObject Object)
-            case ActionType.Score:
-                ActionSlot score = new ActionSlot(Ability_Score.Score(parameters.ActionTargetUnits), ActionType.Score);
+            #region A_Score(ActionTargetUnits)(GameObject Object)
+            case ActionType.A_Score:
+                ActionSlot score = new ActionSlot(Ability_Score.Score(parameters.ActionTargetUnits), ActionType.A_Score);
                 ActionQueue.Enqueue(score);
 
                 break;
@@ -184,7 +184,7 @@ public class GameManager : MonoBehaviour
 
 
     //Returns all possible positions what a unit can move using their current muveset    
-    public List<List<Vector2Int>> GetPossibleMovement(Unit unit)
+    public List<List<Vector2Int>> Get_PossibleMovement(Unit unit)
         {
            // Debug.Log("Possible movement positions:");
             List<List<Vector2Int>> res = new List<List<Vector2Int>>();
@@ -201,6 +201,13 @@ public class GameManager : MonoBehaviour
                         {                    
                             if (!BoardManager.Instance.IsInBounds(line.Positions[i] + unitP) || isObscured) { break; }
                             int x = line.Positions[i].x; int y = line.Positions[i].y;
+
+                            Debug.Log("Going through line " + i + " " + (line.Positions[i] + unitP).x + " " + (line.Positions[i] + unitP).y);
+
+                            if (BoardManager.Instance.Board[unitP.x + x].Cells[unitP.y + y].CurUnit == unit)
+                            {
+                                continue;
+                            }
                             if (BoardManager.Instance.Board[unitP.x + x].Cells[unitP.y + y].CurUnit != null) 
                             {
                                 if (!line.IsEvading) { isObscured = true; }
@@ -219,6 +226,9 @@ public class GameManager : MonoBehaviour
                         
                     }           
             }   
+
+           
+
             #endregion
             return res;
         }
@@ -263,7 +273,7 @@ public class GameManager : MonoBehaviour
     }
 
     //Returns units from the list only if they have the keywords in "keywords"
-    List<Unit> GetOnlyUnitsWithKeywords(List<Unit> all, List<Unit.Keyword> keywords)
+    public List<Unit> Get_OnlyUnitsWithKeywords(List<Unit> all, List<Unit.Keyword> keywords)
     {
         List<Unit> cycled = new List<Unit>();
         foreach (var v in all)
@@ -368,7 +378,7 @@ public class GameManager : MonoBehaviour
         if (Input.GetKeyDown("q"))
         {
             Debug.Log("CURRENT ACTION QUEUE:");
-            foreach (var a in ActionQueue) { Debug.Log(a.Type); }
+            foreach (var a in ActionQueue) { Debug.Log(")" + a.Type); }
 
         }
         if (Input.GetKeyDown("a"))

@@ -7,7 +7,7 @@ public static class Action_Attack
     const string AttackAnimTrigger = "attack";
     public static bool IsAbleToAttack(Unit u)
     {
-        if (!BoardManager.Instance.IsOnBoard(u)) { return false; }
+        if (!BoardManager.Instance.IsOnBoard(u) || u.Keywords.Contains(Unit.Keyword.Objective)) { return false; }
 
         return true;
     }

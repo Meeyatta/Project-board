@@ -15,8 +15,11 @@ public class Unit : MonoBehaviour
     public int CurrentHealth;
     public List<Keyword> Keywords = new List<Keyword>();
 
+    [Header("---------")]
+
     public Vector3 ModelOffset;
 
+    public enum Ability { Score,  }
     public enum Keyword { Enemy, Player, Objective };
     [HideInInspector] public Animator Anim;
 

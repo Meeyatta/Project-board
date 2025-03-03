@@ -4,20 +4,38 @@ using UnityEngine;
 
 public static class Ability_Score 
 {
-    public static List<Unit> Check()
+    public static bool Check(Unit u)
     {
-        List<Unit> Checked = new List<Unit>();
-        List<Unit.Keyword> l = new List<Unit.Keyword>(); l.Add(Unit.Keyword.Objective);
-        Checked = BoardManager.Instance.Get_AllUnitsWithKeywords(l);
+        if (!u.Keywords.Contains(Unit.Keyword.Objective)) return false;
 
-        //TODO: Add a check what removes all objectives what don't need scoring
+        //TODO: Add a check if it IS an objective, but doesn't need scoring
+        var l = BoardManager.Instance.Get_UnitsInRange(u, 1);
+        if (l == null || l.Count <= 0) return false;    
 
-        return Checked;
+        return true;
 
     }
     public static IEnumerator Score(List<Unit> ActionTargetUnits)
     {
-        //TODO: Add functionality to add points appropriately
+        yield return new WaitForSeconds(0.01f);
+
+        foreach (var u in ActionTargetUnits)
+        {
+            //TODO: Add functionality to add points appropriately
+
+            var l = BoardManager.Instance.Get_UnitsInRange(u, 1);
+
+            List<Unit.Keyword> pk = new List<Unit.Keyword> { Unit.Keyword.Player };
+            List<Unit> pu = GameManager.Instance.Get_OnlyUnitsWithKeywords(l, pk);
+
+            List<Unit.Keyword> ek = new List<Unit.Keyword> { Unit.Keyword.Enemy };
+            List<Unit> eu = GameManager.Instance.Get_OnlyUnitsWithKeywords(l, ek);
+
+            if (pu != null && pu.Count > 0 && (eu == null || eu.Count <= 0)) { ScoreManager.Instance.Score_Player++; }
+
+            if (eu != null && eu.Count > 0 && (pu == null || pu.Count <= 0)) { ScoreManager.Instance.Score_Enemy++; }
+
+        }
         yield return new WaitForSeconds(0.01f);
     }
 

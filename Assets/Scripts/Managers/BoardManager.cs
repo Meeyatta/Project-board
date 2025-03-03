@@ -22,6 +22,7 @@ using System.Linq;
     bool IsInBounds(Vector2Int v) - Returns true if the position is within bounds of the board
     bool IsOnBoard(Unit u) - Returns true if unit is on board
     List<Unit> Get_AllUnitsWithKeyword(Unit.Keyword keyword) - returns a list of units with specified keyword
+    List<Unit> Get_UnitsInRange(Unit u, int r) - returns list of units within "r" cells of the "u" unit
  */
 #endregion
 
@@ -413,6 +414,27 @@ public class BoardManager : MonoBehaviour
         }
 
         return units;
+    }
+
+    //Returns list of units within "r" cells of the "u" unit
+    public List<Unit> Get_UnitsInRange(Unit u, int r)
+    {
+        List<Unit> res = new List<Unit>();
+        foreach (var coords in Get_UnitPositions(u))
+        {
+            for (int x = Mathf.Max(coords.x - r, 0); x < Mathf.Min(coords.x + r + 1, Width); x++)
+            {
+                for (int y = Mathf.Max(coords.y - r, 0); y < Mathf.Min(coords.y + r + 1, Height); y++)
+                {
+                    if (x == coords.x && y == coords.y) { continue; }
+
+                    //Debug.Log("Checking coord of: " + x + " " + y);
+                    if (Board[x].Cells[y].CurUnit != null && Board[x].Cells[y].CurUnit != u) { res.Add(Board[x].Cells[y].CurUnit); }
+                }
+            }
+        }
+
+        return res;
     }
     private void Update()
     {
