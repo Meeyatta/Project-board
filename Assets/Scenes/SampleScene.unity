@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 705507994}
-  m_IndirectSpecularColor: {r: 0.172768, g: 0.21589169, b: 0.29782546, a: 1}
+  m_IndirectSpecularColor: {r: 0, g: 0, b: 0, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -37674,7 +37674,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 11416984, guid: c080686877cf77f42a1a078076d57fe5, type: 3}
       propertyPath: textList.Array.size
-      value: 2
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 11416984, guid: c080686877cf77f42a1a078076d57fe5, type: 3}
       propertyPath: textList.Array.data[0].s
@@ -37686,11 +37686,13 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 11416984, guid: c080686877cf77f42a1a078076d57fe5, type: 3}
       propertyPath: textList.Array.data[2].s
-      value: Multicell unit can't be moved
+      value: Add event for checking objective scoring
       objectReference: {fileID: 0}
     - target: {fileID: 11416984, guid: c080686877cf77f42a1a078076d57fe5, type: 3}
       propertyPath: textList.Array.data[3].s
-      value: Add abilities
+      value: 'Make objective scoring event work for specific
+
+        keywords'
       objectReference: {fileID: 0}
     - target: {fileID: 11416984, guid: c080686877cf77f42a1a078076d57fe5, type: 3}
       propertyPath: textList.Array.data[4].s
@@ -37742,7 +37744,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 11416984, guid: c080686877cf77f42a1a078076d57fe5, type: 3}
       propertyPath: textList.Array.data[2].state
-      value: 1
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 11416984, guid: c080686877cf77f42a1a078076d57fe5, type: 3}
       propertyPath: textList.Array.data[3].state
@@ -37774,7 +37776,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 11416984, guid: c080686877cf77f42a1a078076d57fe5, type: 3}
       propertyPath: textList.Array.data[2].deleteQuestion
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 11416984, guid: c080686877cf77f42a1a078076d57fe5, type: 3}
       propertyPath: textList.Array.data[3].deleteQuestion

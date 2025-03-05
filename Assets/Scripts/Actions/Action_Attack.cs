@@ -7,7 +7,7 @@ public static class Action_Attack
     const string AttackAnimTrigger = "attack";
     public static bool IsAbleToAttack(Unit u)
     {
-        if (!BoardManager.Instance.IsOnBoard(u) || u.Keywords.Contains(Unit.Keyword.Objective)) { return false; }
+        if (!BoardManager.Instance.IsOnBoard(u) || u.CurKeywords.Contains(Unit.Keyword.Objective)) { return false; }
 
         return true;
     }
@@ -32,7 +32,7 @@ public static class Action_Attack
             }
             //At the end of animation, damage all of the units
             List<Unit.Keyword> keywords = new List<Unit.Keyword>();
-            if (unit.Keywords.Contains(Unit.Keyword.Player)) { keywords.Add(Unit.Keyword.Enemy); }
+            if (unit.CurKeywords.Contains(Unit.Keyword.Player)) { keywords.Add(Unit.Keyword.Enemy); }
             else { keywords.Add(Unit.Keyword.Player); }
 
             yield return GameManager.Instance.StartCoroutine(DamageAllInRange(unit, keywords));

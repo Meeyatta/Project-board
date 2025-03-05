@@ -44,7 +44,7 @@ public class GameManager : MonoBehaviour
     public GameObject TESTunittocreate;
     public UnityEvent<Vector2Int> ClickBackEvent;
     [HideInInspector] public UnityEvent CancelEvent;
-    public enum ActionType { Attack, KeywordedAttack, Move, Place, SelectUnit, PlayerCreate, A_Score };
+    public enum ActionType { Attack, KeywordedAttack, Move, Place, SelectUnit, PlayerCreate, Score };
     public Unit CurUnitSelected; //What unit is currently selected, if no unit - should be null
     public static GameManager Instance;
     public Coroutine C_GoingThroughActions;
@@ -163,10 +163,10 @@ public class GameManager : MonoBehaviour
 
             /* --ABILITIES-- */
 
-            //Ability: A_Scoring, checks for units nearby, adds points to player if only player units, adds points to enem if only enemy units
-            #region A_Score(ActionTargetUnits)(GameObject Object)
-            case ActionType.A_Score:
-                ActionSlot score = new ActionSlot(Ability_Score.Score(parameters.ActionTargetUnits), ActionType.A_Score);
+            //Goes through every objective and scores for the player or enemy (Depends on what is passed in parameters)
+            #region Score()
+            case ActionType.Score:
+                ActionSlot score = new ActionSlot(Ability_Score.GlobalScore(parameters.Keywords), ActionType.Score);
                 ActionQueue.Enqueue(score);
 
                 break;
@@ -268,7 +268,7 @@ public class GameManager : MonoBehaviour
     //returns true if unit has all of the keywords in "keywords"
     public bool UnitHasAllKeywords(Unit u, List<Unit.Keyword> keywords)
     {
-        foreach (var k in keywords) { if (!u.Keywords.Contains(k)) { return false; } }
+        foreach (var k in keywords) { if (!u.CurKeywords.Contains(k)) { return false; } }
         return true;
     }
 
@@ -326,7 +326,7 @@ public class GameManager : MonoBehaviour
                     List<Vector2Int> nCoords = new List<Vector2Int>(); nCoords.Add(coords);
 
                     # region If the selected unit is a player unit - a4) select it, otherwise - b4) TODO:
-                    if (BoardManager.Instance.Board[coords.x].Cells[coords.y].CurUnit.Keywords.Contains(Unit.Keyword.Player))
+                    if (BoardManager.Instance.Board[coords.x].Cells[coords.y].CurUnit.CurKeywords.Contains(Unit.Keyword.Player))
                     { //a4)
                         ActionParameters parameters = new ActionParameters(ActionType.SelectUnit, null, null, nCoords, null);
                         yield return StartCoroutine(Action(parameters));
@@ -388,6 +388,22 @@ public class GameManager : MonoBehaviour
 
             ActionParameters parameters = new ActionParameters(ActionType.KeywordedAttack, null, k, null, null);
             StartCoroutine(Action(parameters));
+        }
+        if (Input.GetKeyDown("s"))
+        {
+            Debug.Log("SCORING FOR PLAYER:");
+            List<Unit.Keyword> k = new List<Unit.Keyword> { Unit.Keyword.Player };
+            ActionParameters parameters = new ActionParameters(ActionType.Score, null, k, null, null);
+            StartCoroutine(Action(parameters));
+
+        }
+        if (Input.GetKeyDown("x"))
+        {
+            Debug.Log("SCORING FOR ENEMY:");
+            List<Unit.Keyword> k = new List<Unit.Keyword> { Unit.Keyword.Enemy };
+            ActionParameters parameters = new ActionParameters(ActionType.Score, null, k, null, null);
+            StartCoroutine(Action(parameters));
+
         }
     }
 }

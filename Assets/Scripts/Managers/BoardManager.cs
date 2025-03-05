@@ -8,20 +8,26 @@ using System.Linq;
 /*
     void Build() - Rebuilds all the cells both in the table and in the scene. Doing so sets all cells as unoccupied, 
         must copy the table and Cells object to keep the changes
-
     void Print() - Prints current board and units on it in the console
+
     List<Vector2Int> Get_UnitPositions(Unit unit) - takes a Unit and return's it's position on the board
     Vector3? BoardToWorldPosition(List<Vector2Int> poss) - Returns the Vector3 position of a cell under coordinates
     IEnumerator MoveUnit(Unit unit, List<Vector2Int> newPos) - Moves the "unit" to the newPos (If newPos can be moved to)
     List<Unit> Get_AllUnitsOnBoard() - Returns a list of all units on board cells
+
     Vector2Int CellClosestToPosition(Vector3 hitPosition) - Returns a singular cell closest to the used Vector3
     Vector2Int CursorToCellPosition() - Returns the cell under the player's cursor
     List<Vector2Int> ClosestUnitPosToCursor(Unit unit) - Returns the positions of the space where unit can be placed closest to the cursor
+
     bool AreCellsOccupied(List<Vector2Int> poss) - Checks if any of the cells are occupied
     Vector2Int WorldToBoardPosition(Vector3 pos) - Converts Vector3 position to a position on the board
+
     bool IsInBounds(Vector2Int v) - Returns true if the position is within bounds of the board
     bool IsOnBoard(Unit u) - Returns true if unit is on board
+
     List<Unit> Get_AllUnitsWithKeyword(Unit.Keyword keyword) - returns a list of units with specified keyword
+    List<Unit> Get_AllUnitsWithAbilities(List<Unit.Ability> abilities) - Returns a list of units with specified abilities
+
     List<Unit> Get_UnitsInRange(Unit u, int r) - returns list of units within "r" cells of the "u" unit
  */
 #endregion
@@ -396,6 +402,26 @@ public class BoardManager : MonoBehaviour
         }
         return false;
     }
+    //Returns a list of units with specified abilities
+    public List<Unit> Get_AllUnitsWithAbilities(List<Unit.Ability> abilities)
+    {
+        List<Unit> units = new List<Unit>();
+
+        foreach (var i in Board)
+        {
+            foreach (var c in i.Cells)
+            {
+                if (c == null || c.CurUnit == null) continue;
+
+                if (c.CurUnit.CurAbilities.Intersect<Unit.Ability>(abilities).Any())
+                {
+                    units.Add(c.CurUnit);
+                }
+            }
+        }
+
+        return units;
+    }
 
     //Returns a list of units with specified keyword
     public List<Unit> Get_AllUnitsWithKeywords(List<Unit.Keyword> keywords)
@@ -406,7 +432,9 @@ public class BoardManager : MonoBehaviour
         {
             foreach (var c in i.Cells)
             {
-                if (c.CurUnit.Keywords.Intersect<Unit.Keyword>(keywords).Any())
+                if (c == null || c.CurUnit == null) continue;
+
+                if (c.CurUnit.CurKeywords.Intersect<Unit.Keyword>(keywords).Any())
                 {
                     units.Add(c.CurUnit);
                 }

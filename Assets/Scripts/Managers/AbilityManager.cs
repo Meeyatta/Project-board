@@ -31,12 +31,7 @@ public class AbilityManager : MonoBehaviour
         List<Unit> all = BoardManager.Instance.Get_AllUnitsOnBoard();
         foreach (var v in all)
         {
-            if (Ability_Score.Check(v))
-            {
-                List<Unit> s = new List<Unit> { v };
-                ActionParameters parameters = new ActionParameters(GameManager.ActionType.A_Score, s, null, null, null);
-                yield return StartCoroutine(GameManager.Instance.Action(parameters));
-            }
+            //Score is handled as a single call
         }
 
         
