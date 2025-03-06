@@ -20,9 +20,6 @@ using UnityEngine.InputSystem;
 
 /*
     LIST OF USEFUL FUNCTIONS:
-        List<List<Vector2Int>> GetPossibleMovement(Unit unit) - Returns all possible positions what a unit can move using their current muveset    
-        List<Unit> GetPossibleTargets(Unit source, List<Unit.Keyword> keywords) - Returns all possible units what a source (unit) can 
-            affect using their current attack Zones
         bool UnitHasAllKeywords(Unit u, List<Unit.Keyword> keywords) - returns true if unit has all of the keywords in "keywords"
         List<Unit> Get_OnlyUnitsWithKeywords(List<Unit> all, List<Unit.Keyword> keywords) - Groups units from a list into a different list only if
             they have the keywords in "keywords"
@@ -181,90 +178,7 @@ public class GameManager : MonoBehaviour
         }
         yield return null;
     }
-
-
-    //Returns all possible positions what a unit can move using their current muveset    
-    public List<List<Vector2Int>> Get_PossibleMovement(Unit unit)
-        {
-           // Debug.Log("Possible movement positions:");
-            List<List<Vector2Int>> res = new List<List<Vector2Int>>();
-
-            #region Checking if a line crosses through another unit
-            foreach (Moveset.Line line in unit.CurMoveset.Lines)
-                {
-                    bool isObscured = false;
-                    for (int i = 0; i < line.Positions.Count; i++)
-                    {
-                        string lineS = "";
-                        List<Vector2Int> iPositions = new List<Vector2Int>();
-                        foreach (Vector2Int unitP in BoardManager.Instance.Get_UnitPositions(unit))
-                        {                    
-                            if (!BoardManager.Instance.IsInBounds(line.Positions[i] + unitP) || isObscured) { break; }
-                            int x = line.Positions[i].x; int y = line.Positions[i].y;
-
-                            Debug.Log("Going through line " + i + " " + (line.Positions[i] + unitP).x + " " + (line.Positions[i] + unitP).y);
-
-                            if (BoardManager.Instance.Board[unitP.x + x].Cells[unitP.y + y].CurUnit == unit)
-                            {
-                                continue;
-                            }
-                            if (BoardManager.Instance.Board[unitP.x + x].Cells[unitP.y + y].CurUnit != null) 
-                            {
-                                if (!line.IsEvading) { isObscured = true; }
-                                break;
-                            }
-                            
-                            //Debug.Log("     " + (unitP.x + x) + " " + (unitP.y + y) + " cur unit - " + BoardManager.Instance.Board[unitP.x + x].Cells[unitP.y + y].CurUnit);
-                            lineS += line.Positions[i] + unitP + " ";
-                            iPositions.Add(line.Positions[i] + unitP);                          
-                        }
-
-                        //For some reason sometimes the code can decide to select positions what the unit shouldn't physically be able to fit in,
-                        //  which leads to problems, so this check fixes that.
-                        //  This issue will probably come up later but fuck it I guess. Future me I hope this smug comment was worth your patience 
-                        if (iPositions.Count == BoardManager.Instance.Get_UnitPositions(unit).Count && !isObscured) { res.Add(iPositions); }            
-                        
-                    }           
-            }   
-
-           
-
-            #endregion
-            return res;
-        }
-
-    //Returns all possible units what a source (unit) can affect using their current attack Zones
-    public List<Unit> GetPossibleTargets(Unit source, List<Unit.Keyword> keywords)
-    {
-        List<Unit> res = new List<Unit>();
-
-        #region This goes through each individaul line and stops if it encounters a unit
-        if (source.CurAttackZone.Lines.Count == 0) { return res; }
-
-        foreach (var line in source.CurAttackZone.Lines)
-        {
-            for (int i = 0; i < line.Positions.Count; i++)
-            {
-                foreach (Vector2Int unitP in BoardManager.Instance.Get_UnitPositions(source))
-                {
-                    if (!BoardManager.Instance.IsInBounds(line.Positions[i] + unitP)) { break; }
-                    int x = line.Positions[i].x; int y = line.Positions[i].y;
-                    if (BoardManager.Instance.Board[unitP.x + x].Cells[unitP.y + y].CurUnit != null && !line.IsEvading) 
-                    { 
-                        Unit curUn = BoardManager.Instance.Board[unitP.x + x].Cells[unitP.y + y].CurUnit;
-                        if (!res.Contains(curUn) && UnitHasAllKeywords(curUn, keywords)) { res.Add(curUn); }
-                        break;
-                    }
-                    
-                }
-
-            }
-        }
-        #endregion
-        return res;
-
-    }
-    
+  
     //returns true if unit has all of the keywords in "keywords"
     public bool UnitHasAllKeywords(Unit u, List<Unit.Keyword> keywords)
     {

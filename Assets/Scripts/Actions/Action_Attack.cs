@@ -2,15 +2,52 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+//Allows for a group of units to attack or returns what possible units can be attacked by the unit
 public static class Action_Attack 
 {
     const string AttackAnimTrigger = "attack";
+
+    //Check if the unit isn't meant to/can't attack
     public static bool IsAbleToAttack(Unit u)
     {
-        if (!BoardManager.Instance.IsOnBoard(u) || u.CurKeywords.Contains(Unit.Keyword.Objective)) { return false; }
+        if (!BoardManager.Instance.IsOnBoard(u) || u.CurKeywords.Contains(Unit.Keyword.Neutral)) { return false; }
 
         return true;
     }
+    
+    //Returns all possible units what a source (unit) can affect using their current attack Zones
+    public static List<Unit> GetPossibleTargets(Unit source, List<Unit.Keyword> keywords)
+    {
+        List<Unit> res = new List<Unit>();
+
+        #region This goes through each individaul line and stops if it encounters a unit
+        if (source.CurAttackZone.Lines.Count == 0) { return res; }
+
+        foreach (var line in source.CurAttackZone.Lines)
+        {
+            for (int i = 0; i < line.Positions.Count; i++)
+            {
+                foreach (Vector2Int unitP in BoardManager.Instance.Get_UnitPositions(source))
+                {
+                    if (!BoardManager.Instance.IsInBounds(line.Positions[i] + unitP)) { break; }
+                    int x = line.Positions[i].x; int y = line.Positions[i].y;
+                    if (BoardManager.Instance.Board[unitP.x + x].Cells[unitP.y + y].CurUnit != null && !line.IsEvading)
+                    {
+                        Unit curUn = BoardManager.Instance.Board[unitP.x + x].Cells[unitP.y + y].CurUnit;
+                        if (!res.Contains(curUn) && GameManager.Instance.UnitHasAllKeywords(curUn, keywords)) { res.Add(curUn); }
+                        break;
+                    }
+
+                }
+
+            }
+        }
+        #endregion
+        return res;
+
+    }
+    
+    //Makes units in a list initiate an attack
     public static IEnumerator Attack(List<Unit> ActionTargetUnits)
     {
 
@@ -102,7 +139,7 @@ public static class Action_Attack
     }
     public static IEnumerator DamageAllInRange(Unit source, List<Unit.Keyword> keywords)
     {
-        List<Unit> targets = GameManager.Instance.GetPossibleTargets(source, keywords);
+        List<Unit> targets = GetPossibleTargets(source, keywords);
 
 
         foreach (Unit target in targets) 

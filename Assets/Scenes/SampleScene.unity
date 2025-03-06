@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 705507994}
-  m_IndirectSpecularColor: {r: 0, g: 0, b: 0, a: 1}
+  m_IndirectSpecularColor: {r: 0.172768, g: 0.21589169, b: 0.29782546, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -7311,7 +7311,8 @@ MonoBehaviour:
   CurAttackZone: {fileID: 11400000, guid: 0975c85d43f513e4788e5c187d780b69, type: 2}
   MaxHealth: 3
   CurrentHealth: 0
-  Keywords: 01000000
+  BaseAbilities: 
+  BaseKeywords: 01000000
   ModelOffset: {x: 0, y: 1.5, z: 0}
   Anim: {fileID: 0}
 --- !u!4 &57155766
@@ -37674,19 +37675,24 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 11416984, guid: c080686877cf77f42a1a078076d57fe5, type: 3}
       propertyPath: textList.Array.size
-      value: 4
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 11416984, guid: c080686877cf77f42a1a078076d57fe5, type: 3}
       propertyPath: textList.Array.data[0].s
-      value: Add event for win or loss
+      value: Objective scoring doesn't work well with multicell units
       objectReference: {fileID: 0}
     - target: {fileID: 11416984, guid: c080686877cf77f42a1a078076d57fe5, type: 3}
       propertyPath: textList.Array.data[1].s
-      value: Add abilities
+      value: "Multicell units can't be moved less than their size \n(meaning if a
+        unit is 2x2, you can't move it 1 cell to the \nright, you HAVE to move it
+        2 cells)"
       objectReference: {fileID: 0}
     - target: {fileID: 11416984, guid: c080686877cf77f42a1a078076d57fe5, type: 3}
       propertyPath: textList.Array.data[2].s
-      value: Add event for checking objective scoring
+      value: 'Finish making an effect for placing a transparent unit
+
+        when
+        selecting a movement destination'
       objectReference: {fileID: 0}
     - target: {fileID: 11416984, guid: c080686877cf77f42a1a078076d57fe5, type: 3}
       propertyPath: textList.Array.data[3].s
@@ -37736,11 +37742,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 11416984, guid: c080686877cf77f42a1a078076d57fe5, type: 3}
       propertyPath: textList.Array.data[0].state
-      value: 2
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 11416984, guid: c080686877cf77f42a1a078076d57fe5, type: 3}
       propertyPath: textList.Array.data[1].state
-      value: 2
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 11416984, guid: c080686877cf77f42a1a078076d57fe5, type: 3}
       propertyPath: textList.Array.data[2].state
@@ -114158,7 +114164,8 @@ MonoBehaviour:
   CurAttackZone: {fileID: 11400000, guid: 0975c85d43f513e4788e5c187d780b69, type: 2}
   MaxHealth: 3
   CurrentHealth: 0
-  Keywords: 00000000
+  BaseAbilities: 
+  BaseKeywords: 00000000
   ModelOffset: {x: 0, y: 1.5, z: 0}
   Anim: {fileID: 0}
 --- !u!95 &1109780962
@@ -134688,7 +134695,8 @@ MonoBehaviour:
   CurAttackZone: {fileID: 11400000, guid: 0975c85d43f513e4788e5c187d780b69, type: 2}
   MaxHealth: 3
   CurrentHealth: 0
-  Keywords: 01000000
+  BaseAbilities: 
+  BaseKeywords: 01000000
   ModelOffset: {x: 0, y: 1.5, z: 0}
   Anim: {fileID: 0}
 --- !u!95 &1291814688
@@ -198700,7 +198708,8 @@ MonoBehaviour:
   CurAttackZone: {fileID: 0}
   MaxHealth: 999
   CurrentHealth: 0
-  Keywords: 00000000
+  BaseAbilities: 01000000
+  BaseKeywords: 03000000
   ModelOffset: {x: 0, y: 1.5, z: 0}
   Anim: {fileID: 0}
 --- !u!4 &1879847891
@@ -215423,7 +215432,8 @@ MonoBehaviour:
   CurAttackZone: {fileID: 0}
   MaxHealth: 9999
   CurrentHealth: 0
-  Keywords: 02000000
+  BaseAbilities: 0100000000000000
+  BaseKeywords: 0300000002000000
   ModelOffset: {x: 0, y: 1.5, z: 0}
   Anim: {fileID: 0}
 --- !u!4 &2064781835

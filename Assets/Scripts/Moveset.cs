@@ -18,8 +18,8 @@ public class Moveset : ScriptableObject
     public class Line{
         public string Direction;
         public List<Vector2Int> Positions;
-        public bool IsEvading;
     }
 
+    public bool IsEvading;
     public List<Line> Lines;
 }
