@@ -12,14 +12,13 @@ public static class Action_SelectUnit
         //Debug.Log("SELECTED ON" + coords);
 
         
-        Unit ogUnit = GameManager.Instance.CurUnitSelected; List<Unit> us = new List<Unit>();
+        Unit ogUnit = GameManager.Instance.CurUnitSelected; 
 
         if (GameManager.Instance.CurUnitSelected != BoardManager.Instance.Board[coords.x].Cells[coords.y].CurUnit)
         {
             GameManager.Instance.CurUnitSelected = BoardManager.Instance.Board[coords.x].Cells[coords.y].CurUnit;
             ogUnit = GameManager.Instance.CurUnitSelected;
-            us.Add(GameManager.Instance.CurUnitSelected);
-            GameManager.Instance.ShowMovementEvent.Invoke(us);
+            GameManager.Instance.ShowMovementEvent.Invoke(GameManager.Instance.CurUnitSelected);
         }
 
 
@@ -29,6 +28,6 @@ public static class Action_SelectUnit
             //Debug.Log("IS SELECTING A UNIT");
             yield return new WaitForSeconds(0.001f);
         }
-        if (us.Count > 0) { GameManager.Instance.HideMovementEvent.Invoke(us); }
+        GameManager.Instance.HideMovementEvent.Invoke(GameManager.Instance.CurUnitSelected); 
     }
 }
