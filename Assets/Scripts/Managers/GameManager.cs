@@ -52,8 +52,8 @@ public class GameManager : MonoBehaviour
     
 
     #region Events 
-    public UnityEvent<Unit> ShowMovementEvent;
-    public UnityEvent<Unit> HideMovementEvent;
+    public UnityEvent<List<Unit>> ShowMovementEvent;
+    public UnityEvent<List<Unit>> HideMovementEvent;
 
     public UnityEvent<List<Unit>> ShowPlacementEvent;
     public UnityEvent<List<Unit>> HidePlacementEvent;

@@ -27,7 +27,7 @@ public static class Action_Move
                     if (!BoardManager.Instance.IsInBounds(line.Positions[i] + unitP) || isObscured) { break; }
                     int x = line.Positions[i].x; int y = line.Positions[i].y;
 
-                    Debug.Log("Going through line " + line.Direction + " " + (line.Positions[i] + unitP).x + " " + (line.Positions[i] + unitP).y);
+                    Debug.Log("Going through line " + i + " " + (line.Positions[i] + unitP).x + " " + (line.Positions[i] + unitP).y);
 
                     if (BoardManager.Instance.Board[unitP.x + x].Cells[unitP.y + y].CurUnit != null &&
                         !BoardManager.Instance.Board[unitP.x + x].Cells[unitP.y + y].CurUnit == unit)
@@ -113,55 +113,43 @@ public static class Action_Move
         return results2;
     }
 
-
     public static IEnumerator Move(Unit ActionTargetUnit, List<Vector2Int> CellsCoordinates)
     {
-        #region Checking for invalid parameters
         if (ActionTargetUnit == null || CellsCoordinates.Count == 0) Debug.LogError("INVALID ACTION PARAMETERS - MOVE(ActionTargetUnit, CellCoordinates)");
 
-        foreach (Vector2Int v in CellsCoordinates)
-        {
-            if (v.x >= BoardManager.Instance.Board.Count || v.y >= BoardManager.Instance.Board[0].Cells.Count) { Debug.LogError("ERROR: POSITION '" + v + "' OUT OF BOUNDS"); yield break; }
-        }
-        #endregion
 
-        List<Vector2Int> endPos = new List<Vector2Int>();
-        if (ActionTargetUnit.Size.Positions.Count == 1)
+        List<Vector2Int> newPoss = new List<Vector2Int>();
+
+        #region If it's a single cell sized unit
+        if (ActionTargetUnit.Size.Positions.Count > 1) 
         {
+            
             foreach (var v in Get_PossibleMovement_Multi(ActionTargetUnit))
             {
                 foreach (var vv in v)
                 {
-                    if (vv.Contains(CellsCoordinates[0])) { endPos = CellsCoordinates; }
-                }           
-            }       
-        }
-        else
-        {
-            foreach (var v in Get_PossibleMovement(ActionTargetUnit))
-            {
-                
-                if (v.Contains(CellsCoordinates[0])) { endPos = v; foreach (var c in v)
-                    {
-                        Debug.Log(c);
-                    }
+                    if (vv.Intersect<Vector2Int>(CellsCoordinates).Any()) { newPoss = vv; break; }
                 }
             }
         }
-        if (endPos != null && endPos.Count > 0)
+        #endregion
+        #region else - it's a multicell unit
+        else
         {
-            List<Vector2Int> oldPos = BoardManager.Instance.Get_UnitPositions(ActionTargetUnit);
-            foreach (Vector2Int v in oldPos)
+            foreach (List<Vector2Int> l in Get_PossibleMovement(ActionTargetUnit))
             {
-                BoardManager.Instance.Board[v.x].Cells[v.y].CurUnit = null;
+                if (l.Intersect<Vector2Int>(CellsCoordinates).Any()) { newPoss = l; break; }
             }
-
-            yield return GameManager.Instance.StartCoroutine(BoardManager.Instance.PlaceUnit(ActionTargetUnit, endPos));
         }
-        
+        #endregion
+
+
+        if (newPoss.Count > 0)
+        {
+            yield return GameManager.Instance.StartCoroutine(BoardManager.Instance.MoveUnit(ActionTargetUnit, newPoss));
+        }
 
         yield return new WaitForSeconds(0.001f);
     }
-
 
 }

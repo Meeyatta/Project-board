@@ -39,7 +39,6 @@ public class EffectManager : MonoBehaviour
     public Dictionary<Tag, Queue<GameObject>> CurrentPools = new Dictionary<Tag, Queue<GameObject>>();
 
     //Placement specific
-    Coroutine CurShowingPossibleUnitPosition = null;
     Coroutine CurPlacement;
 
      
@@ -170,44 +169,31 @@ public class EffectManager : MonoBehaviour
     }
     #endregion
 
-    #region Showing position of unit under the cursor when moving
+    #region Showing position of unit under the cursror when moving
     void StartShowingPossibleUnitPosition(Unit unit)
     {
-        if (CurShowingPossibleUnitPosition == null) { CurShowingPossibleUnitPosition = StartCoroutine(ShowingPossibleUnitPosition(unit)); }
+
     }
-    void StopShowingPossibleUnitPosition()
+    void StopShowingPossibleUnitPosition(Unit unit)
     {
-        StopCoroutine(CurShowingPossibleUnitPosition);
-        CurShowingPossibleUnitPosition = null;
+
     }
     IEnumerator ShowingPossibleUnitPosition(Unit unit) 
     {
-        yield return new WaitForSeconds(0.1f);
-        while (CurShowingPossibleUnitPosition != null)
-        {
-            yield return new WaitForSeconds(0.1f);
-            List<Vector2Int> poss = new List<Vector2Int>();
-            foreach (var v in unit.Size.Positions)
-            {
-                poss.Add(v + BoardManager.Instance.CursorToCellPosition());
-            }
-            unit.gameObject.transform.position = BoardManager.Instance.BoardToWorldPosition(poss).Value + unit.ModelOffset;
-
-        }
         yield return new WaitForSeconds(0.1f);
     }
     #endregion
 
     #region Showing possible movement positions of unit
-    void ShowMovement(Unit unit)
+    void ShowMovement(List<Unit> units)
     {
-      StartShowingPossibleUnitPosition(unit);
-
-      List<GameObject> ePu = new List<GameObject>();
+        foreach (Unit u in units)
+        {
+            List<GameObject> ePu = new List<GameObject>();
             #region If it's a single cell sized unit
-            if (unit.Size.Positions.Count == 1)
+            if (u.Size.Positions.Count == 1)
             {
-                foreach (var vv in Action_Move.Get_PossibleMovement(unit))
+                foreach (var vv in Action_Move.Get_PossibleMovement(u))
                 {
                     foreach (var v in vv)
                     {
@@ -215,14 +201,14 @@ public class EffectManager : MonoBehaviour
                         GameObject overlay = InstantiateFromPool(Tag.Movement, BoardManager.Instance.BoardToWorldPosition(single).Value, Quaternion.identity);
                         ePu.Add(overlay);
                     }
-                    if (!UnitEffectsToHide.ContainsKey(unit)) { UnitEffectsToHide.Add(unit, ePu); }
+                    if (!UnitEffectsToHide.ContainsKey(u)) { UnitEffectsToHide.Add(u, ePu); }
                 }
             }
             #endregion
             #region else - unit is multicell
-            if (unit.Size.Positions.Count > 1)
+            if (u.Size.Positions.Count > 1)
             {
-                foreach (var line in Action_Move.Get_PossibleMovement_Multi(unit))
+                foreach (var line in Action_Move.Get_PossibleMovement_Multi(u))
                 {
                     foreach (var positions in line)
                     {
@@ -232,23 +218,27 @@ public class EffectManager : MonoBehaviour
                             GameObject overlay = InstantiateFromPool(Tag.Movement, BoardManager.Instance.BoardToWorldPosition(single).Value, Quaternion.identity);
                             ePu.Add(overlay);
                         }
-                        if (!UnitEffectsToHide.ContainsKey(unit)) { UnitEffectsToHide.Add(unit, ePu); }
+                        if (!UnitEffectsToHide.ContainsKey(u)) { UnitEffectsToHide.Add(u, ePu); }
                     }
                 }
             }
-            #endregion     
-    }
-    void HideMovement(Unit unit)
-    {
-        if (!UnitEffectsToHide.ContainsKey(unit)) return;
+            #endregion
 
-        StopShowingPossibleUnitPosition();
-
-        foreach (var ef in UnitEffectsToHide[unit])
-        {
-             DestroyToPool(ef);
         }
-       UnitEffectsToHide.Remove(unit);     
+    }
+    void HideMovement(List<Unit> units)
+    {
+        //Debug.Log("Hid movement");
+        foreach (Unit u in units)
+        {
+            if (!UnitEffectsToHide.ContainsKey(u)) return;
+
+            foreach(var ef in UnitEffectsToHide[u])
+            {
+                DestroyToPool(ef);
+            }
+            UnitEffectsToHide.Remove(u);
+        }
     }
     #endregion
     public GameObject InstantiateFromPool(Tag tag, Vector3 position, Quaternion rotation) 

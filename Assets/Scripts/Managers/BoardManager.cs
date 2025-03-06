@@ -12,6 +12,7 @@ using System.Linq;
 
     List<Vector2Int> Get_UnitPositions(Unit unit) - takes a Unit and return's it's position on the board
     Vector3? BoardToWorldPosition(List<Vector2Int> poss) - Returns the Vector3 position of a cell under coordinates
+    IEnumerator MoveUnit(Unit unit, List<Vector2Int> newPos) - Moves the "unit" to the newPos (If newPos can be moved to)
     List<Unit> Get_AllUnitsOnBoard() - Returns a list of all units on board cells
 
     Vector2Int CellClosestToPosition(Vector3 hitPosition) - Returns a singular cell closest to the used Vector3
@@ -206,6 +207,25 @@ public class BoardManager : MonoBehaviour
 
         return newP;
 
+    }
+
+    //Moves the "unit" to the newPos (If newPos can be moved to)
+    public IEnumerator MoveUnit(Unit unit, List<Vector2Int> newPos)
+    {
+        foreach (Vector2Int v in newPos)
+        {
+            if (v.x >= Board.Count || v.y >= Board[0].Cells.Count) { Debug.LogError("ERROR: POSITION '" + v + "' OUT OF BOUNDS"); yield break; }
+        }
+
+        List<Vector2Int> oldPos = Get_UnitPositions(unit);
+        foreach (Vector2Int v in oldPos)
+        {
+            Board[v.x].Cells[v.y].CurUnit = null;
+        }
+
+        yield return StartCoroutine(PlaceUnit(unit, newPos));
+
+        yield break;
     }
 
     //Returns a list of all units on board cells
