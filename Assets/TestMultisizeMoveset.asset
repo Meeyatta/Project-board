@@ -10,38 +10,35 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: a44b5f0d9f677e94192ee6ba489e1cc2, type: 3}
-  m_Name: TestMoveset
+  m_Name: TestMultisizeMoveset
   m_EditorClassIdentifier: 
+  IsEvading: 0
   Lines:
-  - Direction: up
+  - Name: Up
     Positions:
-    - {x: 0, y: -1}
-    IsEvading: 0
-  - Direction: up-right
+    - Cords:
+      - {x: 0, y: -1}
+      - {x: 0, y: 0}
+      - {x: 0, y: 0}
+      - {x: 0, y: 0}
+  - Name: 
     Positions:
-    - {x: 1, y: -1}
-    IsEvading: 0
-  - Direction: right
+    - Cords: []
+  - Name: 
     Positions:
-    - {x: 1, y: 0}
-    IsEvading: 1
-  - Direction: right-down
+    - Cords: []
+  - Name: 
     Positions:
-    - {x: 1, y: 1}
-    IsEvading: 0
-  - Direction: down
+    - Cords: []
+  - Name: 
     Positions:
-    - {x: 0, y: 1}
-    IsEvading: 0
-  - Direction: down-left
+    - Cords: []
+  - Name: 
     Positions:
-    - {x: -1, y: 1}
-    IsEvading: 0
-  - Direction: left
+    - Cords: []
+  - Name: 
     Positions:
-    - {x: -1, y: 0}
-    IsEvading: 0
-  - Direction: left-up
+    - Cords: []
+  - Name: 
     Positions:
-    - {x: -1, y: -1}
-    IsEvading: 0
+    - Cords: []
