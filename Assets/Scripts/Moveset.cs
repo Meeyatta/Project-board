@@ -15,15 +15,9 @@ using UnityEngine;
 public class Moveset : ScriptableObject
 {
     [System.Serializable]
-    public class Cells
-    {
-        public List<Vector2Int> Cords;
-    }
-
-    [System.Serializable]
     public class Line{
-        public string Name;
-        public List<Cells> Positions;
+        public string Direction;
+        public List<Vector2Int> Positions;
     }
 
     public bool IsEvading;

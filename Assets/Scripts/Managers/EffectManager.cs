@@ -208,16 +208,18 @@ public class EffectManager : MonoBehaviour
             #region else - unit is multicell
             if (u.Size.Positions.Count > 1)
             {
-                foreach (var line in Action_Move.Get_PossibleMovement(u))
+                foreach (var line in Action_Move.Get_PossibleMovement_Multi(u))
                 {
-                    foreach (var v in line)
+                    foreach (var positions in line)
                     {
-                        
-                        List<Vector2Int> single = new List<Vector2Int>(); single.Add(v);
-                        GameObject overlay = InstantiateFromPool(Tag.Movement, BoardManager.Instance.BoardToWorldPosition(single).Value, Quaternion.identity);
-                        ePu.Add(overlay);                      
+                        foreach (var v in positions)
+                        {
+                            List<Vector2Int> single = new List<Vector2Int>(); single.Add(v);
+                            GameObject overlay = InstantiateFromPool(Tag.Movement, BoardManager.Instance.BoardToWorldPosition(single).Value, Quaternion.identity);
+                            ePu.Add(overlay);
+                        }
+                        if (!UnitEffectsToHide.ContainsKey(u)) { UnitEffectsToHide.Add(u, ePu); }
                     }
-                    if (!UnitEffectsToHide.ContainsKey(u)) { UnitEffectsToHide.Add(u, ePu); }
                 }
             }
             #endregion
