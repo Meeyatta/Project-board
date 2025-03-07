@@ -23,12 +23,14 @@ public class Unit : MonoBehaviour
     #endregion
 
     [Header("Keywords:")]
+    #region Keywords
     public List<Keyword> BaseKeywords = new List<Keyword>();
     public HashSet<Keyword> CondKeywords = new HashSet<Keyword>();
     public HashSet<Keyword> CurKeywords = new HashSet<Keyword>();
+    #endregion
 
     [Header("---------")]
-
+    public GameObject UnitModelShowcase; //This is used to showcase where the unit model COULD be placed with move of creation
     public Vector3 ModelOffset;
 
     public enum Ability { Score, Invulnerable }
@@ -42,6 +44,9 @@ public class Unit : MonoBehaviour
     void Start()
     {
         CurrentHealth = MaxHealth;
+
+        UnitModelShowcase = Instantiate(UnitModelShowcase);
+        UnitModelShowcase.SetActive(false);
     }
 
     void UpdateInfo()

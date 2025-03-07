@@ -40,6 +40,7 @@ public class EffectManager : MonoBehaviour
 
     //Placement specific
     Coroutine CurPlacement;
+    Coroutine CurUnitMovePosShowcase;
 
      
     void Start()
@@ -88,7 +89,7 @@ public class EffectManager : MonoBehaviour
     {
         Singleton();
     }
-    #region Showing unit plaement when creating a new unit
+    #region Showing unit placement when creating a new unit
     void StartShowingPlacement(List<Unit> units)
     {
         if (CurPlacement == null)
@@ -169,17 +170,44 @@ public class EffectManager : MonoBehaviour
     }
     #endregion
 
-    #region Showing position of unit under the cursror when moving
+    #region Showing position of unit under the cursor when moving
     void StartShowingPossibleUnitPosition(Unit unit)
     {
-
+        if (CurUnitMovePosShowcase == null) 
+        {
+            CurUnitMovePosShowcase = StartCoroutine(ShowingPossibleUnitPosition(unit)); 
+        }
     }
     void StopShowingPossibleUnitPosition(Unit unit)
     {
 
+        StopCoroutine(ShowingPossibleUnitPosition(unit)); 
+        unit.UnitModelShowcase.SetActive(false);
+        CurUnitMovePosShowcase = null;
     }
     IEnumerator ShowingPossibleUnitPosition(Unit unit) 
     {
+        yield return new WaitForSeconds(0.1f);
+
+        while (CurUnitMovePosShowcase != null) 
+        {
+            yield return new WaitForSeconds(0.01f);
+            if (BoardManager.Instance.ClosestUnitPosToCursor(unit) == null) { continue; }
+
+            
+
+            List<Vector2Int> poss = BoardManager.Instance.ClosestUnitPosToCursor(unit);
+            for (int i = 0; i < poss.Count; i++)
+            {
+                List<Vector2Int> l = new List<Vector2Int> { BoardManager.Instance.CursorToCellPosition() };
+                List<Vector2Int> ll = Action_Move.Get_PositionsFromSingleCoordinate(unit, l);
+
+                unit.UnitModelShowcase.SetActive(true);
+                unit.UnitModelShowcase.transform.position = BoardManager.Instance.BoardToWorldPosition(ll).Value + unit.ModelOffset;
+            }
+
+        }
+
         yield return new WaitForSeconds(0.1f);
     }
     #endregion
@@ -187,43 +215,24 @@ public class EffectManager : MonoBehaviour
     #region Showing possible movement positions of unit
     void ShowMovement(List<Unit> units)
     {
+
         foreach (Unit u in units)
         {
             List<GameObject> ePu = new List<GameObject>();
-            #region If it's a single cell sized unit
-            if (u.Size.Positions.Count == 1)
-            {
-                foreach (var vv in Action_Move.Get_PossibleMovement(u))
+            StartShowingPossibleUnitPosition(u);
+                foreach (var v in Action_Move.Get_PossibleMovement(u))
                 {
-                    foreach (var v in vv)
+                    foreach (var vv in v)
                     {
-                        List<Vector2Int> single = new List<Vector2Int>(); single.Add(v);
-                        GameObject overlay = InstantiateFromPool(Tag.Movement, BoardManager.Instance.BoardToWorldPosition(single).Value, Quaternion.identity);
-                        ePu.Add(overlay);
+                        foreach (var vvv in vv)
+                        {
+                            List<Vector2Int> single = new List<Vector2Int>(); single.Add(vvv);
+                            GameObject overlay = InstantiateFromPool(Tag.Movement, BoardManager.Instance.BoardToWorldPosition(single).Value, Quaternion.identity);
+                            ePu.Add(overlay);
+                        }                        
                     }
                     if (!UnitEffectsToHide.ContainsKey(u)) { UnitEffectsToHide.Add(u, ePu); }
                 }
-            }
-            #endregion
-            #region else - unit is multicell
-            if (u.Size.Positions.Count > 1)
-            {
-                foreach (var line in Action_Move.Get_PossibleMovement_Multi(u))
-                {
-                    foreach (var positions in line)
-                    {
-                        foreach (var v in positions)
-                        {
-                            List<Vector2Int> single = new List<Vector2Int>(); single.Add(v);
-                            GameObject overlay = InstantiateFromPool(Tag.Movement, BoardManager.Instance.BoardToWorldPosition(single).Value, Quaternion.identity);
-                            ePu.Add(overlay);
-                        }
-                        if (!UnitEffectsToHide.ContainsKey(u)) { UnitEffectsToHide.Add(u, ePu); }
-                    }
-                }
-            }
-            #endregion
-
         }
     }
     void HideMovement(List<Unit> units)
@@ -232,8 +241,9 @@ public class EffectManager : MonoBehaviour
         foreach (Unit u in units)
         {
             if (!UnitEffectsToHide.ContainsKey(u)) return;
+            StopShowingPossibleUnitPosition(u);
 
-            foreach(var ef in UnitEffectsToHide[u])
+            foreach (var ef in UnitEffectsToHide[u])
             {
                 DestroyToPool(ef);
             }

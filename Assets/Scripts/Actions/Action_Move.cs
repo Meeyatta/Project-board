@@ -9,142 +9,148 @@ public static class Action_Move
 {
     //Returns all possible positions what a unit can move using their current moveset
     //This is used for a single cell unit, but a bunch or redundancies are left from this also being for multicell units
-    public static List<List<Vector2Int>> Get_PossibleMovement(Unit unit)
+    
+    public static List<List<List<Vector2Int>>> Get_PossibleMovement(Unit u)
     {
-        // Debug.Log("Possible movement positions:");
-        List<List<Vector2Int>> res = new List<List<Vector2Int>>();
+        List<List<List<Vector2Int>>> res1 = new List<List<List<Vector2Int>>>();
+        List<Vector2Int> uPos = BoardManager.Instance.Get_UnitPositions(u);
 
-        #region Checking if a line crosses through another unit
-        foreach (Moveset.Line line in unit.CurMoveset.Lines)
+        #region Get ALL positions according to the moveset
+        foreach (var v in u.CurMoveset.Lines)
         {
+            List<List<Vector2Int>> line = new List<List<Vector2Int>>();
+            foreach (var linePos in v.Positions)
+            {
+                List<Vector2Int> poss = new List<Vector2Int>();
+                foreach (var UnitPos in uPos) 
+                {
+                    poss.Add((UnitPos + linePos));
+                }
+                line.Add(poss);
+            }
+            res1.Add(line);
+        }
+        #endregion
+
+        List<List<List<Vector2Int>>> res2 = new List<List<List<Vector2Int>>>();
+        #region Remove positions outside the board
+        foreach (var line in res1)
+        {
+            List<List<Vector2Int>> line2 = new List<List<Vector2Int>>();
             bool isObscured = false;
-            for (int i = 0; i < line.Positions.Count; i++)
+            foreach (var poss in line)
             {
-                string lineS = "";
-                List<Vector2Int> iPositions = new List<Vector2Int>();
-                foreach (Vector2Int unitP in BoardManager.Instance.Get_UnitPositions(unit))
+                foreach (var pos in poss) 
                 {
-                    if (!BoardManager.Instance.IsInBounds(line.Positions[i] + unitP) || isObscured) { break; }
-                    int x = line.Positions[i].x; int y = line.Positions[i].y;
+                    if (!BoardManager.Instance.IsInBounds(pos)) { isObscured = true; break; }
+                }
+                if (!isObscured)
+                {
+                    line2.Add(poss);
+                }
+            }
+            res2.Add(line2);
+        }
+        #endregion
 
-                    Debug.Log("Going through line " + i + " " + (line.Positions[i] + unitP).x + " " + (line.Positions[i] + unitP).y);
-
-                    if (BoardManager.Instance.Board[unitP.x + x].Cells[unitP.y + y].CurUnit != null &&
-                        !BoardManager.Instance.Board[unitP.x + x].Cells[unitP.y + y].CurUnit == unit)
-                    {
-                        if (unit.CurMoveset.IsEvading) { isObscured = true; }
-                        break;
+        List<List<List<Vector2Int>>> res3 = new List<List<List<Vector2Int>>>();
+        #region Remove positions occupied by other units
+        foreach (var line in res2)
+        {
+            List<List<Vector2Int>> line3 = new List<List<Vector2Int>>();
+            foreach (var poss in line)
+            {
+                bool isOccupied = false;
+                foreach (var pos in poss)
+                {
+                    if (BoardManager.Instance.Board[pos.x].Cells[pos.y].CurUnit != null &&
+                        BoardManager.Instance.Board[pos.x].Cells[pos.y].CurUnit != u) 
+                    {                         
+                        isOccupied = true; break; 
                     }
-
-                    //Debug.Log("     " + (unitP.x + x) + " " + (unitP.y + y) + " cur unit - " + BoardManager.Instance.Board[unitP.x + x].Cells[unitP.y + y].CurUnit);
-                    lineS += line.Positions[i] + unitP + " ";
-                    iPositions.Add(line.Positions[i] + unitP);
                 }
-
-                //For some reason sometimes the code can decide to select positions what the unit shouldn't physically be able to fit in,
-                //  which leads to problems, so this check fixes that.
-                //  This issue will probably come up later but fuck it I guess. Future me I hope this smug comment was worth your patience 
-                if (iPositions.Count == BoardManager.Instance.Get_UnitPositions(unit).Count && !isObscured) { res.Add(iPositions); }
-
+                if (!isOccupied)
+                {
+                    line3.Add(poss);
+                }
             }
+            res3.Add(line3);
         }
-
-
-
         #endregion
-        return res;
-    }
 
-    //Returns all possible positions what a multicell unit can move using their current moveset
-    //(this needs a separate function because fuck my life)
-    public static List<List<List<Vector2Int>>> Get_PossibleMovement_Multi(Unit unit)
+        #region Debug statements
+        Debug.Log("Res1:");
+        foreach (var v in res1)
+        {
+            string l = "";
+            foreach (var vv in v)
+            {
+                foreach (var vvv in vv)
+                {
+                    l += " " +(vvv);
+                }
+                l += "|";
+            }
+            Debug.Log(l);
+        }
+        Debug.Log("----");
+
+        Debug.Log("Res2:");
+        foreach (var v in res2)
+        {
+            string l = "";
+            foreach (var vv in v)
+            {
+                foreach (var vvv in vv)
+                {
+                    l += " " + (vvv);
+                }
+                l += "|";
+            }
+            Debug.Log(l);
+        }
+        Debug.Log("----");
+
+        Debug.Log("Res3:");
+        foreach (var v in res3)
+        {
+            string l = "";
+            foreach (var vv in v)
+            {
+                foreach (var vvv in vv)
+                {
+                    l += " " + (vvv);
+                }
+                l += "|";
+            }
+            Debug.Log(l);
+        }
+        Debug.Log("----");
+        #endregion
+        return res3;
+    }
+    public static List<Vector2Int> Get_PositionsFromSingleCoordinate(Unit ActionTargetUnit, List<Vector2Int> CellsCoordinates)
     {
-        #region Get ALL possible positions in every direction
-        List<List<List<Vector2Int>>> results1 = new List<List<List<Vector2Int>>>();
-        foreach (var line in unit.CurMoveset.Lines)
+        List<List<List<Vector2Int>>> res = Get_PossibleMovement(ActionTargetUnit);
+  
+        for (int i = 0; i < BoardManager.Instance.Height; i++)
         {
-            List<List<Vector2Int>> offsetPositions = new List<List<Vector2Int>>();
-            #region For all steps in a line, form possible unit positions
-            foreach (var step in line.Positions)
+            foreach (var line in res)
             {
-                #region Form where the unit would position itself after moving this step through the line
-                List<Vector2Int> curStepPos = new List<Vector2Int>();
-                foreach (var ps in BoardManager.Instance.Get_UnitPositions(unit))
-                {
-                    curStepPos.Add(step + ps);
-                }
-                offsetPositions.Add(curStepPos);
-                #endregion
+                if (line.Count <= i || line[i] == null) {  continue; }
+
+                if (line[i].Intersect<Vector2Int>(CellsCoordinates).Any()) { return line[i]; }
             }
-            #endregion
-            results1.Add(offsetPositions);
         }
-        #endregion
-
-        #region Go through each direction and trim the ones obscured by other things
-        List<List<List<Vector2Int>>> results2 = new List<List<List<Vector2Int>>>();
-        foreach (var line in results1) 
-        {
-            #region Going forward in a line
-            List<List<Vector2Int>> curLine = new List<List<Vector2Int>>();
-            for (int i = 0; i < line.Count; i++)
-            {
-                bool obscured = false;
-                #region check if all positions unit will be placed on are not obsucred
-                foreach (var pos in line[i]) 
-                {
-                    if (BoardManager.Instance.Board[pos.x].Cells[pos.y].CurUnit != null
-                        && BoardManager.Instance.Board[pos.x].Cells[pos.y].CurUnit != unit) 
-                    { 
-                        obscured = true;
-                    }                 
-                }
-                #endregion
-
-                if (obscured && !unit.CurMoveset.IsEvading) { break; }
-                if (obscured && unit.CurMoveset.IsEvading) { continue; }
-                curLine.Add(line[i]);
-            }
-            #endregion
-            results2.Add(curLine);
-        }
-        #endregion
-
-        return results2;
+        return null;   
     }
-
     public static IEnumerator Move(Unit ActionTargetUnit, List<Vector2Int> CellsCoordinates)
     {
         if (ActionTargetUnit == null || CellsCoordinates.Count == 0) Debug.LogError("INVALID ACTION PARAMETERS - MOVE(ActionTargetUnit, CellCoordinates)");
 
+        List<Vector2Int> newPoss = Get_PositionsFromSingleCoordinate(ActionTargetUnit, CellsCoordinates);
 
-        List<Vector2Int> newPoss = new List<Vector2Int>();
-
-        #region If it's a single cell sized unit
-        if (ActionTargetUnit.Size.Positions.Count > 1) 
-        {
-            
-            foreach (var v in Get_PossibleMovement_Multi(ActionTargetUnit))
-            {
-                foreach (var vv in v)
-                {
-                    if (vv.Intersect<Vector2Int>(CellsCoordinates).Any()) { newPoss = vv; break; }
-                }
-            }
-        }
-        #endregion
-        #region else - it's a multicell unit
-        else
-        {
-            foreach (List<Vector2Int> l in Get_PossibleMovement(ActionTargetUnit))
-            {
-                if (l.Intersect<Vector2Int>(CellsCoordinates).Any()) { newPoss = l; break; }
-            }
-        }
-        #endregion
-
-
-        if (newPoss.Count > 0)
+        if (newPoss != null && newPoss.Count > 0)
         {
             yield return GameManager.Instance.StartCoroutine(BoardManager.Instance.MoveUnit(ActionTargetUnit, newPoss));
         }
