@@ -8,18 +8,31 @@ public static class Action_SelectUnit
     {
         if (CellsCoordinates.Count == 0) Debug.LogError("INVALID ACTION PARAMETERS - SELECT(CellCoordinates)");
 
+       
         Vector2Int coords = CellsCoordinates[0];
-        //Debug.Log("SELECTED ON" + coords);
+        Debug.Log("SELECTED ON" + coords);
 
         
         Unit ogUnit = GameManager.Instance.CurUnitSelected; List<Unit> us = new List<Unit>();
 
-        if (GameManager.Instance.CurUnitSelected != BoardManager.Instance.Board[coords.x].Cells[coords.y].CurUnit)
+        //I have absolutely no idea what this check was doing, but if it IS present it stops moveset appearing when selecting the same unit we already select
+        if (true /*GameManager.Instance.CurUnitSelected != BoardManager.Instance.Board[coords.x].Cells[coords.y].CurUnit*/)  
         {
             GameManager.Instance.CurUnitSelected = BoardManager.Instance.Board[coords.x].Cells[coords.y].CurUnit;
             ogUnit = GameManager.Instance.CurUnitSelected;
             us.Add(GameManager.Instance.CurUnitSelected);
-            GameManager.Instance.ShowMovementEvent.Invoke(us);
+
+            //This is where we start to show current movement zones of the unit
+            List<Unit> movable = new List<Unit>();
+            foreach (var v in us) 
+            { 
+
+                if (Action_Move.UnitCanMove(v)) { Debug.Log(v + " didn't move yet, adding to the list"); movable.Add(v); } 
+            }
+
+            
+
+            GameManager.Instance.ShowMovementEvent.Invoke(movable);      
         }
 
 

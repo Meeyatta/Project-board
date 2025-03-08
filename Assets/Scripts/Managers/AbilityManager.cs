@@ -29,12 +29,13 @@ public class AbilityManager : MonoBehaviour
         yield return new WaitForSeconds(0.01f); 
 
         List<Unit> all = BoardManager.Instance.Get_AllUnitsOnBoard();
-        foreach (var v in all)
+        if (all != null && all.Count > 0)
         {
-            //Score is handled as a single call
+            foreach (var v in all)
+            {
+                //Score is handled as a single call
+            }
         }
-
-        
 
         CurAbilities = null;
         yield return new WaitForSeconds(0.01f);

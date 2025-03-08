@@ -10,6 +10,15 @@ public static class Action_Move
     //Returns all possible positions what a unit can move using their current moveset
     //This is used for a single cell unit, but a bunch or redundancies are left from this also being for multicell units
     
+    public static bool UnitCanMove(Unit u)
+    {
+        Debug.Log(u.Moved);
+        if (u.Moved) return false;
+        if (ScoreManager.Instance.CurTurn == ScoreManager.Side.Enemy) return false;
+
+        return true;
+    }
+
     public static List<List<List<Vector2Int>>> Get_PossibleMovement(Unit u)
     {
         List<List<List<Vector2Int>>> res1 = new List<List<List<Vector2Int>>>();
@@ -152,11 +161,25 @@ public static class Action_Move
     {
         if (ActionTargetUnit == null || CellsCoordinates.Count == 0) Debug.LogError("INVALID ACTION PARAMETERS - MOVE(ActionTargetUnit, CellCoordinates)");
 
+        if (!UnitCanMove(ActionTargetUnit)) { yield break; }
+
         List<Vector2Int> newPoss = Get_PositionsFromSingleCoordinate(ActionTargetUnit, CellsCoordinates);
 
-        if (newPoss != null && newPoss.Count > 0)
+        if (newPoss != null && newPoss.Count > 0 && !ActionTargetUnit.Moved)
         {
-            yield return GameManager.Instance.StartCoroutine(BoardManager.Instance.MoveUnit(ActionTargetUnit, newPoss));
+            ActionTargetUnit.Moved = true;
+            foreach (Vector2Int v in newPoss)
+            {
+                if (v.x >= BoardManager.Instance.Width || v.y >= BoardManager.Instance.Height) { Debug.LogError("ERROR: POSITION '" + v + "' OUT OF BOUNDS"); yield break; }
+            }
+
+            List<Vector2Int> oldPos = BoardManager.Instance.Get_UnitPositions(ActionTargetUnit);
+            foreach (Vector2Int v in oldPos)
+            {
+                BoardManager.Instance.Board[v.x].Cells[v.y].CurUnit = null;
+            }
+
+            yield return BoardManager.Instance.StartCoroutine(BoardManager.Instance.PlaceUnit(ActionTargetUnit, newPoss));
         }
 
         yield return new WaitForSeconds(0.001f);

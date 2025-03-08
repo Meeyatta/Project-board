@@ -23,6 +23,7 @@ using UnityEngine.InputSystem;
         bool UnitHasAllKeywords(Unit u, List<Unit.Keyword> keywords) - returns true if unit has all of the keywords in "keywords"
         List<Unit> Get_OnlyUnitsWithKeywords(List<Unit> all, List<Unit.Keyword> keywords) - Groups units from a list into a different list only if
             they have the keywords in "keywords"
+        void ResetMovement(List<Unit.keyword> keywords) - resets all units with keywords in a list to be able to move again. 
 */
 
 public class GameManager : MonoBehaviour
@@ -197,8 +198,14 @@ public class GameManager : MonoBehaviour
             if (allContain) { cycled.Add(v); }
         }
         return cycled;
-    }  
-    
+    }
+
+    //Resets all units with keywords in a list to be able to move again. This fucntion is used by "RoundEvent" in ScoreManager
+    public void ResetMovement()
+    {
+        List<Unit> all = BoardManager.Instance.Get_AllUnitsOnBoard();
+        foreach (var u in all) { u.Moved = false; }     
+    }
     //This is called by click events on buttons
     public void CellClickHandle(Vector2Int coords)
     {
@@ -303,14 +310,7 @@ public class GameManager : MonoBehaviour
             ActionParameters parameters = new ActionParameters(ActionType.KeywordedAttack, null, k, null, null);
             StartCoroutine(Action(parameters));
         }
-        if (Input.GetKeyDown("s"))
-        {
-            Debug.Log("SCORING FOR PLAYER:");
-            List<Unit.Keyword> k = new List<Unit.Keyword> { Unit.Keyword.Player };
-            ActionParameters parameters = new ActionParameters(ActionType.Score, null, k, null, null);
-            StartCoroutine(Action(parameters));
-
-        }
+        
         if (Input.GetKeyDown("x"))
         {
             Debug.Log("SCORING FOR ENEMY:");

@@ -29,6 +29,8 @@ public class Unit : MonoBehaviour
     public HashSet<Keyword> CurKeywords = new HashSet<Keyword>();
     #endregion
 
+    [Header("----Read only information----")]
+    public bool Moved = false;
     [Header("---------")]
     public GameObject UnitModelShowcase; //This is used to showcase where the unit model COULD be placed with move of creation
     public Vector3 ModelOffset;
