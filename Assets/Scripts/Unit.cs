@@ -45,8 +45,13 @@ public class Unit : MonoBehaviour
     {
         CurrentHealth = MaxHealth;
 
-        UnitModelShowcase = Instantiate(UnitModelShowcase);
-        UnitModelShowcase.SetActive(false);
+        if (UnitModelShowcase != null) 
+        {
+            UnitModelShowcase = Instantiate(UnitModelShowcase);
+            UnitModelShowcase.SetActive(false);
+        }
+        else { Debug.Log(UnitName + " " + gameObject.name + " HAS NO UnitModelShowcase"); }
+        
     }
 
     void UpdateInfo()

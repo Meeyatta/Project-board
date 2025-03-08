@@ -192,7 +192,7 @@ public class BoardManager : MonoBehaviour
     {
 
         Vector3 newP = Vector3.zero;
-        if (poss.Count <= 0) { return newP; }
+        if (poss == null || poss.Count <= 0) { return null; }
         foreach (Vector2Int v in poss)
         {
             if (!IsInBounds(v)) return null;

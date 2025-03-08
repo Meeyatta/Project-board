@@ -134,9 +134,10 @@ public class EffectManager : MonoBehaviour
     
     void StopShowingPlacement(List<Unit> units)
     {
+        
         foreach (var v in PlacementEffectsToHide) 
         {
-            if (units.Contains(v.Key)) { foreach (var vv in v.Value) { DestroyToPool(vv); } }
+            if (units.Contains(v.Key)) { foreach (var vv in v.Value) { v.Key.UnitModelShowcase.SetActive(false); DestroyToPool(vv); } }
         }
         PlacementEffectsToHide.Clear();
 
@@ -155,10 +156,13 @@ public class EffectManager : MonoBehaviour
                 if (BoardManager.Instance.ClosestUnitPosToCursor(v.Key) == null) { continue; }
 
                 List<Vector2Int> poss = BoardManager.Instance.ClosestUnitPosToCursor(v.Key);
+                v.Key.UnitModelShowcase.SetActive(true);
+                v.Key.UnitModelShowcase.transform.position = BoardManager.Instance.BoardToWorldPosition(poss).Value + v.Key.ModelOffset;
                 for (int i = 0; i < poss.Count; i++)
                 {
                     //Debug.Log("Showing placement pos " + i + " " + poss[i]);
                     List<Vector2Int> sTl = new List<Vector2Int>(); sTl.Add(poss[i]);
+                    
                     v.Value[i].transform.position = BoardManager.Instance.BoardToWorldPosition(sTl).Value;
 
                 }
@@ -177,6 +181,7 @@ public class EffectManager : MonoBehaviour
         {
             CurUnitMovePosShowcase = StartCoroutine(ShowingPossibleUnitPosition(unit)); 
         }
+
     }
     void StopShowingPossibleUnitPosition(Unit unit)
     {
@@ -202,11 +207,15 @@ public class EffectManager : MonoBehaviour
                 List<Vector2Int> l = new List<Vector2Int> { BoardManager.Instance.CursorToCellPosition() };
                 List<Vector2Int> ll = Action_Move.Get_PositionsFromSingleCoordinate(unit, l);
 
-                unit.UnitModelShowcase.SetActive(true);
-                unit.UnitModelShowcase.transform.position = BoardManager.Instance.BoardToWorldPosition(ll).Value + unit.ModelOffset;
+                if (BoardManager.Instance.BoardToWorldPosition(ll).HasValue)
+                {
+                    unit.UnitModelShowcase.SetActive(true);
+                    unit.UnitModelShowcase.transform.position = BoardManager.Instance.BoardToWorldPosition(ll).Value + unit.ModelOffset;
+                }              
             }
 
         }
+        unit.UnitModelShowcase.SetActive(false);
 
         yield return new WaitForSeconds(0.1f);
     }

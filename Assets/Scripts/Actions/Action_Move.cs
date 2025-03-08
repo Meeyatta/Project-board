@@ -22,11 +22,14 @@ public static class Action_Move
             foreach (var linePos in v.Positions)
             {
                 List<Vector2Int> poss = new List<Vector2Int>();
-                foreach (var UnitPos in uPos) 
+                if (uPos != null && uPos.Count > 0)
                 {
-                    poss.Add((UnitPos + linePos));
-                }
-                line.Add(poss);
+                    foreach (var UnitPos in uPos)
+                    {
+                        poss.Add((UnitPos + linePos));
+                    }
+                    line.Add(poss);
+                }              
             }
             res1.Add(line);
         }
@@ -79,54 +82,55 @@ public static class Action_Move
         #endregion
 
         #region Debug statements
-        Debug.Log("Res1:");
-        foreach (var v in res1)
-        {
-            string l = "";
-            foreach (var vv in v)
-            {
-                foreach (var vvv in vv)
-                {
-                    l += " " +(vvv);
-                }
-                l += "|";
-            }
-            Debug.Log(l);
-        }
-        Debug.Log("----");
+        //Debug.Log("Res1:");
+        //foreach (var v in res1)
+        //{
+        //    string l = "";
+        //    foreach (var vv in v)
+        //    {
+        //        foreach (var vvv in vv)
+        //        {
+        //            l += " " +(vvv);
+        //        }
+        //        l += "|";
+        //    }
+        //    Debug.Log(l);
+        //}
+        //Debug.Log("----");
 
-        Debug.Log("Res2:");
-        foreach (var v in res2)
-        {
-            string l = "";
-            foreach (var vv in v)
-            {
-                foreach (var vvv in vv)
-                {
-                    l += " " + (vvv);
-                }
-                l += "|";
-            }
-            Debug.Log(l);
-        }
-        Debug.Log("----");
+        //Debug.Log("Res2:");
+        //foreach (var v in res2)
+        //{
+        //    string l = "";
+        //    foreach (var vv in v)
+        //    {
+        //        foreach (var vvv in vv)
+        //        {
+        //            l += " " + (vvv);
+        //        }
+        //        l += "|";
+        //    }
+        //    Debug.Log(l);
+        //}
+        //Debug.Log("----");
 
-        Debug.Log("Res3:");
-        foreach (var v in res3)
-        {
-            string l = "";
-            foreach (var vv in v)
-            {
-                foreach (var vvv in vv)
-                {
-                    l += " " + (vvv);
-                }
-                l += "|";
-            }
-            Debug.Log(l);
-        }
-        Debug.Log("----");
+        //Debug.Log("Res3:");
+        //foreach (var v in res3)
+        //{
+        //    string l = "";
+        //    foreach (var vv in v)
+        //    {
+        //        foreach (var vvv in vv)
+        //        {
+        //            l += " " + (vvv);
+        //        }
+        //        l += "|";
+        //    }
+        //    Debug.Log(l);
+        //}
+        //Debug.Log("----");
         #endregion
+
         return res3;
     }
     public static List<Vector2Int> Get_PositionsFromSingleCoordinate(Unit ActionTargetUnit, List<Vector2Int> CellsCoordinates)

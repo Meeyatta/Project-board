@@ -7313,6 +7313,7 @@ MonoBehaviour:
   CurrentHealth: 0
   BaseAbilities: 
   BaseKeywords: 01000000
+  UnitModelShowcase: {fileID: 71161551}
   ModelOffset: {x: 0, y: 1.5, z: 0}
   Anim: {fileID: 0}
 --- !u!4 &57155766
@@ -7329,6 +7330,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1170219443}
+  - {fileID: 71161555}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &57225682
@@ -8563,6 +8565,113 @@ Canvas:
   m_SortingLayerID: 0
   m_SortingOrder: 0
   m_TargetDisplay: 0
+--- !u!1 &71161551
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 71161555}
+  - component: {fileID: 71161554}
+  - component: {fileID: 71161553}
+  - component: {fileID: 71161552}
+  m_Layer: 0
+  m_Name: ModelPlace
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!136 &71161552
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 71161551}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 0
+  serializedVersion: 2
+  m_Radius: 0.5
+  m_Height: 2
+  m_Direction: 1
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!23 &71161553
+MeshRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 71161551}
+  m_Enabled: 1
+  m_CastShadows: 1
+  m_ReceiveShadows: 1
+  m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
+  m_RayTraceProcedural: 0
+  m_RenderingLayerMask: 1
+  m_RendererPriority: 0
+  m_Materials:
+  - {fileID: 2100000, guid: bf3b2222be9d98441a93a5c02879a706, type: 2}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 1
+  m_SelectedEditorRenderState: 3
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 0
+  m_AdditionalVertexStreams: {fileID: 0}
+--- !u!33 &71161554
+MeshFilter:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 71161551}
+  m_Mesh: {fileID: 10208, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!4 &71161555
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 71161551}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 1.152, z: 0}
+  m_LocalScale: {x: 2.423015, y: 0.59664, z: 2.415406}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 57155766}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &71549939
 GameObject:
   m_ObjectHideFlags: 0
@@ -37679,26 +37788,24 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 11416984, guid: c080686877cf77f42a1a078076d57fe5, type: 3}
       propertyPath: textList.Array.data[0].s
-      value: Objective scoring doesn't work well with multicell units
+      value: 'Create half transparent models for UnitModelShowcase
+
+        in Unit'
       objectReference: {fileID: 0}
     - target: {fileID: 11416984, guid: c080686877cf77f42a1a078076d57fe5, type: 3}
       propertyPath: textList.Array.data[1].s
-      value: "Multicell units can't be moved less than their size \n(meaning if a
-        unit is 2x2, you can't move it 1 cell to the \nright, you HAVE to move it
-        2 cells)"
+      value: 'Add checks for whenever player/enemy units have moved
+
+        this
+        turn'
       objectReference: {fileID: 0}
     - target: {fileID: 11416984, guid: c080686877cf77f42a1a078076d57fe5, type: 3}
       propertyPath: textList.Array.data[2].s
-      value: 'Finish making an effect for placing a transparent unit
-
-        when
-        selecting a movement destination'
+      value: Add turns
       objectReference: {fileID: 0}
     - target: {fileID: 11416984, guid: c080686877cf77f42a1a078076d57fe5, type: 3}
       propertyPath: textList.Array.data[3].s
-      value: 'Make objective scoring event work for specific
-
-        keywords'
+      value: Make indication to where the unit will be placed
       objectReference: {fileID: 0}
     - target: {fileID: 11416984, guid: c080686877cf77f42a1a078076d57fe5, type: 3}
       propertyPath: textList.Array.data[4].s
@@ -37742,11 +37849,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 11416984, guid: c080686877cf77f42a1a078076d57fe5, type: 3}
       propertyPath: textList.Array.data[0].state
-      value: 1
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 11416984, guid: c080686877cf77f42a1a078076d57fe5, type: 3}
       propertyPath: textList.Array.data[1].state
-      value: 1
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 11416984, guid: c080686877cf77f42a1a078076d57fe5, type: 3}
       propertyPath: textList.Array.data[2].state
@@ -105736,7 +105843,7 @@ CapsuleCollider:
   m_LayerOverridePriority: 0
   m_IsTrigger: 0
   m_ProvidesContacts: 0
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 2
   m_Radius: 0.5
   m_Height: 2
@@ -114166,6 +114273,7 @@ MonoBehaviour:
   CurrentHealth: 0
   BaseAbilities: 
   BaseKeywords: 00000000
+  UnitModelShowcase: {fileID: 0}
   ModelOffset: {x: 0, y: 1.5, z: 0}
   Anim: {fileID: 0}
 --- !u!95 &1109780962
@@ -116220,6 +116328,113 @@ MonoBehaviour:
   m_SelectedFaces: 
   m_SelectedEdges: []
   m_SelectedVertices: 
+--- !u!1 &1130063139
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1130063143}
+  - component: {fileID: 1130063142}
+  - component: {fileID: 1130063141}
+  - component: {fileID: 1130063140}
+  m_Layer: 0
+  m_Name: Capsule
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!136 &1130063140
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1130063139}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.5
+  m_Height: 2
+  m_Direction: 1
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!23 &1130063141
+MeshRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1130063139}
+  m_Enabled: 1
+  m_CastShadows: 1
+  m_ReceiveShadows: 1
+  m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
+  m_RayTraceProcedural: 0
+  m_RenderingLayerMask: 1
+  m_RendererPriority: 0
+  m_Materials:
+  - {fileID: 2100000, guid: bf3b2222be9d98441a93a5c02879a706, type: 2}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 1
+  m_SelectedEditorRenderState: 3
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 0
+  m_AdditionalVertexStreams: {fileID: 0}
+--- !u!33 &1130063142
+MeshFilter:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1130063139}
+  m_Mesh: {fileID: 10208, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!4 &1130063143
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1130063139}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 1.49, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1291814686}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1132100836
 GameObject:
   m_ObjectHideFlags: 0
@@ -134674,6 +134889,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 1130063143}
   - {fileID: 934499546}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -134697,6 +134913,7 @@ MonoBehaviour:
   CurrentHealth: 0
   BaseAbilities: 
   BaseKeywords: 01000000
+  UnitModelShowcase: {fileID: 1130063139}
   ModelOffset: {x: 0, y: 1.5, z: 0}
   Anim: {fileID: 0}
 --- !u!95 &1291814688
@@ -198710,6 +198927,7 @@ MonoBehaviour:
   CurrentHealth: 0
   BaseAbilities: 01000000
   BaseKeywords: 03000000
+  UnitModelShowcase: {fileID: 0}
   ModelOffset: {x: 0, y: 1.5, z: 0}
   Anim: {fileID: 0}
 --- !u!4 &1879847891
@@ -215434,6 +215652,7 @@ MonoBehaviour:
   CurrentHealth: 0
   BaseAbilities: 0100000000000000
   BaseKeywords: 0300000002000000
+  UnitModelShowcase: {fileID: 0}
   ModelOffset: {x: 0, y: 1.5, z: 0}
   Anim: {fileID: 0}
 --- !u!4 &2064781835
