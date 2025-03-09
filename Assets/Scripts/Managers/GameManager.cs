@@ -7,6 +7,9 @@ using UnityEngine.InputSystem;
 //Main script, handles all of the actions what can be done with units
 
 /*
+    All main functions in action specific scripts MUST have:
+        ActionParameters parameters - Parameters used by whatever needs us to performs a function. This also holds an identifier for this action   
+ 
     LIST OF ACTIONS:
         Move(ActionTargetUnits, CellsCoordinates) - Move the unit to the coordinates if it can move there with it's moveset, Requires: (ActionTargetUnit, CellsCoordinates)
         Select(CellsCoordinates) - Set a unit under coordinates as a Current selected unit by the player, Requires: (CellsCoordinates) 
@@ -14,6 +17,7 @@ using UnityEngine.InputSystem;
         Attack(ActionTargetUnits) - Make a target unit initiate an attack on all units in it's attack zone
         KeywordedAttack(Keywords) - Make all units with specific keywords initiate an attack on all units in their individual attack zones
         PlayerCreate(Object) - Awaits for player's input on cell coordinates, then places the unit on these coordinates
+        Action_NextTurn() - makes all units of one side attack, score objectives and then pass turn onto the next side. If turn is passed twice, next round starts
 
         A_Score(ActionTargetUnits) - Ability: A_Score, checks for units nearby, adds points to player if only player units, adds points to enem if only enemy units
 */
@@ -32,17 +36,19 @@ public class GameManager : MonoBehaviour
     {
         public IEnumerator IEnum;
         public ActionType Type;
+        public ActionParameters Params;
 
-        public ActionSlot(IEnumerator e, ActionType t)
+        public ActionSlot(IEnumerator e, ActionType t, ActionParameters p)
         {
             IEnum = e;
             Type = t;
+            Params = p;
         }
     }
     public GameObject TESTunittocreate;
     public UnityEvent<Vector2Int> ClickBackEvent;
     [HideInInspector] public UnityEvent CancelEvent;
-    public enum ActionType { Attack, KeywordedAttack, Move, Place, SelectUnit, PlayerCreate, Score };
+    public enum ActionType { Attack, AttackFromKeyworded, Move, Place, SelectUnit, PlayerCreate, Score, NextTurn };
     public Unit CurUnitSelected; //What unit is currently selected, if no unit - should be null
     public static GameManager Instance;
     public Coroutine C_GoingThroughActions;
@@ -109,7 +115,7 @@ public class GameManager : MonoBehaviour
             //Move the unit to the coordinates if it can move there with it's moveset, Requires: (ActionTargetUnit, CellsCoordinates)
             #region Move(ActionTargetUnits, CellsCoordinates)
             case ActionType.Move:
-                ActionSlot move = new ActionSlot(Action_Move.Move(parameters.ActionTargetUnits[0], parameters.CellsCoordinates), ActionType.Move);
+                ActionSlot move = new ActionSlot(Action_Move.Move(parameters), ActionType.Move, parameters);
                 ActionQueue.Enqueue(move);             
                 break;
             #endregion Move(ActionTargetUnits, CellsCoordinates)
@@ -118,7 +124,7 @@ public class GameManager : MonoBehaviour
             //  This one should be called with StartCoroutine instead of yield return, because unit can be selected while other actions are done
             #region Select(CellsCoordinates)
             case ActionType.SelectUnit:
-                C_UnitSelect = StartCoroutine( Action_SelectUnit.Select(parameters.CellsCoordinates) );
+                C_UnitSelect = StartCoroutine( Action_SelectUnit.Select(parameters));
                 break;
             #endregion Select(CellCoordinates)
 
@@ -126,7 +132,7 @@ public class GameManager : MonoBehaviour
             //TODO: Separate into a unique script, currently the corotuine in inside GameManager
             #region Place(ActionTargetUnits, CellsCoordinates)
             case ActionType.Place:
-                ActionSlot forcedmove = new ActionSlot(Action_Place.Place(parameters.ActionTargetUnits[0], parameters.CellsCoordinates), ActionType.Place);
+                ActionSlot forcedmove = new ActionSlot(Action_Place.Place(parameters), ActionType.Place, parameters);
                 ActionQueue.Enqueue(forcedmove);
                 break;
             #endregion ForcedMove(ActionTargetUnits, CellsCoordinates)
@@ -134,26 +140,24 @@ public class GameManager : MonoBehaviour
             //Make a target unit initiate an attack on all units in it's attack zone
             #region Attack(ActionTargetUnits)
             case ActionType.Attack:
-                ActionSlot attack = new ActionSlot(Action_Attack.Attack(parameters.ActionTargetUnits), ActionType.Attack);
+                ActionSlot attack = new ActionSlot(Action_Attack.Attack(parameters), ActionType.Attack, parameters);
                 ActionQueue.Enqueue(attack);
                 break;
             #endregion Attack(ActionTargetUnits)
                 
             //Make all units with specific keywords initiate an attack on all units in their individual attack zones
             #region KeywordedAttack(Keywords)
-            case ActionType.KeywordedAttack:
-                ActionSlot keywordedattack = 
-                    new ActionSlot(Action_Attack.Attack(
-                        Get_OnlyUnitsWithKeywords(BoardManager.Instance.Get_AllUnitsOnBoard(), parameters.Keywords)), ActionType.KeywordedAttack);
+            case ActionType.AttackFromKeyworded:
+                ActionSlot attackFromKeyword = new ActionSlot(Action_AttackFromKeyworded.AttackFromKeyworded(parameters), ActionType.AttackFromKeyworded, parameters);
+                ActionQueue.Enqueue(attackFromKeyword);
 
-                ActionQueue.Enqueue(keywordedattack);
                 break;
             #endregion KeywordedAttack(Keywords)
 
             //Awaits for player's input on cell coordinates, then places the unit on these coordinates
             #region PlayerCreate(GameObject Object)
             case ActionType.PlayerCreate:
-                ActionSlot playercreate = new ActionSlot(Action_PlayerCreate.PlayerCreate(parameters.Object), ActionType.PlayerCreate);
+                ActionSlot playercreate = new ActionSlot(Action_PlayerCreate.PlayerCreate(parameters), ActionType.PlayerCreate, parameters);
                 ActionQueue.Enqueue(playercreate);
 
                 break;
@@ -164,8 +168,22 @@ public class GameManager : MonoBehaviour
             //Goes through every objective and scores for the player or enemy (Depends on what is passed in parameters)
             #region Score()
             case ActionType.Score:
-                ActionSlot score = new ActionSlot(Ability_Score.GlobalScore(parameters.Keywords), ActionType.Score);
+
+                ActionSlot score = new ActionSlot(Ability_Score.GlobalScore(parameters), ActionType.Score, parameters);
                 ActionQueue.Enqueue(score);
+
+                break;
+            #endregion Create(GameObject Object, Vector2Int CellsCoordinates)
+
+            #region NextTurn()
+            case ActionType.NextTurn:
+                ActionSlot prenextturn = new ActionSlot(Action_NextTurn.Pre_nextTurn(parameters), ActionType.NextTurn, parameters);
+                ActionQueue.Enqueue(prenextturn);
+
+                yield return new WaitForSeconds(0.2f);
+
+                ActionSlot nextturn = new ActionSlot(Action_NextTurn.NextTurn(parameters), ActionType.NextTurn, parameters);
+                ActionQueue.Enqueue(nextturn);
 
                 break;
             #endregion Create(GameObject Object, Vector2Int CellsCoordinates)
@@ -272,6 +290,17 @@ public class GameManager : MonoBehaviour
         yield return null;
     }
 
+    //Removes action from the queue/current action because it is done/canceled
+    public void RemoveAction(ActionParameters parms)
+    {
+        if (CurrentAction == null) { return; }
+
+        if (CurrentAction.Params == parms) { CurrentAction = null; }
+
+        if (ActionQueue != null && ActionQueue.Count > 0 &&
+            ActionQueue.Peek().Params == parms) { ActionQueue.Dequeue(); } // <- Might need to change it to "while", but I am afraid Unity will shit itself thinking its an infinite loop
+    }
+
     //Continuously cycles through each action in current action queue 
     IEnumerator GoThroughActions()
     {
@@ -279,9 +308,11 @@ public class GameManager : MonoBehaviour
 
         while (ActionQueue.Count > 0)
         {
+            if (CurrentAction != null) { yield return new WaitForSeconds(1f); continue; }
+
             CurrentAction = ActionQueue.Dequeue();
             yield return StartCoroutine(CurrentAction.IEnum);
-            yield return new WaitForSeconds(0.0001f);
+            yield return new WaitForSeconds(1f);
         }
         ActionQueue.Clear();
         CurrentAction = null;
@@ -296,6 +327,12 @@ public class GameManager : MonoBehaviour
     }
     private void Update()
     {
+        if (Input.GetKeyDown("s"))
+        {
+            ActionParameters parameters = new ActionParameters(ActionType.NextTurn, null, null, null, null);
+            StartCoroutine(Action(parameters));
+        }
+
         if (Input.GetKeyDown("q"))
         {
             Debug.Log("CURRENT ACTION QUEUE:");
@@ -307,7 +344,7 @@ public class GameManager : MonoBehaviour
             Debug.Log("PRESSED THE ATTACK BUTTON");
             List<Unit.Keyword> k = new List<Unit.Keyword>();k.Add(Unit.Keyword.Player);
 
-            ActionParameters parameters = new ActionParameters(ActionType.KeywordedAttack, null, k, null, null);
+            ActionParameters parameters = new ActionParameters(ActionType.AttackFromKeyworded, null, k, null, null);
             StartCoroutine(Action(parameters));
         }
         
@@ -319,5 +356,16 @@ public class GameManager : MonoBehaviour
             StartCoroutine(Action(parameters));
 
         }
+
+        #region Constantly printing current action
+        string ActionInfo = "";
+        if (CurrentAction != null)
+        {
+            ActionInfo = CurrentAction.Type.ToString();
+            //Debug.Log("Current action " + ActionInfo);
+
+        }
+        #endregion
+
     }
 }

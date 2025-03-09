@@ -2,8 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-//Allows for a group of units to attack or returns what possible units can be attacked by the unit
-public static class Action_Attack 
+public static class Action_AttackFromKeyworded 
 {
     const string AttackAnimTrigger = "attack";
 
@@ -14,7 +13,7 @@ public static class Action_Attack
 
         return true;
     }
-    
+
     //Returns all possible units what a source (unit) can affect using their current attack Zones
     public static List<Unit> GetPossibleTargets(Unit source, List<Unit.Keyword> keywords)
     {
@@ -34,7 +33,7 @@ public static class Action_Attack
                     if (BoardManager.Instance.Board[unitP.x + x].Cells[unitP.y + y].CurUnit != null && !line.IsEvading)
                     {
                         Unit curUn = BoardManager.Instance.Board[unitP.x + x].Cells[unitP.y + y].CurUnit;
-                        if (!res.Contains(curUn) && GameManager.Instance.UnitHasAllKeywords(curUn, keywords)) { res.Add(curUn); }
+                        if (!res.Contains(curUn) && GameManager.Instance.UnitHasAllKeywords(curUn, keywords)) { Debug.Log("Added " + curUn.UnitName);  res.Add(curUn); }
                         break;
                     }
 
@@ -46,13 +45,17 @@ public static class Action_Attack
         return res;
 
     }
-    
-    //Makes units in a list initiate an attack
-    public static IEnumerator Attack(ActionParameters parameters)
-    {
-        List<Unit> ActionTargetUnits = parameters.ActionTargetUnits;
 
-        foreach (var unit in OrderedUnits(ActionTargetUnits))
+    //Makes units in a list initiate an attack
+    public static IEnumerator AttackFromKeyworded(ActionParameters parameters)
+    {
+        List<Unit.Keyword> Keywords = parameters.Keywords;
+
+        List<Unit> affected = BoardManager.Instance.Get_AllUnitsWithKeywords(Keywords);
+
+
+
+        foreach (var unit in OrderedUnits(affected))
         {
             if (!IsAbleToAttack(unit)) { continue; }
 
@@ -144,8 +147,7 @@ public static class Action_Attack
     {
         List<Unit> targets = GetPossibleTargets(source, keywords);
 
-
-        foreach (Unit target in targets) 
+        foreach (Unit target in targets)
         {
             yield return GameManager.Instance.StartCoroutine(Damage(target, source.CurAttackZone.Damage, source));
         }
@@ -168,5 +170,4 @@ public static class Action_Attack
 
         yield return new WaitForSeconds(0.1f);
     }
-    
 }

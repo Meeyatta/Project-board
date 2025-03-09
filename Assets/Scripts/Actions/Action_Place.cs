@@ -8,8 +8,10 @@ public static class Action_Place
 {
 
 
-    public static IEnumerator Place(Unit unit,List<Vector2Int> CellsCoordinates)
+    public static IEnumerator Place(ActionParameters parameters)
     {
+        Unit unit = parameters.ActionTargetUnits[0]; List<Vector2Int> CellsCoordinates = parameters.CellsCoordinates;
+
         if (!BoardManager.Instance.BoardToWorldPosition(CellsCoordinates).HasValue) 
         {
             Debug.LogError("INVALID PLACING POSITION FOR " + unit.name); yield return null; 
@@ -28,6 +30,8 @@ public static class Action_Place
         else { Debug.LogError("INVALID PLACING POSITION FOR " + unit.name); }
 
         yield return new WaitForSeconds(0.001f);
+        GameManager.Instance.RemoveAction(parameters);
+
     }
 
 }

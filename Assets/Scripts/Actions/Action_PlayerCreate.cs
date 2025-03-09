@@ -12,8 +12,9 @@ public static class Action_PlayerCreate
     {
         ShouldCancel = true;
     }
-    public static IEnumerator PlayerCreate(GameObject Object)
+    public static IEnumerator PlayerCreate(ActionParameters parameters)
     {
+        GameObject Object = parameters.Object;
         GameManager.Instance.CancelEvent.AddListener(Cancel);
 
         //Create a unit as an object, it's not on the board yet, so it should be hidden
@@ -79,6 +80,7 @@ public static class Action_PlayerCreate
         ShouldCancel = false;
         GameManager.Instance.CancelEvent.RemoveListener(Cancel);
         yield return new WaitForSeconds(0.001f);
+        GameManager.Instance.RemoveAction(parameters);
     }
 
 }

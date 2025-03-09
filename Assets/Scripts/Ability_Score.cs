@@ -29,8 +29,9 @@ public static class Ability_Score
 
     }
     //Main function, goes through every objective on the map and scores appropriately (checks for the keywords of surrounding units)
-    public static IEnumerator GlobalScore(List<Unit.Keyword> keywords)
+    public static IEnumerator GlobalScore(ActionParameters parameters)
     {
+        List<Unit.Keyword> keywords = parameters.Keywords;
         yield return new WaitForSeconds(0.01f);
 
         List<Unit.Keyword> ks = new List<Unit.Keyword> { Unit.Keyword.Objective };
@@ -47,6 +48,7 @@ public static class Ability_Score
         yield return BoardManager.Instance.StartCoroutine(Score(objectives, keywords));
 
         yield return new WaitForSeconds(0.01f);
+        GameManager.Instance.RemoveAction(parameters);
     }
     #region Conditions for either player or enemy scoring
     static bool PlayerScoreConditions(List<Unit> nPU, List<Unit> nEU, List<Unit.Keyword> keywords) 

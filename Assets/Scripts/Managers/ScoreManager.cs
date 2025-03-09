@@ -41,6 +41,8 @@ public class ScoreManager : MonoBehaviour
     public TextMeshProUGUI RoundText;
     public TextMeshProUGUI TurnText;
 
+    public UnityEvent<Side> TurnEvent;
+    public UnityEvent RoundEvent;
     private void Start()
     {
         CurRound = 1;
@@ -51,55 +53,11 @@ public class ScoreManager : MonoBehaviour
         RoundEvent.AddListener(GameManager.Instance.ResetMovement);
     }
 
-    #region Turn
-    //Swaps to the next turn (Player-Enemy)
-    public UnityEvent<Side> TurnEvent;
-    void NextTurn()
-    {
-        switch (CurTurn)
-        {
-            case Side.Player:
-                ActionParameters scoreP = new ActionParameters(GameManager.ActionType.Score, null, new List<Unit.Keyword> { Unit.Keyword.Player }, null, null);
-                GameManager.Instance.ActionWrapper(scoreP);
-                CurTurn = Side.Enemy;
-
-                TurnEvent.Invoke(CurTurn);
-                TurnText.text = CurTurn.ToString();
-                break;
-            case Side.Enemy:
-                ActionParameters scoreE = new ActionParameters(GameManager.ActionType.Score, null, new List<Unit.Keyword> { Unit.Keyword.Enemy }, null, null);
-                GameManager.Instance.ActionWrapper(scoreE);
-                CurTurn = Side.Player;
-
-                TurnEvent.Invoke(CurTurn);
-                TurnText.text = CurTurn.ToString();
-                NextRound();
-                break;
-        }
-    }
-    #endregion
-
-    //Swaps to the next round of combat
-    public UnityEvent RoundEvent;
-    void NextRound()
-    {
-        CurRound++;
-
-        RoundText.text = CurRound.ToString();
-        TurnText.text = CurTurn.ToString();
-
-        RoundEvent.Invoke();
-    }
-
     void Update()
     {
         if (Score_Player >= Score_Enemy + NScoreDiff) { WinEvent.Invoke(Side.Player); Debug.Log("Player has won"); }
 
         if (Score_Enemy >= Score_Player + NScoreDiff) { WinEvent.Invoke(Side.Enemy); Debug.Log("Enemy has won"); }
 
-        if (Input.GetKeyDown("s"))
-        {
-            NextTurn();
-        }
     }
 }

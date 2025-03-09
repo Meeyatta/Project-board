@@ -4,8 +4,9 @@ using UnityEngine;
 
 public static class Action_SelectUnit
 {
-    public static IEnumerator Select(List<Vector2Int> CellsCoordinates)
+    public static IEnumerator Select(ActionParameters parameters)
     {
+        List<Vector2Int> CellsCoordinates = parameters.CellsCoordinates;
         if (CellsCoordinates.Count == 0) Debug.LogError("INVALID ACTION PARAMETERS - SELECT(CellCoordinates)");
 
        
@@ -43,5 +44,6 @@ public static class Action_SelectUnit
             yield return new WaitForSeconds(0.001f);
         }
         if (us.Count > 0) { GameManager.Instance.HideMovementEvent.Invoke(us); }
+        GameManager.Instance.RemoveAction(parameters);
     }
 }

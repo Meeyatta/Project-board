@@ -157,8 +157,11 @@ public static class Action_Move
         }
         return null;   
     }
-    public static IEnumerator Move(Unit ActionTargetUnit, List<Vector2Int> CellsCoordinates)
+    public static IEnumerator Move(ActionParameters parameters)
     {
+        Unit ActionTargetUnit = parameters.ActionTargetUnits[0]; 
+        List< Vector2Int > CellsCoordinates = parameters.CellsCoordinates;
+
         if (ActionTargetUnit == null || CellsCoordinates.Count == 0) Debug.LogError("INVALID ACTION PARAMETERS - MOVE(ActionTargetUnit, CellCoordinates)");
 
         if (!UnitCanMove(ActionTargetUnit)) { yield break; }
@@ -183,6 +186,7 @@ public static class Action_Move
         }
 
         yield return new WaitForSeconds(0.001f);
+        GameManager.Instance.RemoveAction(parameters);
     }
 
 }

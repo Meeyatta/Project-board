@@ -414,7 +414,7 @@ public class BoardManager : MonoBehaviour
             {
                 if (c == null || c.CurUnit == null) continue;
 
-                if (c.CurUnit.CurKeywords.Intersect<Unit.Keyword>(keywords).Any())
+                if (c.CurUnit.CurKeywords.Intersect<Unit.Keyword>(keywords).Any() && !units.Contains(c.CurUnit))
                 {
                     units.Add(c.CurUnit);
                 }
