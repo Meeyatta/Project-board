@@ -18,13 +18,16 @@ using System.Linq;
     Vector2Int CursorToCellPosition() - Returns the cell under the player's cursor
     List<Vector2Int> ClosestUnitPosToCursor(Unit unit) - Returns the positions of the space where unit can be placed closest to the cursor
 
-    bool AreCellsOccupied(List<Vector2Int> poss) - Checks if any of the cells are occupied
     Vector2Int WorldToBoardPosition(Vector3 pos) - Converts Vector3 position to a position on the board
 
     bool IsInBounds(Vector2Int v) - Returns true if the position is within bounds of the board
+    bool AreInBounds(List<Vector2Int> newPoss) - Returns true if all the positions are within bounds of the board
+
+    bool AreAnyOccupied(List<Vector2Int> newPoss) - Returns true if all cells are unoccupied
+
     bool IsOnBoard(Unit u) - Returns true if unit is on board
 
-    List<Unit> Get_AllUnitsWithKeyword(Unit.Keyword keyword) - returns a list of units with specified keyword
+    List<Unit> Get_AllUnitsWithKeyword(Keyword keyword) - returns a list of units with specified keyword
     List<Unit> Get_AllUnitsWithAbilities(List<Unit.Ability> abilities) - Returns a list of units with specified abilities
 
     List<Unit> Get_UnitsInRange(Unit u, int r) - returns list of units within "r" cells of the "u" unit
@@ -99,9 +102,12 @@ public class BoardManager : MonoBehaviour
                 Cell cell = new Cell();
                 cell.Coordinates = new Vector2Int(x, y);
                 cell.Position = CellsObj.transform.position + new Vector3(InBetweenSpace + x * (InBetweenSpace + CellSize), DefaultY, -1 * (InBetweenSpace + y * (InBetweenSpace + CellSize)) );
+                cell.CoveredBy = Covering.None;
+
                 column.Cells.Add(cell);
 
                 BoardCell newCell = Instantiate(BoardCellObj, cell.Position, Quaternion.identity, CellsObj.transform).GetComponent<BoardCell>();
+                
                 newCell.gameObject.name = "Cell " + cell.Coordinates.ToString();
                 newCell.Coordinates = cell.Coordinates;
             }
@@ -307,21 +313,7 @@ public class BoardManager : MonoBehaviour
         }
         return null;
     }
-   
-    //Checks if any of the cells are occupied
-    public bool AreCellsOccupied(List<Vector2Int> poss)
-    {
-        foreach(Vector2Int p in poss)
-        {
-            if (IsInBounds(p))
-            {
-                if (Board[p.x].Cells[p.y].CurUnit != null) { return false; }
-            }     
-        }
 
-        return true;
-    }
-    
     //Converts Vector3 position to a position on the board
     public Vector2Int WorldToBoardPosition(Vector3 pos)
     {
@@ -355,7 +347,7 @@ public class BoardManager : MonoBehaviour
 
         unit.gameObject.transform.position = BoardToWorldPosition(s).Value + unit.ModelOffset;
         
-        yield return new WaitForSeconds(0.1f);
+        yield return new WaitForSeconds(0.01f);
     }
 
     //Returns true if the position is within bounds of the board
@@ -367,6 +359,25 @@ public class BoardManager : MonoBehaviour
         return true;
     }
 
+    //Returns true if all the positions are within bounds of the board
+    public bool AreInBounds(List<Vector2Int> newPoss)
+    {
+        foreach (var v in newPoss)
+        {
+            if (!IsInBounds(v)) { return false; }
+        }
+        return true;
+    }
+    //Returns true if all cells are unoccupied
+    public bool AreAnyOccupied(List<Vector2Int> newPoss)
+    {
+        foreach (var v in newPoss)
+        {
+            if (Board[v.x].Cells[v.y].CurUnit != null) { return false; }
+        }
+
+        return true;
+    }
     //Returns true if unit is on board
     public bool IsOnBoard(Unit u)
     {
@@ -383,7 +394,7 @@ public class BoardManager : MonoBehaviour
         return false;
     }
     //Returns a list of units with specified abilities
-    public List<Unit> Get_AllUnitsWithAbilities(List<Unit.Ability> abilities)
+    public List<Unit> Get_AllUnitsWithAbilities(List<Ability> abilities)
     {
         List<Unit> units = new List<Unit>();
 
@@ -393,7 +404,7 @@ public class BoardManager : MonoBehaviour
             {
                 if (c == null || c.CurUnit == null) continue;
 
-                if (c.CurUnit.CurAbilities.Intersect<Unit.Ability>(abilities).Any())
+                if (c.CurUnit.CurAbilities.Intersect<Ability>(abilities).Any())
                 {
                     units.Add(c.CurUnit);
                 }
@@ -404,7 +415,7 @@ public class BoardManager : MonoBehaviour
     }
 
     //Returns a list of units with specified keyword
-    public List<Unit> Get_AllUnitsWithKeywords(List<Unit.Keyword> keywords)
+    public List<Unit> Get_AllUnitsWithKeywords(List<Keyword> keywords)
     {
         List<Unit> units = new List<Unit>();
 
@@ -414,7 +425,7 @@ public class BoardManager : MonoBehaviour
             {
                 if (c == null || c.CurUnit == null) continue;
 
-                if (c.CurUnit.CurKeywords.Intersect<Unit.Keyword>(keywords).Any() && !units.Contains(c.CurUnit))
+                if (c.CurUnit.CurKeywords.Intersect<Keyword>(keywords).Any() && !units.Contains(c.CurUnit))
                 {
                     units.Add(c.CurUnit);
                 }

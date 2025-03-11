@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 705507994}
-  m_IndirectSpecularColor: {r: 0.17276844, g: 0.21589246, b: 0.2978263, a: 1}
+  m_IndirectSpecularColor: {r: 0.172768, g: 0.21589169, b: 0.29782546, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -37997,7 +37997,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 11416984, guid: c080686877cf77f42a1a078076d57fe5, type: 3}
       propertyPath: textList.Array.size
-      value: 10
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 11416984, guid: c080686877cf77f42a1a078076d57fe5, type: 3}
       propertyPath: textList.Array.data[0].s
@@ -38007,42 +38007,47 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 11416984, guid: c080686877cf77f42a1a078076d57fe5, type: 3}
       propertyPath: textList.Array.data[1].s
-      value: 'Create Keywords for cells what describe what kind of effects they
-
-        will
-        apply to units'
+      value: Basic enemy AI
       objectReference: {fileID: 0}
     - target: {fileID: 11416984, guid: c080686877cf77f42a1a078076d57fe5, type: 3}
       propertyPath: textList.Array.data[2].s
-      value: Figure out how exactly cell keywords apply effects
+      value: Deployment zone for player
       objectReference: {fileID: 0}
     - target: {fileID: 11416984, guid: c080686877cf77f42a1a078076d57fe5, type: 3}
       propertyPath: textList.Array.data[3].s
-      value: Add damage types (Physical, Fire, Electricity)
+      value: Deployment zone for enemy
       objectReference: {fileID: 0}
     - target: {fileID: 11416984, guid: c080686877cf77f42a1a078076d57fe5, type: 3}
       propertyPath: textList.Array.data[4].s
-      value: Add "wet" ability
+      value: Action for non-player unit creation
       objectReference: {fileID: 0}
     - target: {fileID: 11416984, guid: c080686877cf77f42a1a078076d57fe5, type: 3}
       propertyPath: textList.Array.data[5].s
-      value: Add "flammable" ability
+      value: All cells are covered in oil
       objectReference: {fileID: 0}
     - target: {fileID: 11416984, guid: c080686877cf77f42a1a078076d57fe5, type: 3}
       propertyPath: textList.Array.data[6].s
-      value: Add "Slippery" ability
+      value: 'Change scoring from "only our units" to
+
+        "more of our units"'
       objectReference: {fileID: 0}
     - target: {fileID: 11416984, guid: c080686877cf77f42a1a078076d57fe5, type: 3}
       propertyPath: textList.Array.data[7].s
-      value: Add "Vulnerable" ability
+      value: 'Change scoring from "only our units" to
+
+        "more of our units"'
       objectReference: {fileID: 0}
     - target: {fileID: 11416984, guid: c080686877cf77f42a1a078076d57fe5, type: 3}
       propertyPath: textList.Array.data[8].s
-      value: Add "Armored" ability
+      value: 'Change scoring from "only our units" to
+
+        "more of our units"'
       objectReference: {fileID: 0}
     - target: {fileID: 11416984, guid: c080686877cf77f42a1a078076d57fe5, type: 3}
       propertyPath: textList.Array.data[9].s
-      value: Dealys between scoring, attacking and changing turns is too long
+      value: 'Change scoring from "only our units" to
+
+        "more of our units"'
       objectReference: {fileID: 0}
     - target: {fileID: 11416984, guid: c080686877cf77f42a1a078076d57fe5, type: 3}
       propertyPath: textList.Array.data[10].s
@@ -38114,7 +38119,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 11416984, guid: c080686877cf77f42a1a078076d57fe5, type: 3}
       propertyPath: textList.Array.data[5].state
-      value: 2
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 11416984, guid: c080686877cf77f42a1a078076d57fe5, type: 3}
       propertyPath: textList.Array.data[6].state
@@ -38130,7 +38135,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 11416984, guid: c080686877cf77f42a1a078076d57fe5, type: 3}
       propertyPath: textList.Array.data[9].state
-      value: 1
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 11416984, guid: c080686877cf77f42a1a078076d57fe5, type: 3}
       propertyPath: textList.Array.data[10].state
@@ -38170,6 +38175,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 11416984, guid: c080686877cf77f42a1a078076d57fe5, type: 3}
       propertyPath: textList.Array.data[7].deleteQuestion
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 11416984, guid: c080686877cf77f42a1a078076d57fe5, type: 3}
+      propertyPath: textList.Array.data[9].deleteQuestion
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 11416984, guid: c080686877cf77f42a1a078076d57fe5, type: 3}
@@ -126478,6 +126487,50 @@ MonoBehaviour:
   m_SelectedFaces: 
   m_SelectedEdges: []
   m_SelectedVertices: 
+--- !u!1 &1219950950
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1219950951}
+  - component: {fileID: 1219950952}
+  m_Layer: 0
+  m_Name: CellCoverManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1219950951
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1219950950}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1553121778}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1219950952
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1219950950}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5db6d51441e66d34e8a9b5a28a4d7ccc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1220412309
 GameObject:
   m_ObjectHideFlags: 0
@@ -127758,786 +127811,1042 @@ MonoBehaviour:
     - Position: {x: 0.25, y: 0.1, z: -0.25}
       Coordinates: {x: 0, y: 0}
       CurUnit: {fileID: 0}
+      CoveredBy: 0
     - Position: {x: 0.25, y: 0.1, z: -1.75}
       Coordinates: {x: 0, y: 1}
       CurUnit: {fileID: 0}
+      CoveredBy: 0
     - Position: {x: 0.25, y: 0.1, z: -3.25}
       Coordinates: {x: 0, y: 2}
       CurUnit: {fileID: 0}
+      CoveredBy: 0
     - Position: {x: 0.25, y: 0.1, z: -4.75}
       Coordinates: {x: 0, y: 3}
       CurUnit: {fileID: 0}
+      CoveredBy: 0
     - Position: {x: 0.25, y: 0.1, z: -6.25}
       Coordinates: {x: 0, y: 4}
       CurUnit: {fileID: 0}
+      CoveredBy: 0
     - Position: {x: 0.25, y: 0.1, z: -7.75}
       Coordinates: {x: 0, y: 5}
       CurUnit: {fileID: 0}
+      CoveredBy: 0
     - Position: {x: 0.25, y: 0.1, z: -9.25}
       Coordinates: {x: 0, y: 6}
       CurUnit: {fileID: 0}
+      CoveredBy: 0
     - Position: {x: 0.25, y: 0.1, z: -10.75}
       Coordinates: {x: 0, y: 7}
       CurUnit: {fileID: 0}
+      CoveredBy: 0
     - Position: {x: 0.25, y: 0.1, z: -12.25}
       Coordinates: {x: 0, y: 8}
       CurUnit: {fileID: 0}
+      CoveredBy: 0
     - Position: {x: 0.25, y: 0.1, z: -13.75}
       Coordinates: {x: 0, y: 9}
       CurUnit: {fileID: 0}
+      CoveredBy: 0
     - Position: {x: 0.25, y: 0.1, z: -15.25}
       Coordinates: {x: 0, y: 10}
       CurUnit: {fileID: 0}
+      CoveredBy: 0
     - Position: {x: 0.25, y: 0.1, z: -16.75}
       Coordinates: {x: 0, y: 11}
       CurUnit: {fileID: 0}
+      CoveredBy: 0
     - Position: {x: 0.25, y: 0.1, z: -18.25}
       Coordinates: {x: 0, y: 12}
       CurUnit: {fileID: 0}
+      CoveredBy: 0
     - Position: {x: 0.25, y: 0.1, z: -19.75}
       Coordinates: {x: 0, y: 13}
       CurUnit: {fileID: 0}
+      CoveredBy: 0
     - Position: {x: 0.25, y: 0.1, z: -21.25}
       Coordinates: {x: 0, y: 14}
       CurUnit: {fileID: 0}
+      CoveredBy: 0
     - Position: {x: 0.25, y: 0.1, z: -22.75}
       Coordinates: {x: 0, y: 15}
       CurUnit: {fileID: 0}
+      CoveredBy: 0
   - Cells:
     - Position: {x: 1.75, y: 0.1, z: -0.25}
       Coordinates: {x: 1, y: 0}
       CurUnit: {fileID: 0}
+      CoveredBy: 0
     - Position: {x: 1.75, y: 0.1, z: -1.75}
       Coordinates: {x: 1, y: 1}
       CurUnit: {fileID: 0}
+      CoveredBy: 0
     - Position: {x: 1.75, y: 0.1, z: -3.25}
       Coordinates: {x: 1, y: 2}
       CurUnit: {fileID: 0}
+      CoveredBy: 0
     - Position: {x: 1.75, y: 0.1, z: -4.75}
       Coordinates: {x: 1, y: 3}
       CurUnit: {fileID: 0}
+      CoveredBy: 0
     - Position: {x: 1.75, y: 0.1, z: -6.25}
       Coordinates: {x: 1, y: 4}
       CurUnit: {fileID: 0}
+      CoveredBy: 0
     - Position: {x: 1.75, y: 0.1, z: -7.75}
       Coordinates: {x: 1, y: 5}
       CurUnit: {fileID: 0}
+      CoveredBy: 0
     - Position: {x: 1.75, y: 0.1, z: -9.25}
       Coordinates: {x: 1, y: 6}
       CurUnit: {fileID: 0}
+      CoveredBy: 0
     - Position: {x: 1.75, y: 0.1, z: -10.75}
       Coordinates: {x: 1, y: 7}
       CurUnit: {fileID: 0}
+      CoveredBy: 0
     - Position: {x: 1.75, y: 0.1, z: -12.25}
       Coordinates: {x: 1, y: 8}
       CurUnit: {fileID: 0}
+      CoveredBy: 0
     - Position: {x: 1.75, y: 0.1, z: -13.75}
       Coordinates: {x: 1, y: 9}
       CurUnit: {fileID: 0}
+      CoveredBy: 0
     - Position: {x: 1.75, y: 0.1, z: -15.25}
       Coordinates: {x: 1, y: 10}
       CurUnit: {fileID: 0}
+      CoveredBy: 0
     - Position: {x: 1.75, y: 0.1, z: -16.75}
       Coordinates: {x: 1, y: 11}
       CurUnit: {fileID: 0}
+      CoveredBy: 0
     - Position: {x: 1.75, y: 0.1, z: -18.25}
       Coordinates: {x: 1, y: 12}
       CurUnit: {fileID: 0}
+      CoveredBy: 0
     - Position: {x: 1.75, y: 0.1, z: -19.75}
       Coordinates: {x: 1, y: 13}
       CurUnit: {fileID: 0}
+      CoveredBy: 0
     - Position: {x: 1.75, y: 0.1, z: -21.25}
       Coordinates: {x: 1, y: 14}
       CurUnit: {fileID: 0}
+      CoveredBy: 0
     - Position: {x: 1.75, y: 0.1, z: -22.75}
       Coordinates: {x: 1, y: 15}
       CurUnit: {fileID: 0}
+      CoveredBy: 0
   - Cells:
     - Position: {x: 3.25, y: 0.1, z: -0.25}
       Coordinates: {x: 2, y: 0}
       CurUnit: {fileID: 0}
+      CoveredBy: 0
     - Position: {x: 3.25, y: 0.1, z: -1.75}
       Coordinates: {x: 2, y: 1}
       CurUnit: {fileID: 0}
+      CoveredBy: 0
     - Position: {x: 3.25, y: 0.1, z: -3.25}
       Coordinates: {x: 2, y: 2}
       CurUnit: {fileID: 0}
+      CoveredBy: 0
     - Position: {x: 3.25, y: 0.1, z: -4.75}
       Coordinates: {x: 2, y: 3}
       CurUnit: {fileID: 0}
+      CoveredBy: 0
     - Position: {x: 3.25, y: 0.1, z: -6.25}
       Coordinates: {x: 2, y: 4}
       CurUnit: {fileID: 0}
+      CoveredBy: 0
     - Position: {x: 3.25, y: 0.1, z: -7.75}
       Coordinates: {x: 2, y: 5}
       CurUnit: {fileID: 0}
+      CoveredBy: 0
     - Position: {x: 3.25, y: 0.1, z: -9.25}
       Coordinates: {x: 2, y: 6}
       CurUnit: {fileID: 0}
+      CoveredBy: 0
     - Position: {x: 3.25, y: 0.1, z: -10.75}
       Coordinates: {x: 2, y: 7}
       CurUnit: {fileID: 0}
+      CoveredBy: 0
     - Position: {x: 3.25, y: 0.1, z: -12.25}
       Coordinates: {x: 2, y: 8}
       CurUnit: {fileID: 0}
+      CoveredBy: 0
     - Position: {x: 3.25, y: 0.1, z: -13.75}
       Coordinates: {x: 2, y: 9}
       CurUnit: {fileID: 0}
+      CoveredBy: 0
     - Position: {x: 3.25, y: 0.1, z: -15.25}
       Coordinates: {x: 2, y: 10}
       CurUnit: {fileID: 0}
+      CoveredBy: 0
     - Position: {x: 3.25, y: 0.1, z: -16.75}
       Coordinates: {x: 2, y: 11}
       CurUnit: {fileID: 0}
+      CoveredBy: 0
     - Position: {x: 3.25, y: 0.1, z: -18.25}
       Coordinates: {x: 2, y: 12}
       CurUnit: {fileID: 0}
+      CoveredBy: 0
     - Position: {x: 3.25, y: 0.1, z: -19.75}
       Coordinates: {x: 2, y: 13}
       CurUnit: {fileID: 0}
+      CoveredBy: 0
     - Position: {x: 3.25, y: 0.1, z: -21.25}
       Coordinates: {x: 2, y: 14}
       CurUnit: {fileID: 0}
+      CoveredBy: 0
     - Position: {x: 3.25, y: 0.1, z: -22.75}
       Coordinates: {x: 2, y: 15}
       CurUnit: {fileID: 0}
+      CoveredBy: 0
   - Cells:
     - Position: {x: 4.75, y: 0.1, z: -0.25}
       Coordinates: {x: 3, y: 0}
       CurUnit: {fileID: 0}
+      CoveredBy: 0
     - Position: {x: 4.75, y: 0.1, z: -1.75}
       Coordinates: {x: 3, y: 1}
       CurUnit: {fileID: 0}
+      CoveredBy: 0
     - Position: {x: 4.75, y: 0.1, z: -3.25}
       Coordinates: {x: 3, y: 2}
       CurUnit: {fileID: 0}
+      CoveredBy: 0
     - Position: {x: 4.75, y: 0.1, z: -4.75}
       Coordinates: {x: 3, y: 3}
       CurUnit: {fileID: 0}
+      CoveredBy: 0
     - Position: {x: 4.75, y: 0.1, z: -6.25}
       Coordinates: {x: 3, y: 4}
       CurUnit: {fileID: 0}
+      CoveredBy: 0
     - Position: {x: 4.75, y: 0.1, z: -7.75}
       Coordinates: {x: 3, y: 5}
       CurUnit: {fileID: 0}
+      CoveredBy: 0
     - Position: {x: 4.75, y: 0.1, z: -9.25}
       Coordinates: {x: 3, y: 6}
       CurUnit: {fileID: 0}
+      CoveredBy: 0
     - Position: {x: 4.75, y: 0.1, z: -10.75}
       Coordinates: {x: 3, y: 7}
       CurUnit: {fileID: 0}
+      CoveredBy: 0
     - Position: {x: 4.75, y: 0.1, z: -12.25}
       Coordinates: {x: 3, y: 8}
       CurUnit: {fileID: 0}
+      CoveredBy: 0
     - Position: {x: 4.75, y: 0.1, z: -13.75}
       Coordinates: {x: 3, y: 9}
       CurUnit: {fileID: 0}
+      CoveredBy: 0
     - Position: {x: 4.75, y: 0.1, z: -15.25}
       Coordinates: {x: 3, y: 10}
       CurUnit: {fileID: 0}
+      CoveredBy: 0
     - Position: {x: 4.75, y: 0.1, z: -16.75}
       Coordinates: {x: 3, y: 11}
       CurUnit: {fileID: 0}
+      CoveredBy: 0
     - Position: {x: 4.75, y: 0.1, z: -18.25}
       Coordinates: {x: 3, y: 12}
       CurUnit: {fileID: 0}
+      CoveredBy: 0
     - Position: {x: 4.75, y: 0.1, z: -19.75}
       Coordinates: {x: 3, y: 13}
       CurUnit: {fileID: 0}
+      CoveredBy: 0
     - Position: {x: 4.75, y: 0.1, z: -21.25}
       Coordinates: {x: 3, y: 14}
       CurUnit: {fileID: 0}
+      CoveredBy: 0
     - Position: {x: 4.75, y: 0.1, z: -22.75}
       Coordinates: {x: 3, y: 15}
       CurUnit: {fileID: 0}
+      CoveredBy: 0
   - Cells:
     - Position: {x: 6.25, y: 0.1, z: -0.25}
       Coordinates: {x: 4, y: 0}
       CurUnit: {fileID: 0}
+      CoveredBy: 0
     - Position: {x: 6.25, y: 0.1, z: -1.75}
       Coordinates: {x: 4, y: 1}
       CurUnit: {fileID: 0}
+      CoveredBy: 0
     - Position: {x: 6.25, y: 0.1, z: -3.25}
       Coordinates: {x: 4, y: 2}
       CurUnit: {fileID: 0}
+      CoveredBy: 0
     - Position: {x: 6.25, y: 0.1, z: -4.75}
       Coordinates: {x: 4, y: 3}
       CurUnit: {fileID: 0}
+      CoveredBy: 0
     - Position: {x: 6.25, y: 0.1, z: -6.25}
       Coordinates: {x: 4, y: 4}
       CurUnit: {fileID: 0}
+      CoveredBy: 0
     - Position: {x: 6.25, y: 0.1, z: -7.75}
       Coordinates: {x: 4, y: 5}
       CurUnit: {fileID: 0}
+      CoveredBy: 0
     - Position: {x: 6.25, y: 0.1, z: -9.25}
       Coordinates: {x: 4, y: 6}
       CurUnit: {fileID: 0}
+      CoveredBy: 0
     - Position: {x: 6.25, y: 0.1, z: -10.75}
       Coordinates: {x: 4, y: 7}
       CurUnit: {fileID: 0}
+      CoveredBy: 0
     - Position: {x: 6.25, y: 0.1, z: -12.25}
       Coordinates: {x: 4, y: 8}
       CurUnit: {fileID: 0}
+      CoveredBy: 0
     - Position: {x: 6.25, y: 0.1, z: -13.75}
       Coordinates: {x: 4, y: 9}
       CurUnit: {fileID: 0}
+      CoveredBy: 0
     - Position: {x: 6.25, y: 0.1, z: -15.25}
       Coordinates: {x: 4, y: 10}
       CurUnit: {fileID: 0}
+      CoveredBy: 0
     - Position: {x: 6.25, y: 0.1, z: -16.75}
       Coordinates: {x: 4, y: 11}
       CurUnit: {fileID: 0}
+      CoveredBy: 0
     - Position: {x: 6.25, y: 0.1, z: -18.25}
       Coordinates: {x: 4, y: 12}
       CurUnit: {fileID: 0}
+      CoveredBy: 0
     - Position: {x: 6.25, y: 0.1, z: -19.75}
       Coordinates: {x: 4, y: 13}
       CurUnit: {fileID: 0}
+      CoveredBy: 0
     - Position: {x: 6.25, y: 0.1, z: -21.25}
       Coordinates: {x: 4, y: 14}
       CurUnit: {fileID: 0}
+      CoveredBy: 0
     - Position: {x: 6.25, y: 0.1, z: -22.75}
       Coordinates: {x: 4, y: 15}
       CurUnit: {fileID: 0}
+      CoveredBy: 0
   - Cells:
     - Position: {x: 7.75, y: 0.1, z: -0.25}
       Coordinates: {x: 5, y: 0}
       CurUnit: {fileID: 0}
+      CoveredBy: 0
     - Position: {x: 7.75, y: 0.1, z: -1.75}
       Coordinates: {x: 5, y: 1}
       CurUnit: {fileID: 0}
+      CoveredBy: 0
     - Position: {x: 7.75, y: 0.1, z: -3.25}
       Coordinates: {x: 5, y: 2}
       CurUnit: {fileID: 0}
+      CoveredBy: 0
     - Position: {x: 7.75, y: 0.1, z: -4.75}
       Coordinates: {x: 5, y: 3}
       CurUnit: {fileID: 0}
+      CoveredBy: 0
     - Position: {x: 7.75, y: 0.1, z: -6.25}
       Coordinates: {x: 5, y: 4}
       CurUnit: {fileID: 0}
+      CoveredBy: 0
     - Position: {x: 7.75, y: 0.1, z: -7.75}
       Coordinates: {x: 5, y: 5}
       CurUnit: {fileID: 0}
+      CoveredBy: 0
     - Position: {x: 7.75, y: 0.1, z: -9.25}
       Coordinates: {x: 5, y: 6}
       CurUnit: {fileID: 0}
+      CoveredBy: 0
     - Position: {x: 7.75, y: 0.1, z: -10.75}
       Coordinates: {x: 5, y: 7}
       CurUnit: {fileID: 0}
+      CoveredBy: 0
     - Position: {x: 7.75, y: 0.1, z: -12.25}
       Coordinates: {x: 5, y: 8}
       CurUnit: {fileID: 0}
+      CoveredBy: 0
     - Position: {x: 7.75, y: 0.1, z: -13.75}
       Coordinates: {x: 5, y: 9}
       CurUnit: {fileID: 0}
+      CoveredBy: 0
     - Position: {x: 7.75, y: 0.1, z: -15.25}
       Coordinates: {x: 5, y: 10}
       CurUnit: {fileID: 0}
+      CoveredBy: 0
     - Position: {x: 7.75, y: 0.1, z: -16.75}
       Coordinates: {x: 5, y: 11}
       CurUnit: {fileID: 0}
+      CoveredBy: 0
     - Position: {x: 7.75, y: 0.1, z: -18.25}
       Coordinates: {x: 5, y: 12}
       CurUnit: {fileID: 0}
+      CoveredBy: 0
     - Position: {x: 7.75, y: 0.1, z: -19.75}
       Coordinates: {x: 5, y: 13}
       CurUnit: {fileID: 0}
+      CoveredBy: 0
     - Position: {x: 7.75, y: 0.1, z: -21.25}
       Coordinates: {x: 5, y: 14}
       CurUnit: {fileID: 0}
+      CoveredBy: 0
     - Position: {x: 7.75, y: 0.1, z: -22.75}
       Coordinates: {x: 5, y: 15}
       CurUnit: {fileID: 0}
+      CoveredBy: 0
   - Cells:
     - Position: {x: 9.25, y: 0.1, z: -0.25}
       Coordinates: {x: 6, y: 0}
       CurUnit: {fileID: 0}
+      CoveredBy: 0
     - Position: {x: 9.25, y: 0.1, z: -1.75}
       Coordinates: {x: 6, y: 1}
       CurUnit: {fileID: 0}
+      CoveredBy: 0
     - Position: {x: 9.25, y: 0.1, z: -3.25}
       Coordinates: {x: 6, y: 2}
       CurUnit: {fileID: 0}
+      CoveredBy: 0
     - Position: {x: 9.25, y: 0.1, z: -4.75}
       Coordinates: {x: 6, y: 3}
       CurUnit: {fileID: 0}
+      CoveredBy: 0
     - Position: {x: 9.25, y: 0.1, z: -6.25}
       Coordinates: {x: 6, y: 4}
       CurUnit: {fileID: 0}
+      CoveredBy: 0
     - Position: {x: 9.25, y: 0.1, z: -7.75}
       Coordinates: {x: 6, y: 5}
       CurUnit: {fileID: 0}
+      CoveredBy: 0
     - Position: {x: 9.25, y: 0.1, z: -9.25}
       Coordinates: {x: 6, y: 6}
       CurUnit: {fileID: 0}
+      CoveredBy: 0
     - Position: {x: 9.25, y: 0.1, z: -10.75}
       Coordinates: {x: 6, y: 7}
       CurUnit: {fileID: 0}
+      CoveredBy: 0
     - Position: {x: 9.25, y: 0.1, z: -12.25}
       Coordinates: {x: 6, y: 8}
       CurUnit: {fileID: 0}
+      CoveredBy: 0
     - Position: {x: 9.25, y: 0.1, z: -13.75}
       Coordinates: {x: 6, y: 9}
       CurUnit: {fileID: 0}
+      CoveredBy: 0
     - Position: {x: 9.25, y: 0.1, z: -15.25}
       Coordinates: {x: 6, y: 10}
       CurUnit: {fileID: 0}
+      CoveredBy: 0
     - Position: {x: 9.25, y: 0.1, z: -16.75}
       Coordinates: {x: 6, y: 11}
       CurUnit: {fileID: 0}
+      CoveredBy: 0
     - Position: {x: 9.25, y: 0.1, z: -18.25}
       Coordinates: {x: 6, y: 12}
       CurUnit: {fileID: 0}
+      CoveredBy: 0
     - Position: {x: 9.25, y: 0.1, z: -19.75}
       Coordinates: {x: 6, y: 13}
       CurUnit: {fileID: 0}
+      CoveredBy: 0
     - Position: {x: 9.25, y: 0.1, z: -21.25}
       Coordinates: {x: 6, y: 14}
       CurUnit: {fileID: 0}
+      CoveredBy: 0
     - Position: {x: 9.25, y: 0.1, z: -22.75}
       Coordinates: {x: 6, y: 15}
       CurUnit: {fileID: 0}
+      CoveredBy: 0
   - Cells:
     - Position: {x: 10.75, y: 0.1, z: -0.25}
       Coordinates: {x: 7, y: 0}
       CurUnit: {fileID: 0}
+      CoveredBy: 0
     - Position: {x: 10.75, y: 0.1, z: -1.75}
       Coordinates: {x: 7, y: 1}
       CurUnit: {fileID: 0}
+      CoveredBy: 0
     - Position: {x: 10.75, y: 0.1, z: -3.25}
       Coordinates: {x: 7, y: 2}
       CurUnit: {fileID: 0}
+      CoveredBy: 0
     - Position: {x: 10.75, y: 0.1, z: -4.75}
       Coordinates: {x: 7, y: 3}
       CurUnit: {fileID: 0}
+      CoveredBy: 0
     - Position: {x: 10.75, y: 0.1, z: -6.25}
       Coordinates: {x: 7, y: 4}
       CurUnit: {fileID: 0}
+      CoveredBy: 0
     - Position: {x: 10.75, y: 0.1, z: -7.75}
       Coordinates: {x: 7, y: 5}
       CurUnit: {fileID: 0}
+      CoveredBy: 0
     - Position: {x: 10.75, y: 0.1, z: -9.25}
       Coordinates: {x: 7, y: 6}
       CurUnit: {fileID: 0}
+      CoveredBy: 0
     - Position: {x: 10.75, y: 0.1, z: -10.75}
       Coordinates: {x: 7, y: 7}
       CurUnit: {fileID: 0}
+      CoveredBy: 0
     - Position: {x: 10.75, y: 0.1, z: -12.25}
       Coordinates: {x: 7, y: 8}
       CurUnit: {fileID: 0}
+      CoveredBy: 0
     - Position: {x: 10.75, y: 0.1, z: -13.75}
       Coordinates: {x: 7, y: 9}
       CurUnit: {fileID: 0}
+      CoveredBy: 0
     - Position: {x: 10.75, y: 0.1, z: -15.25}
       Coordinates: {x: 7, y: 10}
       CurUnit: {fileID: 0}
+      CoveredBy: 0
     - Position: {x: 10.75, y: 0.1, z: -16.75}
       Coordinates: {x: 7, y: 11}
       CurUnit: {fileID: 0}
+      CoveredBy: 0
     - Position: {x: 10.75, y: 0.1, z: -18.25}
       Coordinates: {x: 7, y: 12}
       CurUnit: {fileID: 0}
+      CoveredBy: 0
     - Position: {x: 10.75, y: 0.1, z: -19.75}
       Coordinates: {x: 7, y: 13}
       CurUnit: {fileID: 0}
+      CoveredBy: 0
     - Position: {x: 10.75, y: 0.1, z: -21.25}
       Coordinates: {x: 7, y: 14}
       CurUnit: {fileID: 0}
+      CoveredBy: 0
     - Position: {x: 10.75, y: 0.1, z: -22.75}
       Coordinates: {x: 7, y: 15}
       CurUnit: {fileID: 0}
+      CoveredBy: 0
   - Cells:
     - Position: {x: 12.25, y: 0.1, z: -0.25}
       Coordinates: {x: 8, y: 0}
       CurUnit: {fileID: 0}
+      CoveredBy: 0
     - Position: {x: 12.25, y: 0.1, z: -1.75}
       Coordinates: {x: 8, y: 1}
       CurUnit: {fileID: 0}
+      CoveredBy: 0
     - Position: {x: 12.25, y: 0.1, z: -3.25}
       Coordinates: {x: 8, y: 2}
       CurUnit: {fileID: 0}
+      CoveredBy: 0
     - Position: {x: 12.25, y: 0.1, z: -4.75}
       Coordinates: {x: 8, y: 3}
       CurUnit: {fileID: 0}
+      CoveredBy: 0
     - Position: {x: 12.25, y: 0.1, z: -6.25}
       Coordinates: {x: 8, y: 4}
       CurUnit: {fileID: 0}
+      CoveredBy: 0
     - Position: {x: 12.25, y: 0.1, z: -7.75}
       Coordinates: {x: 8, y: 5}
       CurUnit: {fileID: 0}
+      CoveredBy: 0
     - Position: {x: 12.25, y: 0.1, z: -9.25}
       Coordinates: {x: 8, y: 6}
       CurUnit: {fileID: 0}
+      CoveredBy: 0
     - Position: {x: 12.25, y: 0.1, z: -10.75}
       Coordinates: {x: 8, y: 7}
       CurUnit: {fileID: 0}
+      CoveredBy: 0
     - Position: {x: 12.25, y: 0.1, z: -12.25}
       Coordinates: {x: 8, y: 8}
       CurUnit: {fileID: 0}
+      CoveredBy: 0
     - Position: {x: 12.25, y: 0.1, z: -13.75}
       Coordinates: {x: 8, y: 9}
       CurUnit: {fileID: 0}
+      CoveredBy: 0
     - Position: {x: 12.25, y: 0.1, z: -15.25}
       Coordinates: {x: 8, y: 10}
       CurUnit: {fileID: 0}
+      CoveredBy: 0
     - Position: {x: 12.25, y: 0.1, z: -16.75}
       Coordinates: {x: 8, y: 11}
       CurUnit: {fileID: 0}
+      CoveredBy: 0
     - Position: {x: 12.25, y: 0.1, z: -18.25}
       Coordinates: {x: 8, y: 12}
       CurUnit: {fileID: 0}
+      CoveredBy: 0
     - Position: {x: 12.25, y: 0.1, z: -19.75}
       Coordinates: {x: 8, y: 13}
       CurUnit: {fileID: 0}
+      CoveredBy: 0
     - Position: {x: 12.25, y: 0.1, z: -21.25}
       Coordinates: {x: 8, y: 14}
       CurUnit: {fileID: 0}
+      CoveredBy: 0
     - Position: {x: 12.25, y: 0.1, z: -22.75}
       Coordinates: {x: 8, y: 15}
       CurUnit: {fileID: 0}
+      CoveredBy: 0
   - Cells:
     - Position: {x: 13.75, y: 0.1, z: -0.25}
       Coordinates: {x: 9, y: 0}
       CurUnit: {fileID: 0}
+      CoveredBy: 0
     - Position: {x: 13.75, y: 0.1, z: -1.75}
       Coordinates: {x: 9, y: 1}
       CurUnit: {fileID: 0}
+      CoveredBy: 0
     - Position: {x: 13.75, y: 0.1, z: -3.25}
       Coordinates: {x: 9, y: 2}
       CurUnit: {fileID: 0}
+      CoveredBy: 0
     - Position: {x: 13.75, y: 0.1, z: -4.75}
       Coordinates: {x: 9, y: 3}
       CurUnit: {fileID: 0}
+      CoveredBy: 0
     - Position: {x: 13.75, y: 0.1, z: -6.25}
       Coordinates: {x: 9, y: 4}
       CurUnit: {fileID: 0}
+      CoveredBy: 0
     - Position: {x: 13.75, y: 0.1, z: -7.75}
       Coordinates: {x: 9, y: 5}
       CurUnit: {fileID: 0}
+      CoveredBy: 0
     - Position: {x: 13.75, y: 0.1, z: -9.25}
       Coordinates: {x: 9, y: 6}
       CurUnit: {fileID: 0}
+      CoveredBy: 0
     - Position: {x: 13.75, y: 0.1, z: -10.75}
       Coordinates: {x: 9, y: 7}
       CurUnit: {fileID: 0}
+      CoveredBy: 0
     - Position: {x: 13.75, y: 0.1, z: -12.25}
       Coordinates: {x: 9, y: 8}
       CurUnit: {fileID: 0}
+      CoveredBy: 0
     - Position: {x: 13.75, y: 0.1, z: -13.75}
       Coordinates: {x: 9, y: 9}
       CurUnit: {fileID: 0}
+      CoveredBy: 0
     - Position: {x: 13.75, y: 0.1, z: -15.25}
       Coordinates: {x: 9, y: 10}
       CurUnit: {fileID: 0}
+      CoveredBy: 0
     - Position: {x: 13.75, y: 0.1, z: -16.75}
       Coordinates: {x: 9, y: 11}
       CurUnit: {fileID: 0}
+      CoveredBy: 0
     - Position: {x: 13.75, y: 0.1, z: -18.25}
       Coordinates: {x: 9, y: 12}
       CurUnit: {fileID: 0}
+      CoveredBy: 0
     - Position: {x: 13.75, y: 0.1, z: -19.75}
       Coordinates: {x: 9, y: 13}
       CurUnit: {fileID: 0}
+      CoveredBy: 0
     - Position: {x: 13.75, y: 0.1, z: -21.25}
       Coordinates: {x: 9, y: 14}
       CurUnit: {fileID: 0}
+      CoveredBy: 0
     - Position: {x: 13.75, y: 0.1, z: -22.75}
       Coordinates: {x: 9, y: 15}
       CurUnit: {fileID: 0}
+      CoveredBy: 0
   - Cells:
     - Position: {x: 15.25, y: 0.1, z: -0.25}
       Coordinates: {x: 10, y: 0}
       CurUnit: {fileID: 0}
+      CoveredBy: 0
     - Position: {x: 15.25, y: 0.1, z: -1.75}
       Coordinates: {x: 10, y: 1}
       CurUnit: {fileID: 0}
+      CoveredBy: 0
     - Position: {x: 15.25, y: 0.1, z: -3.25}
       Coordinates: {x: 10, y: 2}
       CurUnit: {fileID: 0}
+      CoveredBy: 0
     - Position: {x: 15.25, y: 0.1, z: -4.75}
       Coordinates: {x: 10, y: 3}
       CurUnit: {fileID: 0}
+      CoveredBy: 0
     - Position: {x: 15.25, y: 0.1, z: -6.25}
       Coordinates: {x: 10, y: 4}
       CurUnit: {fileID: 0}
+      CoveredBy: 0
     - Position: {x: 15.25, y: 0.1, z: -7.75}
       Coordinates: {x: 10, y: 5}
       CurUnit: {fileID: 0}
+      CoveredBy: 0
     - Position: {x: 15.25, y: 0.1, z: -9.25}
       Coordinates: {x: 10, y: 6}
       CurUnit: {fileID: 0}
+      CoveredBy: 0
     - Position: {x: 15.25, y: 0.1, z: -10.75}
       Coordinates: {x: 10, y: 7}
       CurUnit: {fileID: 0}
+      CoveredBy: 0
     - Position: {x: 15.25, y: 0.1, z: -12.25}
       Coordinates: {x: 10, y: 8}
       CurUnit: {fileID: 0}
+      CoveredBy: 0
     - Position: {x: 15.25, y: 0.1, z: -13.75}
       Coordinates: {x: 10, y: 9}
       CurUnit: {fileID: 0}
+      CoveredBy: 0
     - Position: {x: 15.25, y: 0.1, z: -15.25}
       Coordinates: {x: 10, y: 10}
       CurUnit: {fileID: 0}
+      CoveredBy: 0
     - Position: {x: 15.25, y: 0.1, z: -16.75}
       Coordinates: {x: 10, y: 11}
       CurUnit: {fileID: 0}
+      CoveredBy: 0
     - Position: {x: 15.25, y: 0.1, z: -18.25}
       Coordinates: {x: 10, y: 12}
       CurUnit: {fileID: 0}
+      CoveredBy: 0
     - Position: {x: 15.25, y: 0.1, z: -19.75}
       Coordinates: {x: 10, y: 13}
       CurUnit: {fileID: 0}
+      CoveredBy: 0
     - Position: {x: 15.25, y: 0.1, z: -21.25}
       Coordinates: {x: 10, y: 14}
       CurUnit: {fileID: 0}
+      CoveredBy: 0
     - Position: {x: 15.25, y: 0.1, z: -22.75}
       Coordinates: {x: 10, y: 15}
       CurUnit: {fileID: 0}
+      CoveredBy: 0
   - Cells:
     - Position: {x: 16.75, y: 0.1, z: -0.25}
       Coordinates: {x: 11, y: 0}
       CurUnit: {fileID: 0}
+      CoveredBy: 0
     - Position: {x: 16.75, y: 0.1, z: -1.75}
       Coordinates: {x: 11, y: 1}
       CurUnit: {fileID: 0}
+      CoveredBy: 0
     - Position: {x: 16.75, y: 0.1, z: -3.25}
       Coordinates: {x: 11, y: 2}
       CurUnit: {fileID: 0}
+      CoveredBy: 0
     - Position: {x: 16.75, y: 0.1, z: -4.75}
       Coordinates: {x: 11, y: 3}
       CurUnit: {fileID: 0}
+      CoveredBy: 0
     - Position: {x: 16.75, y: 0.1, z: -6.25}
       Coordinates: {x: 11, y: 4}
       CurUnit: {fileID: 0}
+      CoveredBy: 0
     - Position: {x: 16.75, y: 0.1, z: -7.75}
       Coordinates: {x: 11, y: 5}
       CurUnit: {fileID: 0}
+      CoveredBy: 0
     - Position: {x: 16.75, y: 0.1, z: -9.25}
       Coordinates: {x: 11, y: 6}
       CurUnit: {fileID: 0}
+      CoveredBy: 0
     - Position: {x: 16.75, y: 0.1, z: -10.75}
       Coordinates: {x: 11, y: 7}
       CurUnit: {fileID: 0}
+      CoveredBy: 0
     - Position: {x: 16.75, y: 0.1, z: -12.25}
       Coordinates: {x: 11, y: 8}
       CurUnit: {fileID: 0}
+      CoveredBy: 0
     - Position: {x: 16.75, y: 0.1, z: -13.75}
       Coordinates: {x: 11, y: 9}
       CurUnit: {fileID: 0}
+      CoveredBy: 0
     - Position: {x: 16.75, y: 0.1, z: -15.25}
       Coordinates: {x: 11, y: 10}
       CurUnit: {fileID: 0}
+      CoveredBy: 0
     - Position: {x: 16.75, y: 0.1, z: -16.75}
       Coordinates: {x: 11, y: 11}
       CurUnit: {fileID: 0}
+      CoveredBy: 0
     - Position: {x: 16.75, y: 0.1, z: -18.25}
       Coordinates: {x: 11, y: 12}
       CurUnit: {fileID: 0}
+      CoveredBy: 0
     - Position: {x: 16.75, y: 0.1, z: -19.75}
       Coordinates: {x: 11, y: 13}
       CurUnit: {fileID: 0}
+      CoveredBy: 0
     - Position: {x: 16.75, y: 0.1, z: -21.25}
       Coordinates: {x: 11, y: 14}
       CurUnit: {fileID: 0}
+      CoveredBy: 0
     - Position: {x: 16.75, y: 0.1, z: -22.75}
       Coordinates: {x: 11, y: 15}
       CurUnit: {fileID: 0}
+      CoveredBy: 0
   - Cells:
     - Position: {x: 18.25, y: 0.1, z: -0.25}
       Coordinates: {x: 12, y: 0}
       CurUnit: {fileID: 0}
+      CoveredBy: 0
     - Position: {x: 18.25, y: 0.1, z: -1.75}
       Coordinates: {x: 12, y: 1}
       CurUnit: {fileID: 0}
+      CoveredBy: 0
     - Position: {x: 18.25, y: 0.1, z: -3.25}
       Coordinates: {x: 12, y: 2}
       CurUnit: {fileID: 0}
+      CoveredBy: 0
     - Position: {x: 18.25, y: 0.1, z: -4.75}
       Coordinates: {x: 12, y: 3}
       CurUnit: {fileID: 0}
+      CoveredBy: 0
     - Position: {x: 18.25, y: 0.1, z: -6.25}
       Coordinates: {x: 12, y: 4}
       CurUnit: {fileID: 0}
+      CoveredBy: 0
     - Position: {x: 18.25, y: 0.1, z: -7.75}
       Coordinates: {x: 12, y: 5}
       CurUnit: {fileID: 0}
+      CoveredBy: 0
     - Position: {x: 18.25, y: 0.1, z: -9.25}
       Coordinates: {x: 12, y: 6}
       CurUnit: {fileID: 0}
+      CoveredBy: 0
     - Position: {x: 18.25, y: 0.1, z: -10.75}
       Coordinates: {x: 12, y: 7}
       CurUnit: {fileID: 0}
+      CoveredBy: 0
     - Position: {x: 18.25, y: 0.1, z: -12.25}
       Coordinates: {x: 12, y: 8}
       CurUnit: {fileID: 0}
+      CoveredBy: 0
     - Position: {x: 18.25, y: 0.1, z: -13.75}
       Coordinates: {x: 12, y: 9}
       CurUnit: {fileID: 0}
+      CoveredBy: 0
     - Position: {x: 18.25, y: 0.1, z: -15.25}
       Coordinates: {x: 12, y: 10}
       CurUnit: {fileID: 0}
+      CoveredBy: 0
     - Position: {x: 18.25, y: 0.1, z: -16.75}
       Coordinates: {x: 12, y: 11}
       CurUnit: {fileID: 0}
+      CoveredBy: 0
     - Position: {x: 18.25, y: 0.1, z: -18.25}
       Coordinates: {x: 12, y: 12}
       CurUnit: {fileID: 0}
+      CoveredBy: 0
     - Position: {x: 18.25, y: 0.1, z: -19.75}
       Coordinates: {x: 12, y: 13}
       CurUnit: {fileID: 0}
+      CoveredBy: 0
     - Position: {x: 18.25, y: 0.1, z: -21.25}
       Coordinates: {x: 12, y: 14}
       CurUnit: {fileID: 0}
+      CoveredBy: 0
     - Position: {x: 18.25, y: 0.1, z: -22.75}
       Coordinates: {x: 12, y: 15}
       CurUnit: {fileID: 0}
+      CoveredBy: 0
   - Cells:
     - Position: {x: 19.75, y: 0.1, z: -0.25}
       Coordinates: {x: 13, y: 0}
       CurUnit: {fileID: 0}
+      CoveredBy: 0
     - Position: {x: 19.75, y: 0.1, z: -1.75}
       Coordinates: {x: 13, y: 1}
       CurUnit: {fileID: 0}
+      CoveredBy: 0
     - Position: {x: 19.75, y: 0.1, z: -3.25}
       Coordinates: {x: 13, y: 2}
       CurUnit: {fileID: 0}
+      CoveredBy: 0
     - Position: {x: 19.75, y: 0.1, z: -4.75}
       Coordinates: {x: 13, y: 3}
       CurUnit: {fileID: 0}
+      CoveredBy: 0
     - Position: {x: 19.75, y: 0.1, z: -6.25}
       Coordinates: {x: 13, y: 4}
       CurUnit: {fileID: 0}
+      CoveredBy: 0
     - Position: {x: 19.75, y: 0.1, z: -7.75}
       Coordinates: {x: 13, y: 5}
       CurUnit: {fileID: 0}
+      CoveredBy: 0
     - Position: {x: 19.75, y: 0.1, z: -9.25}
       Coordinates: {x: 13, y: 6}
       CurUnit: {fileID: 0}
+      CoveredBy: 0
     - Position: {x: 19.75, y: 0.1, z: -10.75}
       Coordinates: {x: 13, y: 7}
       CurUnit: {fileID: 0}
+      CoveredBy: 0
     - Position: {x: 19.75, y: 0.1, z: -12.25}
       Coordinates: {x: 13, y: 8}
       CurUnit: {fileID: 0}
+      CoveredBy: 0
     - Position: {x: 19.75, y: 0.1, z: -13.75}
       Coordinates: {x: 13, y: 9}
       CurUnit: {fileID: 0}
+      CoveredBy: 0
     - Position: {x: 19.75, y: 0.1, z: -15.25}
       Coordinates: {x: 13, y: 10}
       CurUnit: {fileID: 0}
+      CoveredBy: 0
     - Position: {x: 19.75, y: 0.1, z: -16.75}
       Coordinates: {x: 13, y: 11}
       CurUnit: {fileID: 0}
+      CoveredBy: 0
     - Position: {x: 19.75, y: 0.1, z: -18.25}
       Coordinates: {x: 13, y: 12}
       CurUnit: {fileID: 0}
+      CoveredBy: 0
     - Position: {x: 19.75, y: 0.1, z: -19.75}
       Coordinates: {x: 13, y: 13}
       CurUnit: {fileID: 0}
+      CoveredBy: 0
     - Position: {x: 19.75, y: 0.1, z: -21.25}
       Coordinates: {x: 13, y: 14}
       CurUnit: {fileID: 0}
+      CoveredBy: 0
     - Position: {x: 19.75, y: 0.1, z: -22.75}
       Coordinates: {x: 13, y: 15}
       CurUnit: {fileID: 0}
+      CoveredBy: 0
   - Cells:
     - Position: {x: 21.25, y: 0.1, z: -0.25}
       Coordinates: {x: 14, y: 0}
       CurUnit: {fileID: 0}
+      CoveredBy: 0
     - Position: {x: 21.25, y: 0.1, z: -1.75}
       Coordinates: {x: 14, y: 1}
       CurUnit: {fileID: 0}
+      CoveredBy: 0
     - Position: {x: 21.25, y: 0.1, z: -3.25}
       Coordinates: {x: 14, y: 2}
       CurUnit: {fileID: 0}
+      CoveredBy: 0
     - Position: {x: 21.25, y: 0.1, z: -4.75}
       Coordinates: {x: 14, y: 3}
       CurUnit: {fileID: 0}
+      CoveredBy: 0
     - Position: {x: 21.25, y: 0.1, z: -6.25}
       Coordinates: {x: 14, y: 4}
       CurUnit: {fileID: 0}
+      CoveredBy: 0
     - Position: {x: 21.25, y: 0.1, z: -7.75}
       Coordinates: {x: 14, y: 5}
       CurUnit: {fileID: 0}
+      CoveredBy: 0
     - Position: {x: 21.25, y: 0.1, z: -9.25}
       Coordinates: {x: 14, y: 6}
       CurUnit: {fileID: 0}
+      CoveredBy: 0
     - Position: {x: 21.25, y: 0.1, z: -10.75}
       Coordinates: {x: 14, y: 7}
       CurUnit: {fileID: 0}
+      CoveredBy: 0
     - Position: {x: 21.25, y: 0.1, z: -12.25}
       Coordinates: {x: 14, y: 8}
       CurUnit: {fileID: 0}
+      CoveredBy: 0
     - Position: {x: 21.25, y: 0.1, z: -13.75}
       Coordinates: {x: 14, y: 9}
       CurUnit: {fileID: 0}
+      CoveredBy: 0
     - Position: {x: 21.25, y: 0.1, z: -15.25}
       Coordinates: {x: 14, y: 10}
       CurUnit: {fileID: 0}
+      CoveredBy: 0
     - Position: {x: 21.25, y: 0.1, z: -16.75}
       Coordinates: {x: 14, y: 11}
       CurUnit: {fileID: 0}
+      CoveredBy: 0
     - Position: {x: 21.25, y: 0.1, z: -18.25}
       Coordinates: {x: 14, y: 12}
       CurUnit: {fileID: 0}
+      CoveredBy: 0
     - Position: {x: 21.25, y: 0.1, z: -19.75}
       Coordinates: {x: 14, y: 13}
       CurUnit: {fileID: 0}
+      CoveredBy: 0
     - Position: {x: 21.25, y: 0.1, z: -21.25}
       Coordinates: {x: 14, y: 14}
       CurUnit: {fileID: 0}
+      CoveredBy: 0
     - Position: {x: 21.25, y: 0.1, z: -22.75}
       Coordinates: {x: 14, y: 15}
       CurUnit: {fileID: 0}
+      CoveredBy: 0
   - Cells:
     - Position: {x: 22.75, y: 0.1, z: -0.25}
       Coordinates: {x: 15, y: 0}
       CurUnit: {fileID: 0}
+      CoveredBy: 0
     - Position: {x: 22.75, y: 0.1, z: -1.75}
       Coordinates: {x: 15, y: 1}
       CurUnit: {fileID: 0}
+      CoveredBy: 0
     - Position: {x: 22.75, y: 0.1, z: -3.25}
       Coordinates: {x: 15, y: 2}
       CurUnit: {fileID: 0}
+      CoveredBy: 0
     - Position: {x: 22.75, y: 0.1, z: -4.75}
       Coordinates: {x: 15, y: 3}
       CurUnit: {fileID: 0}
+      CoveredBy: 0
     - Position: {x: 22.75, y: 0.1, z: -6.25}
       Coordinates: {x: 15, y: 4}
       CurUnit: {fileID: 0}
+      CoveredBy: 0
     - Position: {x: 22.75, y: 0.1, z: -7.75}
       Coordinates: {x: 15, y: 5}
       CurUnit: {fileID: 0}
+      CoveredBy: 0
     - Position: {x: 22.75, y: 0.1, z: -9.25}
       Coordinates: {x: 15, y: 6}
       CurUnit: {fileID: 0}
+      CoveredBy: 0
     - Position: {x: 22.75, y: 0.1, z: -10.75}
       Coordinates: {x: 15, y: 7}
       CurUnit: {fileID: 0}
+      CoveredBy: 0
     - Position: {x: 22.75, y: 0.1, z: -12.25}
       Coordinates: {x: 15, y: 8}
       CurUnit: {fileID: 0}
+      CoveredBy: 0
     - Position: {x: 22.75, y: 0.1, z: -13.75}
       Coordinates: {x: 15, y: 9}
       CurUnit: {fileID: 0}
+      CoveredBy: 0
     - Position: {x: 22.75, y: 0.1, z: -15.25}
       Coordinates: {x: 15, y: 10}
       CurUnit: {fileID: 0}
+      CoveredBy: 0
     - Position: {x: 22.75, y: 0.1, z: -16.75}
       Coordinates: {x: 15, y: 11}
       CurUnit: {fileID: 0}
+      CoveredBy: 0
     - Position: {x: 22.75, y: 0.1, z: -18.25}
       Coordinates: {x: 15, y: 12}
       CurUnit: {fileID: 0}
+      CoveredBy: 0
     - Position: {x: 22.75, y: 0.1, z: -19.75}
       Coordinates: {x: 15, y: 13}
       CurUnit: {fileID: 0}
+      CoveredBy: 0
     - Position: {x: 22.75, y: 0.1, z: -21.25}
       Coordinates: {x: 15, y: 14}
       CurUnit: {fileID: 0}
+      CoveredBy: 0
     - Position: {x: 22.75, y: 0.1, z: -22.75}
       Coordinates: {x: 15, y: 15}
       CurUnit: {fileID: 0}
+      CoveredBy: 0
   ClickEvent:
     m_PersistentCalls:
       m_Calls: []
@@ -164667,6 +164976,7 @@ Transform:
   - {fileID: 218350630}
   - {fileID: 1031662069}
   - {fileID: 1324948932}
+  - {fileID: 1219950951}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1555817339

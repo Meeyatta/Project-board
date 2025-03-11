@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+
 [CreateAssetMenu(fileName = "New Attack zone", menuName = "Attack zone")]
 public class AttackZone : ScriptableObject
 {
@@ -13,5 +14,6 @@ public class AttackZone : ScriptableObject
         public bool IsEvading;
     }
     public int Damage;
+    public DamageType Type;
     public List<Line> Lines;
 }

@@ -13,20 +13,37 @@ MonoBehaviour:
   m_Name: TestAttackZone
   m_EditorClassIdentifier: 
   Damage: 1
+  Type: 0
   Lines:
-  - Direction: Up
+  - Direction: up
     Positions:
     - {x: 0, y: -1}
     IsEvading: 0
-  - Direction: Right
+  - Direction: up-right
+    Positions:
+    - {x: 1, y: -1}
+    IsEvading: 0
+  - Direction: right
     Positions:
     - {x: 1, y: 0}
     IsEvading: 0
-  - Direction: Down
+  - Direction: right-down
+    Positions:
+    - {x: 1, y: 1}
+    IsEvading: 0
+  - Direction: down
     Positions:
     - {x: 0, y: 1}
+    IsEvading: 0
+  - Direction: down-left
+    Positions:
+    - {x: -1, y: 1}
     IsEvading: 0
   - Direction: left
     Positions:
     - {x: -1, y: 0}
+    IsEvading: 0
+  - Direction: left-up
+    Positions:
+    - {x: -1, y: -1}
     IsEvading: 0

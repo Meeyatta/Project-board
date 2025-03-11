@@ -7,11 +7,11 @@ public class ActionParameters
 {
     public GameManager.ActionType Type;
     public List<Unit> ActionTargetUnits;
-    public List<Unit.Keyword> Keywords;
+    public List<Keyword> Keywords;
     public List<Vector2Int> CellsCoordinates;
     public GameObject Object;
 
-    public ActionParameters(GameManager.ActionType type, List<Unit> actionTargetUnits, List<Unit.Keyword> keywords, List<Vector2Int> cellsCoordinates, GameObject object_)
+    public ActionParameters(GameManager.ActionType type, List<Unit> actionTargetUnits, List<Keyword> keywords, List<Vector2Int> cellsCoordinates, GameObject object_)
     {
         this.Type = type;
         this.ActionTargetUnits = actionTargetUnits;

@@ -7,9 +7,9 @@ using UnityEngine.Windows;
 public static class Ability_Score 
 {
     //Checks individual objective unit if it can score for player/enemy
-    public static bool Check(Unit u, List<Unit.Keyword> keywords)
+    public static bool Check(Unit u, List<Keyword> keywords)
     {
-        if (!u.CurAbilities.Contains(Unit.Ability.Score)) return false;
+        if (!u.CurAbilities.Contains(Ability.Score)) return false;
 
         //TODO: Add a check if it IS an objective, but doesn't need scoring
         var l = BoardManager.Instance.Get_UnitsInRange(u, 1);
@@ -19,7 +19,7 @@ public static class Ability_Score
         List<Unit> totl = new List<Unit>();
         foreach ( var k in keywords )
         {
-            List<Unit.Keyword> keyw = new List<Unit.Keyword> { k };
+            List<Keyword> keyw = new List<Keyword> { k };
             totl.AddRange(GameManager.Instance.Get_OnlyUnitsWithKeywords(l, keyw));
         }
 
@@ -31,10 +31,10 @@ public static class Ability_Score
     //Main function, goes through every objective on the map and scores appropriately (checks for the keywords of surrounding units)
     public static IEnumerator GlobalScore(ActionParameters parameters)
     {
-        List<Unit.Keyword> keywords = parameters.Keywords;
-        yield return new WaitForSeconds(0.01f);
+        List<Keyword> keywords = parameters.Keywords;
+        yield return new WaitForSeconds(0.001f);
 
-        List<Unit.Keyword> ks = new List<Unit.Keyword> { Unit.Keyword.Objective };
+        List<Keyword> ks = new List<Keyword> { Keyword.Objective };
         List<Unit> all = BoardManager.Instance.Get_AllUnitsWithKeywords(ks);
 
         List<Unit> objectives = new List<Unit>();
@@ -47,37 +47,37 @@ public static class Ability_Score
         }
         yield return BoardManager.Instance.StartCoroutine(Score(objectives, keywords));
 
-        yield return new WaitForSeconds(0.01f);
+        yield return new WaitForSeconds(0.001f);
         GameManager.Instance.RemoveAction(parameters);
     }
     #region Conditions for either player or enemy scoring
-    static bool PlayerScoreConditions(List<Unit> nPU, List<Unit> nEU, List<Unit.Keyword> keywords) 
+    static bool PlayerScoreConditions(List<Unit> playerUnits, List<Unit> enemyUnits, List<Keyword> keywords) 
     {
-        if (!keywords.Contains(Unit.Keyword.Player)) return false;
+        if (!keywords.Contains(Keyword.Player)) return false;
 
-        return nPU != null && nPU.Count > 0 && (nEU == null || nEU.Count <= 0);
+        return playerUnits != null && playerUnits.Count > 0 && (enemyUnits == null || enemyUnits.Count < playerUnits.Count);
     }
-    static bool EnemyScoreConditions(List<Unit> nPU, List<Unit> nEU, List<Unit.Keyword> keywords)
+    static bool EnemyScoreConditions(List<Unit> playerUnits, List<Unit> enemyUnits, List<Keyword> keywords)
     {
-        if (!keywords.Contains(Unit.Keyword.Enemy)) return false;
+        if (!keywords.Contains(Keyword.Enemy)) return false;
 
-        return nEU != null && nEU.Count > 0 && (nPU == null || nPU.Count <= 0);
+        return enemyUnits != null && enemyUnits.Count > 0 && (playerUnits == null || playerUnits.Count < enemyUnits.Count);
     }
     #endregion
 
     //Scoring for an individual objective unit
-    public static IEnumerator Score(List<Unit> ActionTargetUnits, List<Unit.Keyword> keywords)
+    public static IEnumerator Score(List<Unit> ActionTargetUnits, List<Keyword> keywords)
     {
-        yield return new WaitForSeconds(0.01f);
+        yield return new WaitForSeconds(0.001f);
 
         foreach (var u in ActionTargetUnits)
         {
             var l = BoardManager.Instance.Get_UnitsInRange(u, 1);
 
-            List<Unit.Keyword> pk = new List<Unit.Keyword> { Unit.Keyword.Player };
+            List<Keyword> pk = new List<Keyword> { Keyword.Player };
             List<Unit> pu = GameManager.Instance.Get_OnlyUnitsWithKeywords(l, pk);
 
-            List<Unit.Keyword> ek = new List<Unit.Keyword> { Unit.Keyword.Enemy };
+            List<Keyword> ek = new List<Keyword> { Keyword.Enemy };
             List<Unit> eu = GameManager.Instance.Get_OnlyUnitsWithKeywords(l, ek);
 
             if (PlayerScoreConditions(pu, eu, keywords)) { ScoreManager.Instance.Score_Player++; }

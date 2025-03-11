@@ -147,7 +147,7 @@ public class EffectManager : MonoBehaviour
 
     IEnumerator ShowingPlacement(List<Unit> units)
     {
-        yield return new WaitForSeconds(0.1f);
+        yield return new WaitForSeconds(0.01f);
         while (CurPlacement != null)
         {
             yield return new WaitForSeconds(0.01f);
@@ -192,7 +192,7 @@ public class EffectManager : MonoBehaviour
     }
     IEnumerator ShowingPossibleUnitPosition(Unit unit) 
     {
-        yield return new WaitForSeconds(0.1f);
+        yield return new WaitForSeconds(0.01f);
 
         while (CurUnitMovePosShowcase != null) 
         {
@@ -217,7 +217,7 @@ public class EffectManager : MonoBehaviour
         }
         unit.UnitModelShowcase.SetActive(false);
 
-        yield return new WaitForSeconds(0.1f);
+        yield return new WaitForSeconds(0.01f);
     }
     #endregion
 

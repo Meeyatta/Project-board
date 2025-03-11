@@ -29,7 +29,7 @@ public static class Action_PlayerSpawn
         yield return GameManager.Instance.StartCoroutine(Action_SelectPosition.Selecting(unit));
 
         //Waiting until we have the data, then hide the effects
-        while (Is_AwaitingData) { Debug.Log("Awaiting data"); yield return new WaitForSeconds(0.1f); }
+        while (Is_AwaitingData) { Debug.Log("Awaiting data"); yield return new WaitForSeconds(0.01f); }
         GameManager.Instance.HidePlacementEvent.Invoke(unitList);
 
         //Place a unit on said selected position

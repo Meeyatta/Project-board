@@ -9,23 +9,28 @@ using UnityEngine.InputSystem;
 /*
     All main functions in action specific scripts MUST have:
         ActionParameters parameters - Parameters used by whatever needs us to performs a function. This also holds an identifier for this action   
- 
+    If an action can be canceled at some point, it should have a function for that assigned to Gamemanager's "CancelEvent" 
+        (Invoked in Cancel(InputAction.CallbackContext context))
+
     LIST OF ACTIONS:
-        Move(ActionTargetUnits, CellsCoordinates) - Move the unit to the coordinates if it can move there with it's moveset, Requires: (ActionTargetUnit, CellsCoordinates)
-        Select(CellsCoordinates) - Set a unit under coordinates as a Current selected unit by the player, Requires: (CellsCoordinates) 
-        ForcedMove(ActionTargetUnits, CellsCoordinates) - Move the unit to the coordinates, doesn't check for unit's moveset Requires: (ActionTargetUnit, CellsCoordinates)
+        Move(ActionTargetUnits, CellsCoordinates) - Move the unit to the coordinates if it can move there with it's moveset, 
+        Select(CellsCoordinates) - Set a unit under coordinates as a Current selected unit by the player
+        ForcedMove(ActionTargetUnits, CellsCoordinates) - Move the unit to the coordinates, doesn't check for unit's moveset 
         Attack(ActionTargetUnits) - Make a target unit initiate an attack on all units in it's attack zone
         KeywordedAttack(Keywords) - Make all units with specific keywords initiate an attack on all units in their individual attack zones
         PlayerCreate(Object) - Awaits for player's input on cell coordinates, then places the unit on these coordinates
-        Action_NextTurn() - makes all units of one side attack, score objectives and then pass turn onto the next side. If turn is passed twice, next round starts
+        Action_NextTurn() - Makes all units on one side attack, then scores all objectives, then passes the turn/round to the other side
 
-        A_Score(ActionTargetUnits) - Ability: A_Score, checks for units nearby, adds points to player if only player units, adds points to enem if only enemy units
+        A_Score(ActionTargetUnits) - Ability: A_Score, checks for units nearby, adds points to player if only player units, 
+            adds points to enemy if only enemy units
 */
 
 /*
     LIST OF USEFUL FUNCTIONS:
-        bool UnitHasAllKeywords(Unit u, List<Unit.Keyword> keywords) - returns true if unit has all of the keywords in "keywords"
-        List<Unit> Get_OnlyUnitsWithKeywords(List<Unit> all, List<Unit.Keyword> keywords) - Groups units from a list into a different list only if
+        void Cancel(InputAction.CallbackContext context) - fires an event if the player cancels an action. 
+            Appropriate cancel function should be applied by currently active action
+        bool UnitHasAllKeywords(Unit u, List<Keyword> keywords) - returns true if unit has all of the keywords in "keywords"
+        List<Unit> Get_OnlyUnitsWithKeywords(List<Unit> all, List<Keyword> keywords) - Groups units from a list into a different list only if
             they have the keywords in "keywords"
         void ResetMovement(List<Unit.keyword> keywords) - resets all units with keywords in a list to be able to move again. 
 */
@@ -45,10 +50,15 @@ public class GameManager : MonoBehaviour
             Params = p;
         }
     }
+    
     public GameObject TESTunittocreate;
     public UnityEvent<Vector2Int> ClickBackEvent;
     [HideInInspector] public UnityEvent CancelEvent;
-    public enum ActionType { Attack, AttackFromKeyworded, Move, Place, SelectUnit, PlayerCreate, Score, NextTurn };
+    public enum ActionType 
+    { 
+    Attack, AttackFromKeyworded, Move, Place, SelectUnit, PlayerCreate, Pre_NextTurn, NextTurn, 
+    Score, Slip,
+    };
     public Unit CurUnitSelected; //What unit is currently selected, if no unit - should be null
     public static GameManager Instance;
     public Coroutine C_GoingThroughActions;
@@ -57,7 +67,6 @@ public class GameManager : MonoBehaviour
     public ActionSlot CurrentAction;
     public Queue<ActionSlot> ActionQueue = new Queue<ActionSlot>();
     
-
     #region Events 
     public UnityEvent<List<Unit>> ShowMovementEvent;
     public UnityEvent<List<Unit>> HideMovementEvent;
@@ -85,29 +94,25 @@ public class GameManager : MonoBehaviour
             Instance = this;
         }
         DontDestroyOnLoad(this);
-    }
+    }  
     private void Awake()
     {
         Singleton();
     }
+    
     public void ActionWrapper(ActionParameters parameters)
     {
         StartCoroutine( Action(parameters) );
     }
+    
     /*
         Can be called by a variety of things to initiate a variety of actions. 
         PLEASE REMEMBER TO PUT IN BRACKETS WHAT INFO IS NEEDED TO DO THE ACTION
         /*TODO : Separate this function into several smaller ones with different required parameters, since currently the function has a 
         lot of parametres used only by a singluar type of action, which is messy and needs a bunch of null statements 
+        
+        If it's possible for an action to interact with abilities, it should call these abilities in script
     */
-    public void Cancel(InputAction.CallbackContext context)
-    {
-        if (context.performed)
-        {
-            Debug.Log("Cancel");
-            CancelEvent.Invoke();
-        }
-    }
     public IEnumerator Action(ActionParameters parameters)
     {
         switch (parameters.Type)
@@ -162,6 +167,20 @@ public class GameManager : MonoBehaviour
 
                 break;
             #endregion Create(GameObject Object, Vector2Int CellsCoordinates)
+            
+            //Makes all units on one side attack, then scores all objectives, then passes the turn/round to the other side
+            #region NextTurn()
+            case ActionType.NextTurn:
+                ActionSlot prenextturn = new ActionSlot(Action_NextTurn.Pre_nextTurn(parameters), ActionType.Pre_NextTurn, parameters);
+                ActionQueue.Enqueue(prenextturn);
+
+                yield return new WaitForSeconds(0.3f); // <- Load-bearing delay, don't let it get shorter than 0.3 seconds
+
+                ActionSlot nextturn = new ActionSlot(Action_NextTurn.NextTurn(parameters), ActionType.NextTurn, parameters);
+                ActionQueue.Enqueue(nextturn);
+
+                break;
+            #endregion Create(GameObject Object, Vector2Int CellsCoordinates)
 
             /* --ABILITIES-- */
 
@@ -175,18 +194,17 @@ public class GameManager : MonoBehaviour
                 break;
             #endregion Create(GameObject Object, Vector2Int CellsCoordinates)
 
-            #region NextTurn()
-            case ActionType.NextTurn:
-                ActionSlot prenextturn = new ActionSlot(Action_NextTurn.Pre_nextTurn(parameters), ActionType.NextTurn, parameters);
-                ActionQueue.Enqueue(prenextturn);
+            //Goes through every objective and scores for the player or enemy (Depends on what is passed in parameters)
+            #region Slip(ActionTargetUnits)
+            case ActionType.Slip:
 
-                yield return new WaitForSeconds(0.2f);
-
-                ActionSlot nextturn = new ActionSlot(Action_NextTurn.NextTurn(parameters), ActionType.NextTurn, parameters);
-                ActionQueue.Enqueue(nextturn);
+                ActionSlot slip = new ActionSlot(Ability_Slippery.Slip(parameters), ActionType.Slip, parameters);
+                ActionQueue.Enqueue(slip);
 
                 break;
-            #endregion Create(GameObject Object, Vector2Int CellsCoordinates)
+            #endregion Slip(ActionTargetUnits)
+
+
 
             //Means I forgot to make an action for this type
             #region Default(...)
@@ -197,16 +215,26 @@ public class GameManager : MonoBehaviour
         }
         yield return null;
     }
-  
+
+    //Fires an event if the player cancels an action. Appropriate cancel function should be applied by currently active action
+    public void Cancel(InputAction.CallbackContext context)
+    {
+        if (context.performed)
+        {
+            Debug.Log("Cancel");
+            CancelEvent.Invoke();
+        }
+    }
+
     //returns true if unit has all of the keywords in "keywords"
-    public bool UnitHasAllKeywords(Unit u, List<Unit.Keyword> keywords)
+    public bool UnitHasAllKeywords(Unit u, List<Keyword> keywords)
     {
         foreach (var k in keywords) { if (!u.CurKeywords.Contains(k)) { return false; } }
         return true;
     }
 
     //Returns units from the list only if they have the keywords in "keywords"
-    public List<Unit> Get_OnlyUnitsWithKeywords(List<Unit> all, List<Unit.Keyword> keywords)
+    public List<Unit> Get_OnlyUnitsWithKeywords(List<Unit> all, List<Keyword> keywords)
     {
         List<Unit> cycled = new List<Unit>();
         foreach (var v in all)
@@ -225,6 +253,7 @@ public class GameManager : MonoBehaviour
         foreach (var u in all) { u.Moved = false; }     
     }
     //This is called by click events on buttons
+    
     public void CellClickHandle(Vector2Int coords)
     {
         //Debug.Log("SOMEONE CLICKED THE CELL ON " + coords);
@@ -242,7 +271,7 @@ public class GameManager : MonoBehaviour
         #region If selecting a position for creating a unit - a1) Invoke an event to send coordinates   b1) check if can move a unit
         if (CurrentAction != null && CurrentAction.Type == ActionType.PlayerCreate && Action_PlayerCreate.IsWaitingForData)
         { //a1
-            Debug.Log(CurrentAction.Type);  //<- Important note, current action is stored in a separate field, not in the queue
+            //Debug.Log(CurrentAction.Type);  //<- Important note, current action is stored in a separate field, not in the queue
             ClickBackEvent.Invoke(coords);
         }
         else
@@ -265,14 +294,14 @@ public class GameManager : MonoBehaviour
                     List<Vector2Int> nCoords = new List<Vector2Int>(); nCoords.Add(coords);
 
                     # region If the selected unit is a player unit - a4) select it, otherwise - b4) TODO:
-                    if (BoardManager.Instance.Board[coords.x].Cells[coords.y].CurUnit.CurKeywords.Contains(Unit.Keyword.Player))
+                    if (BoardManager.Instance.Board[coords.x].Cells[coords.y].CurUnit.CurKeywords.Contains(Keyword.Player))
                     { //a4)
                         ActionParameters parameters = new ActionParameters(ActionType.SelectUnit, null, null, nCoords, null);
                         yield return StartCoroutine(Action(parameters));
                     }
                     else
                     { //b4)
-                        yield return new WaitForSeconds(0.1f);
+                        yield return new WaitForSeconds(0.01f);
                     }
                     #endregion If the selected unit is a player unit - a4) select it, otherwise - b4) TODO:
 
@@ -308,16 +337,17 @@ public class GameManager : MonoBehaviour
 
         while (ActionQueue.Count > 0)
         {
-            if (CurrentAction != null) { yield return new WaitForSeconds(1f); continue; }
+            if (CurrentAction != null) { yield return new WaitForSeconds(0.01f); continue; }
 
             CurrentAction = ActionQueue.Dequeue();
             yield return StartCoroutine(CurrentAction.IEnum);
-            yield return new WaitForSeconds(1f);
+            yield return new WaitForSeconds(0.01f);
         }
         ActionQueue.Clear();
         CurrentAction = null;
         C_GoingThroughActions = null;
     }
+
     private void FixedUpdate()
     {
         while (ActionQueue.Count > 0 && C_GoingThroughActions == null)
@@ -327,6 +357,7 @@ public class GameManager : MonoBehaviour
     }
     private void Update()
     {
+        #region Debug inputs
         if (Input.GetKeyDown("s"))
         {
             ActionParameters parameters = new ActionParameters(ActionType.NextTurn, null, null, null, null);
@@ -336,13 +367,13 @@ public class GameManager : MonoBehaviour
         if (Input.GetKeyDown("q"))
         {
             Debug.Log("CURRENT ACTION QUEUE:");
-            foreach (var a in ActionQueue) { Debug.Log(")" + a.Type); }
+            Debug.Log(")" + CurrentAction); Debug.Log(")" + ActionQueue.Peek());
 
         }
         if (Input.GetKeyDown("a"))
         {
             Debug.Log("PRESSED THE ATTACK BUTTON");
-            List<Unit.Keyword> k = new List<Unit.Keyword>();k.Add(Unit.Keyword.Player);
+            List<Keyword> k = new List<Keyword>();k.Add(Keyword.Player);
 
             ActionParameters parameters = new ActionParameters(ActionType.AttackFromKeyworded, null, k, null, null);
             StartCoroutine(Action(parameters));
@@ -351,11 +382,12 @@ public class GameManager : MonoBehaviour
         if (Input.GetKeyDown("x"))
         {
             Debug.Log("SCORING FOR ENEMY:");
-            List<Unit.Keyword> k = new List<Unit.Keyword> { Unit.Keyword.Enemy };
+            List<Keyword> k = new List<Keyword> { Keyword.Enemy };
             ActionParameters parameters = new ActionParameters(ActionType.Score, null, k, null, null);
             StartCoroutine(Action(parameters));
 
         }
+        #endregion
 
         #region Constantly printing current action
         string ActionInfo = "";

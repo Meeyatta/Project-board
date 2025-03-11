@@ -9,10 +9,11 @@ public static class Action_Move
 {
     //Returns all possible positions what a unit can move using their current moveset
     //This is used for a single cell unit, but a bunch or redundancies are left from this also being for multicell units
-    
+
+    public static UnityEvent<Unit> E_AfterMove;
+
     public static bool UnitCanMove(Unit u)
     {
-        Debug.Log(u.Moved);
         if (u.Moved) return false;
         if (ScoreManager.Instance.CurTurn == ScoreManager.Side.Enemy) return false;
 
@@ -171,10 +172,7 @@ public static class Action_Move
         if (newPoss != null && newPoss.Count > 0 && !ActionTargetUnit.Moved)
         {
             ActionTargetUnit.Moved = true;
-            foreach (Vector2Int v in newPoss)
-            {
-                if (v.x >= BoardManager.Instance.Width || v.y >= BoardManager.Instance.Height) { Debug.LogError("ERROR: POSITION '" + v + "' OUT OF BOUNDS"); yield break; }
-            }
+            if (!BoardManager.Instance.AreInBounds(newPoss)) { Debug.LogError("ERROR: POSITION OUT OF BOUNDS"); yield break; }
 
             List<Vector2Int> oldPos = BoardManager.Instance.Get_UnitPositions(ActionTargetUnit);
             foreach (Vector2Int v in oldPos)
@@ -184,6 +182,9 @@ public static class Action_Move
 
             yield return BoardManager.Instance.StartCoroutine(BoardManager.Instance.PlaceUnit(ActionTargetUnit, newPoss));
         }
+
+        Debug.Log("Action_move - before Slippery");
+        Ability_Slippery.Try(ActionTargetUnit);
 
         yield return new WaitForSeconds(0.001f);
         GameManager.Instance.RemoveAction(parameters);
