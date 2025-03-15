@@ -12386,6 +12386,108 @@ MonoBehaviour:
   m_SelectedFaces: 
   m_SelectedEdges: []
   m_SelectedVertices: 
+--- !u!1 &108654539
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 108654540}
+  - component: {fileID: 108654543}
+  - component: {fileID: 108654542}
+  - component: {fileID: 108654541}
+  m_Layer: 5
+  m_Name: Canvas
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &108654540
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 108654539}
+  m_LocalRotation: {x: 0.47681805, y: -0, z: -0, w: 0.87900203}
+  m_LocalPosition: {x: 0, y: 0, z: -1.15}
+  m_LocalScale: {x: 0.0074257166, y: 0.014296502, z: 0.03546815}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 1897786118}
+  m_Father: {fileID: 695396556}
+  m_LocalEulerAnglesHint: {x: 56.956, y: 0, z: 0}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: -1.9, y: 2.33}
+  m_SizeDelta: {x: 918.7999, y: 407.6}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &108654541
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 108654539}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dc42784cf147c0c48a680349fa168899, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_IgnoreReversedGraphics: 1
+  m_BlockingObjects: 0
+  m_BlockingMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+--- !u!114 &108654542
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 108654539}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0cd44c1031e13a943bb63640046fad76, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_UiScaleMode: 0
+  m_ReferencePixelsPerUnit: 100
+  m_ScaleFactor: 1
+  m_ReferenceResolution: {x: 800, y: 600}
+  m_ScreenMatchMode: 0
+  m_MatchWidthOrHeight: 0
+  m_PhysicalUnit: 3
+  m_FallbackScreenDPI: 96
+  m_DefaultSpriteDPI: 96
+  m_DynamicPixelsPerUnit: 1
+  m_PresetInfoIsWorld: 1
+--- !u!223 &108654543
+Canvas:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 108654539}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_RenderMode: 2
+  m_Camera: {fileID: 0}
+  m_PlaneDistance: 100
+  m_PixelPerfect: 0
+  m_ReceivesEvents: 1
+  m_OverrideSorting: 0
+  m_OverridePixelPerfect: 0
+  m_SortingBucketNormalizedSize: 0
+  m_VertexColorAlwaysGammaSpace: 0
+  m_AdditionalShaderChannelsFlag: 25
+  m_UpdateRectTransformForStandalone: 0
+  m_SortingLayerID: 0
+  m_SortingOrder: 0
+  m_TargetDisplay: 0
 --- !u!1 &108715483
 GameObject:
   m_ObjectHideFlags: 0
@@ -29312,6 +29414,39 @@ MonoBehaviour:
   m_SelectedFaces: 
   m_SelectedEdges: []
   m_SelectedVertices: 
+--- !u!1 &244907292
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 244907293}
+  m_Layer: 0
+  m_Name: Environment
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &244907293
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 244907292}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 1229008673}
+  - {fileID: 695396556}
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &247764546
 GameObject:
   m_ObjectHideFlags: 0
@@ -37997,7 +38132,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 11416984, guid: c080686877cf77f42a1a078076d57fe5, type: 3}
       propertyPath: textList.Array.size
-      value: 5
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 11416984, guid: c080686877cf77f42a1a078076d57fe5, type: 3}
       propertyPath: textList.Array.data[0].s
@@ -38011,25 +38146,41 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 11416984, guid: c080686877cf77f42a1a078076d57fe5, type: 3}
       propertyPath: textList.Array.data[2].s
-      value: Deployment zone for player
+      value: "Player moving the randomly placed units within their \ndeployment zone"
       objectReference: {fileID: 0}
     - target: {fileID: 11416984, guid: c080686877cf77f42a1a078076d57fe5, type: 3}
       propertyPath: textList.Array.data[3].s
-      value: Deployment zone for enemy
+      value: 'Selecting a unit during the enemy turn and then clicking
+
+        on
+        another cell on player turn results in unit moving there
+
+        without
+        the moveset effects. Make effects continuosly check
+
+        if they need
+        to appear'
       objectReference: {fileID: 0}
     - target: {fileID: 11416984, guid: c080686877cf77f42a1a078076d57fe5, type: 3}
       propertyPath: textList.Array.data[4].s
-      value: Action for non-player unit creation
+      value: 'When the unit for movement is selected, it''s model is
+
+        lifted
+        up'
       objectReference: {fileID: 0}
     - target: {fileID: 11416984, guid: c080686877cf77f42a1a078076d57fe5, type: 3}
       propertyPath: textList.Array.data[5].s
-      value: All cells are covered in oil
+      value: 'Break down Actions & ActionParameter into functions
+
+        with different
+        parameters'
       objectReference: {fileID: 0}
     - target: {fileID: 11416984, guid: c080686877cf77f42a1a078076d57fe5, type: 3}
       propertyPath: textList.Array.data[6].s
-      value: 'Change scoring from "only our units" to
+      value: 'Break down Actions & ActionParameter into functions
 
-        "more of our units"'
+        with different
+        parameters'
       objectReference: {fileID: 0}
     - target: {fileID: 11416984, guid: c080686877cf77f42a1a078076d57fe5, type: 3}
       propertyPath: textList.Array.data[7].s
@@ -38111,7 +38262,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 11416984, guid: c080686877cf77f42a1a078076d57fe5, type: 3}
       propertyPath: textList.Array.data[3].state
-      value: 2
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 11416984, guid: c080686877cf77f42a1a078076d57fe5, type: 3}
       propertyPath: textList.Array.data[4].state
@@ -38119,7 +38270,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 11416984, guid: c080686877cf77f42a1a078076d57fe5, type: 3}
       propertyPath: textList.Array.data[5].state
-      value: 1
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 11416984, guid: c080686877cf77f42a1a078076d57fe5, type: 3}
       propertyPath: textList.Array.data[6].state
@@ -73955,6 +74106,52 @@ Canvas:
   m_SortingLayerID: 0
   m_SortingOrder: 0
   m_TargetDisplay: 0
+--- !u!1 &695396555
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 695396556}
+  - component: {fileID: 695396557}
+  m_Layer: 0
+  m_Name: PassTurnButton
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &695396556
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 695396555}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 28.86, y: 0, z: -18.92}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 1623951828}
+  - {fileID: 108654540}
+  m_Father: {fileID: 244907293}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &695396557
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 695396555}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3cea30a2fa5032b49880a27a5e91e9bf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &698534126
 GameObject:
   m_ObjectHideFlags: 0
@@ -77354,6 +77551,55 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 720011660}
   m_CullTransparentMesh: 1
+--- !u!1 &724058884
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 724058885}
+  - component: {fileID: 724058886}
+  m_Layer: 0
+  m_Name: ResourceManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &724058885
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 724058884}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1553121778}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &724058886
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 724058884}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e319a1d63310c7f41b1188cd299ccba2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  PlayerStarterUnitsAmount: 1
+  PlayerArmy:
+  - {fileID: 1291814687}
+  PlayerArmy_NotPlaced: []
+  PlayerArmy_Placed: []
 --- !u!1 &725796010
 GameObject:
   m_ObjectHideFlags: 0
@@ -127782,7 +128028,7 @@ Transform:
   - {fileID: 1964736663}
   - {fileID: 118617670}
   - {fileID: 84554519}
-  m_Father: {fileID: 0}
+  m_Father: {fileID: 244907293}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1229008676
 MonoBehaviour:
@@ -127804,6 +128050,12 @@ MonoBehaviour:
   InBetweenSpace: 0.25
   Width: 16
   Height: 16
+  PlayerDeploymentZone:
+  - {x: 4, y: 12}
+  - {x: 11, y: 13}
+  EnemyDeploymentZone:
+  - {x: 4, y: 2}
+  - {x: 11, y: 3}
   CellsObj: {fileID: 118617669}
   BoardCellObj: {fileID: 978312924}
   Board:
@@ -127812,1041 +128064,1297 @@ MonoBehaviour:
       Coordinates: {x: 0, y: 0}
       CurUnit: {fileID: 0}
       CoveredBy: 0
+      Tags: 
     - Position: {x: 0.25, y: 0.1, z: -1.75}
       Coordinates: {x: 0, y: 1}
       CurUnit: {fileID: 0}
       CoveredBy: 0
+      Tags: 
     - Position: {x: 0.25, y: 0.1, z: -3.25}
       Coordinates: {x: 0, y: 2}
       CurUnit: {fileID: 0}
       CoveredBy: 0
+      Tags: 
     - Position: {x: 0.25, y: 0.1, z: -4.75}
       Coordinates: {x: 0, y: 3}
       CurUnit: {fileID: 0}
       CoveredBy: 0
+      Tags: 
     - Position: {x: 0.25, y: 0.1, z: -6.25}
       Coordinates: {x: 0, y: 4}
       CurUnit: {fileID: 0}
       CoveredBy: 0
+      Tags: 
     - Position: {x: 0.25, y: 0.1, z: -7.75}
       Coordinates: {x: 0, y: 5}
       CurUnit: {fileID: 0}
       CoveredBy: 0
+      Tags: 
     - Position: {x: 0.25, y: 0.1, z: -9.25}
       Coordinates: {x: 0, y: 6}
       CurUnit: {fileID: 0}
       CoveredBy: 0
+      Tags: 
     - Position: {x: 0.25, y: 0.1, z: -10.75}
       Coordinates: {x: 0, y: 7}
       CurUnit: {fileID: 0}
       CoveredBy: 0
+      Tags: 
     - Position: {x: 0.25, y: 0.1, z: -12.25}
       Coordinates: {x: 0, y: 8}
       CurUnit: {fileID: 0}
       CoveredBy: 0
+      Tags: 
     - Position: {x: 0.25, y: 0.1, z: -13.75}
       Coordinates: {x: 0, y: 9}
       CurUnit: {fileID: 0}
       CoveredBy: 0
+      Tags: 
     - Position: {x: 0.25, y: 0.1, z: -15.25}
       Coordinates: {x: 0, y: 10}
       CurUnit: {fileID: 0}
       CoveredBy: 0
+      Tags: 
     - Position: {x: 0.25, y: 0.1, z: -16.75}
       Coordinates: {x: 0, y: 11}
       CurUnit: {fileID: 0}
       CoveredBy: 0
+      Tags: 
     - Position: {x: 0.25, y: 0.1, z: -18.25}
       Coordinates: {x: 0, y: 12}
       CurUnit: {fileID: 0}
       CoveredBy: 0
+      Tags: 
     - Position: {x: 0.25, y: 0.1, z: -19.75}
       Coordinates: {x: 0, y: 13}
       CurUnit: {fileID: 0}
       CoveredBy: 0
+      Tags: 
     - Position: {x: 0.25, y: 0.1, z: -21.25}
       Coordinates: {x: 0, y: 14}
       CurUnit: {fileID: 0}
       CoveredBy: 0
+      Tags: 
     - Position: {x: 0.25, y: 0.1, z: -22.75}
       Coordinates: {x: 0, y: 15}
       CurUnit: {fileID: 0}
       CoveredBy: 0
+      Tags: 
   - Cells:
     - Position: {x: 1.75, y: 0.1, z: -0.25}
       Coordinates: {x: 1, y: 0}
       CurUnit: {fileID: 0}
       CoveredBy: 0
+      Tags: 
     - Position: {x: 1.75, y: 0.1, z: -1.75}
       Coordinates: {x: 1, y: 1}
       CurUnit: {fileID: 0}
       CoveredBy: 0
+      Tags: 
     - Position: {x: 1.75, y: 0.1, z: -3.25}
       Coordinates: {x: 1, y: 2}
       CurUnit: {fileID: 0}
       CoveredBy: 0
+      Tags: 
     - Position: {x: 1.75, y: 0.1, z: -4.75}
       Coordinates: {x: 1, y: 3}
       CurUnit: {fileID: 0}
       CoveredBy: 0
+      Tags: 
     - Position: {x: 1.75, y: 0.1, z: -6.25}
       Coordinates: {x: 1, y: 4}
       CurUnit: {fileID: 0}
       CoveredBy: 0
+      Tags: 
     - Position: {x: 1.75, y: 0.1, z: -7.75}
       Coordinates: {x: 1, y: 5}
       CurUnit: {fileID: 0}
       CoveredBy: 0
+      Tags: 
     - Position: {x: 1.75, y: 0.1, z: -9.25}
       Coordinates: {x: 1, y: 6}
       CurUnit: {fileID: 0}
       CoveredBy: 0
+      Tags: 
     - Position: {x: 1.75, y: 0.1, z: -10.75}
       Coordinates: {x: 1, y: 7}
       CurUnit: {fileID: 0}
       CoveredBy: 0
+      Tags: 
     - Position: {x: 1.75, y: 0.1, z: -12.25}
       Coordinates: {x: 1, y: 8}
       CurUnit: {fileID: 0}
       CoveredBy: 0
+      Tags: 
     - Position: {x: 1.75, y: 0.1, z: -13.75}
       Coordinates: {x: 1, y: 9}
       CurUnit: {fileID: 0}
       CoveredBy: 0
+      Tags: 
     - Position: {x: 1.75, y: 0.1, z: -15.25}
       Coordinates: {x: 1, y: 10}
       CurUnit: {fileID: 0}
       CoveredBy: 0
+      Tags: 
     - Position: {x: 1.75, y: 0.1, z: -16.75}
       Coordinates: {x: 1, y: 11}
       CurUnit: {fileID: 0}
       CoveredBy: 0
+      Tags: 
     - Position: {x: 1.75, y: 0.1, z: -18.25}
       Coordinates: {x: 1, y: 12}
       CurUnit: {fileID: 0}
       CoveredBy: 0
+      Tags: 
     - Position: {x: 1.75, y: 0.1, z: -19.75}
       Coordinates: {x: 1, y: 13}
       CurUnit: {fileID: 0}
       CoveredBy: 0
+      Tags: 
     - Position: {x: 1.75, y: 0.1, z: -21.25}
       Coordinates: {x: 1, y: 14}
       CurUnit: {fileID: 0}
       CoveredBy: 0
+      Tags: 
     - Position: {x: 1.75, y: 0.1, z: -22.75}
       Coordinates: {x: 1, y: 15}
       CurUnit: {fileID: 0}
       CoveredBy: 0
+      Tags: 
   - Cells:
     - Position: {x: 3.25, y: 0.1, z: -0.25}
       Coordinates: {x: 2, y: 0}
       CurUnit: {fileID: 0}
       CoveredBy: 0
+      Tags: 
     - Position: {x: 3.25, y: 0.1, z: -1.75}
       Coordinates: {x: 2, y: 1}
       CurUnit: {fileID: 0}
       CoveredBy: 0
+      Tags: 
     - Position: {x: 3.25, y: 0.1, z: -3.25}
       Coordinates: {x: 2, y: 2}
       CurUnit: {fileID: 0}
       CoveredBy: 0
+      Tags: 
     - Position: {x: 3.25, y: 0.1, z: -4.75}
       Coordinates: {x: 2, y: 3}
       CurUnit: {fileID: 0}
       CoveredBy: 0
+      Tags: 
     - Position: {x: 3.25, y: 0.1, z: -6.25}
       Coordinates: {x: 2, y: 4}
       CurUnit: {fileID: 0}
       CoveredBy: 0
+      Tags: 
     - Position: {x: 3.25, y: 0.1, z: -7.75}
       Coordinates: {x: 2, y: 5}
       CurUnit: {fileID: 0}
       CoveredBy: 0
+      Tags: 
     - Position: {x: 3.25, y: 0.1, z: -9.25}
       Coordinates: {x: 2, y: 6}
       CurUnit: {fileID: 0}
       CoveredBy: 0
+      Tags: 
     - Position: {x: 3.25, y: 0.1, z: -10.75}
       Coordinates: {x: 2, y: 7}
       CurUnit: {fileID: 0}
       CoveredBy: 0
+      Tags: 
     - Position: {x: 3.25, y: 0.1, z: -12.25}
       Coordinates: {x: 2, y: 8}
       CurUnit: {fileID: 0}
       CoveredBy: 0
+      Tags: 
     - Position: {x: 3.25, y: 0.1, z: -13.75}
       Coordinates: {x: 2, y: 9}
       CurUnit: {fileID: 0}
       CoveredBy: 0
+      Tags: 
     - Position: {x: 3.25, y: 0.1, z: -15.25}
       Coordinates: {x: 2, y: 10}
       CurUnit: {fileID: 0}
       CoveredBy: 0
+      Tags: 
     - Position: {x: 3.25, y: 0.1, z: -16.75}
       Coordinates: {x: 2, y: 11}
       CurUnit: {fileID: 0}
       CoveredBy: 0
+      Tags: 
     - Position: {x: 3.25, y: 0.1, z: -18.25}
       Coordinates: {x: 2, y: 12}
       CurUnit: {fileID: 0}
       CoveredBy: 0
+      Tags: 
     - Position: {x: 3.25, y: 0.1, z: -19.75}
       Coordinates: {x: 2, y: 13}
       CurUnit: {fileID: 0}
       CoveredBy: 0
+      Tags: 
     - Position: {x: 3.25, y: 0.1, z: -21.25}
       Coordinates: {x: 2, y: 14}
       CurUnit: {fileID: 0}
       CoveredBy: 0
+      Tags: 
     - Position: {x: 3.25, y: 0.1, z: -22.75}
       Coordinates: {x: 2, y: 15}
       CurUnit: {fileID: 0}
       CoveredBy: 0
+      Tags: 
   - Cells:
     - Position: {x: 4.75, y: 0.1, z: -0.25}
       Coordinates: {x: 3, y: 0}
       CurUnit: {fileID: 0}
       CoveredBy: 0
+      Tags: 
     - Position: {x: 4.75, y: 0.1, z: -1.75}
       Coordinates: {x: 3, y: 1}
       CurUnit: {fileID: 0}
       CoveredBy: 0
+      Tags: 
     - Position: {x: 4.75, y: 0.1, z: -3.25}
       Coordinates: {x: 3, y: 2}
       CurUnit: {fileID: 0}
       CoveredBy: 0
+      Tags: 
     - Position: {x: 4.75, y: 0.1, z: -4.75}
       Coordinates: {x: 3, y: 3}
       CurUnit: {fileID: 0}
       CoveredBy: 0
+      Tags: 
     - Position: {x: 4.75, y: 0.1, z: -6.25}
       Coordinates: {x: 3, y: 4}
       CurUnit: {fileID: 0}
       CoveredBy: 0
+      Tags: 
     - Position: {x: 4.75, y: 0.1, z: -7.75}
       Coordinates: {x: 3, y: 5}
       CurUnit: {fileID: 0}
       CoveredBy: 0
+      Tags: 
     - Position: {x: 4.75, y: 0.1, z: -9.25}
       Coordinates: {x: 3, y: 6}
       CurUnit: {fileID: 0}
       CoveredBy: 0
+      Tags: 
     - Position: {x: 4.75, y: 0.1, z: -10.75}
       Coordinates: {x: 3, y: 7}
       CurUnit: {fileID: 0}
       CoveredBy: 0
+      Tags: 
     - Position: {x: 4.75, y: 0.1, z: -12.25}
       Coordinates: {x: 3, y: 8}
       CurUnit: {fileID: 0}
       CoveredBy: 0
+      Tags: 
     - Position: {x: 4.75, y: 0.1, z: -13.75}
       Coordinates: {x: 3, y: 9}
       CurUnit: {fileID: 0}
       CoveredBy: 0
+      Tags: 
     - Position: {x: 4.75, y: 0.1, z: -15.25}
       Coordinates: {x: 3, y: 10}
       CurUnit: {fileID: 0}
       CoveredBy: 0
+      Tags: 
     - Position: {x: 4.75, y: 0.1, z: -16.75}
       Coordinates: {x: 3, y: 11}
       CurUnit: {fileID: 0}
       CoveredBy: 0
+      Tags: 
     - Position: {x: 4.75, y: 0.1, z: -18.25}
       Coordinates: {x: 3, y: 12}
       CurUnit: {fileID: 0}
       CoveredBy: 0
+      Tags: 
     - Position: {x: 4.75, y: 0.1, z: -19.75}
       Coordinates: {x: 3, y: 13}
       CurUnit: {fileID: 0}
       CoveredBy: 0
+      Tags: 
     - Position: {x: 4.75, y: 0.1, z: -21.25}
       Coordinates: {x: 3, y: 14}
       CurUnit: {fileID: 0}
       CoveredBy: 0
+      Tags: 
     - Position: {x: 4.75, y: 0.1, z: -22.75}
       Coordinates: {x: 3, y: 15}
       CurUnit: {fileID: 0}
       CoveredBy: 0
+      Tags: 
   - Cells:
     - Position: {x: 6.25, y: 0.1, z: -0.25}
       Coordinates: {x: 4, y: 0}
       CurUnit: {fileID: 0}
       CoveredBy: 0
+      Tags: 
     - Position: {x: 6.25, y: 0.1, z: -1.75}
       Coordinates: {x: 4, y: 1}
       CurUnit: {fileID: 0}
       CoveredBy: 0
+      Tags: 
     - Position: {x: 6.25, y: 0.1, z: -3.25}
       Coordinates: {x: 4, y: 2}
       CurUnit: {fileID: 0}
       CoveredBy: 0
+      Tags: 01000000
     - Position: {x: 6.25, y: 0.1, z: -4.75}
       Coordinates: {x: 4, y: 3}
       CurUnit: {fileID: 0}
       CoveredBy: 0
+      Tags: 01000000
     - Position: {x: 6.25, y: 0.1, z: -6.25}
       Coordinates: {x: 4, y: 4}
       CurUnit: {fileID: 0}
       CoveredBy: 0
+      Tags: 
     - Position: {x: 6.25, y: 0.1, z: -7.75}
       Coordinates: {x: 4, y: 5}
       CurUnit: {fileID: 0}
       CoveredBy: 0
+      Tags: 
     - Position: {x: 6.25, y: 0.1, z: -9.25}
       Coordinates: {x: 4, y: 6}
       CurUnit: {fileID: 0}
       CoveredBy: 0
+      Tags: 
     - Position: {x: 6.25, y: 0.1, z: -10.75}
       Coordinates: {x: 4, y: 7}
       CurUnit: {fileID: 0}
       CoveredBy: 0
+      Tags: 
     - Position: {x: 6.25, y: 0.1, z: -12.25}
       Coordinates: {x: 4, y: 8}
       CurUnit: {fileID: 0}
       CoveredBy: 0
+      Tags: 
     - Position: {x: 6.25, y: 0.1, z: -13.75}
       Coordinates: {x: 4, y: 9}
       CurUnit: {fileID: 0}
       CoveredBy: 0
+      Tags: 
     - Position: {x: 6.25, y: 0.1, z: -15.25}
       Coordinates: {x: 4, y: 10}
       CurUnit: {fileID: 0}
       CoveredBy: 0
+      Tags: 
     - Position: {x: 6.25, y: 0.1, z: -16.75}
       Coordinates: {x: 4, y: 11}
       CurUnit: {fileID: 0}
       CoveredBy: 0
+      Tags: 
     - Position: {x: 6.25, y: 0.1, z: -18.25}
       Coordinates: {x: 4, y: 12}
       CurUnit: {fileID: 0}
       CoveredBy: 0
+      Tags: 00000000
     - Position: {x: 6.25, y: 0.1, z: -19.75}
       Coordinates: {x: 4, y: 13}
       CurUnit: {fileID: 0}
       CoveredBy: 0
+      Tags: 00000000
     - Position: {x: 6.25, y: 0.1, z: -21.25}
       Coordinates: {x: 4, y: 14}
       CurUnit: {fileID: 0}
       CoveredBy: 0
+      Tags: 
     - Position: {x: 6.25, y: 0.1, z: -22.75}
       Coordinates: {x: 4, y: 15}
       CurUnit: {fileID: 0}
       CoveredBy: 0
+      Tags: 
   - Cells:
     - Position: {x: 7.75, y: 0.1, z: -0.25}
       Coordinates: {x: 5, y: 0}
       CurUnit: {fileID: 0}
       CoveredBy: 0
+      Tags: 
     - Position: {x: 7.75, y: 0.1, z: -1.75}
       Coordinates: {x: 5, y: 1}
       CurUnit: {fileID: 0}
       CoveredBy: 0
+      Tags: 
     - Position: {x: 7.75, y: 0.1, z: -3.25}
       Coordinates: {x: 5, y: 2}
       CurUnit: {fileID: 0}
       CoveredBy: 0
+      Tags: 01000000
     - Position: {x: 7.75, y: 0.1, z: -4.75}
       Coordinates: {x: 5, y: 3}
       CurUnit: {fileID: 0}
       CoveredBy: 0
+      Tags: 01000000
     - Position: {x: 7.75, y: 0.1, z: -6.25}
       Coordinates: {x: 5, y: 4}
       CurUnit: {fileID: 0}
       CoveredBy: 0
+      Tags: 
     - Position: {x: 7.75, y: 0.1, z: -7.75}
       Coordinates: {x: 5, y: 5}
       CurUnit: {fileID: 0}
       CoveredBy: 0
+      Tags: 
     - Position: {x: 7.75, y: 0.1, z: -9.25}
       Coordinates: {x: 5, y: 6}
       CurUnit: {fileID: 0}
       CoveredBy: 0
+      Tags: 
     - Position: {x: 7.75, y: 0.1, z: -10.75}
       Coordinates: {x: 5, y: 7}
       CurUnit: {fileID: 0}
       CoveredBy: 0
+      Tags: 
     - Position: {x: 7.75, y: 0.1, z: -12.25}
       Coordinates: {x: 5, y: 8}
       CurUnit: {fileID: 0}
       CoveredBy: 0
+      Tags: 
     - Position: {x: 7.75, y: 0.1, z: -13.75}
       Coordinates: {x: 5, y: 9}
       CurUnit: {fileID: 0}
       CoveredBy: 0
+      Tags: 
     - Position: {x: 7.75, y: 0.1, z: -15.25}
       Coordinates: {x: 5, y: 10}
       CurUnit: {fileID: 0}
       CoveredBy: 0
+      Tags: 
     - Position: {x: 7.75, y: 0.1, z: -16.75}
       Coordinates: {x: 5, y: 11}
       CurUnit: {fileID: 0}
       CoveredBy: 0
+      Tags: 
     - Position: {x: 7.75, y: 0.1, z: -18.25}
       Coordinates: {x: 5, y: 12}
       CurUnit: {fileID: 0}
       CoveredBy: 0
+      Tags: 00000000
     - Position: {x: 7.75, y: 0.1, z: -19.75}
       Coordinates: {x: 5, y: 13}
       CurUnit: {fileID: 0}
       CoveredBy: 0
+      Tags: 00000000
     - Position: {x: 7.75, y: 0.1, z: -21.25}
       Coordinates: {x: 5, y: 14}
       CurUnit: {fileID: 0}
       CoveredBy: 0
+      Tags: 
     - Position: {x: 7.75, y: 0.1, z: -22.75}
       Coordinates: {x: 5, y: 15}
       CurUnit: {fileID: 0}
       CoveredBy: 0
+      Tags: 
   - Cells:
     - Position: {x: 9.25, y: 0.1, z: -0.25}
       Coordinates: {x: 6, y: 0}
       CurUnit: {fileID: 0}
       CoveredBy: 0
+      Tags: 
     - Position: {x: 9.25, y: 0.1, z: -1.75}
       Coordinates: {x: 6, y: 1}
       CurUnit: {fileID: 0}
       CoveredBy: 0
+      Tags: 
     - Position: {x: 9.25, y: 0.1, z: -3.25}
       Coordinates: {x: 6, y: 2}
       CurUnit: {fileID: 0}
       CoveredBy: 0
+      Tags: 01000000
     - Position: {x: 9.25, y: 0.1, z: -4.75}
       Coordinates: {x: 6, y: 3}
       CurUnit: {fileID: 0}
       CoveredBy: 0
+      Tags: 01000000
     - Position: {x: 9.25, y: 0.1, z: -6.25}
       Coordinates: {x: 6, y: 4}
       CurUnit: {fileID: 0}
       CoveredBy: 0
+      Tags: 
     - Position: {x: 9.25, y: 0.1, z: -7.75}
       Coordinates: {x: 6, y: 5}
       CurUnit: {fileID: 0}
       CoveredBy: 0
+      Tags: 
     - Position: {x: 9.25, y: 0.1, z: -9.25}
       Coordinates: {x: 6, y: 6}
       CurUnit: {fileID: 0}
       CoveredBy: 0
+      Tags: 
     - Position: {x: 9.25, y: 0.1, z: -10.75}
       Coordinates: {x: 6, y: 7}
       CurUnit: {fileID: 0}
       CoveredBy: 0
+      Tags: 
     - Position: {x: 9.25, y: 0.1, z: -12.25}
       Coordinates: {x: 6, y: 8}
       CurUnit: {fileID: 0}
       CoveredBy: 0
+      Tags: 
     - Position: {x: 9.25, y: 0.1, z: -13.75}
       Coordinates: {x: 6, y: 9}
       CurUnit: {fileID: 0}
       CoveredBy: 0
+      Tags: 
     - Position: {x: 9.25, y: 0.1, z: -15.25}
       Coordinates: {x: 6, y: 10}
       CurUnit: {fileID: 0}
       CoveredBy: 0
+      Tags: 
     - Position: {x: 9.25, y: 0.1, z: -16.75}
       Coordinates: {x: 6, y: 11}
       CurUnit: {fileID: 0}
       CoveredBy: 0
+      Tags: 
     - Position: {x: 9.25, y: 0.1, z: -18.25}
       Coordinates: {x: 6, y: 12}
       CurUnit: {fileID: 0}
       CoveredBy: 0
+      Tags: 00000000
     - Position: {x: 9.25, y: 0.1, z: -19.75}
       Coordinates: {x: 6, y: 13}
       CurUnit: {fileID: 0}
       CoveredBy: 0
+      Tags: 00000000
     - Position: {x: 9.25, y: 0.1, z: -21.25}
       Coordinates: {x: 6, y: 14}
       CurUnit: {fileID: 0}
       CoveredBy: 0
+      Tags: 
     - Position: {x: 9.25, y: 0.1, z: -22.75}
       Coordinates: {x: 6, y: 15}
       CurUnit: {fileID: 0}
       CoveredBy: 0
+      Tags: 
   - Cells:
     - Position: {x: 10.75, y: 0.1, z: -0.25}
       Coordinates: {x: 7, y: 0}
       CurUnit: {fileID: 0}
       CoveredBy: 0
+      Tags: 
     - Position: {x: 10.75, y: 0.1, z: -1.75}
       Coordinates: {x: 7, y: 1}
       CurUnit: {fileID: 0}
       CoveredBy: 0
+      Tags: 
     - Position: {x: 10.75, y: 0.1, z: -3.25}
       Coordinates: {x: 7, y: 2}
       CurUnit: {fileID: 0}
       CoveredBy: 0
+      Tags: 01000000
     - Position: {x: 10.75, y: 0.1, z: -4.75}
       Coordinates: {x: 7, y: 3}
       CurUnit: {fileID: 0}
       CoveredBy: 0
+      Tags: 01000000
     - Position: {x: 10.75, y: 0.1, z: -6.25}
       Coordinates: {x: 7, y: 4}
       CurUnit: {fileID: 0}
       CoveredBy: 0
+      Tags: 
     - Position: {x: 10.75, y: 0.1, z: -7.75}
       Coordinates: {x: 7, y: 5}
       CurUnit: {fileID: 0}
       CoveredBy: 0
+      Tags: 
     - Position: {x: 10.75, y: 0.1, z: -9.25}
       Coordinates: {x: 7, y: 6}
       CurUnit: {fileID: 0}
       CoveredBy: 0
+      Tags: 
     - Position: {x: 10.75, y: 0.1, z: -10.75}
       Coordinates: {x: 7, y: 7}
       CurUnit: {fileID: 0}
       CoveredBy: 0
+      Tags: 
     - Position: {x: 10.75, y: 0.1, z: -12.25}
       Coordinates: {x: 7, y: 8}
       CurUnit: {fileID: 0}
       CoveredBy: 0
+      Tags: 
     - Position: {x: 10.75, y: 0.1, z: -13.75}
       Coordinates: {x: 7, y: 9}
       CurUnit: {fileID: 0}
       CoveredBy: 0
+      Tags: 
     - Position: {x: 10.75, y: 0.1, z: -15.25}
       Coordinates: {x: 7, y: 10}
       CurUnit: {fileID: 0}
       CoveredBy: 0
+      Tags: 
     - Position: {x: 10.75, y: 0.1, z: -16.75}
       Coordinates: {x: 7, y: 11}
       CurUnit: {fileID: 0}
       CoveredBy: 0
+      Tags: 
     - Position: {x: 10.75, y: 0.1, z: -18.25}
       Coordinates: {x: 7, y: 12}
       CurUnit: {fileID: 0}
       CoveredBy: 0
+      Tags: 00000000
     - Position: {x: 10.75, y: 0.1, z: -19.75}
       Coordinates: {x: 7, y: 13}
       CurUnit: {fileID: 0}
       CoveredBy: 0
+      Tags: 00000000
     - Position: {x: 10.75, y: 0.1, z: -21.25}
       Coordinates: {x: 7, y: 14}
       CurUnit: {fileID: 0}
       CoveredBy: 0
+      Tags: 
     - Position: {x: 10.75, y: 0.1, z: -22.75}
       Coordinates: {x: 7, y: 15}
       CurUnit: {fileID: 0}
       CoveredBy: 0
+      Tags: 
   - Cells:
     - Position: {x: 12.25, y: 0.1, z: -0.25}
       Coordinates: {x: 8, y: 0}
       CurUnit: {fileID: 0}
       CoveredBy: 0
+      Tags: 
     - Position: {x: 12.25, y: 0.1, z: -1.75}
       Coordinates: {x: 8, y: 1}
       CurUnit: {fileID: 0}
       CoveredBy: 0
+      Tags: 
     - Position: {x: 12.25, y: 0.1, z: -3.25}
       Coordinates: {x: 8, y: 2}
       CurUnit: {fileID: 0}
       CoveredBy: 0
+      Tags: 01000000
     - Position: {x: 12.25, y: 0.1, z: -4.75}
       Coordinates: {x: 8, y: 3}
       CurUnit: {fileID: 0}
       CoveredBy: 0
+      Tags: 01000000
     - Position: {x: 12.25, y: 0.1, z: -6.25}
       Coordinates: {x: 8, y: 4}
       CurUnit: {fileID: 0}
       CoveredBy: 0
+      Tags: 
     - Position: {x: 12.25, y: 0.1, z: -7.75}
       Coordinates: {x: 8, y: 5}
       CurUnit: {fileID: 0}
       CoveredBy: 0
+      Tags: 
     - Position: {x: 12.25, y: 0.1, z: -9.25}
       Coordinates: {x: 8, y: 6}
       CurUnit: {fileID: 0}
       CoveredBy: 0
+      Tags: 
     - Position: {x: 12.25, y: 0.1, z: -10.75}
       Coordinates: {x: 8, y: 7}
       CurUnit: {fileID: 0}
       CoveredBy: 0
+      Tags: 
     - Position: {x: 12.25, y: 0.1, z: -12.25}
       Coordinates: {x: 8, y: 8}
       CurUnit: {fileID: 0}
       CoveredBy: 0
+      Tags: 
     - Position: {x: 12.25, y: 0.1, z: -13.75}
       Coordinates: {x: 8, y: 9}
       CurUnit: {fileID: 0}
       CoveredBy: 0
+      Tags: 
     - Position: {x: 12.25, y: 0.1, z: -15.25}
       Coordinates: {x: 8, y: 10}
       CurUnit: {fileID: 0}
       CoveredBy: 0
+      Tags: 
     - Position: {x: 12.25, y: 0.1, z: -16.75}
       Coordinates: {x: 8, y: 11}
       CurUnit: {fileID: 0}
       CoveredBy: 0
+      Tags: 
     - Position: {x: 12.25, y: 0.1, z: -18.25}
       Coordinates: {x: 8, y: 12}
       CurUnit: {fileID: 0}
       CoveredBy: 0
+      Tags: 00000000
     - Position: {x: 12.25, y: 0.1, z: -19.75}
       Coordinates: {x: 8, y: 13}
       CurUnit: {fileID: 0}
       CoveredBy: 0
+      Tags: 00000000
     - Position: {x: 12.25, y: 0.1, z: -21.25}
       Coordinates: {x: 8, y: 14}
       CurUnit: {fileID: 0}
       CoveredBy: 0
+      Tags: 
     - Position: {x: 12.25, y: 0.1, z: -22.75}
       Coordinates: {x: 8, y: 15}
       CurUnit: {fileID: 0}
       CoveredBy: 0
+      Tags: 
   - Cells:
     - Position: {x: 13.75, y: 0.1, z: -0.25}
       Coordinates: {x: 9, y: 0}
       CurUnit: {fileID: 0}
       CoveredBy: 0
+      Tags: 
     - Position: {x: 13.75, y: 0.1, z: -1.75}
       Coordinates: {x: 9, y: 1}
       CurUnit: {fileID: 0}
       CoveredBy: 0
+      Tags: 
     - Position: {x: 13.75, y: 0.1, z: -3.25}
       Coordinates: {x: 9, y: 2}
       CurUnit: {fileID: 0}
       CoveredBy: 0
+      Tags: 01000000
     - Position: {x: 13.75, y: 0.1, z: -4.75}
       Coordinates: {x: 9, y: 3}
       CurUnit: {fileID: 0}
       CoveredBy: 0
+      Tags: 01000000
     - Position: {x: 13.75, y: 0.1, z: -6.25}
       Coordinates: {x: 9, y: 4}
       CurUnit: {fileID: 0}
       CoveredBy: 0
+      Tags: 
     - Position: {x: 13.75, y: 0.1, z: -7.75}
       Coordinates: {x: 9, y: 5}
       CurUnit: {fileID: 0}
       CoveredBy: 0
+      Tags: 
     - Position: {x: 13.75, y: 0.1, z: -9.25}
       Coordinates: {x: 9, y: 6}
       CurUnit: {fileID: 0}
       CoveredBy: 0
+      Tags: 
     - Position: {x: 13.75, y: 0.1, z: -10.75}
       Coordinates: {x: 9, y: 7}
       CurUnit: {fileID: 0}
       CoveredBy: 0
+      Tags: 
     - Position: {x: 13.75, y: 0.1, z: -12.25}
       Coordinates: {x: 9, y: 8}
       CurUnit: {fileID: 0}
       CoveredBy: 0
+      Tags: 
     - Position: {x: 13.75, y: 0.1, z: -13.75}
       Coordinates: {x: 9, y: 9}
       CurUnit: {fileID: 0}
       CoveredBy: 0
+      Tags: 
     - Position: {x: 13.75, y: 0.1, z: -15.25}
       Coordinates: {x: 9, y: 10}
       CurUnit: {fileID: 0}
       CoveredBy: 0
+      Tags: 
     - Position: {x: 13.75, y: 0.1, z: -16.75}
       Coordinates: {x: 9, y: 11}
       CurUnit: {fileID: 0}
       CoveredBy: 0
+      Tags: 
     - Position: {x: 13.75, y: 0.1, z: -18.25}
       Coordinates: {x: 9, y: 12}
       CurUnit: {fileID: 0}
       CoveredBy: 0
+      Tags: 00000000
     - Position: {x: 13.75, y: 0.1, z: -19.75}
       Coordinates: {x: 9, y: 13}
       CurUnit: {fileID: 0}
       CoveredBy: 0
+      Tags: 00000000
     - Position: {x: 13.75, y: 0.1, z: -21.25}
       Coordinates: {x: 9, y: 14}
       CurUnit: {fileID: 0}
       CoveredBy: 0
+      Tags: 
     - Position: {x: 13.75, y: 0.1, z: -22.75}
       Coordinates: {x: 9, y: 15}
       CurUnit: {fileID: 0}
       CoveredBy: 0
+      Tags: 
   - Cells:
     - Position: {x: 15.25, y: 0.1, z: -0.25}
       Coordinates: {x: 10, y: 0}
       CurUnit: {fileID: 0}
       CoveredBy: 0
+      Tags: 
     - Position: {x: 15.25, y: 0.1, z: -1.75}
       Coordinates: {x: 10, y: 1}
       CurUnit: {fileID: 0}
       CoveredBy: 0
+      Tags: 
     - Position: {x: 15.25, y: 0.1, z: -3.25}
       Coordinates: {x: 10, y: 2}
       CurUnit: {fileID: 0}
       CoveredBy: 0
+      Tags: 01000000
     - Position: {x: 15.25, y: 0.1, z: -4.75}
       Coordinates: {x: 10, y: 3}
       CurUnit: {fileID: 0}
       CoveredBy: 0
+      Tags: 01000000
     - Position: {x: 15.25, y: 0.1, z: -6.25}
       Coordinates: {x: 10, y: 4}
       CurUnit: {fileID: 0}
       CoveredBy: 0
+      Tags: 
     - Position: {x: 15.25, y: 0.1, z: -7.75}
       Coordinates: {x: 10, y: 5}
       CurUnit: {fileID: 0}
       CoveredBy: 0
+      Tags: 
     - Position: {x: 15.25, y: 0.1, z: -9.25}
       Coordinates: {x: 10, y: 6}
       CurUnit: {fileID: 0}
       CoveredBy: 0
+      Tags: 
     - Position: {x: 15.25, y: 0.1, z: -10.75}
       Coordinates: {x: 10, y: 7}
       CurUnit: {fileID: 0}
       CoveredBy: 0
+      Tags: 
     - Position: {x: 15.25, y: 0.1, z: -12.25}
       Coordinates: {x: 10, y: 8}
       CurUnit: {fileID: 0}
       CoveredBy: 0
+      Tags: 
     - Position: {x: 15.25, y: 0.1, z: -13.75}
       Coordinates: {x: 10, y: 9}
       CurUnit: {fileID: 0}
       CoveredBy: 0
+      Tags: 
     - Position: {x: 15.25, y: 0.1, z: -15.25}
       Coordinates: {x: 10, y: 10}
       CurUnit: {fileID: 0}
       CoveredBy: 0
+      Tags: 
     - Position: {x: 15.25, y: 0.1, z: -16.75}
       Coordinates: {x: 10, y: 11}
       CurUnit: {fileID: 0}
       CoveredBy: 0
+      Tags: 
     - Position: {x: 15.25, y: 0.1, z: -18.25}
       Coordinates: {x: 10, y: 12}
       CurUnit: {fileID: 0}
       CoveredBy: 0
+      Tags: 00000000
     - Position: {x: 15.25, y: 0.1, z: -19.75}
       Coordinates: {x: 10, y: 13}
       CurUnit: {fileID: 0}
       CoveredBy: 0
+      Tags: 00000000
     - Position: {x: 15.25, y: 0.1, z: -21.25}
       Coordinates: {x: 10, y: 14}
       CurUnit: {fileID: 0}
       CoveredBy: 0
+      Tags: 
     - Position: {x: 15.25, y: 0.1, z: -22.75}
       Coordinates: {x: 10, y: 15}
       CurUnit: {fileID: 0}
       CoveredBy: 0
+      Tags: 
   - Cells:
     - Position: {x: 16.75, y: 0.1, z: -0.25}
       Coordinates: {x: 11, y: 0}
       CurUnit: {fileID: 0}
       CoveredBy: 0
+      Tags: 
     - Position: {x: 16.75, y: 0.1, z: -1.75}
       Coordinates: {x: 11, y: 1}
       CurUnit: {fileID: 0}
       CoveredBy: 0
+      Tags: 
     - Position: {x: 16.75, y: 0.1, z: -3.25}
       Coordinates: {x: 11, y: 2}
       CurUnit: {fileID: 0}
       CoveredBy: 0
+      Tags: 01000000
     - Position: {x: 16.75, y: 0.1, z: -4.75}
       Coordinates: {x: 11, y: 3}
       CurUnit: {fileID: 0}
       CoveredBy: 0
+      Tags: 01000000
     - Position: {x: 16.75, y: 0.1, z: -6.25}
       Coordinates: {x: 11, y: 4}
       CurUnit: {fileID: 0}
       CoveredBy: 0
+      Tags: 
     - Position: {x: 16.75, y: 0.1, z: -7.75}
       Coordinates: {x: 11, y: 5}
       CurUnit: {fileID: 0}
       CoveredBy: 0
+      Tags: 
     - Position: {x: 16.75, y: 0.1, z: -9.25}
       Coordinates: {x: 11, y: 6}
       CurUnit: {fileID: 0}
       CoveredBy: 0
+      Tags: 
     - Position: {x: 16.75, y: 0.1, z: -10.75}
       Coordinates: {x: 11, y: 7}
       CurUnit: {fileID: 0}
       CoveredBy: 0
+      Tags: 
     - Position: {x: 16.75, y: 0.1, z: -12.25}
       Coordinates: {x: 11, y: 8}
       CurUnit: {fileID: 0}
       CoveredBy: 0
+      Tags: 
     - Position: {x: 16.75, y: 0.1, z: -13.75}
       Coordinates: {x: 11, y: 9}
       CurUnit: {fileID: 0}
       CoveredBy: 0
+      Tags: 
     - Position: {x: 16.75, y: 0.1, z: -15.25}
       Coordinates: {x: 11, y: 10}
       CurUnit: {fileID: 0}
       CoveredBy: 0
+      Tags: 
     - Position: {x: 16.75, y: 0.1, z: -16.75}
       Coordinates: {x: 11, y: 11}
       CurUnit: {fileID: 0}
       CoveredBy: 0
+      Tags: 
     - Position: {x: 16.75, y: 0.1, z: -18.25}
       Coordinates: {x: 11, y: 12}
       CurUnit: {fileID: 0}
       CoveredBy: 0
+      Tags: 00000000
     - Position: {x: 16.75, y: 0.1, z: -19.75}
       Coordinates: {x: 11, y: 13}
       CurUnit: {fileID: 0}
       CoveredBy: 0
+      Tags: 00000000
     - Position: {x: 16.75, y: 0.1, z: -21.25}
       Coordinates: {x: 11, y: 14}
       CurUnit: {fileID: 0}
       CoveredBy: 0
+      Tags: 
     - Position: {x: 16.75, y: 0.1, z: -22.75}
       Coordinates: {x: 11, y: 15}
       CurUnit: {fileID: 0}
       CoveredBy: 0
+      Tags: 
   - Cells:
     - Position: {x: 18.25, y: 0.1, z: -0.25}
       Coordinates: {x: 12, y: 0}
       CurUnit: {fileID: 0}
       CoveredBy: 0
+      Tags: 
     - Position: {x: 18.25, y: 0.1, z: -1.75}
       Coordinates: {x: 12, y: 1}
       CurUnit: {fileID: 0}
       CoveredBy: 0
+      Tags: 
     - Position: {x: 18.25, y: 0.1, z: -3.25}
       Coordinates: {x: 12, y: 2}
       CurUnit: {fileID: 0}
       CoveredBy: 0
+      Tags: 
     - Position: {x: 18.25, y: 0.1, z: -4.75}
       Coordinates: {x: 12, y: 3}
       CurUnit: {fileID: 0}
       CoveredBy: 0
+      Tags: 
     - Position: {x: 18.25, y: 0.1, z: -6.25}
       Coordinates: {x: 12, y: 4}
       CurUnit: {fileID: 0}
       CoveredBy: 0
+      Tags: 
     - Position: {x: 18.25, y: 0.1, z: -7.75}
       Coordinates: {x: 12, y: 5}
       CurUnit: {fileID: 0}
       CoveredBy: 0
+      Tags: 
     - Position: {x: 18.25, y: 0.1, z: -9.25}
       Coordinates: {x: 12, y: 6}
       CurUnit: {fileID: 0}
       CoveredBy: 0
+      Tags: 
     - Position: {x: 18.25, y: 0.1, z: -10.75}
       Coordinates: {x: 12, y: 7}
       CurUnit: {fileID: 0}
       CoveredBy: 0
+      Tags: 
     - Position: {x: 18.25, y: 0.1, z: -12.25}
       Coordinates: {x: 12, y: 8}
       CurUnit: {fileID: 0}
       CoveredBy: 0
+      Tags: 
     - Position: {x: 18.25, y: 0.1, z: -13.75}
       Coordinates: {x: 12, y: 9}
       CurUnit: {fileID: 0}
       CoveredBy: 0
+      Tags: 
     - Position: {x: 18.25, y: 0.1, z: -15.25}
       Coordinates: {x: 12, y: 10}
       CurUnit: {fileID: 0}
       CoveredBy: 0
+      Tags: 
     - Position: {x: 18.25, y: 0.1, z: -16.75}
       Coordinates: {x: 12, y: 11}
       CurUnit: {fileID: 0}
       CoveredBy: 0
+      Tags: 
     - Position: {x: 18.25, y: 0.1, z: -18.25}
       Coordinates: {x: 12, y: 12}
       CurUnit: {fileID: 0}
       CoveredBy: 0
+      Tags: 
     - Position: {x: 18.25, y: 0.1, z: -19.75}
       Coordinates: {x: 12, y: 13}
       CurUnit: {fileID: 0}
       CoveredBy: 0
+      Tags: 
     - Position: {x: 18.25, y: 0.1, z: -21.25}
       Coordinates: {x: 12, y: 14}
       CurUnit: {fileID: 0}
       CoveredBy: 0
+      Tags: 
     - Position: {x: 18.25, y: 0.1, z: -22.75}
       Coordinates: {x: 12, y: 15}
       CurUnit: {fileID: 0}
       CoveredBy: 0
+      Tags: 
   - Cells:
     - Position: {x: 19.75, y: 0.1, z: -0.25}
       Coordinates: {x: 13, y: 0}
       CurUnit: {fileID: 0}
       CoveredBy: 0
+      Tags: 
     - Position: {x: 19.75, y: 0.1, z: -1.75}
       Coordinates: {x: 13, y: 1}
       CurUnit: {fileID: 0}
       CoveredBy: 0
+      Tags: 
     - Position: {x: 19.75, y: 0.1, z: -3.25}
       Coordinates: {x: 13, y: 2}
       CurUnit: {fileID: 0}
       CoveredBy: 0
+      Tags: 
     - Position: {x: 19.75, y: 0.1, z: -4.75}
       Coordinates: {x: 13, y: 3}
       CurUnit: {fileID: 0}
       CoveredBy: 0
+      Tags: 
     - Position: {x: 19.75, y: 0.1, z: -6.25}
       Coordinates: {x: 13, y: 4}
       CurUnit: {fileID: 0}
       CoveredBy: 0
+      Tags: 
     - Position: {x: 19.75, y: 0.1, z: -7.75}
       Coordinates: {x: 13, y: 5}
       CurUnit: {fileID: 0}
       CoveredBy: 0
+      Tags: 
     - Position: {x: 19.75, y: 0.1, z: -9.25}
       Coordinates: {x: 13, y: 6}
       CurUnit: {fileID: 0}
       CoveredBy: 0
+      Tags: 
     - Position: {x: 19.75, y: 0.1, z: -10.75}
       Coordinates: {x: 13, y: 7}
       CurUnit: {fileID: 0}
       CoveredBy: 0
+      Tags: 
     - Position: {x: 19.75, y: 0.1, z: -12.25}
       Coordinates: {x: 13, y: 8}
       CurUnit: {fileID: 0}
       CoveredBy: 0
+      Tags: 
     - Position: {x: 19.75, y: 0.1, z: -13.75}
       Coordinates: {x: 13, y: 9}
       CurUnit: {fileID: 0}
       CoveredBy: 0
+      Tags: 
     - Position: {x: 19.75, y: 0.1, z: -15.25}
       Coordinates: {x: 13, y: 10}
       CurUnit: {fileID: 0}
       CoveredBy: 0
+      Tags: 
     - Position: {x: 19.75, y: 0.1, z: -16.75}
       Coordinates: {x: 13, y: 11}
       CurUnit: {fileID: 0}
       CoveredBy: 0
+      Tags: 
     - Position: {x: 19.75, y: 0.1, z: -18.25}
       Coordinates: {x: 13, y: 12}
       CurUnit: {fileID: 0}
       CoveredBy: 0
+      Tags: 
     - Position: {x: 19.75, y: 0.1, z: -19.75}
       Coordinates: {x: 13, y: 13}
       CurUnit: {fileID: 0}
       CoveredBy: 0
+      Tags: 
     - Position: {x: 19.75, y: 0.1, z: -21.25}
       Coordinates: {x: 13, y: 14}
       CurUnit: {fileID: 0}
       CoveredBy: 0
+      Tags: 
     - Position: {x: 19.75, y: 0.1, z: -22.75}
       Coordinates: {x: 13, y: 15}
       CurUnit: {fileID: 0}
       CoveredBy: 0
+      Tags: 
   - Cells:
     - Position: {x: 21.25, y: 0.1, z: -0.25}
       Coordinates: {x: 14, y: 0}
       CurUnit: {fileID: 0}
       CoveredBy: 0
+      Tags: 
     - Position: {x: 21.25, y: 0.1, z: -1.75}
       Coordinates: {x: 14, y: 1}
       CurUnit: {fileID: 0}
       CoveredBy: 0
+      Tags: 
     - Position: {x: 21.25, y: 0.1, z: -3.25}
       Coordinates: {x: 14, y: 2}
       CurUnit: {fileID: 0}
       CoveredBy: 0
+      Tags: 
     - Position: {x: 21.25, y: 0.1, z: -4.75}
       Coordinates: {x: 14, y: 3}
       CurUnit: {fileID: 0}
       CoveredBy: 0
+      Tags: 
     - Position: {x: 21.25, y: 0.1, z: -6.25}
       Coordinates: {x: 14, y: 4}
       CurUnit: {fileID: 0}
       CoveredBy: 0
+      Tags: 
     - Position: {x: 21.25, y: 0.1, z: -7.75}
       Coordinates: {x: 14, y: 5}
       CurUnit: {fileID: 0}
       CoveredBy: 0
+      Tags: 
     - Position: {x: 21.25, y: 0.1, z: -9.25}
       Coordinates: {x: 14, y: 6}
       CurUnit: {fileID: 0}
       CoveredBy: 0
+      Tags: 
     - Position: {x: 21.25, y: 0.1, z: -10.75}
       Coordinates: {x: 14, y: 7}
       CurUnit: {fileID: 0}
       CoveredBy: 0
+      Tags: 
     - Position: {x: 21.25, y: 0.1, z: -12.25}
       Coordinates: {x: 14, y: 8}
       CurUnit: {fileID: 0}
       CoveredBy: 0
+      Tags: 
     - Position: {x: 21.25, y: 0.1, z: -13.75}
       Coordinates: {x: 14, y: 9}
       CurUnit: {fileID: 0}
       CoveredBy: 0
+      Tags: 
     - Position: {x: 21.25, y: 0.1, z: -15.25}
       Coordinates: {x: 14, y: 10}
       CurUnit: {fileID: 0}
       CoveredBy: 0
+      Tags: 
     - Position: {x: 21.25, y: 0.1, z: -16.75}
       Coordinates: {x: 14, y: 11}
       CurUnit: {fileID: 0}
       CoveredBy: 0
+      Tags: 
     - Position: {x: 21.25, y: 0.1, z: -18.25}
       Coordinates: {x: 14, y: 12}
       CurUnit: {fileID: 0}
       CoveredBy: 0
+      Tags: 
     - Position: {x: 21.25, y: 0.1, z: -19.75}
       Coordinates: {x: 14, y: 13}
       CurUnit: {fileID: 0}
       CoveredBy: 0
+      Tags: 
     - Position: {x: 21.25, y: 0.1, z: -21.25}
       Coordinates: {x: 14, y: 14}
       CurUnit: {fileID: 0}
       CoveredBy: 0
+      Tags: 
     - Position: {x: 21.25, y: 0.1, z: -22.75}
       Coordinates: {x: 14, y: 15}
       CurUnit: {fileID: 0}
       CoveredBy: 0
+      Tags: 
   - Cells:
     - Position: {x: 22.75, y: 0.1, z: -0.25}
       Coordinates: {x: 15, y: 0}
       CurUnit: {fileID: 0}
       CoveredBy: 0
+      Tags: 
     - Position: {x: 22.75, y: 0.1, z: -1.75}
       Coordinates: {x: 15, y: 1}
       CurUnit: {fileID: 0}
       CoveredBy: 0
+      Tags: 
     - Position: {x: 22.75, y: 0.1, z: -3.25}
       Coordinates: {x: 15, y: 2}
       CurUnit: {fileID: 0}
       CoveredBy: 0
+      Tags: 
     - Position: {x: 22.75, y: 0.1, z: -4.75}
       Coordinates: {x: 15, y: 3}
       CurUnit: {fileID: 0}
       CoveredBy: 0
+      Tags: 
     - Position: {x: 22.75, y: 0.1, z: -6.25}
       Coordinates: {x: 15, y: 4}
       CurUnit: {fileID: 0}
       CoveredBy: 0
+      Tags: 
     - Position: {x: 22.75, y: 0.1, z: -7.75}
       Coordinates: {x: 15, y: 5}
       CurUnit: {fileID: 0}
       CoveredBy: 0
+      Tags: 
     - Position: {x: 22.75, y: 0.1, z: -9.25}
       Coordinates: {x: 15, y: 6}
       CurUnit: {fileID: 0}
       CoveredBy: 0
+      Tags: 
     - Position: {x: 22.75, y: 0.1, z: -10.75}
       Coordinates: {x: 15, y: 7}
       CurUnit: {fileID: 0}
       CoveredBy: 0
+      Tags: 
     - Position: {x: 22.75, y: 0.1, z: -12.25}
       Coordinates: {x: 15, y: 8}
       CurUnit: {fileID: 0}
       CoveredBy: 0
+      Tags: 
     - Position: {x: 22.75, y: 0.1, z: -13.75}
       Coordinates: {x: 15, y: 9}
       CurUnit: {fileID: 0}
       CoveredBy: 0
+      Tags: 
     - Position: {x: 22.75, y: 0.1, z: -15.25}
       Coordinates: {x: 15, y: 10}
       CurUnit: {fileID: 0}
       CoveredBy: 0
+      Tags: 
     - Position: {x: 22.75, y: 0.1, z: -16.75}
       Coordinates: {x: 15, y: 11}
       CurUnit: {fileID: 0}
       CoveredBy: 0
+      Tags: 
     - Position: {x: 22.75, y: 0.1, z: -18.25}
       Coordinates: {x: 15, y: 12}
       CurUnit: {fileID: 0}
       CoveredBy: 0
+      Tags: 
     - Position: {x: 22.75, y: 0.1, z: -19.75}
       Coordinates: {x: 15, y: 13}
       CurUnit: {fileID: 0}
       CoveredBy: 0
+      Tags: 
     - Position: {x: 22.75, y: 0.1, z: -21.25}
       Coordinates: {x: 15, y: 14}
       CurUnit: {fileID: 0}
       CoveredBy: 0
+      Tags: 
     - Position: {x: 22.75, y: 0.1, z: -22.75}
       Coordinates: {x: 15, y: 15}
       CurUnit: {fileID: 0}
       CoveredBy: 0
+      Tags: 
   ClickEvent:
     m_PersistentCalls:
       m_Calls: []
@@ -132659,6 +133167,59 @@ Mesh:
     offset: 0
     size: 0
     path: 
+--- !u!1 &1261456053
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1261456054}
+  - component: {fileID: 1261456055}
+  m_Layer: 0
+  m_Name: GameplayManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1261456054
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1261456053}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1553121778}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1261456055
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1261456053}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cf016c7bcaba2c44ab1e689f762948ac, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  PlayerStarterAmount: 1
+  EnemyUnitsToDeploy:
+  - {fileID: 1109780961}
+  EnemyStarterAmount: 1
+  Objective_Positions:
+  - {x: 3, y: 5}
+  - {x: 8, y: 8}
+  - {x: 13, y: 11}
+  Objective_Obj: {fileID: 2064781832}
 --- !u!1 &1264183810
 GameObject:
   m_ObjectHideFlags: 0
@@ -164969,14 +165530,18 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 1110162793622999019}
   - {fileID: 547694813}
-  - {fileID: 1649851394}
+  - {fileID: 1261456054}
+  - {fileID: 724058885}
+  - {fileID: 1900940570}
+  - {fileID: 1324948932}
   - {fileID: 1126938938}
+  - {fileID: 1219950951}
+  - {fileID: 1031662069}
+  - {fileID: 1649851394}
   - {fileID: 944037227}
   - {fileID: 218350630}
-  - {fileID: 1031662069}
-  - {fileID: 1324948932}
-  - {fileID: 1219950951}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1555817339
@@ -170631,6 +171196,111 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1616873233}
   m_CullTransparentMesh: 1
+--- !u!1 &1623951827
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1623951828}
+  - component: {fileID: 1623951831}
+  - component: {fileID: 1623951830}
+  - component: {fileID: 1623951829}
+  m_Layer: 0
+  m_Name: Model
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1623951828
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1623951827}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 3.4607, y: 3.4607, z: 3.4607}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 695396556}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!65 &1623951829
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1623951827}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1, y: 1, z: 1}
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!23 &1623951830
+MeshRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1623951827}
+  m_Enabled: 1
+  m_CastShadows: 1
+  m_ReceiveShadows: 1
+  m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
+  m_RayTraceProcedural: 0
+  m_RenderingLayerMask: 1
+  m_RendererPriority: 0
+  m_Materials:
+  - {fileID: 10303, guid: 0000000000000000f000000000000000, type: 0}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 1
+  m_SelectedEditorRenderState: 3
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 0
+  m_AdditionalVertexStreams: {fileID: 0}
+--- !u!33 &1623951831
+MeshFilter:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1623951827}
+  m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
 --- !u!1 &1625137013
 GameObject:
   m_ObjectHideFlags: 0
@@ -202059,6 +202729,184 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1896636346}
   m_CullTransparentMesh: 1
+--- !u!1 &1897786117
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1897786118}
+  - component: {fileID: 1897786121}
+  - component: {fileID: 1897786120}
+  - component: {fileID: 1897786119}
+  m_Layer: 5
+  m_Name: Button
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &1897786118
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1897786117}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 108654540}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 14.089996, y: 0}
+  m_SizeDelta: {x: 890.62, y: 407.6}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &1897786119
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1897786117}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Navigation:
+    m_Mode: 3
+    m_WrapAround: 0
+    m_SelectOnUp: {fileID: 0}
+    m_SelectOnDown: {fileID: 0}
+    m_SelectOnLeft: {fileID: 0}
+    m_SelectOnRight: {fileID: 0}
+  m_Transition: 1
+  m_Colors:
+    m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
+    m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+    m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
+    m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+    m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
+    m_ColorMultiplier: 1
+    m_FadeDuration: 0.1
+  m_SpriteState:
+    m_HighlightedSprite: {fileID: 0}
+    m_PressedSprite: {fileID: 0}
+    m_SelectedSprite: {fileID: 0}
+    m_DisabledSprite: {fileID: 0}
+  m_AnimationTriggers:
+    m_NormalTrigger: Normal
+    m_HighlightedTrigger: Highlighted
+    m_PressedTrigger: Pressed
+    m_SelectedTrigger: Selected
+    m_DisabledTrigger: Disabled
+  m_Interactable: 1
+  m_TargetGraphic: {fileID: 1897786120}
+  m_OnClick:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 695396557}
+        m_TargetAssemblyTypeName: PassTurnButton, Assembly-CSharp
+        m_MethodName: Pass
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+--- !u!114 &1897786120
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1897786117}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 0.5320754, g: 0.5320754, b: 0.5320754, a: 0.15294118}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Sprite: {fileID: 10905, guid: 0000000000000000f000000000000000, type: 0}
+  m_Type: 1
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 1
+--- !u!222 &1897786121
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1897786117}
+  m_CullTransparentMesh: 1
+--- !u!1 &1900940569
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1900940570}
+  - component: {fileID: 1900940571}
+  m_Layer: 0
+  m_Name: EnemyManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1900940570
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1900940569}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1553121778}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1900940571
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1900940569}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5c9271c80c561f148a07601ac5fd7613, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  UnitsToPlace:
+  - {fileID: 1109780961}
 --- !u!1 &1903006315
 GameObject:
   m_ObjectHideFlags: 0
@@ -225184,6 +226032,106 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2147146914}
   m_CullTransparentMesh: 1
+--- !u!114 &1110162793617231621
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1110162793623304829}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 948c6eac03994cd49bad23b71ceeec7c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  title: Eplanations for each manager
+  textList:
+  - s: GameManager - Main thing, responsible for calling actions
+    state: 0
+    show: 0
+    deleteQuestion: 0
+  - s: "GameplayManager - reasponsible for creating the \nbattlefield, placing starter
+      player & enemy units and \nobjectives"
+    state: 0
+    show: 1
+    deleteQuestion: 0
+  - s: 'ResourceManager - holds reference to player resources
+
+      like total/placed
+      army units, '
+    state: 0
+    show: 0
+    deleteQuestion: 0
+  - s: EnemyManager - Responsible for enemy deployment,
+    state: 0
+    show: 0
+    deleteQuestion: 0
+  - s: "ScoreManager - Responsible for keeping track of \nplayer/enemy points and
+      calls an event if a side won"
+    state: 0
+    show: 1
+    deleteQuestion: 0
+  - s: 'EffectManager - Responsible for holding visual effects
+
+      and displaying
+      them for specific actions'
+    state: 0
+    show: 0
+    deleteQuestion: 0
+  - s: 'CellCoverManager - Keeps track of water thing certain
+
+      cells are coated
+      in and applies abilities to units accordingly'
+    state: 0
+    show: 0
+    deleteQuestion: 0
+  - s: 'AbilityManager - Has a list of abilities and their effects,
+
+      no practical
+      functions so far'
+    state: 0
+    show: 0
+    deleteQuestion: 0
+  - s: InputManager - Holds new input system reference
+    state: 0
+    show: 0
+    deleteQuestion: 0
+  - s: 'AudioManager - '
+    state: 0
+    show: 0
+    deleteQuestion: 0
+--- !u!4 &1110162793622999019
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1110162793623304829}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -4.5521617, y: -5.4440246, z: 5.607636}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1553121778}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1110162793623304829
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1110162793622999019}
+  - component: {fileID: 1110162793617231621}
+  m_Layer: 0
+  m_Name: Managers Guide
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
@@ -225199,5 +226147,5 @@ SceneRoots:
   - {fileID: 1109780963}
   - {fileID: 2064781835}
   - {fileID: 1879847891}
-  - {fileID: 1229008673}
+  - {fileID: 244907293}
   - {fileID: 757041809}

@@ -37,7 +37,8 @@ public class CreationMenu : MonoBehaviour
         Canvas = transform.Find("Canvas").gameObject;
         foreach (var button in Buttons) 
         {
-            ActionParameters parameters = new ActionParameters(GameManager.ActionType.PlayerCreate, null, null, null, button.Prefab);
+            ActionParameters parameters = new ActionParameters(
+                GameManager.ActionType.PlayerCreate, null, null, null, button.Prefab, 0);
 
             button.ButtonObj.onClick.AddListener(delegate { Create(parameters); });
         }

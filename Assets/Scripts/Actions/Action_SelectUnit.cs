@@ -28,7 +28,7 @@ public static class Action_SelectUnit
             foreach (var v in us) 
             { 
 
-                if (Action_Move.UnitCanMove(v)) { Debug.Log(v + " didn't move yet, adding to the list"); movable.Add(v); } 
+                if (Action_Move.UnitCanMove(v)) { /*Debug.Log(v + " didn't move yet, adding to the list");*/ movable.Add(v); } 
             }
 
             

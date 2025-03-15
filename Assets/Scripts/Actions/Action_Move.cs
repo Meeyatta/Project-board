@@ -183,7 +183,6 @@ public static class Action_Move
             yield return BoardManager.Instance.StartCoroutine(BoardManager.Instance.PlaceUnit(ActionTargetUnit, newPoss));
         }
 
-        Debug.Log("Action_move - before Slippery");
         Ability_Slippery.Try(ActionTargetUnit);
 
         yield return new WaitForSeconds(0.001f);

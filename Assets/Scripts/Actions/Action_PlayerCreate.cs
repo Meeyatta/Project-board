@@ -55,25 +55,25 @@ public static class Action_PlayerCreate
         //Waiting until we have the data
         while (IsWaitingForData && !ShouldCancel) { Debug.Log(ShouldCancel); yield return new WaitForSeconds(0.01f); }
 
-            //Check if can place a unit there
-            bool ViablePos = true;
-            foreach (var v in positions)
-            {
-                if (!BoardManager.Instance.IsInBounds(v)) { ViablePos = false; break; }
+         //Check if can place a unit there
+         bool ViablePos = true;
+         foreach (var v in positions)
+         {
+            if (!BoardManager.Instance.IsInBounds(v)) { ViablePos = false; break; }
 
-                if (BoardManager.Instance.Board[v.x].Cells[v.y].CurUnit != null) { ViablePos = false; break; }
-            }
+            if (BoardManager.Instance.Board[v.x].Cells[v.y].CurUnit != null) { ViablePos = false; break; }
+         }
 
-            //Place a unit on said selected positions if they are viable
-            GameManager.Instance.HidePlacementEvent.Invoke(unitList);
-            if (ViablePos)
-            {
-                yield return GameManager.Instance.StartCoroutine(BoardManager.Instance.PlaceUnit(unit, positions));
-            }
-            else
-            {
-                Debug.Log("Non viable position");
-            }
+         //Place a unit on said selected positions if they are viable
+         GameManager.Instance.HidePlacementEvent.Invoke(unitList);
+         if (ViablePos)
+         {
+             yield return GameManager.Instance.StartCoroutine(BoardManager.Instance.PlaceUnit(unit, positions));
+         }
+         else
+         {
+             Debug.Log("Non viable position");
+         }
 
 
 

@@ -31,6 +31,8 @@ using System.Linq;
     List<Unit> Get_AllUnitsWithAbilities(List<Unit.Ability> abilities) - Returns a list of units with specified abilities
 
     List<Unit> Get_UnitsInRange(Unit u, int r) - returns list of units within "r" cells of the "u" unit
+    List<Unit> Get_UnitsWithKeywordsInRange - Returns list of units within "r" cells of the "u" unit what have all "keywords" keywords
+    
  */
 #endregion
 
@@ -43,6 +45,12 @@ public class BoardManager : MonoBehaviour
     public float InBetweenSpace;
     public int Width;
     public int Height;
+
+    #region DeploymentZones - 2 element lists where first - top-left point, second - bottom-right point
+    public List<Vector2Int> PlayerDeploymentZone = new List<Vector2Int> { new Vector2Int(4, 12), new Vector2Int(12, 14) };
+    public List<Vector2Int> EnemyDeploymentZone = new List<Vector2Int> { new Vector2Int(4, 2), new Vector2Int(12, 4) };
+
+    #endregion
 
     public GameObject CellsObj;
     public GameObject BoardCellObj;
@@ -99,17 +107,37 @@ public class BoardManager : MonoBehaviour
 
             for (int y = 0; y < Height; y++)
             {
+                #region Setup cells in a script table
                 Cell cell = new Cell();
                 cell.Coordinates = new Vector2Int(x, y);
                 cell.Position = CellsObj.transform.position + new Vector3(InBetweenSpace + x * (InBetweenSpace + CellSize), DefaultY, -1 * (InBetweenSpace + y * (InBetweenSpace + CellSize)) );
                 cell.CoveredBy = Covering.None;
 
-                column.Cells.Add(cell);
+                #region Check if zone is a player deployment zone
+                if (x >= PlayerDeploymentZone[0].x && x<= PlayerDeploymentZone[1].x &&
+                    y >= PlayerDeploymentZone[0].y && y <= PlayerDeploymentZone[1].y)
+                {
+                    cell.Tags.Add(CellTag.PlayerDeploymentZone);
+                }
+                #endregion
 
+                #region Check if zone is an enemy deployment zone
+                if (x >= EnemyDeploymentZone[0].x && x <= EnemyDeploymentZone[1].x &&
+                    y >= EnemyDeploymentZone[0].y && y <= EnemyDeploymentZone[1].y)
+                {
+                    cell.Tags.Add(CellTag.EnemyDeploymentZone);
+                }
+                #endregion
+
+                column.Cells.Add(cell);
+                #endregion
+
+                #region Create cell objects in the world
                 BoardCell newCell = Instantiate(BoardCellObj, cell.Position, Quaternion.identity, CellsObj.transform).GetComponent<BoardCell>();
                 
                 newCell.gameObject.name = "Cell " + cell.Coordinates.ToString();
                 newCell.Coordinates = cell.Coordinates;
+                #endregion
             }
             Board.Add(column);
         }
@@ -455,11 +483,43 @@ public class BoardManager : MonoBehaviour
 
         return res;
     }
+    
+    //Returns list of units within "r" cells of the "u" unit what have all "keywords" keywords
+    public List<Unit> Get_UnitsWithKeywordsInRange(Unit u, int r, List<Keyword> keywords)
+    {
+        List<Unit> res = new List<Unit>();
+        foreach (var coords in Get_UnitPositions(u))
+        {
+            for (int x = Mathf.Max(coords.x - r, 0); x < Mathf.Min(coords.x + r + 1, Width); x++)
+            {
+                for (int y = Mathf.Max(coords.y - r, 0); y < Mathf.Min(coords.y + r + 1, Height); y++)
+                {
+                    if (x == coords.x && y == coords.y) { continue; }
+
+                    //Debug.Log("Checking coord of: " + x + " " + y);
+                    if (Board[x].Cells[y].CurUnit != null && Board[x].Cells[y].CurUnit != u
+                        && Board[x].Cells[y].CurUnit.CurKeywords.Intersect<Keyword>(keywords).Any()) 
+                    { res.Add(Board[x].Cells[y].CurUnit); }
+                }
+            }
+        }
+
+        return res;
+    }
     private void Update()
     {
         if (Input.GetKeyDown("p")) { Print(); }
 
         if (Input.GetKeyDown("b")) { Build(); }
+
+        foreach (var l in Board)
+        {
+            foreach (var c in l.Cells)
+            {
+                if (c.Tags.Contains(CellTag.PlayerDeploymentZone)) { Debug.DrawRay(c.Position, Vector3.up, Color.blue); }
+                if (c.Tags.Contains(CellTag.EnemyDeploymentZone)) { Debug.DrawRay(c.Position, Vector3.up, Color.red); }
+            }
+        }
 
     }
     
