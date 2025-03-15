@@ -10,14 +10,22 @@ public class ActionParameters
     public List<Keyword> Keywords;
     public List<Vector2Int> CellsCoordinates;
     public GameObject Object;
+    public int IntNumber;
 
-    public ActionParameters(GameManager.ActionType type, List<Unit> actionTargetUnits, List<Keyword> keywords, List<Vector2Int> cellsCoordinates, GameObject object_)
+    public ActionParameters(
+        GameManager.ActionType type, 
+        List<Unit> actionTargetUnits,
+        List<Keyword> keywords,
+        List<Vector2Int> cellsCoordinates,
+        GameObject object_,
+        int intNumber)
     {
         this.Type = type;
         this.ActionTargetUnits = actionTargetUnits;
         this.Keywords = keywords;
         this.CellsCoordinates = cellsCoordinates;
         this.Object = object_;
+        this.IntNumber = intNumber;
     }
 
 }

@@ -20,9 +20,19 @@ using UnityEngine.InputSystem;
         KeywordedAttack(Keywords) - Make all units with specific keywords initiate an attack on all units in their individual attack zones
         PlayerCreate(Object) - Awaits for player's input on cell coordinates, then places the unit on these coordinates
         Action_NextTurn() - Makes all units on one side attack, then scores all objectives, then passes the turn/round to the other side
+        Create(GameObject Object, List<Vector2Int> CellsCoordinates) - Creates a new unit on coordinates
+        Deploy(List<Vector2Int> CellsCoordinates, GameObject Object, int IntNumber) - Places randomly a 
+            number of units from roster in their deployment zone            
+        CreateBattlefield(TODO: More parameters) - Places the battlefield things like objectives & obstacles
 
-        A_Score(ActionTargetUnits) - Ability: A_Score, checks for units nearby, adds points to player if only player units, 
-            adds points to enemy if only enemy units
+        Action_Deployment.Deploy(List<Unit> roster, int amount, List<Vector2Int> dZone) - Deploys <amount> number of units
+            from <roster> within <dZone> coordinates
+            
+        --ABILITIES--
+
+        Score(ActionTargetUnits) - Ability: Ability_Score, checks for units nearby, adds points to player if more player units, 
+            adds points to enemy if more enemy units
+        Slip(ActionTargetUnits) - Ability: Ability_Slippery, Moves unit into a random direction
 */
 
 /*
@@ -56,7 +66,8 @@ public class GameManager : MonoBehaviour
     [HideInInspector] public UnityEvent CancelEvent;
     public enum ActionType 
     { 
-    Attack, AttackFromKeyworded, Move, Place, SelectUnit, PlayerCreate, Pre_NextTurn, NextTurn, 
+    Attack, AttackFromKeyworded, Move, Place, SelectUnit, PlayerCreate, Pre_NextTurn, NextTurn, Create, Deploy, CreateBattlefield,
+
     Score, Slip,
     };
     public Unit CurUnitSelected; //What unit is currently selected, if no unit - should be null
@@ -166,8 +177,8 @@ public class GameManager : MonoBehaviour
                 ActionQueue.Enqueue(playercreate);
 
                 break;
-            #endregion Create(GameObject Object, Vector2Int CellsCoordinates)
-            
+            #endregion PlayerCreate(GameObject Object)
+
             //Makes all units on one side attack, then scores all objectives, then passes the turn/round to the other side
             #region NextTurn()
             case ActionType.NextTurn:
@@ -182,6 +193,33 @@ public class GameManager : MonoBehaviour
                 break;
             #endregion Create(GameObject Object, Vector2Int CellsCoordinates)
 
+            //Creates a new unit on coordinates
+            #region Create(GameObject Object, List<Vector2Int> CellsCoordinates)
+            case ActionType.Create:
+                ActionSlot create = new ActionSlot(Action_Create.Create(parameters), ActionType.Create, parameters);
+                ActionQueue.Enqueue(create);
+
+                break;
+            #endregion Create(GameObject Object, Vector2Int CellsCoordinates)
+
+            //Places randomly a number of units from roster in their deployment zone
+            #region Deploy(List<Vector2Int> CellsCoordinates, GameObject Object, int IntNumber)
+            case ActionType.Deploy:
+                ActionSlot playerDeployment = new ActionSlot(Action_Deployment.Deploy(parameters), ActionType.Deploy, parameters);
+                ActionQueue.Enqueue(playerDeployment);
+
+                break;
+            #endregion Deploy(List<Vector2Int> CellsCoordinates, GameObject Object, int IntNumber)
+
+            //Places the battlefield things like objectives & obstacles
+            #region CreateBattlefield()
+            case ActionType.CreateBattlefield:
+                ActionSlot createBattlefield = new ActionSlot(Action_CreateBattlefield.CreateBattlefield(parameters), ActionType.CreateBattlefield, parameters);
+                ActionQueue.Enqueue(createBattlefield);
+
+                break;
+            #endregion CreateBattlefield()
+
             /* --ABILITIES-- */
 
             //Goes through every objective and scores for the player or enemy (Depends on what is passed in parameters)
@@ -194,7 +232,7 @@ public class GameManager : MonoBehaviour
                 break;
             #endregion Create(GameObject Object, Vector2Int CellsCoordinates)
 
-            //Goes through every objective and scores for the player or enemy (Depends on what is passed in parameters)
+            //Moves unit into a random direction
             #region Slip(ActionTargetUnits)
             case ActionType.Slip:
 
@@ -282,7 +320,7 @@ public class GameManager : MonoBehaviour
                 List<Vector2Int> nCoords = new List<Vector2Int>(); nCoords.Add(coords);
                 List<Unit> unitToList = new List<Unit>(); unitToList.Add(CurUnitSelected);
 
-                ActionParameters parameters = new ActionParameters(ActionType.Move, unitToList, null, nCoords, null);
+                ActionParameters parameters = new ActionParameters(ActionType.Move, unitToList, null, nCoords, null, 0);
                 yield return StartCoroutine(Action(parameters));
                 CurUnitSelected = null;
             }
@@ -296,7 +334,7 @@ public class GameManager : MonoBehaviour
                     # region If the selected unit is a player unit - a4) select it, otherwise - b4) TODO:
                     if (BoardManager.Instance.Board[coords.x].Cells[coords.y].CurUnit.CurKeywords.Contains(Keyword.Player))
                     { //a4)
-                        ActionParameters parameters = new ActionParameters(ActionType.SelectUnit, null, null, nCoords, null);
+                        ActionParameters parameters = new ActionParameters(ActionType.SelectUnit, null, null, nCoords, null, 0);
                         yield return StartCoroutine(Action(parameters));
                     }
                     else
@@ -360,14 +398,14 @@ public class GameManager : MonoBehaviour
         #region Debug inputs
         if (Input.GetKeyDown("s"))
         {
-            ActionParameters parameters = new ActionParameters(ActionType.NextTurn, null, null, null, null);
+            ActionParameters parameters = new ActionParameters(ActionType.NextTurn, null, null, null, null, 0);
             StartCoroutine(Action(parameters));
         }
 
         if (Input.GetKeyDown("q"))
         {
             Debug.Log("CURRENT ACTION QUEUE:");
-            Debug.Log(")" + CurrentAction); Debug.Log(")" + ActionQueue.Peek());
+            Debug.Log(")" + CurrentAction); Debug.Log(")" + ActionQueue.Peek().Type);
 
         }
         if (Input.GetKeyDown("a"))
@@ -375,7 +413,7 @@ public class GameManager : MonoBehaviour
             Debug.Log("PRESSED THE ATTACK BUTTON");
             List<Keyword> k = new List<Keyword>();k.Add(Keyword.Player);
 
-            ActionParameters parameters = new ActionParameters(ActionType.AttackFromKeyworded, null, k, null, null);
+            ActionParameters parameters = new ActionParameters(ActionType.AttackFromKeyworded, null, k, null, null, 0);
             StartCoroutine(Action(parameters));
         }
         
@@ -383,7 +421,7 @@ public class GameManager : MonoBehaviour
         {
             Debug.Log("SCORING FOR ENEMY:");
             List<Keyword> k = new List<Keyword> { Keyword.Enemy };
-            ActionParameters parameters = new ActionParameters(ActionType.Score, null, k, null, null);
+            ActionParameters parameters = new ActionParameters(ActionType.Score, null, k, null, null, 0);
             StartCoroutine(Action(parameters));
 
         }

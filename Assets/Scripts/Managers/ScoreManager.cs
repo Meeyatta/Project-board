@@ -45,12 +45,19 @@ public class ScoreManager : MonoBehaviour
     public UnityEvent RoundEvent;
     private void Start()
     {
+        CurRound = 0;
+        CurTurn = Side.Player;
+
+        RoundText.text = "Deployment";
+        TurnText.text = "Player";
+        RoundEvent.AddListener(GameManager.Instance.ResetMovement);
+    }
+    public void EndDeployment()
+    {
         CurRound = 1;
         CurTurn = Side.Player;
 
-        RoundText.text = "1";
-        TurnText.text = "Player";
-        RoundEvent.AddListener(GameManager.Instance.ResetMovement);
+        RoundText.text = CurRound.ToString();
     }
 
     void Update()

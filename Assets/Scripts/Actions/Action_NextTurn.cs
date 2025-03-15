@@ -18,13 +18,15 @@ public static class Action_NextTurn
             case ScoreManager.Side.Player:
                 #region Player turn ended
 
-                ActionParameters attackP = new ActionParameters(GameManager.ActionType.AttackFromKeyworded, null, new List<Keyword> { Keyword.Player }, null, null);
+                ActionParameters attackP = new ActionParameters(
+                    GameManager.ActionType.AttackFromKeyworded, null, new List<Keyword> { Keyword.Player }, null, null, 0);
                 yield return GameManager.Instance.StartCoroutine(GameManager.Instance.Action(attackP));
                 //Debug.Log("Initiated attack for the player");
 
                 yield return new WaitForSeconds(0.01f);
 
-                ActionParameters scoreP = new ActionParameters(GameManager.ActionType.Score, null, new List<Keyword> { Keyword.Player }, null, null);
+                ActionParameters scoreP = new ActionParameters(
+                    GameManager.ActionType.Score, null, new List<Keyword> { Keyword.Player }, null, null, 0);
                 yield return GameManager.Instance.StartCoroutine(GameManager.Instance.Action(scoreP));
                 //Debug.Log("Initiated score for the player");
 
@@ -32,12 +34,14 @@ public static class Action_NextTurn
             #endregion
             case ScoreManager.Side.Enemy:
                 #region Enemy turn ended
-                ActionParameters attackE = new ActionParameters(GameManager.ActionType.AttackFromKeyworded, null, new List<Keyword> { Keyword.Enemy }, null, null);
+                ActionParameters attackE = new ActionParameters(
+                    GameManager.ActionType.AttackFromKeyworded, null, new List<Keyword> { Keyword.Enemy }, null, null, 0);
                 yield return GameManager.Instance.StartCoroutine(GameManager.Instance.Action(attackE));
 
                 yield return new WaitForSeconds(0.01f);
 
-                ActionParameters scoreE = new ActionParameters(GameManager.ActionType.Score, null, new List<Keyword> { Keyword.Enemy }, null, null);
+                ActionParameters scoreE = new ActionParameters(
+                    GameManager.ActionType.Score, null, new List<Keyword> { Keyword.Enemy }, null, null, 0);
                 yield return GameManager.Instance.StartCoroutine(GameManager.Instance.Action(scoreE));
 
 
