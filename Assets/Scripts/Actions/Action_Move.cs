@@ -15,7 +15,7 @@ public static class Action_Move
     public static bool UnitCanMove(Unit u)
     {
         if (u.Moved) return false;
-        if (ScoreManager.Instance.CurTurn == ScoreManager.Side.Enemy) return false;
+        //if (ScoreManager.Instance.CurTurn == ScoreManager.Side.Enemy && u.CurKeywords) return false;
 
         return true;
     }
@@ -92,6 +92,9 @@ public static class Action_Move
         #endregion
 
         #region Debug statements
+
+        //Debug.Log("Moveset: " + u.CurMoveset.Lines + u.CurMoveset.Lines.Count);
+
         //Debug.Log("Res1:");
         //foreach (var v in res1)
         //{
@@ -100,7 +103,7 @@ public static class Action_Move
         //    {
         //        foreach (var vvv in vv)
         //        {
-        //            l += " " +(vvv);
+        //            l += " " + (vvv);
         //        }
         //        l += "|";
         //    }
@@ -185,7 +188,7 @@ public static class Action_Move
 
         Ability_Slippery.Try(ActionTargetUnit);
 
-        yield return new WaitForSeconds(0.001f);
+        yield return new WaitForSeconds(Time.deltaTime);
         GameManager.Instance.RemoveAction(parameters);
     }
 
