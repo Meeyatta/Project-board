@@ -22,33 +22,29 @@ public class EnemyManager : MonoBehaviour
     {
         Singleton();
 
-        ScoreManager.Instance.TurnEvent.AddListener(MakeMoves);
     }
     #endregion
-
-    public List<Unit> UnitsToPlace;
+    void Start()
+    {
+        ScoreManager.Instance.TurnEvent.AddListener(MoveAllEnemyUnits);
+    }
     Coroutine CMakingMoves;
+    [Header("---Functionality stuff---")]
+    public float DelayBeforeMovingUnit;
+    public float DelayAfterMovingUnit;
+    public float DelayBeforeEndingTurn;
 
-    public void MakeMoves(ScoreManager.Side side)
+    public void MoveAllEnemyUnits(ScoreManager.Side side)
     {
         if (side == ScoreManager.Side.Player) return;
 
         if (CMakingMoves == null) 
         {
-            CMakingMoves = StartCoroutine(MakingMoves());
+            CMakingMoves = StartCoroutine(MovingAllEnemyUnits());
         }
     }
-    /*
-        Selects a position to move the unit depending on units within objectives:
-        1) Is within objective?
-            Yes) Move nowhere
-            No) Go to step 2
-        2) Does closest objective have >1 enemy-to-player lead?
-            Yes) Move towards the second closest objective
-            No) Move towards that objective
-    */
 
-    //Returns the position the target can move what is the closest to the "objective"
+    #region Returns the position the target can move what is the closest to the "objective"
     List<Vector2Int> GetPosToPoint(Unit objective, Unit target)
     {
         Vector3 objPos = BoardManager.Instance.BoardToWorldPosition(BoardManager.Instance.Get_UnitPositions(objective)).Value;
@@ -77,10 +73,22 @@ public class EnemyManager : MonoBehaviour
         Debug.Log(res.Count);
         return res;
     }
+    #endregion
+
+    #region Summarized enemy AI
+    /*
+        Selects a position to move the unit depending on units within objectives:
+        1) Is within objective?
+            Yes) Move nowhere
+            No) Go to step 2
+        2) Does closest objective have >1 enemy-to-player lead?
+            Yes) Move towards the second closest objective
+            No) Move towards that objective
+    */
+    #endregion
+    #region Goes through enemy AI and decides what target to find
     List<Vector2Int> DecideMovement(Unit u)
     {
-        //TODO: FINISH HERE
-
         #region Check if within objective - if yes, stay still
         List<Unit> o = BoardManager.Instance.Get_UnitsWithKeywordsInRange(u, 1, new List<Keyword> { Keyword.Objective });
         if (o != null && o.Count > 0) { Debug.Log(u.UnitName + " is already within an objective, going to stand still"); return null; }
@@ -144,20 +152,31 @@ public class EnemyManager : MonoBehaviour
         Debug.Log("No AI conditions satisfied, something is wrong");
         return null;
     }
-    //Go through each unit on the board and move them towards objectives
-    IEnumerator MakingMoves()
+    #endregion
+
+    #region Go through each unit on the board and move them towards objectives
+    IEnumerator MovingAllEnemyUnits()
     {
         yield return new WaitForSeconds(Time.deltaTime);
 
         List<Unit> units = BoardManager.Instance.Get_AllUnitsWithKeywords(new List<Keyword> { Keyword.Enemy });
 
         List<ActionParameters> MoveActions = new List<ActionParameters>();
+        #region Going through each unit one by one and moving them
         foreach (var unit in units)
         {
-            //Decide where unit will move
-            List<Vector2Int> newPos = DecideMovement(unit);
+            #region Raise the unit's model, wait for a couple of seconds, then move them
+            Vector3 ogPos = unit.gameObject.transform.position;
+            unit.transform.position = ogPos + Vector3.up * 1;
+            yield return new WaitForSeconds(Time.deltaTime * DelayBeforeMovingUnit);
+            //unit.gameObject.transform.position = ogPos;
+
+            yield return new WaitForSeconds(Time.deltaTime);
+            #endregion
 
             #region Move that unit
+            List<Vector2Int> newPos = DecideMovement(unit);
+
             if (newPos != null)
             {
                 ActionParameters parameters = new ActionParameters(
@@ -166,26 +185,33 @@ public class EnemyManager : MonoBehaviour
                 MoveActions.Add(parameters);
                 yield return StartCoroutine(GameManager.Instance.Action(parameters));
             }
+            yield return new WaitForSeconds(Time.deltaTime * DelayAfterMovingUnit);
             #endregion
 
-            yield return new WaitForSeconds(Time.deltaTime);    
-        }
+            #region Wait while the unit is being moved
+            int safeGuard = 10000;
+            while (
+                ((GameManager.Instance.CurrentAction != null && MoveActions.Contains(GameManager.Instance.CurrentAction.Params)) ||
+                (GameManager.Instance.ActionQueue.Count > 0 && MoveActions.Contains(GameManager.Instance.ActionQueue.Peek().Params)))
+                 && safeGuard > 0)
+            {
+                safeGuard--;
+                yield return new WaitForSeconds(Time.deltaTime);
+            }
+            if (safeGuard <= 0) { Debug.LogError("Safeguard expended, something is very wrong"); }
+            #endregion
 
-        int safeGuard = 10000;
-        while (
-            ((GameManager.Instance.CurrentAction != null && MoveActions.Contains(GameManager.Instance.CurrentAction.Params)) ||
-            (GameManager.Instance.ActionQueue.Count > 0 && MoveActions.Contains(GameManager.Instance.ActionQueue.Peek().Params)))
-             && safeGuard > 0)
-        {
-            safeGuard--;
-            yield return new WaitForSeconds(Time.deltaTime);
         }
-        if (safeGuard <= 0) { Debug.LogError("Safeguard expended, something is very wrong"); }
+        #endregion
+
+        #region End moving all units and end the turn
+        yield return new WaitForSeconds(DelayBeforeEndingTurn * Time.deltaTime);
         Debug.Log("Finished moving all enemy units");
-
         CMakingMoves = null; 
 
         ActionParameters turnParameters = new ActionParameters(GameManager.ActionType.NextTurn, null, null, null, null, 0);
         StartCoroutine(GameManager.Instance.Action(turnParameters));
+        #endregion
     }
+    #endregion
 }

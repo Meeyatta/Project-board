@@ -32,6 +32,9 @@ public class GameplayManager : MonoBehaviour
     public List<Vector2Int> Objective_Positions;
     public GameObject Objective_Obj;
 
+    [Header("---Functionality stuff---")]
+    public float Delay;
+
     public void PlaceEnemies(List<Unit> enemyUnitsToDeploy, int enemyStarterAmount)
     {
         ActionParameters parameters = new ActionParameters(
@@ -58,9 +61,9 @@ public class GameplayManager : MonoBehaviour
 
         #endregion
     }
-    IEnumerator test()
+    IEnumerator StartBattle()
     {
-        yield return new WaitForSeconds(3 * Time.deltaTime);
+        yield return new WaitForSeconds(Delay * Time.deltaTime);
 
         PlaceEnemies(EnemyUnitsToDeploy, EnemyStarterAmount);
         PlacePlayerUnits(ResourceManager.Instance.PlayerArmy_NotPlaced, PlayerStarterAmount);
@@ -69,7 +72,7 @@ public class GameplayManager : MonoBehaviour
     }
     void Start()
     {
-        StartCoroutine(test());
+        StartCoroutine(StartBattle());
     }
 
     void Update()

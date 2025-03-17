@@ -84,13 +84,14 @@ public class GameManager : MonoBehaviour
 
     public UnityEvent<List<Unit>> ShowPlacementEvent;
     public UnityEvent<List<Unit>> HidePlacementEvent;
-    void OnEnable()
+    void Start()
     {
-        
+        ScoreManager.Instance.EndPlayerTurnEvent.AddListener(UnselectCurrentUnit);
     }
     void OnDisable()
     {
-        
+        ScoreManager.Instance.EndPlayerTurnEvent.RemoveListener(UnselectCurrentUnit);
+
     }
     #endregion Events
 
@@ -253,7 +254,10 @@ public class GameManager : MonoBehaviour
         }
         yield return null;
     }
-
+    public void UnselectCurrentUnit(List<Unit> l)
+    {
+        CurUnitSelected = null;
+    }
     //Fires an event if the player cancels an action. Appropriate cancel function should be applied by currently active action
     public void Cancel(InputAction.CallbackContext context)
     {
@@ -304,19 +308,25 @@ public class GameManager : MonoBehaviour
     */
     IEnumerator CellClickCoroutine(Vector2Int coords)
     {
-        yield return new WaitForSeconds(0.001f); //For some reason this is vital, otherwise Unity shits itself trying to assign and end a Coroutine at the same time 
+        yield return new WaitForSeconds(Time.deltaTime); //For some reason this is vital, otherwise Unity shits itself
 
-        #region If selecting a position for creating a unit - a1) Invoke an event to send coordinates   b1) check if can move a unit
+        #region Are we selecting a position for creating a unit?
         if (CurrentAction != null && CurrentAction.Type == ActionType.PlayerCreate && Action_PlayerCreate.IsWaitingForData)
+        #region Yes - Invoke an event to send coordinates where the unit is going to be created
         { //a1
             //Debug.Log(CurrentAction.Type);  //<- Important note, current action is stored in a separate field, not in the queue
             ClickBackEvent.Invoke(coords);
         }
+        #endregion
+
+        #region No - Check if there is a unit to move on thesse coordinates
         else
-        { //b1
-            #region If have a unit and cell is unoccupied - a) move it to the cell, otherwise - b) check if there is a unit on that cell
-            if (CurUnitSelected != null && BoardManager.Instance.Board[coords.x].Cells[coords.y].CurUnit == null)
-            { //a)
+        {
+            #region Do we have a unit and cell is unoccupied?
+            if (CurUnitSelected != null && BoardManager.Instance.Board[coords.x].Cells[coords.y].CurUnit == null &&
+                ScoreManager.Instance.PlayerTurnActionCondition())
+            #region Yes - move it to the cell
+            { 
                 List<Vector2Int> nCoords = new List<Vector2Int>(); nCoords.Add(coords);
                 List<Unit> unitToList = new List<Unit>(); unitToList.Add(CurUnitSelected);
 
@@ -324,36 +334,54 @@ public class GameManager : MonoBehaviour
                 yield return StartCoroutine(Action(parameters));
                 CurUnitSelected = null;
             }
-            else
-            { //b)
-            //If cell has a unit: a3)Check if it's a player unit   b3)Do nothing, clicked on an empty cell
-                if (BoardManager.Instance.Board[coords.x].Cells[coords.y].CurUnit != null) //Check whenever there is a unit on a clicked cell
-                { //a3)
-                    List<Vector2Int> nCoords = new List<Vector2Int>(); nCoords.Add(coords);
+            #endregion
 
-                    # region If the selected unit is a player unit - a4) select it, otherwise - b4) TODO:
+            #region No - check the cell to try to interact with a unit on it
+            else
+            {
+                #region Does this cell have a unit?
+                if (BoardManager.Instance.Board[coords.x].Cells[coords.y].CurUnit != null)
+                #region Yes - Check what kind of unit this is
+                {
+                    #region Is selected unit a player unit?
+                    List<Vector2Int> nCoords = new List<Vector2Int>(); nCoords.Add(coords);
                     if (BoardManager.Instance.Board[coords.x].Cells[coords.y].CurUnit.CurKeywords.Contains(Keyword.Player))
+                    #region Yes - select it
                     { //a4)
                         ActionParameters parameters = new ActionParameters(ActionType.SelectUnit, null, null, nCoords, null, 0);
                         yield return StartCoroutine(Action(parameters));
                     }
+                    #endregion
+
+                    #region No - TODO:
                     else
                     { //b4)
                         yield return new WaitForSeconds(0.01f);
                     }
-                    #endregion If the selected unit is a player unit - a4) select it, otherwise - b4) TODO:
+                    #endregion
+
+                    #endregion
 
                 }
+                #endregion
+
+                #region No - Do nothing, clicked on an empty cell
                 else
                 { //b3)
                     Debug.Log("HAVE NOTHING SELECTED, " + coords + " HAS NO UNITS ");
                     //No unit on that cell, do nothing
                 }
+                #endregion
+                #endregion
             }
             #endregion
-        }
 
-#endregion
+            #endregion
+        }
+        #endregion
+
+        #endregion
+
         yield return null;
     }
 
@@ -396,35 +424,35 @@ public class GameManager : MonoBehaviour
     private void Update()
     {
         #region Debug inputs
-        if (Input.GetKeyDown("s"))
-        {
-            ActionParameters parameters = new ActionParameters(ActionType.NextTurn, null, null, null, null, 0);
-            StartCoroutine(Action(parameters));
-        }
+        //if (Input.GetKeyDown("s"))
+        //{
+        //    ActionParameters parameters = new ActionParameters(ActionType.NextTurn, null, null, null, null, 0);
+        //    StartCoroutine(Action(parameters));
+        //}
 
-        if (Input.GetKeyDown("q"))
-        {
-            Debug.Log("CURRENT ACTION QUEUE:");
-            Debug.Log(")" + CurrentAction); Debug.Log(")" + ActionQueue.Peek().Type);
+        //if (Input.GetKeyDown("q"))
+        //{
+        //    Debug.Log("CURRENT ACTION QUEUE:");
+        //    Debug.Log(")" + CurrentAction); Debug.Log(")" + ActionQueue.Peek().Type);
 
-        }
-        if (Input.GetKeyDown("a"))
-        {
-            Debug.Log("PRESSED THE ATTACK BUTTON");
-            List<Keyword> k = new List<Keyword>();k.Add(Keyword.Player);
+        //}
+        //if (Input.GetKeyDown("a"))
+        //{
+        //    Debug.Log("PRESSED THE ATTACK BUTTON");
+        //    List<Keyword> k = new List<Keyword>();k.Add(Keyword.Player);
 
-            ActionParameters parameters = new ActionParameters(ActionType.AttackFromKeyworded, null, k, null, null, 0);
-            StartCoroutine(Action(parameters));
-        }
+        //    ActionParameters parameters = new ActionParameters(ActionType.AttackFromKeyworded, null, k, null, null, 0);
+        //    StartCoroutine(Action(parameters));
+        //}
         
-        if (Input.GetKeyDown("x"))
-        {
-            Debug.Log("SCORING FOR ENEMY:");
-            List<Keyword> k = new List<Keyword> { Keyword.Enemy };
-            ActionParameters parameters = new ActionParameters(ActionType.Score, null, k, null, null, 0);
-            StartCoroutine(Action(parameters));
+        //if (Input.GetKeyDown("x"))
+        //{
+        //    Debug.Log("SCORING FOR ENEMY:");
+        //    List<Keyword> k = new List<Keyword> { Keyword.Enemy };
+        //    ActionParameters parameters = new ActionParameters(ActionType.Score, null, k, null, null, 0);
+        //    StartCoroutine(Action(parameters));
 
-        }
+        //}
         #endregion
 
         #region Constantly printing current action

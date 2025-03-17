@@ -14,7 +14,7 @@ public static class Action_Move
 
     public static bool UnitCanMove(Unit u)
     {
-        if (u.Moved) return false;
+        if (u.Moved) { Debug.Log("Unit can't move"); return false; }
         //if (ScoreManager.Instance.CurTurn == ScoreManager.Side.Enemy && u.CurKeywords) return false;
 
         return true;
@@ -174,7 +174,6 @@ public static class Action_Move
 
         if (newPoss != null && newPoss.Count > 0 && !ActionTargetUnit.Moved)
         {
-            ActionTargetUnit.Moved = true;
             if (!BoardManager.Instance.AreInBounds(newPoss)) { Debug.LogError("ERROR: POSITION OUT OF BOUNDS"); yield break; }
 
             List<Vector2Int> oldPos = BoardManager.Instance.Get_UnitPositions(ActionTargetUnit);
@@ -182,8 +181,12 @@ public static class Action_Move
             {
                 BoardManager.Instance.Board[v.x].Cells[v.y].CurUnit = null;
             }
-
+            ActionTargetUnit.Moved = true;
             yield return BoardManager.Instance.StartCoroutine(BoardManager.Instance.PlaceUnit(ActionTargetUnit, newPoss));
+        }
+        else
+        {
+            Debug.Log("Didn't move: " + newPoss != null + " " + (newPoss.Count > 0) + " " + !ActionTargetUnit.Moved);
         }
 
         Ability_Slippery.Try(ActionTargetUnit);

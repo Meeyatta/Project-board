@@ -10,6 +10,12 @@ public static class Action_PlayerCreate
     static bool ShouldCancel = false;
     static void Cancel()
     {
+        Debug.Log("Normal cancel");
+        ShouldCancel = true;
+    }
+    static void Cancel(List<Unit> l)
+    {
+        Debug.Log("Cancel after the end of turn");
         ShouldCancel = true;
     }
     public static IEnumerator PlayerCreate(ActionParameters parameters)
@@ -35,6 +41,7 @@ public static class Action_PlayerCreate
             yield break;
         }
 
+        ScoreManager.Instance.EndPlayerTurnEvent.AddListener(Cancel);
         void StartAwaiting_ListOfPositions(List<Vector2Int> v2)
         {
             IsWaitingForData = false;
@@ -77,6 +84,7 @@ public static class Action_PlayerCreate
 
 
 
+        ScoreManager.Instance.EndPlayerTurnEvent.RemoveListener(Cancel);
         ShouldCancel = false;
         GameManager.Instance.CancelEvent.RemoveListener(Cancel);
         yield return new WaitForSeconds(0.001f);

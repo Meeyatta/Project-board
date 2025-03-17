@@ -59,20 +59,12 @@ public static class Action_NextTurn
         {
             case ScoreManager.Side.Player:
                 #region Player turn ended
-                ScoreManager.Instance.CurTurn = ScoreManager.Side.Enemy;
-
-                ScoreManager.Instance.TurnEvent.Invoke(ScoreManager.Instance.CurTurn);
-                ScoreManager.Instance.TurnText.text = ScoreManager.Instance.CurTurn.ToString();
+                yield return ScoreManager.Instance.StartCoroutine(ScoreManager.Instance.EndPlayerTurn());
                 break;
             #endregion
             case ScoreManager.Side.Enemy:
                 #region Enemy turn ended             
-                ScoreManager.Instance.CurTurn = ScoreManager.Side.Player;
-
-                ScoreManager.Instance.TurnEvent.Invoke(ScoreManager.Instance.CurTurn);
-                ScoreManager.Instance.TurnText.text = ScoreManager.Instance.CurTurn.ToString();
-                yield return ScoreManager.Instance.StartCoroutine(NextRound());
-
+                yield return ScoreManager.Instance.StartCoroutine(ScoreManager.Instance.EndEnemyTurn());
                 break;
                 #endregion
         }
@@ -80,15 +72,5 @@ public static class Action_NextTurn
         //Debug.Log("Sent what ended the nextTurn");
         GameManager.Instance.RemoveAction(parameters);
     }
-    static IEnumerator NextRound()
-    {
-        //Debug.Log("Started Next Round actions");
-        ScoreManager.Instance.CurRound++;
 
-        ScoreManager.Instance.RoundText.text = ScoreManager.Instance.CurRound.ToString();
-        ScoreManager.Instance.TurnText.text = ScoreManager.Instance.CurTurn.ToString();
-
-        ScoreManager.Instance.RoundEvent.Invoke();
-        yield return new WaitForSeconds(0.01f);
-    }
 }

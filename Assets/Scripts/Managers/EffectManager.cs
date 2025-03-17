@@ -21,6 +21,7 @@ public class EffectManager : MonoBehaviour
     public static EffectManager Instance;
 
     public GameObject CellOverlay;
+    public float ModelOffset;
     public Dictionary<Unit, List<GameObject>> UnitEffectsToHide = new Dictionary<Unit, List<GameObject>>();
 
     public GameObject EffectsObj;
@@ -50,6 +51,7 @@ public class EffectManager : MonoBehaviour
         #region EventsAdd
         GameManager.Instance.ShowMovementEvent.AddListener(ShowMovement);
         GameManager.Instance.HideMovementEvent.AddListener(HideMovement);
+        ScoreManager.Instance.EndPlayerTurnEvent.AddListener(HideMovement);
 
         GameManager.Instance.ShowPlacementEvent.AddListener(StartShowingPlacement);
         GameManager.Instance.HidePlacementEvent.AddListener(StopShowingPlacement);
@@ -145,12 +147,18 @@ public class EffectManager : MonoBehaviour
         CurPlacement = null;
     }
 
+    bool ShowingPlacementConditions()
+    {
+        if (ScoreManager.Instance.CurTurn != ScoreManager.Side.Player) return false;
+
+        return true;
+    }
     IEnumerator ShowingPlacement(List<Unit> units)
     {
-        yield return new WaitForSeconds(0.01f);
-        while (CurPlacement != null)
+        yield return new WaitForSeconds(Time.deltaTime);
+        while (CurPlacement != null && ShowingPlacementConditions())
         {
-            yield return new WaitForSeconds(0.01f);
+            yield return new WaitForSeconds(Time.deltaTime);
             foreach (var v in PlacementEffectsToHide)
             {
                 if (BoardManager.Instance.ClosestUnitPosToCursor(v.Key) == null) { continue; }
@@ -166,11 +174,13 @@ public class EffectManager : MonoBehaviour
                     v.Value[i].transform.position = BoardManager.Instance.BoardToWorldPosition(sTl).Value;
 
                 }
-                yield return new WaitForSeconds(0.01f);
+                yield return new WaitForSeconds(Time.deltaTime);
             }
 
         }
-        yield return new WaitForSeconds(0.01f);
+
+        CurPlacement = null;
+        yield return new WaitForSeconds(Time.deltaTime);
     }
     #endregion
 
@@ -192,11 +202,14 @@ public class EffectManager : MonoBehaviour
     }
     IEnumerator ShowingPossibleUnitPosition(Unit unit) 
     {
-        yield return new WaitForSeconds(0.01f);
+        yield return new WaitForSeconds(Time.deltaTime);
 
-        while (CurUnitMovePosShowcase != null) 
+        Vector3 ogPos = unit.transform.position;
+        unit.transform.position += Vector3.up * ModelOffset;
+
+        while (CurUnitMovePosShowcase != null && ScoreManager.Instance.PlayerTurnActionCondition()) 
         {
-            yield return new WaitForSeconds(0.01f);
+            yield return new WaitForSeconds(Time.deltaTime);
             if (BoardManager.Instance.ClosestUnitPosToCursor(unit) == null) { continue; }
 
             
@@ -215,16 +228,18 @@ public class EffectManager : MonoBehaviour
             }
 
         }
+
+        CurUnitMovePosShowcase = null;
+        unit.transform.position = ogPos;
         unit.UnitModelShowcase.SetActive(false);
 
-        yield return new WaitForSeconds(0.01f);
+        yield return new WaitForSeconds(Time.deltaTime);
     }
     #endregion
 
     #region Showing possible movement positions of unit
     void ShowMovement(List<Unit> units)
     {
-
         foreach (Unit u in units)
         {
             List<GameObject> ePu = new List<GameObject>();
@@ -260,6 +275,7 @@ public class EffectManager : MonoBehaviour
         }
     }
     #endregion
+
     public GameObject InstantiateFromPool(Tag tag, Vector3 position, Quaternion rotation) 
     {
         if (!CurrentPools.ContainsKey(Tag.Movement)) { Debug.LogWarning("No tag in pools named " + tag); return null; }

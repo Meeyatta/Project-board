@@ -12,38 +12,47 @@ public static class Action_SelectUnit
        
         Vector2Int coords = CellsCoordinates[0];
         Debug.Log("SELECTED ON" + coords);
-
-        
         Unit ogUnit = GameManager.Instance.CurUnitSelected; List<Unit> us = new List<Unit>();
+    
+        GameManager.Instance.CurUnitSelected = BoardManager.Instance.Board[coords.x].Cells[coords.y].CurUnit;
+        ogUnit = GameManager.Instance.CurUnitSelected;
+        us.Add(GameManager.Instance.CurUnitSelected);
 
-        //I have absolutely no idea what this check was doing, but if it IS present it stops moveset appearing when selecting the same unit we already select
-        if (true /*GameManager.Instance.CurUnitSelected != BoardManager.Instance.Board[coords.x].Cells[coords.y].CurUnit*/)  
+        #region If current turn is player turn
+        if (ScoreManager.Instance.PlayerTurnActionCondition())
         {
-            GameManager.Instance.CurUnitSelected = BoardManager.Instance.Board[coords.x].Cells[coords.y].CurUnit;
-            ogUnit = GameManager.Instance.CurUnitSelected;
-            us.Add(GameManager.Instance.CurUnitSelected);
-
-            //This is where we start to show current movement zones of the unit
+            #region Create a list of all units whose movement needs to be shown and call an event to start doing so
             List<Unit> movable = new List<Unit>();
-            foreach (var v in us) 
-            { 
-
-                if (Action_Move.UnitCanMove(v)) { /*Debug.Log(v + " didn't move yet, adding to the list");*/ movable.Add(v); } 
+            foreach (var v in us)
+            {
+                if (Action_Move.UnitCanMove(v)) { /*Debug.Log(v + " didn't move yet, adding to the list");*/ movable.Add(v); }
             }
 
-            
+            GameManager.Instance.ShowMovementEvent.Invoke(movable);
+            #endregion
 
-            GameManager.Instance.ShowMovementEvent.Invoke(movable);      
+            yield return new WaitForSeconds(Time.deltaTime);
+
+            #region Wait shile we are selecting the unit
+            while (GameManager.Instance.CurUnitSelected != null && ogUnit == GameManager.Instance.CurUnitSelected)
+            {
+                //Debug.Log("IS SELECTING A UNIT");
+                yield return new WaitForSeconds(Time.deltaTime);
+            }
+            #endregion
+
+            if (us.Count > 0) { GameManager.Instance.HideMovementEvent.Invoke(us); } //Event to hide movement effects of selected units
         }
-
-
-        yield return new WaitForSeconds(0.01f);
-        while (GameManager.Instance.CurUnitSelected != null && ogUnit == GameManager.Instance.CurUnitSelected)
+        #endregion
+        #region If current turn is enemy turn
+        else
         {
-            //Debug.Log("IS SELECTING A UNIT");
-            yield return new WaitForSeconds(0.001f);
+            //TODO:
         }
-        if (us.Count > 0) { GameManager.Instance.HideMovementEvent.Invoke(us); }
+        #endregion
+
+
+
         GameManager.Instance.RemoveAction(parameters);
     }
 }

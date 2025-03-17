@@ -4,6 +4,11 @@ using UnityEngine;
 using UnityEngine.Events;
 using TMPro;
 
+/*
+
+    bool PlayerTurnActionCondition - Quick way for other actions to check if they are performed during the player's turn
+
+*/
 public class ScoreManager : MonoBehaviour
 {
     //Event for the conclusion of the battle 
@@ -42,6 +47,7 @@ public class ScoreManager : MonoBehaviour
     public TextMeshProUGUI TurnText;
 
     public UnityEvent<Side> TurnEvent;
+    public UnityEvent<List<Unit>> EndPlayerTurnEvent;
     public UnityEvent RoundEvent;
     private void Start()
     {
@@ -51,6 +57,42 @@ public class ScoreManager : MonoBehaviour
         RoundText.text = "Deployment";
         TurnText.text = "Player";
         RoundEvent.AddListener(GameManager.Instance.ResetMovement);
+    }
+    public IEnumerator EndPlayerTurn()
+    {
+        CurTurn = ScoreManager.Side.Enemy;
+        TurnEvent.Invoke(ScoreManager.Instance.CurTurn);
+        TurnText.text = ScoreManager.Instance.CurTurn.ToString();
+        EndPlayerTurnEvent.Invoke( BoardManager.Instance.Get_AllUnitsWithKeywords(new List<Keyword> { Keyword.Player }));
+
+        yield return new WaitForSeconds(Time.deltaTime);
+    }
+    public IEnumerator EndEnemyTurn()
+    {
+        CurTurn = ScoreManager.Side.Player;
+
+        TurnEvent.Invoke(CurTurn);
+        TurnText.text = CurTurn.ToString();
+        yield return StartCoroutine(NextRound());
+    }
+    public IEnumerator NextRound()
+    {
+        //Debug.Log("Started Next Round actions");
+        CurRound++;
+
+        RoundText.text = ScoreManager.Instance.CurRound.ToString();
+        TurnText.text = ScoreManager.Instance.CurTurn.ToString();
+
+        RoundEvent.Invoke();
+        yield return new WaitForSeconds(0.01f);
+    }
+
+    //Quick way for other actions to check if they are performed during the player's turn
+    public bool PlayerTurnActionCondition()
+    {
+        if (CurTurn != Side.Player) return false;
+
+        return true;
     }
     public void EndDeployment()
     {
