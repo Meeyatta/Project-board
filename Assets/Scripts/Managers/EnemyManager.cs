@@ -4,6 +4,12 @@ using UnityEngine;
 
 public class EnemyManager : MonoBehaviour
 {
+    public int EnemyStarterAmount;
+    public List<Unit> StarterArmy = new List<Unit>();
+    public List<Unit> Army = new List<Unit>();
+    public List<Unit> Army_NotPlaced = new List<Unit>();
+    public List<Unit> Army_Placed = new List<Unit>();
+
     #region Singleton
     public static EnemyManager Instance;
     void Singleton()
@@ -27,6 +33,8 @@ public class EnemyManager : MonoBehaviour
     void Start()
     {
         ScoreManager.Instance.TurnEvent.AddListener(MoveAllEnemyUnits);
+        ResetArmy();
+        GameplayManager.Instance.UnitPlacementEvent.AddListener(PlacedTheUnits);
     }
     Coroutine CMakingMoves;
     [Header("---Functionality stuff---")]
@@ -34,6 +42,34 @@ public class EnemyManager : MonoBehaviour
     public float DelayAfterMovingUnit;
     public float DelayBeforeEndingTurn;
 
+
+    //Unit is placed from reserve onto the board
+    public void PlacedTheUnits(List<Unit> units)
+    {
+        Debug.Log(units[0] + " " + units.Count);
+
+        foreach (var unit in units)
+        {
+            if (Army.Contains(unit))
+            {
+                Debug.Log(Army_NotPlaced.Count);
+                Army_Placed.Add(unit);
+            }
+        }
+
+        foreach (Unit u in Army_Placed)
+        {
+            if (Army_NotPlaced.Contains(u)) Army_NotPlaced.Remove(u);
+        }
+    }
+    //Gets the whole army back into the NotPlaced category
+    public void ResetArmy()
+    {
+        Army_Placed.Clear();
+
+        Army = GameManager.Instance.Shuffle<Unit>(Army);
+        Army_NotPlaced = Army;
+    }
     public void MoveAllEnemyUnits(ScoreManager.Side side)
     {
         if (side == ScoreManager.Side.Player) return;
@@ -214,4 +250,9 @@ public class EnemyManager : MonoBehaviour
         #endregion
     }
     #endregion
+
+    private void OnDisable()
+    {
+        GameplayManager.Instance.UnitPlacementEvent.RemoveListener(PlacedTheUnits);
+    }
 }

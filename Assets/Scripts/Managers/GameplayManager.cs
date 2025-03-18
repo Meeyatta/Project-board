@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class GameplayManager : MonoBehaviour
 {
@@ -24,10 +25,7 @@ public class GameplayManager : MonoBehaviour
     }
     #endregion
 
-    public int PlayerStarterAmount;
 
-    public List<Unit> EnemyUnitsToDeploy;
-    public int EnemyStarterAmount;
 
     public List<Vector2Int> Objective_Positions;
     public GameObject Objective_Obj;
@@ -35,17 +33,46 @@ public class GameplayManager : MonoBehaviour
     [Header("---Functionality stuff---")]
     public float Delay;
 
-    public void PlaceEnemies(List<Unit> enemyUnitsToDeploy, int enemyStarterAmount)
+    public UnityEvent<List<Unit>> UnitPlacementEvent;
+    public void PlaceUnitsAtStartOfTurn(ScoreManager.Side side)
+    {
+        if (ScoreManager.Instance.CurRound > 1 ) return;
+        Debug.Log("PlacingUnit");
+
+        if (side == ScoreManager.Side.Player)
+        {
+            List<Unit> notP = ResourceManager.Instance.PlayerArmy_NotPlaced;
+            if (notP.Count <= 0) { return; }
+
+            ActionParameters parameters = new ActionParameters(
+                    GameManager.ActionType.Deploy, notP, null, BoardManager.Instance.PlayerDeploymentZone, null, 1);
+            UnitPlacementEvent.Invoke(notP);
+            StartCoroutine(GameManager.Instance.Action(parameters));
+        }
+        else
+        {
+            List<Unit> notP = EnemyManager.Instance.Army_NotPlaced;
+            if (notP.Count <= 0) { return; }
+
+            ActionParameters parameters = new ActionParameters(
+                    GameManager.ActionType.Deploy, notP, null, BoardManager.Instance.EnemyDeploymentZone, null, 1);
+            UnitPlacementEvent.Invoke(notP);
+            StartCoroutine(GameManager.Instance.Action(parameters));
+        }
+    }
+
+    public void PlaceStarterEnemies(List<Unit> enemyUnitsToDeploy, int enemyStarterAmount)
     {
         ActionParameters parameters = new ActionParameters(
                     GameManager.ActionType.Deploy, enemyUnitsToDeploy, null, BoardManager.Instance.EnemyDeploymentZone, null, enemyStarterAmount);
+        UnitPlacementEvent.Invoke(enemyUnitsToDeploy);
         StartCoroutine(GameManager.Instance.Action(parameters));
     }
-    public void PlacePlayerUnits(List<Unit> playerUnitsToDeploy, int playerStarterAmount)
+    public void PlaceStarterPlayerUnits(List<Unit> playerUnitsToDeploy, int playerStarterAmount)
     {
-
         ActionParameters parameters = new ActionParameters(
                     GameManager.ActionType.Deploy, playerUnitsToDeploy, null, BoardManager.Instance.PlayerDeploymentZone, null, playerStarterAmount);
+        UnitPlacementEvent.Invoke(playerUnitsToDeploy);
         StartCoroutine(GameManager.Instance.Action(parameters));
     }
     public void MakeBattlefield(List<Vector2Int> objective_Positions)
@@ -65,18 +92,25 @@ public class GameplayManager : MonoBehaviour
     {
         yield return new WaitForSeconds(Delay * Time.deltaTime);
 
-        PlaceEnemies(EnemyUnitsToDeploy, EnemyStarterAmount);
-        PlacePlayerUnits(ResourceManager.Instance.PlayerArmy_NotPlaced, PlayerStarterAmount);
+        PlaceStarterEnemies(EnemyManager.Instance.StarterArmy, EnemyManager.Instance.EnemyStarterAmount);
+        PlaceStarterPlayerUnits(ResourceManager.Instance.StarterArmy, ResourceManager.Instance.PlayerStarterUnitsAmount);
+
         MakeBattlefield(Objective_Positions);
 
     }
     void Start()
     {
         StartCoroutine(StartBattle());
+        ScoreManager.Instance.TurnEvent.AddListener(PlaceUnitsAtStartOfTurn);
     }
-
+    private void OnDisable()
+    {
+        ScoreManager.Instance.TurnEvent.RemoveListener(PlaceUnitsAtStartOfTurn);
+    }
     void Update()
     {
         
     }
+
+
 }

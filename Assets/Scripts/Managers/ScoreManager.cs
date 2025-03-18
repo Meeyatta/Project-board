@@ -58,6 +58,11 @@ public class ScoreManager : MonoBehaviour
         TurnText.text = "Player";
         RoundEvent.AddListener(GameManager.Instance.ResetMovement);
     }
+    #region Start a turn
+
+    #endregion
+
+    #region Ending turn
     public IEnumerator EndPlayerTurn()
     {
         CurTurn = ScoreManager.Side.Enemy;
@@ -75,6 +80,7 @@ public class ScoreManager : MonoBehaviour
         TurnText.text = CurTurn.ToString();
         yield return StartCoroutine(NextRound());
     }
+    #endregion
     public IEnumerator NextRound()
     {
         //Debug.Log("Started Next Round actions");

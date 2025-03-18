@@ -37,6 +37,7 @@ using UnityEngine.InputSystem;
 
 /*
     LIST OF USEFUL FUNCTIONS:
+        void Shuffle<T>(IList<T> ts) - Returns the same list but randomly shuffled
         void Cancel(InputAction.CallbackContext context) - fires an event if the player cancels an action. 
             Appropriate cancel function should be applied by currently active action
         bool UnitHasAllKeywords(Unit u, List<Keyword> keywords) - returns true if unit has all of the keywords in "keywords"
@@ -47,6 +48,9 @@ using UnityEngine.InputSystem;
 
 public class GameManager : MonoBehaviour
 {
+    
+
+
     public class ActionSlot
     {
         public IEnumerator IEnum;
@@ -254,10 +258,31 @@ public class GameManager : MonoBehaviour
         }
         yield return null;
     }
+
+
     public void UnselectCurrentUnit(List<Unit> l)
     {
         CurUnitSelected = null;
     }
+
+    //Returns the same list but randomly shuffled
+    public List<T> Shuffle<T>(List<T> ts)
+    {
+        List<T> res;
+        var count = ts.Count;
+        var last = count - 1;
+        for (var i = 0; i < last; ++i)
+        {
+            var r = UnityEngine.Random.Range(i, count);
+            var tmp = ts[i];
+            ts[i] = ts[r];
+            ts[r] = tmp;
+        }
+
+        res = ts;
+        return res;
+    }
+
     //Fires an event if the player cancels an action. Appropriate cancel function should be applied by currently active action
     public void Cancel(InputAction.CallbackContext context)
     {

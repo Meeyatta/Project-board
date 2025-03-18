@@ -5,7 +5,7 @@ using UnityEngine;
 public class ResourceManager : MonoBehaviour
 {
     public int PlayerStarterUnitsAmount;
-
+    public List<Unit> StarterArmy = new List<Unit>();
     public List<Unit> PlayerArmy = new List<Unit>();
     public List<Unit> PlayerArmy_NotPlaced = new List<Unit>();
     public List<Unit> PlayerArmy_Placed = new List<Unit>();
@@ -47,14 +47,29 @@ public class ResourceManager : MonoBehaviour
     public void ResetArmy()
     {
         PlayerArmy_Placed.Clear();
+
+        PlayerArmy = GameManager.Instance.Shuffle<Unit>(PlayerArmy);
         PlayerArmy_NotPlaced = PlayerArmy;
     }
     //Unit is placed from reserve onto the board
-    public void PlacedTheUnit(Unit unit)
+    public void PlacedTheUnits(List<Unit> units)
     {
-        PlayerArmy_NotPlaced.Remove(unit);
-        PlayerArmy_Placed.Add(unit);
+
+        foreach (var unit in units)
+        {
+            if (PlayerArmy.Contains(unit))
+            {
+                Debug.Log(PlayerArmy_NotPlaced.Count);
+                PlayerArmy_Placed.Add(unit);
+            }
+        }
+
+        foreach (Unit u in PlayerArmy_Placed)
+        {
+            if (PlayerArmy_NotPlaced.Contains(u)) PlayerArmy_NotPlaced.Remove(u);
+        }
     }
+
     void Start()
     {
         ResetArmy();
@@ -65,9 +80,13 @@ public class ResourceManager : MonoBehaviour
             AllUnitObjects.Add(
                 Instantiate(unit.gameObject).GetComponent<Unit>());
         }
+        GameplayManager.Instance.UnitPlacementEvent.AddListener(PlacedTheUnits);
         
     }
-
+    private void OnDisable()
+    {
+        GameplayManager.Instance.UnitPlacementEvent.RemoveListener(PlacedTheUnits);
+    }
     // Update is called once per frame
     void Update()
     {
