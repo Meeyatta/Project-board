@@ -38132,7 +38132,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 11416984, guid: c080686877cf77f42a1a078076d57fe5, type: 3}
       propertyPath: textList.Array.size
-      value: 5
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 11416984, guid: c080686877cf77f42a1a078076d57fe5, type: 3}
       propertyPath: textList.Array.data[0].s
@@ -38153,17 +38153,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 11416984, guid: c080686877cf77f42a1a078076d57fe5, type: 3}
       propertyPath: textList.Array.data[3].s
-      value: 'Change the selected unit raising from position change to
-
-        animation'
+      value: Add ability to swap camera position
       objectReference: {fileID: 0}
     - target: {fileID: 11416984, guid: c080686877cf77f42a1a078076d57fe5, type: 3}
       propertyPath: textList.Array.data[4].s
-      value: Create basic dialogue system
+      value: "Check how player can interact with their units during \nopponent's
+        turn"
       objectReference: {fileID: 0}
     - target: {fileID: 11416984, guid: c080686877cf77f42a1a078076d57fe5, type: 3}
       propertyPath: textList.Array.data[5].s
-      value: Finish the camera positions
+      value: 'Player can select a unit to move, pass the turn and then
+
+        move
+        the unit during opponent''s turn'
       objectReference: {fileID: 0}
     - target: {fileID: 11416984, guid: c080686877cf77f42a1a078076d57fe5, type: 3}
       propertyPath: textList.Array.data[6].s
@@ -38253,11 +38255,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 11416984, guid: c080686877cf77f42a1a078076d57fe5, type: 3}
       propertyPath: textList.Array.data[4].state
-      value: 2
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 11416984, guid: c080686877cf77f42a1a078076d57fe5, type: 3}
       propertyPath: textList.Array.data[5].state
-      value: 2
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 11416984, guid: c080686877cf77f42a1a078076d57fe5, type: 3}
       propertyPath: textList.Array.data[6].state
@@ -68975,6 +68977,7 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 645664177}
   m_CullTransparentMesh: 1
+<<<<<<< HEAD
 --- !u!1 &645898923
 GameObject:
   m_ObjectHideFlags: 0
@@ -69081,6 +69084,8 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 645898923}
   m_Mesh: {fileID: 10207, guid: 0000000000000000e000000000000000, type: 0}
+=======
+>>>>>>> parent of e27f740 (Finished camera movement)
 --- !u!1 &646019917
 GameObject:
   m_ObjectHideFlags: 0
@@ -94515,75 +94520,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 879773922}
   m_CullTransparentMesh: 1
---- !u!1001 &881426690
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    serializedVersion: 3
-    m_TransformParent: {fileID: 645898924}
-    m_Modifications:
-    - target: {fileID: -8679921383154817045, guid: 7f378adf323101b45a5fd8be43297952, type: 3}
-      propertyPath: m_LocalScale.x
-      value: 0.8033
-      objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: 7f378adf323101b45a5fd8be43297952, type: 3}
-      propertyPath: m_LocalScale.y
-      value: 0.8033
-      objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: 7f378adf323101b45a5fd8be43297952, type: 3}
-      propertyPath: m_LocalScale.z
-      value: 0.8033
-      objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: 7f378adf323101b45a5fd8be43297952, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: 7f378adf323101b45a5fd8be43297952, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: 7f378adf323101b45a5fd8be43297952, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: 7f378adf323101b45a5fd8be43297952, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: -0.17035933
-      objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: 7f378adf323101b45a5fd8be43297952, type: 3}
-      propertyPath: m_LocalRotation.x
-      value: 0.17035933
-      objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: 7f378adf323101b45a5fd8be43297952, type: 3}
-      propertyPath: m_LocalRotation.y
-      value: 0.68627816
-      objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: 7f378adf323101b45a5fd8be43297952, type: 3}
-      propertyPath: m_LocalRotation.z
-      value: 0.68627816
-      objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: 7f378adf323101b45a5fd8be43297952, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: -90
-      objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: 7f378adf323101b45a5fd8be43297952, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: 7f378adf323101b45a5fd8be43297952, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 207.882
-      objectReference: {fileID: 0}
-    - target: {fileID: 919132149155446097, guid: 7f378adf323101b45a5fd8be43297952, type: 3}
-      propertyPath: m_Name
-      value: testModelForTexture
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-    m_RemovedGameObjects: []
-    m_AddedGameObjects: []
-    m_AddedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: 7f378adf323101b45a5fd8be43297952, type: 3}
 --- !u!1 &883916372
 GameObject:
   m_ObjectHideFlags: 0
@@ -100483,12 +100419,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 963194225}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.17364816, y: 0, z: 0, w: 0.9848078}
-  m_LocalPosition: {x: 7, y: 3, z: -27}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1868271124}
+<<<<<<< HEAD
   m_LocalEulerAnglesHint: {x: 20, y: 0, z: 0}
 --- !u!1 &963413226
 GameObject:
@@ -100521,6 +100458,8 @@ Transform:
   m_Children:
   - {fileID: 645898924}
   m_Father: {fileID: 0}
+=======
+>>>>>>> parent of e27f740 (Finished camera movement)
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &965114012
 GameObject:
@@ -174583,7 +174522,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1868271125}
         m_TargetAssemblyTypeName: CameraManager, Assembly-CSharp
-        m_MethodName: Swap_Back
+        m_MethodName: Swap_Pos1
         m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -174599,7 +174538,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1868271125}
         m_TargetAssemblyTypeName: CameraManager, Assembly-CSharp
-        m_MethodName: Swap_Forward
+        m_MethodName: Swap_Pos2
         m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -174615,7 +174554,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1868271125}
         m_TargetAssemblyTypeName: CameraManager, Assembly-CSharp
-        m_MethodName: Swap_Right
+        m_MethodName: Swap_Pos3
         m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -174631,7 +174570,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1868271125}
         m_TargetAssemblyTypeName: CameraManager, Assembly-CSharp
-        m_MethodName: Swap_Left
+        m_MethodName: Swap_Pos4
         m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -199269,21 +199208,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bd1b955c3e2f9f841877e5fae1d50abc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  CurPos:
-    Position: {x: 0, y: 0, z: 0}
-    Rotation: {x: 0, y: 0, z: 0, w: 0}
-  ForwardPosses:
-  - Position: {x: 7, y: 3, z: -27}
-    Rotation: {x: 0.17364816, y: 0, z: 0, w: 0.9848078}
-  - Position: {x: 7, y: 17, z: -18}
-    Rotation: {x: 0.53729963, y: 0, z: 0, w: 0.8433915}
-  - Position: {x: 7.447838, y: 17, z: -5.67}
-    Rotation: {x: 0.7071068, y: 0, z: 0, w: 0.7071068}
-  SidePosses:
-  - Position: {x: -9, y: 8, z: -20}
-    Rotation: {x: 0.35355338, y: 0.35355338, z: -0.1464466, w: 0.8535535}
-  - Position: {x: 23, y: 8, z: -20}
-    Rotation: {x: 0.35355338, y: -0.35355338, z: 0.1464466, w: 0.8535535}
+  Pos1:
+    Position: {x: 7.447838, y: 14.555975, z: -18.392365}
+    Rotation: {x: 65, y: 0, z: 0, w: 0}
+  Pos2:
+    Position: {x: 7.4478383, y: 17.69, z: -5.73}
+    Rotation: {x: 90, y: 0, z: 0, w: 0}
+  Pos3:
+    Position: {x: 19, y: 15, z: -14}
+    Rotation: {x: 65, y: -23, z: 0, w: 0}
+  Pos4:
+    Position: {x: -4.104, y: 15, z: -14}
+    Rotation: {x: 65, y: 23, z: 0, w: 0}
 --- !u!1 &1868354414
 GameObject:
   m_ObjectHideFlags: 0
@@ -201362,11 +201298,6 @@ MonoBehaviour:
   m_SelectedFaces: 
   m_SelectedEdges: []
   m_SelectedVertices: 
---- !u!4 &1878883943 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 7f378adf323101b45a5fd8be43297952, type: 3}
-  m_PrefabInstance: {fileID: 881426690}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1879847889
 GameObject:
   m_ObjectHideFlags: 0
@@ -227139,4 +227070,3 @@ SceneRoots:
   - {fileID: 1879847891}
   - {fileID: 244907293}
   - {fileID: 757041809}
-  - {fileID: 963413227}

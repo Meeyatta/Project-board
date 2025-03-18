@@ -10,98 +10,47 @@ public class CameraManager : MonoBehaviour
         public Vector3 Position;
         public Quaternion Rotation;
     }
-    public CameraPos CurPos;
-    public List<CameraPos> ForwardPosses;
-    public List<CameraPos> SidePosses;
+
+    public CameraPos Pos1;
+    public CameraPos Pos2;
+    public CameraPos Pos3;
+    public CameraPos Pos4;
     Camera cam;
     void Awake()
     {
         cam = Camera.main;
     }
-    #region Moving forwards/backwards
-    public void Swap_Forward(InputAction.CallbackContext context)
+    public void Swap_Pos1(InputAction.CallbackContext context)
     {
         if (context.performed)
         {
-            if (CurPos == ForwardPosses[0]) 
-            {
-                CurPos = ForwardPosses[1];
-
-                cam.transform.localPosition = CurPos.Position;
-                cam.transform.localRotation = ForwardPosses[1].Rotation;
-            }
-            else
-            {
-                CurPos = ForwardPosses[2];
-
-                cam.transform.localPosition = CurPos.Position;
-                cam.transform.localRotation = ForwardPosses[2].Rotation;
-            }
+            cam.transform.localPosition = Pos1.Position;
+            cam.transform.localRotation = Pos1.Rotation;
         }
     }
-    public void Swap_Back(InputAction.CallbackContext context)
+    public void Swap_Pos2(InputAction.CallbackContext context)
     {
         if (context.performed)
         {
-            if (CurPos == ForwardPosses[2])
-            {
-                CurPos = ForwardPosses[1];
-
-                cam.transform.localPosition = CurPos.Position;
-                cam.transform.localRotation = ForwardPosses[1].Rotation;
-            }
-            else
-            {
-                CurPos = ForwardPosses[0];
-
-                cam.transform.localPosition = CurPos.Position;
-                cam.transform.localRotation = ForwardPosses[0].Rotation;
-            }
+            cam.transform.localPosition = Pos2.Position;
+            cam.transform.localRotation = Pos2.Rotation;
         }
     }
-    #endregion
-
-
-    #region Moving left/right
-    public void Swap_Left(InputAction.CallbackContext context)
+    public void Swap_Pos3(InputAction.CallbackContext context)
     {
         if (context.performed)
         {
-            if (CurPos == SidePosses[1])
-            {
-                CurPos = ForwardPosses[1];
-
-                cam.transform.localPosition = CurPos.Position;
-                cam.transform.localRotation = ForwardPosses[1].Rotation;
-            }
-            else
-            {
-                CurPos = SidePosses[0];
-
-                cam.transform.localPosition = CurPos.Position;
-                cam.transform.localRotation = SidePosses[0].Rotation;
-            }
+            cam.transform.localPosition = Pos3.Position;
+            cam.transform.localRotation = Pos3.Rotation;
         }
     }
-    public void Swap_Right(InputAction.CallbackContext context)
+    public void Swap_Pos4(InputAction.CallbackContext context)
     {
         if (context.performed)
         {
-            if (CurPos == SidePosses[0])
-            {
-                CurPos = ForwardPosses[1];
-
-                cam.transform.localPosition = CurPos.Position;
-                cam.transform.localRotation = ForwardPosses[1].Rotation;
-            }
-            else
-            {
-                CurPos = SidePosses[1];
-
-                cam.transform.localPosition = CurPos.Position;
-                cam.transform.localRotation = SidePosses[1].Rotation;
-            }
+            cam.transform.localPosition = Pos4.Position;
+            cam.transform.localRotation = Pos4.Rotation;
         }
     }
-    #endregion
+
 }

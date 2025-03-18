@@ -174,11 +174,13 @@ public class EffectManager : MonoBehaviour
                     v.Value[i].transform.position = BoardManager.Instance.BoardToWorldPosition(sTl).Value;
 
                 }
+                yield return new WaitForSeconds(Time.deltaTime);
             }
 
         }
 
         CurPlacement = null;
+        yield return new WaitForSeconds(Time.deltaTime);
     }
     #endregion
 
@@ -202,13 +204,15 @@ public class EffectManager : MonoBehaviour
     {
         yield return new WaitForSeconds(Time.deltaTime);
 
-        Vector3 ogPos = unit.transform.position;            //Change this to a unique raising animation since it can result 
-        unit.transform.position += Vector3.up * ModelOffset;//in some problems with units model not moving with the unit
+        Vector3 ogPos = unit.transform.position;
+        unit.transform.position += Vector3.up * ModelOffset;
 
         while (CurUnitMovePosShowcase != null && ScoreManager.Instance.PlayerTurnActionCondition()) 
         {
             yield return new WaitForSeconds(Time.deltaTime);
             if (BoardManager.Instance.ClosestUnitPosToCursor(unit) == null) { continue; }
+
+            
 
             List<Vector2Int> poss = BoardManager.Instance.ClosestUnitPosToCursor(unit);
             for (int i = 0; i < poss.Count; i++)
@@ -226,9 +230,10 @@ public class EffectManager : MonoBehaviour
         }
 
         CurUnitMovePosShowcase = null;
-        unit.transform.position = ogPos; //This should also be changed to work with the animator
+        unit.transform.position = ogPos;
         unit.UnitModelShowcase.SetActive(false);
 
+        yield return new WaitForSeconds(Time.deltaTime);
     }
     #endregion
 
