@@ -24,7 +24,7 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "CamPos1",
+                    "name": "CamBack",
                     "type": "Button",
                     "id": "3d0a61fe-3671-4c2f-8e9d-fd29c49ed1f7",
                     "expectedControlType": "Button",
@@ -33,7 +33,7 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "CamPos2",
+                    "name": "CamForw",
                     "type": "Button",
                     "id": "568f1a0d-8830-4e74-9552-57fc633e0858",
                     "expectedControlType": "Button",
@@ -42,7 +42,7 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "CamPos3",
+                    "name": "CamRight",
                     "type": "Button",
                     "id": "f440870b-95aa-48cd-9adb-fc8c80c5e13c",
                     "expectedControlType": "Button",
@@ -51,7 +51,7 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "CamPos4",
+                    "name": "CamLeft",
                     "type": "Button",
                     "id": "c8668ebf-7c4a-4a95-8601-462cd7bba08c",
                     "expectedControlType": "Button",
@@ -86,11 +86,11 @@
                 {
                     "name": "",
                     "id": "0ed012ce-6704-4a8a-a81f-dce3c69f351f",
-                    "path": "<Keyboard>/w",
+                    "path": "<Keyboard>/s",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "CamPos1",
+                    "action": "CamBack",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -101,18 +101,18 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "CamPos1",
+                    "action": "CamBack",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
                 {
                     "name": "",
                     "id": "82483eb0-5b21-4cc3-b442-71faeac39cbe",
-                    "path": "<Keyboard>/s",
+                    "path": "<Keyboard>/w",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "CamPos2",
+                    "action": "CamForw",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -123,18 +123,18 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "CamPos2",
+                    "action": "CamForw",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
                 {
                     "name": "",
                     "id": "da7fa25d-669b-4585-99a9-218be55ce023",
-                    "path": "<Keyboard>/a",
+                    "path": "<Keyboard>/d",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "CamPos3",
+                    "action": "CamRight",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -145,18 +145,18 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "CamPos3",
+                    "action": "CamRight",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
                 {
                     "name": "",
                     "id": "5d2b3d7d-d0ec-411c-a4e0-dbef0f28dfc9",
-                    "path": "<Keyboard>/d",
+                    "path": "<Keyboard>/a",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "CamPos4",
+                    "action": "CamLeft",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -167,7 +167,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "CamPos4",
+                    "action": "CamLeft",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
