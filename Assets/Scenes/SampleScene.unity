@@ -68978,6 +68978,7 @@ CanvasRenderer:
   m_GameObject: {fileID: 645664177}
   m_CullTransparentMesh: 1
 <<<<<<< HEAD
+<<<<<<< HEAD
 --- !u!1 &645898923
 GameObject:
   m_ObjectHideFlags: 0
@@ -69084,6 +69085,8 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 645898923}
   m_Mesh: {fileID: 10207, guid: 0000000000000000e000000000000000, type: 0}
+=======
+>>>>>>> parent of e27f740 (Finished camera movement)
 =======
 >>>>>>> parent of e27f740 (Finished camera movement)
 --- !u!1 &646019917
@@ -100426,6 +100429,7 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1868271124}
 <<<<<<< HEAD
+<<<<<<< HEAD
   m_LocalEulerAnglesHint: {x: 20, y: 0, z: 0}
 --- !u!1 &963413226
 GameObject:
@@ -100458,6 +100462,8 @@ Transform:
   m_Children:
   - {fileID: 645898924}
   m_Father: {fileID: 0}
+=======
+>>>>>>> parent of e27f740 (Finished camera movement)
 =======
 >>>>>>> parent of e27f740 (Finished camera movement)
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
