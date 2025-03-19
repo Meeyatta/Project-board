@@ -4,12 +4,11 @@ using UnityEngine;
 
 public class ResourceManager : MonoBehaviour
 {
-    public int PlayerStarterUnitsAmount;
+    public int StarterUnitsAmount;
 
-    public List<Unit> PlayerArmy = new List<Unit>();
-    public List<Unit> PlayerArmy_NotPlaced = new List<Unit>();
-    public List<Unit> PlayerArmy_Placed = new List<Unit>();
-
+    public List<Unit> Army = new List<Unit>();
+    public List<Unit> Army_NotPlaced = new List<Unit>();
+    public List<Unit> Army_Placed = new List<Unit>();
 
     #region Singleton
     public static ResourceManager Instance;
@@ -28,45 +27,75 @@ public class ResourceManager : MonoBehaviour
     void Awake()
     {
         Singleton();
+        ResetArmy();
     }
     #endregion
-
-    //Adds selected unit into player's total army
-    public void AddUnit(Unit unit)
+    void Start()
     {
-        PlayerArmy.Add(unit);
+        ScoreManager.Instance.TurnEvent.AddListener(DeployNewplayerU);
     }
-
-    //Removes the unit from player's total army
-    public void RemoveUnit(Unit unit) 
+    void OnDisable()
     {
-        if (PlayerArmy.Count > 0 && PlayerArmy.Contains(unit)) { PlayerArmy.Remove(unit); } 
+        ScoreManager.Instance.TurnEvent.RemoveListener(DeployNewplayerU);
     }
 
     //Gets the whole army back into the NotPlaced category
     public void ResetArmy()
     {
-        PlayerArmy_Placed.Clear();
-        PlayerArmy_NotPlaced = PlayerArmy;
+        Army_NotPlaced.AddRange(Army);
+        Army_Placed.Clear();
     }
-    //Unit is placed from reserve onto the board
-    public void PlacedTheUnit(Unit unit)
-    {
-        PlayerArmy_NotPlaced.Remove(unit);
-        PlayerArmy_Placed.Add(unit);
-    }
-    void Start()
-    {
-        ResetArmy();
 
-        List<Unit> AllUnitObjects = new List<Unit>();
-        foreach (Unit unit in PlayerArmy) 
-        {
-            AllUnitObjects.Add(
-                Instantiate(unit.gameObject).GetComponent<Unit>());
-        }
-        
+    public void RecordPlacedUnit(Unit unit)
+    {
+        Debug.Log("Placed player " + unit.UnitName + ", removing from NotPlaced");
+        Army_NotPlaced.Remove(unit);
+        Army_Placed.Add(unit);
     }
+
+    public void DeployPlayerUnits()
+    {
+        List<Unit> toDeploy = new List<Unit>();
+        int totalAm = 0;
+        for (int i = 0; i < StarterUnitsAmount && i < Army_NotPlaced.Count; i++) 
+        {
+            toDeploy.Add(Army_NotPlaced[i]);
+            totalAm++;
+        }
+
+        ActionParameters parameters = new ActionParameters(
+                    GameManager.ActionType.Deploy, toDeploy, null, BoardManager.Instance.PlayerDeploymentZone, null, totalAm);
+        StartCoroutine(GameManager.Instance.Action(parameters));
+
+        foreach (var u in toDeploy) { RecordPlacedUnit(u); }
+    }
+
+    public void DeployNewplayerU(ScoreManager.Side side)
+    {
+        if (side == ScoreManager.Side.Enemy || ScoreManager.Instance.CurRound < 1) return;
+        if (Army_NotPlaced.Count <= 0) return;
+
+        List<Unit> newUnit = new List<Unit> { Army_NotPlaced[0] };
+        ActionParameters parameters = new ActionParameters(
+                    GameManager.ActionType.Deploy, newUnit, null, BoardManager.Instance.PlayerDeploymentZone, null, 1);
+        StartCoroutine(GameManager.Instance.Action(parameters));
+
+        RecordPlacedUnit(Army_NotPlaced[0]);
+    }
+
+    //Adds selected unit into player's total army
+    public void AddUnit(Unit unit)
+    {
+        Army.Add(unit);
+    }
+
+    //Removes the unit from player's total army
+    public void RemoveUnit(Unit unit) 
+    {
+        if (Army.Count > 0 && Army.Contains(unit)) { Army.Remove(unit); } 
+    }
+
+
 
     // Update is called once per frame
     void Update()

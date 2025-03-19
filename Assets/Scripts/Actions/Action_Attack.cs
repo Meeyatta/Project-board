@@ -51,6 +51,7 @@ public static class Action_Attack
     public static IEnumerator Attack(ActionParameters parameters)
     {
         List<Unit> ActionTargetUnits = parameters.ActionTargetUnits;
+        if (ActionTargetUnits == null || ActionTargetUnits.Count == 0) { yield break; }
 
         foreach (var unit in DamageDealing.OrderedUnits(ActionTargetUnits))
         {
@@ -83,8 +84,8 @@ public static class Action_Attack
     }
     public static IEnumerator DamageAllInRange(Unit source, List<Keyword> keywords)
     {
+        if (source == null || keywords == null || keywords.Count == 0) { yield break; }
         List<Unit> targets = GetPossibleTargets(source, keywords);
-
 
         foreach (Unit target in targets) 
         {

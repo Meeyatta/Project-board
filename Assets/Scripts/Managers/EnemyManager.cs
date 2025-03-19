@@ -1,9 +1,16 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class EnemyManager : MonoBehaviour
 {
+    public int StarterUnitsAmount;
+
+    public List<Unit> Army = new List<Unit>();
+    public List<Unit> Army_NotPlaced = new List<Unit>();
+    public List<Unit> Army_Placed = new List<Unit>();
+
     #region Singleton
     public static EnemyManager Instance;
     void Singleton()
@@ -17,6 +24,7 @@ public class EnemyManager : MonoBehaviour
             Instance = this;
         }
         DontDestroyOnLoad(this);
+        ResetArmy();
     }
     void Awake()
     {
@@ -24,15 +32,67 @@ public class EnemyManager : MonoBehaviour
 
     }
     #endregion
-    void Start()
-    {
-        ScoreManager.Instance.TurnEvent.AddListener(MoveAllEnemyUnits);
-    }
+
     Coroutine CMakingMoves;
     [Header("---Functionality stuff---")]
     public float DelayBeforeMovingUnit;
     public float DelayAfterMovingUnit;
     public float DelayBeforeEndingTurn;
+
+    void Start()
+    {
+        ScoreManager.Instance.TurnEvent.AddListener(DeployNewEnemy);
+        ScoreManager.Instance.TurnEvent.AddListener(MoveAllEnemyUnits);
+    }
+
+    void OnDisable()
+    {
+        ScoreManager.Instance.TurnEvent.RemoveListener(DeployNewEnemy);
+        ScoreManager.Instance.TurnEvent.RemoveListener(MoveAllEnemyUnits);
+    }
+
+
+    //Gets the whole army back into the NotPlaced category
+    public void ResetArmy()
+    {
+        Army_NotPlaced.AddRange(Army);
+        Army_Placed.Clear();
+    }
+    public void RecordPlacedUnit(Unit unit)
+    {
+        Debug.Log("Placed enemy " + unit.UnitName + ", removing from NotPlaced");
+        Army_NotPlaced.Remove(unit);
+        Army_Placed.Add(unit);
+    }
+
+    public void DeployEnemies()
+    {
+        List<Unit> toDeploy = new List<Unit>();
+        int totalAm = 0;
+        for (int i = 0; i < StarterUnitsAmount && i < Army_NotPlaced.Count; i++)
+        {
+            toDeploy.Add(Army_NotPlaced[i]);
+            totalAm++;
+        }
+
+        ActionParameters parameters = new ActionParameters(
+                    GameManager.ActionType.Deploy, toDeploy, null, BoardManager.Instance.EnemyDeploymentZone, null, totalAm);
+        StartCoroutine(GameManager.Instance.Action(parameters));
+
+        foreach (var u in toDeploy) { RecordPlacedUnit(u); }
+    }
+    public void DeployNewEnemy(ScoreManager.Side side)
+    {
+        if (side == ScoreManager.Side.Player || ScoreManager.Instance.CurRound < 1) return;
+        if (Army_NotPlaced.Count <= 0) return;
+
+        List<Unit> newEnemy = new List<Unit> { Army_NotPlaced[0] };
+        ActionParameters parameters = new ActionParameters(
+                    GameManager.ActionType.Deploy, newEnemy, null, BoardManager.Instance.EnemyDeploymentZone, null, 1);
+        StartCoroutine(GameManager.Instance.Action(parameters));
+
+        RecordPlacedUnit(Army_NotPlaced[0]);
+    }
 
     public void MoveAllEnemyUnits(ScoreManager.Side side)
     {
@@ -94,10 +154,10 @@ public class EnemyManager : MonoBehaviour
         if (o != null && o.Count > 0) { Debug.Log(u.UnitName + " is already within an objective, going to stand still"); return null; }
         #endregion
 
-        #region Find closest and 2nd closest objectives
+        #region Find closest, 2nd closest and one other objective
         List<Unit> objectives = BoardManager.Instance.Get_AllUnitsWithKeywords(new List<Keyword> { Keyword.Objective });
         float minD = Mathf.Infinity; float maxD = -1;
-        Unit closestObj = null; Unit scndClosestObj = null;
+        Unit closestObj = null; Unit scndClosestObj = null; Unit otherObj = null;
         //Closest
         foreach (var ob in objectives) 
         {
@@ -121,6 +181,13 @@ public class EnemyManager : MonoBehaviour
             }
 
         }
+
+        //One other objective
+        foreach (var ob in objectives)
+        {
+            if (ob != closestObj && ob != scndClosestObj) { otherObj = ob; break; }
+        }
+
         #endregion
 
         #region Check if closest objectives has >1 enemy unit lead
@@ -132,21 +199,36 @@ public class EnemyManager : MonoBehaviour
             if (eU.Count <= pU.Count) 
             {
                 //Closest objective doesn't have enough of a lead, go to it
-                Debug.Log(u.UnitName + " found closest objective doesn't have nough lead - moves to closest");
+                Debug.Log(u.UnitName + " found closest objective doesn't have enough lead - moves to closest");
                 return GetPosToPoint(closestObj, u);
             }
         }
         #endregion
 
-        #region Move towards the second closest objective
+        #region Check if 2nd closest objectives has >1 enemy unit lead
         if (scndClosestObj != null)
         {
-            Debug.Log(u.UnitName + " Moves to second closest");
-            return GetPosToPoint(scndClosestObj, u);
+            List<Unit> pU = BoardManager.Instance.Get_UnitsWithKeywordsInRange(scndClosestObj, 1, new List<Keyword> { Keyword.Player });
+            List<Unit> eU = BoardManager.Instance.Get_UnitsWithKeywordsInRange(scndClosestObj, 1, new List<Keyword> { Keyword.Enemy });
+
+            if (eU.Count <= pU.Count)
+            {
+                //Closest objective doesn't have enough of a lead, go to it
+                Debug.Log(u.UnitName + " found 2nd closest objective doesn't have enough lead - moves to 2nd closest");
+                return GetPosToPoint(scndClosestObj, u);
+            }
         }
         #endregion
 
-        //Emergency situation, sonmething went wrong
+        #region Move towards the oter remaining objective
+        if (otherObj != null)
+        {
+            Debug.Log(u.UnitName + " Moves to the other objective");
+            return GetPosToPoint(otherObj, u);
+        }
+        #endregion
+
+        //Emergency situation, something went wrong
         Debug.Log(closestObj);
         Debug.Log(scndClosestObj);
         Debug.Log("No AI conditions satisfied, something is wrong");
@@ -157,7 +239,7 @@ public class EnemyManager : MonoBehaviour
     #region Go through each unit on the board and move them towards objectives
     IEnumerator MovingAllEnemyUnits()
     {
-        yield return new WaitForSeconds(Time.deltaTime);
+        yield return new WaitForSeconds(Time.deltaTime * DelayBeforeMovingUnit);
 
         List<Unit> units = BoardManager.Instance.Get_AllUnitsWithKeywords(new List<Keyword> { Keyword.Enemy });
 
@@ -185,6 +267,10 @@ public class EnemyManager : MonoBehaviour
                 MoveActions.Add(parameters);
                 yield return StartCoroutine(GameManager.Instance.Action(parameters));
             }
+
+            //TODO:CHANGE THIS TO ANIMATION TRIGGER 
+            if (unit.transform.position == ogPos + Vector3.up * 1) { unit.gameObject.transform.position = ogPos; }
+
             yield return new WaitForSeconds(Time.deltaTime * DelayAfterMovingUnit);
             #endregion
 

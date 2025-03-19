@@ -71,9 +71,9 @@ public class ScoreManager : MonoBehaviour
     {
         CurTurn = ScoreManager.Side.Player;
 
-        TurnEvent.Invoke(CurTurn);
         TurnText.text = CurTurn.ToString();
         yield return StartCoroutine(NextRound());
+        TurnEvent.Invoke(CurTurn);
     }
     public IEnumerator NextRound()
     {
@@ -84,7 +84,7 @@ public class ScoreManager : MonoBehaviour
         TurnText.text = ScoreManager.Instance.CurTurn.ToString();
 
         RoundEvent.Invoke();
-        yield return new WaitForSeconds(0.01f);
+        yield return new WaitForSeconds(Time.deltaTime);
     }
 
     //Quick way for other actions to check if they are performed during the player's turn
@@ -104,9 +104,17 @@ public class ScoreManager : MonoBehaviour
 
     void Update()
     {
-        if (Score_Player >= Score_Enemy + NScoreDiff) { WinEvent.Invoke(Side.Player); Debug.Log("Player has won"); }
+        if (Score_Player >= Score_Enemy + NScoreDiff) 
+        { 
+            WinEvent.Invoke(Side.Player); 
+            //Debug.Log("Player has won"); 
+        }
 
-        if (Score_Enemy >= Score_Player + NScoreDiff) { WinEvent.Invoke(Side.Enemy); Debug.Log("Enemy has won"); }
+        if (Score_Enemy >= Score_Player + NScoreDiff) 
+        { 
+            WinEvent.Invoke(Side.Enemy); 
+            //Debug.Log("Enemy has won"); 
+        }
 
     }
 }

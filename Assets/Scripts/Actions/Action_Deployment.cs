@@ -20,11 +20,12 @@ public static class Action_Deployment
     //Randomly places units from inputed roster within the coordinates
     public static IEnumerator Deploy(ActionParameters parameters)
     {
+        yield return new WaitForSeconds(5f * Time.deltaTime);
+
         List<Unit> roster = parameters.ActionTargetUnits;
         int amount = parameters.IntNumber;
         List<Vector2Int> deploymentZone = parameters.CellsCoordinates;
 
-        yield return new WaitForSeconds(2f * Time.deltaTime);
 
         //Debug.Log(parameters);
         //Debug.Log(roster[0].UnitName + " " + deploymentZone[0]);

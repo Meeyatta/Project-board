@@ -12,6 +12,8 @@ public static class DamageDealing
 {
     public static List<Unit> OrderedUnits(List<Unit> ActionTargetUnit)
     {
+
+
         //TODO: Fix this absolutely terrible sorting algorythm to something better
 
         List<Unit> temp = ActionTargetUnit;
@@ -25,11 +27,12 @@ public static class DamageDealing
         while (needsSorting && justincase > 0)
         {
             justincase--;
-            for (int i = 0; i < temp.Count - 1; i++)
+            for (int i = 0; i < temp.Count - 2; i++)
             {
                 needsSorting = false;
 
                 List<Vector2Int> positions = BoardManager.Instance.Get_UnitPositions(temp[i]);
+
                 Vector2Int lastPositioni = BoardManager.Instance.Get_UnitPositions(temp[i])[positions.Count - 1];
                 Vector2Int lastPositionip = BoardManager.Instance.Get_UnitPositions(temp[i + 1])[positions.Count - 1];
 

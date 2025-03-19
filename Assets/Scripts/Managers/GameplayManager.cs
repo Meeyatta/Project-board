@@ -24,30 +24,13 @@ public class GameplayManager : MonoBehaviour
     }
     #endregion
 
-    public int PlayerStarterAmount;
-
-    public List<Unit> EnemyUnitsToDeploy;
-    public int EnemyStarterAmount;
-
     public List<Vector2Int> Objective_Positions;
     public GameObject Objective_Obj;
 
     [Header("---Functionality stuff---")]
     public float Delay;
 
-    public void PlaceEnemies(List<Unit> enemyUnitsToDeploy, int enemyStarterAmount)
-    {
-        ActionParameters parameters = new ActionParameters(
-                    GameManager.ActionType.Deploy, enemyUnitsToDeploy, null, BoardManager.Instance.EnemyDeploymentZone, null, enemyStarterAmount);
-        StartCoroutine(GameManager.Instance.Action(parameters));
-    }
-    public void PlacePlayerUnits(List<Unit> playerUnitsToDeploy, int playerStarterAmount)
-    {
 
-        ActionParameters parameters = new ActionParameters(
-                    GameManager.ActionType.Deploy, playerUnitsToDeploy, null, BoardManager.Instance.PlayerDeploymentZone, null, playerStarterAmount);
-        StartCoroutine(GameManager.Instance.Action(parameters));
-    }
     public void MakeBattlefield(List<Vector2Int> objective_Positions)
     {
         #region Place objectives
@@ -64,10 +47,11 @@ public class GameplayManager : MonoBehaviour
     IEnumerator StartBattle()
     {
         yield return new WaitForSeconds(Delay * Time.deltaTime);
-
-        PlaceEnemies(EnemyUnitsToDeploy, EnemyStarterAmount);
-        PlacePlayerUnits(ResourceManager.Instance.PlayerArmy_NotPlaced, PlayerStarterAmount);
         MakeBattlefield(Objective_Positions);
+
+        EnemyManager.Instance.DeployEnemies();
+
+        ResourceManager.Instance.DeployPlayerUnits();
 
     }
     void Start()

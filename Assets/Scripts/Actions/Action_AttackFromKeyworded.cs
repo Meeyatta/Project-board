@@ -20,7 +20,7 @@ public static class Action_AttackFromKeyworded
         List<Unit> res = new List<Unit>();
 
         #region This goes through each individaul line and stops if it encounters a unit
-        if (source.CurAttackZone.Lines.Count == 0) { return res; }
+        if (source.CurAttackZone.Lines.Count == 0 || source == null || keywords == null || keywords.Count <= 0) { return res; }
 
         foreach (var line in source.CurAttackZone.Lines)
         {
@@ -54,11 +54,10 @@ public static class Action_AttackFromKeyworded
     public static IEnumerator AttackFromKeyworded(ActionParameters parameters)
     {
         List<Keyword> Keywords = parameters.Keywords;
+        if (Keywords == null || Keywords.Count == 0) { yield break; }
 
-        List<Unit> affected = BoardManager.Instance.Get_AllUnitsWithKeywords(Keywords);
-
-
-
+        List <Unit> affected = BoardManager.Instance.Get_AllUnitsWithKeywords(Keywords);
+        
         foreach (var unit in DamageDealing.OrderedUnits(affected))
         {
             if (!IsAbleToAttack(unit)) { continue; }
