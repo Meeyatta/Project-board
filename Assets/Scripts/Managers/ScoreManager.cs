@@ -46,6 +46,10 @@ public class ScoreManager : MonoBehaviour
     public TextMeshProUGUI RoundText;
     public TextMeshProUGUI TurnText;
 
+    public TextMeshProUGUI PlayerPointsText;
+    public TextMeshProUGUI SymbolText; //This is the symbol between player and enemy points to show the relative number
+    public TextMeshProUGUI EnemyPointsText;
+
     public UnityEvent<Side> TurnEvent;
     public UnityEvent<List<Unit>> EndPlayerTurnEvent;
     public UnityEvent RoundEvent;
@@ -104,6 +108,16 @@ public class ScoreManager : MonoBehaviour
 
     void Update()
     {
+        #region Displaying current points
+        PlayerPointsText.text = Score_Player.ToString();
+        EnemyPointsText.text = Score_Enemy.ToString();
+        if (Score_Player == Score_Enemy) { SymbolText.text = "="; }
+        else {
+            string res = (Score_Player - Score_Enemy).ToString(); if (Score_Player > Score_Enemy) { res = "+" + res; }
+            SymbolText.text = res; }
+        #endregion
+
+        #region Checking if any of the side won
         if (Score_Player >= Score_Enemy + NScoreDiff) 
         { 
             WinEvent.Invoke(Side.Player); 
@@ -115,6 +129,7 @@ public class ScoreManager : MonoBehaviour
             WinEvent.Invoke(Side.Enemy); 
             //Debug.Log("Enemy has won"); 
         }
+        #endregion
 
     }
 }

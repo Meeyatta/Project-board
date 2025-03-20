@@ -10,13 +10,13 @@ public enum DamageType
 }
 public static class DamageDealing
 {
-    public static List<Unit> OrderedUnits(List<Unit> ActionTargetUnit)
+    public static List<Unit> OrderedUnits(List<Unit> ActionTargetUnits)
     {
 
 
         //TODO: Fix this absolutely terrible sorting algorythm to something better
 
-        List<Unit> temp = ActionTargetUnit;
+        List<Unit> temp = ActionTargetUnits;
 
         //The sorting algoryth doesn't work for a single element, so this needs to be done
         if (temp.Count <= 1) { return temp; }
@@ -27,7 +27,7 @@ public static class DamageDealing
         while (needsSorting && justincase > 0)
         {
             justincase--;
-            for (int i = 0; i < temp.Count - 2; i++)
+            for (int i = 0; i < temp.Count - 1; i++)
             {
                 needsSorting = false;
 
