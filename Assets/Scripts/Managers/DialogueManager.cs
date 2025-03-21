@@ -7,8 +7,8 @@ using UnityEngine.InputSystem;
 
 public class DialogueManager : MonoBehaviour
 {
-    public List<DialogueLine> TestLines;
     public float Speed;
+    public float DelayBeforeAutoSkip;
 
     [Header("------------")]
     public bool SkipDialogue = false;
@@ -66,7 +66,8 @@ public class DialogueManager : MonoBehaviour
             yield return StartCoroutine(SpeakLine(line));
 
             #region Await until player skips to the next line
-            while (!SkipDialogue)
+            float skipMoment = Time.time + DelayBeforeAutoSkip;
+            while (!SkipDialogue && skipMoment > Time.time)
             {
                 yield return new WaitForSeconds(Time.deltaTime);
             }
@@ -98,7 +99,7 @@ public class DialogueManager : MonoBehaviour
     
     void Start()
     {
-        StartDialogue(TestLines);
+
     }
 
     // Update is called once per frame
