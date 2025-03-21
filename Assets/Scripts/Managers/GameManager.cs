@@ -61,7 +61,6 @@ public class GameManager : MonoBehaviour
         }
     }
     
-    public GameObject TESTunittocreate;
     public UnityEvent<Vector2Int> ClickBackEvent;
     [HideInInspector] public UnityEvent CancelEvent;
     public enum ActionType 
@@ -70,7 +69,7 @@ public class GameManager : MonoBehaviour
 
     Score, Slip,
     };
-    public Unit CurUnitSelected; //What unit is currently selected, if no unit - should be null
+    public Unit CurUnitSelected = null; //What unit is currently selected, if no unit - should be null
     public static GameManager Instance;
     public Coroutine C_GoingThroughActions;
     public Coroutine C_UnitSelect;
@@ -308,7 +307,9 @@ public class GameManager : MonoBehaviour
     */
     IEnumerator CellClickCoroutine(Vector2Int coords)
     {
-        yield return new WaitForSeconds(Time.deltaTime); //For some reason this is vital, otherwise Unity shits itself
+        yield return new WaitForSeconds(Time.deltaTime * 0.01f); //For some reason this is vital, otherwise Unity shits itself
+
+        Debug.Log("Received coordinates - " + coords);
 
         #region Are we selecting a position for creating a unit?
         if (CurrentAction != null && CurrentAction.Type == ActionType.PlayerCreate && Action_PlayerCreate.IsWaitingForData)
@@ -343,9 +344,10 @@ public class GameManager : MonoBehaviour
                 if (BoardManager.Instance.Board[coords.x].Cells[coords.y].CurUnit != null)
                 #region Yes - Check what kind of unit this is
                 {
-                    #region Is selected unit a player unit?
+                    #region Is selected unit a player unit we are not currently selecting?
                     List<Vector2Int> nCoords = new List<Vector2Int>(); nCoords.Add(coords);
-                    if (BoardManager.Instance.Board[coords.x].Cells[coords.y].CurUnit.CurKeywords.Contains(Keyword.Player))
+                    if (BoardManager.Instance.Board[coords.x].Cells[coords.y].CurUnit.CurKeywords.Contains(Keyword.Player)
+                        && CurUnitSelected != BoardManager.Instance.Board[coords.x].Cells[coords.y].CurUnit)
                     #region Yes - select it
                     { //a4)
                         ActionParameters parameters = new ActionParameters(ActionType.SelectUnit, null, null, nCoords, null, 0);

@@ -3,7 +3,10 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using Unity.VisualScripting;
 
+
+//This is applied to bases of all units and visualize their current health 
 public class HPVisualizer : MonoBehaviour
 {
     public TextMeshProUGUI hpText;

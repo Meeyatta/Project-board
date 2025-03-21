@@ -155,10 +155,10 @@ public class EffectManager : MonoBehaviour
     }
     IEnumerator ShowingPlacement(List<Unit> units)
     {
-        yield return new WaitForSeconds(Time.deltaTime);
+        yield return new WaitForSeconds(Time.deltaTime * 0.05f);
         while (CurPlacement != null && ShowingPlacementConditions())
         {
-            yield return new WaitForSeconds(Time.deltaTime);
+            yield return new WaitForSeconds(Time.deltaTime * 0.05f);
             foreach (var v in PlacementEffectsToHide)
             {
                 if (BoardManager.Instance.ClosestUnitPosToCursor(v.Key) == null) { continue; }
@@ -198,16 +198,16 @@ public class EffectManager : MonoBehaviour
         unit.UnitModelShowcase.SetActive(false);
         CurUnitMovePosShowcase = null;
     }
-    IEnumerator ShowingPossibleUnitPosition(Unit unit) 
+    IEnumerator ShowingPossibleUnitPosition(Unit unit)
     {
-        yield return new WaitForSeconds(Time.deltaTime);
+        yield return new WaitForSeconds(Time.deltaTime * 0.05f);
 
         Vector3 ogPos = unit.transform.position;            //Change this to a unique raising animation since it can result 
         unit.transform.position += Vector3.up * ModelOffset;//in some problems with units model not moving with the unit
 
-        while (CurUnitMovePosShowcase != null && ScoreManager.Instance.PlayerTurnActionCondition()) 
+        while (CurUnitMovePosShowcase != null && ScoreManager.Instance.PlayerTurnActionCondition())
         {
-            yield return new WaitForSeconds(Time.deltaTime);
+            yield return new WaitForSeconds(Time.deltaTime * 0.05f);
             if (BoardManager.Instance.ClosestUnitPosToCursor(unit) == null) { continue; }
 
             List<Vector2Int> poss = BoardManager.Instance.ClosestUnitPosToCursor(unit);
