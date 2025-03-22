@@ -10,10 +10,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8f61f3c73fde18240948f3a69ef23ac1, type: 3}
-  m_Name: AttackStandardFire
+  m_Name: PhysStandardAttack
   m_EditorClassIdentifier: 
   Damage: 1
-  Type: 1
+  Type: 0
   Lines:
   - Direction: up
     Positions:
