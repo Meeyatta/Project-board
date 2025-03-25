@@ -82,6 +82,8 @@ public static class Action_Move
                         isOccupied = true; break; 
                     }
                 }
+                //I am pretty sure every unit can jump over other units now, add a check to not do that
+                //unless have an "Evading" ability
                 if (!isOccupied)
                 {
                     line3.Add(poss);

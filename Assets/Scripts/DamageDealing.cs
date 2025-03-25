@@ -6,6 +6,8 @@ public enum DamageType
     Physical,
     Fire,
     Lightning,
+    Poison, //Untested
+    Frost,  //Untested
 
 }
 public static class DamageDealing
@@ -71,6 +73,7 @@ public static class DamageDealing
         return temp;
 
     }
+
     public static IEnumerator Damage(Unit target, Unit source)
     {
         int startDamage = source.CurAttackZone.Damage; int EndDamage = startDamage;
