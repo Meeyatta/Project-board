@@ -42,7 +42,17 @@ public class ResourceManager : MonoBehaviour
     //Gets the whole army back into the NotPlaced category
     public void ResetArmy()
     {
-        Army_NotPlaced.AddRange(Army);
+        List<Unit> randArmy = Army;
+        for (int i = 0; i < randArmy.Count; i++)
+        {
+            Unit f = randArmy[i];
+            int randI = Random.Range(0, randArmy.Count);
+
+            randArmy[i] = randArmy[randI];
+            randArmy[randI] = f;
+        }
+
+        Army_NotPlaced.AddRange(randArmy);
         Army_Placed.Clear();
     }
 
