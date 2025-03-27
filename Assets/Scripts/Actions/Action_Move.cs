@@ -148,6 +148,8 @@ public static class Action_Move
 
         return res3;
     }
+
+    #region Goes through possible positions unit can move and picks the earliest one
     public static List<Vector2Int> Get_PositionsFromSingleCoordinate(Unit ActionTargetUnit, List<Vector2Int> CellsCoordinates)
     {
         List<List<List<Vector2Int>>> res = Get_PossibleMovement(ActionTargetUnit);
@@ -163,6 +165,8 @@ public static class Action_Move
         }
         return null;   
     }
+    #endregion
+
     public static IEnumerator Move(ActionParameters parameters)
     {
         Unit ActionTargetUnit = parameters.ActionTargetUnits[0]; 

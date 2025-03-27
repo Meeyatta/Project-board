@@ -18,6 +18,13 @@ public static class Action_SelectUnit
         ogUnit = GameManager.Instance.CurUnitSelected;
         us.Add(GameManager.Instance.CurUnitSelected);
 
+        #region If current turn is deployment
+        if (ScoreManager.Instance.CurRound == 0)
+        {
+
+        }
+        #endregion
+
         #region If current turn is player turn
         if (ScoreManager.Instance.PlayerTurnActionCondition())
         {
@@ -44,6 +51,7 @@ public static class Action_SelectUnit
             if (us.Count > 0) { GameManager.Instance.HideMovementEvent.Invoke(us); } //Event to hide movement effects of selected units
         }
         #endregion
+
         #region If current turn is enemy turn
         else
         {

@@ -328,6 +328,7 @@ public class GameManager : MonoBehaviour
                 ScoreManager.Instance.PlayerTurnActionCondition())
             #region Yes - move it to the cell
             { 
+                
                 List<Vector2Int> nCoords = new List<Vector2Int>(); nCoords.Add(coords);
                 List<Unit> unitToList = new List<Unit>(); unitToList.Add(CurUnitSelected);
 

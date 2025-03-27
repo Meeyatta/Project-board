@@ -54,7 +54,16 @@ public static class Action_NextTurn
 
     public static IEnumerator NextTurn(ActionParameters parameters)
     {
-        //Debug.Log("Started NextTurn actions");
+        #region If the current round is deployment
+        if (ScoreManager.Instance.CurRound == 0)
+        {
+            ScoreManager.Instance.EndDeployment();
+            GameManager.Instance.RemoveAction(parameters);
+            yield break;
+        }
+        #endregion
+
+        #region For rounds past deployment
         switch (ScoreManager.Instance.CurTurn)
         {
             case ScoreManager.Side.Player:
@@ -68,8 +77,8 @@ public static class Action_NextTurn
                 break;
                 #endregion
         }
+        #endregion
 
-        //Debug.Log("Sent what ended the nextTurn");
         GameManager.Instance.RemoveAction(parameters);
     }
 
