@@ -8,8 +8,7 @@ public static class Action_SelectUnit
     {
         List<Vector2Int> CellsCoordinates = parameters.CellsCoordinates;
         if (CellsCoordinates.Count == 0) Debug.LogError("INVALID ACTION PARAMETERS - SELECT(CellCoordinates)");
-
-       
+    
         Vector2Int coords = CellsCoordinates[0];
         Debug.Log("SELECTED ON" + coords);
         Unit ogUnit = GameManager.Instance.CurUnitSelected; List<Unit> us = new List<Unit>();
@@ -18,24 +17,36 @@ public static class Action_SelectUnit
         ogUnit = GameManager.Instance.CurUnitSelected;
         us.Add(GameManager.Instance.CurUnitSelected);
 
-        #region If current turn is deployment
-        if (ScoreManager.Instance.CurRound == 0)
-        {
-
-        }
-        #endregion
 
         #region If current turn is player turn
         if (ScoreManager.Instance.PlayerTurnActionCondition())
         {
-            #region Create a list of all units whose movement needs to be shown and call an event to start doing so
-            List<Unit> movable = new List<Unit>();
-            foreach (var v in us)
+            #region If round is not deployment - show unit's movement
+            if (ScoreManager.Instance.CurRound > 0)
             {
-                if (Action_Move.UnitCanMove(v)) { /*Debug.Log(v + " didn't move yet, adding to the list");*/ movable.Add(v); }
-            }
+                #region Create a list of all units whose movement needs to be shown and call an event to start doing so
+                List<Unit> movable = new List<Unit>();
+                foreach (var v in us)
+                {
+                    if (Action_Move.UnitCanMove(v)) { /*Debug.Log(v + " didn't move yet, adding to the list");*/ movable.Add(v); }
+                }
 
-            GameManager.Instance.ShowMovementEvent.Invoke(movable);
+                GameManager.Instance.ShowMovementEvent.Invoke(movable);
+                #endregion
+            }
+            #endregion
+            #region If round is deployment ( 0 round ) - show available deployment positions
+            else
+            {
+                List<Unit> redeploy = new List<Unit>();
+                foreach (var v in us)
+                {
+                    if (Action_Move.UnitCanMove(v)) { redeploy.Add(v); }
+                }
+
+                GameManager.Instance.ShowDeploymentEvent.Invoke(redeploy);
+
+            }
             #endregion
 
             yield return new WaitForSeconds(Time.deltaTime);
@@ -49,6 +60,11 @@ public static class Action_SelectUnit
             #endregion
 
             if (us.Count > 0) { GameManager.Instance.HideMovementEvent.Invoke(us); } //Event to hide movement effects of selected units
+            if (us.Count > 0) { GameManager.Instance.HideDeploymentEvent.Invoke(us); } //Event to hide deployment effects of selected units
+
+
+            GameManager.Instance.RemoveAction(parameters);
+            yield break;
         }
         #endregion
 
@@ -56,11 +72,10 @@ public static class Action_SelectUnit
         else
         {
             //TODO:
+
+            GameManager.Instance.RemoveAction(parameters);
+            yield break;
         }
         #endregion
-
-
-
-        GameManager.Instance.RemoveAction(parameters);
     }
 }

@@ -8,7 +8,6 @@ using System.Linq;
 public static class Action_Move 
 {
     //Returns all possible positions what a unit can move using their current moveset
-    //This is used for a single cell unit, but a bunch or redundancies are left from this also being for multicell units
 
     public static UnityEvent<Unit> E_AfterMove;
 
@@ -150,7 +149,7 @@ public static class Action_Move
     }
 
     #region Goes through possible positions unit can move and picks the earliest one
-    public static List<Vector2Int> Get_PositionsFromSingleCoordinate(Unit ActionTargetUnit, List<Vector2Int> CellsCoordinates)
+    public static List<Vector2Int> Get_MovementPositionsFromSingleCoordinate(Unit ActionTargetUnit, List<Vector2Int> CellsCoordinates)
     {
         List<List<List<Vector2Int>>> res = Get_PossibleMovement(ActionTargetUnit);
   
@@ -176,7 +175,7 @@ public static class Action_Move
 
         if (!UnitCanMove(ActionTargetUnit)) { yield break; }
 
-        List<Vector2Int> newPoss = Get_PositionsFromSingleCoordinate(ActionTargetUnit, CellsCoordinates);
+        List<Vector2Int> newPoss = Get_MovementPositionsFromSingleCoordinate(ActionTargetUnit, CellsCoordinates);
 
         if (newPoss != null && newPoss.Count > 0 && !ActionTargetUnit.Moved)
         {

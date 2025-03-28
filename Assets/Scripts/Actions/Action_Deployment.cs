@@ -12,7 +12,11 @@ public static class Action_Deployment
         //For some ungodly reason when I set "res" to "unit.Size.Positions" directly it started modifying the size positions,
         //even when I refered to "res". WTF
         List<Vector2Int> res = new List<Vector2Int>();
-        for (int i = 0; i < unit.Size.Positions.Count; i++) { res.Add(unit.Size.Positions[i] + topLeftPos); }
+        List<Vector2Int> size = new List<Vector2Int>(); size.AddRange(unit.Size.Positions);
+        foreach (var v in size)
+        { 
+            res.Add(v + topLeftPos); 
+        }
 
         return res;
     }
@@ -20,14 +24,13 @@ public static class Action_Deployment
     //Randomly places units from inputed roster within the coordinates
     public static IEnumerator Deploy(ActionParameters parameters)
     {
-        yield return new WaitForSeconds(5f * Time.deltaTime);
+        yield return new WaitForSeconds(3f * Time.deltaTime);
 
         List<Unit> roster = parameters.ActionTargetUnits;
         int amount = parameters.IntNumber;
         List<Vector2Int> deploymentZone = parameters.CellsCoordinates;
 
 
-        //Debug.Log(parameters);
         //Debug.Log(roster[0].UnitName + " " + deploymentZone[0]);
 
         int miX = deploymentZone[0].x; int maX = deploymentZone[1].x;
@@ -53,14 +56,22 @@ public static class Action_Deployment
             if (remainingCells.Count < unit.Size.Positions.Count) { break; } //If ran out of space completely
 
             #region Trying to fit unit in random positions, if tried to do it 999 times and failed - means there is no space left
-            int safeGuard = 999; 
+            int safeGuard = 9999; 
             List<Vector2Int> newPos = randPos(unit, remainingCells, miX, maX, miY, maY);
             while ((!BoardManager.Instance.AreInBounds(newPos) || !BoardManager.Instance.AreAnyOccupied(newPos))
                 && unitsLeft > 0 && safeGuard > 0)
             {
                 newPos = randPos(unit, remainingCells, miX, maX, miY, maY);
+
+                string d = "";
+                foreach (var p in newPos)
+                {
+                    d += p.ToString() + " ";
+                }
+                Debug.Log(d);
+
                 safeGuard--;
-                yield return new WaitForSeconds(0.001f);
+                yield return new WaitForSeconds(0.0001f * Time.deltaTime);
             }
 
             if (unitsLeft <= 0) { Debug.Log("Ran out of units"); break; }

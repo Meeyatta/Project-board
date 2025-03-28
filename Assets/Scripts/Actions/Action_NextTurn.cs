@@ -13,6 +13,12 @@ public static class Action_NextTurn
         //Debug.Log("Started pre NextTurn actions");
         ScoreManager.Side CurTurn = ScoreManager.Instance.CurTurn;
 
+        if (ScoreManager.Instance.CurRound == 0)
+        {
+            GameManager.Instance.RemoveAction(parameters);
+            yield break;
+        }
+
         switch (CurTurn)
         {
             case ScoreManager.Side.Player:
@@ -54,29 +60,31 @@ public static class Action_NextTurn
 
     public static IEnumerator NextTurn(ActionParameters parameters)
     {
+
         #region If the current round is deployment
         if (ScoreManager.Instance.CurRound == 0)
         {
             ScoreManager.Instance.EndDeployment();
-            GameManager.Instance.RemoveAction(parameters);
-            yield break;
         }
         #endregion
-
         #region For rounds past deployment
-        switch (ScoreManager.Instance.CurTurn)
+        else
         {
-            case ScoreManager.Side.Player:
-                #region Player turn ended
-                yield return ScoreManager.Instance.StartCoroutine(ScoreManager.Instance.EndPlayerTurn());
-                break;
-            #endregion
-            case ScoreManager.Side.Enemy:
-                #region Enemy turn ended             
-                yield return ScoreManager.Instance.StartCoroutine(ScoreManager.Instance.EndEnemyTurn());
-                break;
+            switch (ScoreManager.Instance.CurTurn)
+            {
+                case ScoreManager.Side.Player:
+                    #region Player turn ended
+                    yield return ScoreManager.Instance.StartCoroutine(ScoreManager.Instance.EndPlayerTurn());
+                    break;
                 #endregion
+                case ScoreManager.Side.Enemy:
+                    #region Enemy turn ended             
+                    yield return ScoreManager.Instance.StartCoroutine(ScoreManager.Instance.EndEnemyTurn());
+                    break;
+                    #endregion
+            }
         }
+        
         #endregion
 
         GameManager.Instance.RemoveAction(parameters);

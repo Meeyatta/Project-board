@@ -12,9 +12,10 @@ public enum DamageType
 }
 public static class DamageDealing
 {
+    const string ShrugAnimTrigger = "shrug";
+    const string DieAnimTrigger = "shrug";
     public static List<Unit> OrderedUnits(List<Unit> ActionTargetUnits)
     {
-
 
         //TODO: Fix this absolutely terrible sorting algorythm to something better
 
@@ -100,18 +101,30 @@ public static class DamageDealing
 
         Debug.Log(source.gameObject.name + " has dealt " + EndDamage + " " + type + " damage to " + target.gameObject.name);
 
+        #region Graphical stuff
+        target.Anim.SetTrigger(ShrugAnimTrigger);
+        //TODO: Play damage sound
+        #endregion
+
+        #region Dealing damage and checking if the enemy died
         target.CurrentHealth = Mathf.Clamp(target.CurrentHealth - EndDamage, 0, target.CurrentHealth);
-
         if (target.CurrentHealth <= 0) { yield return GameManager.Instance.StartCoroutine(Kill(target, source)); }
+        #endregion
 
-        yield return new WaitForSeconds(0.01f);
+        yield return new WaitForSeconds(Time.deltaTime);
     }
     public static IEnumerator Kill(Unit target, Unit source)
     {
         Debug.Log(target.UnitName + " has been killed by " + source.UnitName);
-        yield return new WaitForSeconds(0.1f);
+
+        #region Graphical stuff
+        target.Anim.SetTrigger(DieAnimTrigger);
+        //TODO: Play damage sound
+        #endregion
+
+        yield return new WaitForSeconds(Time.deltaTime);
         target.gameObject.SetActive(false);
 
-        yield return new WaitForSeconds(0.01f);
+        yield return new WaitForSeconds(Time.deltaTime);
     }
 }

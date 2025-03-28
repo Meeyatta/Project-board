@@ -16,7 +16,9 @@ using System.Linq;
 
     Vector2Int CellClosestToPosition(Vector3 hitPosition) - Returns a singular cell closest to the used Vector3
     Vector2Int CursorToCellPosition() - Returns the cell under the player's cursor
+
     List<Vector2Int> ClosestUnitPosToCursor(Unit unit) - Returns the positions of the space where unit can be placed closest to the cursor
+    List<Vector2Int> ClosestRedeploymentPosToCursor - Returns the positions of the space where unit can redeployed closest to the cursor
 
     Vector2Int WorldToBoardPosition(Vector3 pos) - Converts Vector3 position to a position on the board
 
@@ -262,7 +264,6 @@ public class BoardManager : MonoBehaviour
     {
         Vector2Int res = Vector2Int.zero;
 
-
         Vector3 v = Input.mousePosition;
         v.z = 999999;
         Vector3 cPos = Camera.main.ScreenToWorldPoint(v);
@@ -326,17 +327,39 @@ public class BoardManager : MonoBehaviour
                 relativePoss.Add(single + unit.Size.Positions[i] - unit.Size.Positions[ii]);
             }
 
-            bool areAll = true;
-            foreach (var pos in relativePoss)
-            {
-                if (!BoardManager.Instance.IsInBounds(pos)) { areAll = false; }
-            }
+            bool areAll = AreInBounds(relativePoss);
 
-            
             //If all of these coordinates are within a border, return  these positions
             if (areAll)
             {
                 return relativePoss; 
+            }
+        }
+        return null;
+    }
+
+    //Returns the positions of the space where unit can be placed insude the deployment zone closest to the cursor
+    public List<Vector2Int> ClosestRedeploymentPosToCursor(Unit unit)
+    {
+        Vector2Int single = CursorToCellPosition();
+        //Go through each cell
+        for (int i = 0; i < unit.Size.Positions.Count; i++)
+        {
+            //Find positions of other cells relative to this cell
+            List<Vector2Int> relativePoss = new List<Vector2Int>();
+            for (int ii = 0; ii < unit.Size.Positions.Count; ii++)
+            {
+                //Add this positions to form possible coordinates
+                //Debug.Log(ii + " - " + (single + unit.Size.Positions[i] - unit.Size.Positions[ii]));
+                relativePoss.Add(single + unit.Size.Positions[i] - unit.Size.Positions[ii]);
+            }
+
+            bool areAll = AreInBounds(relativePoss);
+
+            //If all of these coordinates are within a border, return  these positions
+            if (areAll)
+            {
+                return relativePoss;
             }
         }
         return null;

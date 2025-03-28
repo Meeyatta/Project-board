@@ -1,5 +1,7 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Security.Cryptography;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.VFX;
@@ -51,6 +53,11 @@ public class EffectManager : MonoBehaviour
         #region EventsAdd
         GameManager.Instance.ShowMovementEvent.AddListener(ShowMovement);
         GameManager.Instance.HideMovementEvent.AddListener(HideMovement);
+
+        GameManager.Instance.ShowDeploymentEvent.AddListener(ShowDeployment);
+        GameManager.Instance.HideDeploymentEvent.AddListener(HideDeployment);
+
+
         ScoreManager.Instance.EndPlayerTurnEvent.AddListener(HideMovement);
 
         GameManager.Instance.ShowPlacementEvent.AddListener(StartShowingPlacement);
@@ -73,6 +80,9 @@ public class EffectManager : MonoBehaviour
     {
         GameManager.Instance.ShowMovementEvent.RemoveListener(ShowMovement);
         GameManager.Instance.HideMovementEvent.RemoveListener(HideMovement);
+
+        GameManager.Instance.ShowDeploymentEvent.RemoveListener(ShowDeployment);
+        GameManager.Instance.HideDeploymentEvent.RemoveListener(HideDeployment);
     }
     #endregion EventsRemove
     void Singleton()
@@ -183,38 +193,38 @@ public class EffectManager : MonoBehaviour
     #endregion
 
     #region Showing position of unit under the cursor when moving
-    void StartShowingPossibleUnitPosition(Unit unit)
+    void StartShowingPossibleUnitMovement(Unit unit)
     {
         if (CurUnitMovePosShowcase == null) 
         {
-            CurUnitMovePosShowcase = StartCoroutine(ShowingPossibleUnitPosition(unit)); 
+            CurUnitMovePosShowcase = StartCoroutine(ShowingPossibleUnitMovement(unit)); 
         }
 
     }
-    void StopShowingPossibleUnitPosition(Unit unit)
+    void StopShowingPossibleUnitMovement(Unit unit)
     {
 
-        StopCoroutine(ShowingPossibleUnitPosition(unit)); 
+        StopCoroutine(ShowingPossibleUnitMovement(unit)); 
         unit.UnitModelShowcase.SetActive(false);
         CurUnitMovePosShowcase = null;
     }
-    IEnumerator ShowingPossibleUnitPosition(Unit unit)
+    IEnumerator ShowingPossibleUnitMovement(Unit unit)
     {
-        yield return new WaitForSeconds(Time.deltaTime * 0.05f);
+        yield return new WaitForSeconds(Time.deltaTime * 0.01f);
 
         Vector3 ogPos = unit.transform.position;            //Change this to a unique raising animation since it can result 
         unit.transform.position += Vector3.up * ModelOffset;//in some problems with units model not moving with the unit
 
         while (CurUnitMovePosShowcase != null && ScoreManager.Instance.PlayerTurnActionCondition())
         {
-            yield return new WaitForSeconds(Time.deltaTime * 0.05f);
+            yield return new WaitForSeconds(Time.deltaTime * 0.001f);
             if (BoardManager.Instance.ClosestUnitPosToCursor(unit) == null) { continue; }
 
             List<Vector2Int> poss = BoardManager.Instance.ClosestUnitPosToCursor(unit);
             for (int i = 0; i < poss.Count; i++)
             {
                 List<Vector2Int> l = new List<Vector2Int> { BoardManager.Instance.CursorToCellPosition() };
-                List<Vector2Int> ll = Action_Move.Get_PositionsFromSingleCoordinate(unit, l);
+                List<Vector2Int> ll = Action_Move.Get_MovementPositionsFromSingleCoordinate(unit, l);
 
                 if (BoardManager.Instance.BoardToWorldPosition(ll).HasValue)
                 {
@@ -232,13 +242,63 @@ public class EffectManager : MonoBehaviour
     }
     #endregion
 
+    #region Showing position of unit under the cursor when redeploying
+    void StartShowingPossibleUnitRedeployment(Unit unit)
+    {
+        if (CurUnitMovePosShowcase == null)
+        {
+            CurUnitMovePosShowcase = StartCoroutine(ShowingPossibleUnitMovement(unit));
+        }
+
+    }
+    void StopShowingPossibleUnitRedeployment(Unit unit)
+    {
+
+        StopCoroutine(ShowingPossibleUnitRedeployment(unit));
+        unit.UnitModelShowcase.SetActive(false);
+        CurUnitMovePosShowcase = null;
+    }
+    IEnumerator ShowingPossibleUnitRedeployment(Unit unit)
+    {
+        yield return new WaitForSeconds(Time.deltaTime * 0.01f);
+
+        Vector3 ogPos = unit.transform.position;            //Change this to a unique raising animation since it can result 
+        unit.transform.position += Vector3.up * ModelOffset;//in some problems with units model not moving with the unit
+
+        while (CurUnitMovePosShowcase != null && ScoreManager.Instance.PlayerTurnActionCondition())
+        {
+            yield return new WaitForSeconds(Time.deltaTime * 0.001f);
+            if (BoardManager.Instance.ClosestUnitPosToCursor(unit) == null) { continue; }
+
+            List<Vector2Int> poss = BoardManager.Instance.ClosestUnitPosToCursor(unit);
+            for (int i = 0; i < poss.Count; i++)
+            {
+                List<Vector2Int> l = new List<Vector2Int> { BoardManager.Instance.CursorToCellPosition() };
+                List<Vector2Int> ll = Action_Move.Get_MovementPositionsFromSingleCoordinate(unit, l);
+
+                if (BoardManager.Instance.BoardToWorldPosition(ll).HasValue)
+                {
+                    unit.UnitModelShowcase.SetActive(true);
+                    unit.UnitModelShowcase.transform.position = BoardManager.Instance.BoardToWorldPosition(ll).Value + unit.ModelOffset;
+                }
+            }
+
+        }
+
+        CurUnitMovePosShowcase = null;
+        unit.transform.position = ogPos; //This should also be changed to work with the animator
+        unit.UnitModelShowcase.SetActive(false);
+
+    }
+    #endregion
+
     #region Showing possible movement positions of unit
     void ShowMovement(List<Unit> units)
     {
         foreach (Unit u in units)
         {
             List<GameObject> ePu = new List<GameObject>();
-            StartShowingPossibleUnitPosition(u);
+            StartShowingPossibleUnitRedeployment(u);
                 foreach (var v in Action_Move.Get_PossibleMovement(u))
                 {
                     foreach (var vv in v)
@@ -255,6 +315,64 @@ public class EffectManager : MonoBehaviour
         }
     }
     void HideMovement(List<Unit> units)
+    {
+        //Debug.Log("Hid movement");
+        foreach (Unit u in units)
+        {
+            if (!UnitEffectsToHide.ContainsKey(u)) return;
+            StopShowingPossibleUnitPosition(u);
+
+            foreach (var ef in UnitEffectsToHide[u])
+            {
+                DestroyToPool(ef);
+            }
+            UnitEffectsToHide.Remove(u);
+        }
+    }
+    #endregion
+
+    #region Showing possible deployment positions 
+    void ShowDeployment(List<Unit> units)
+    {
+        foreach (Unit u in units)
+        {
+            List<GameObject> ePu = new List<GameObject>();
+            StartShowingPossibleUnitRedeployment(u);
+
+            #region Going through all deployment zone positions remaining
+            List<Vector2Int> zone = new List<Vector2Int>();
+            if (u.CurKeywords.Contains(Keyword.Player)) { zone.AddRange(BoardManager.Instance.PlayerDeploymentZone); }
+            for (int x = zone[0].x; x <= zone[1].x; x++)
+            {
+                for (int y = zone[0].y; y <= zone[1].y; y++)
+                {
+                    List<Vector2Int> positions = new List<Vector2Int>(); positions.AddRange(u.Size.Positions);
+                    for (int i = 0; i < positions.Count; i++) { positions[i] += new Vector2Int(x, y); }
+
+                    bool isApplicable = true;
+                    #region Check if all positions are within the deployment zone
+                    foreach (var v in positions)
+                    {
+                        if (v.x < zone[0].x || v.x > zone[1].x || v.y < zone[0].y || v.y > zone[1].y) { isApplicable = false; break; }
+                        if (BoardManager.Instance.Board[x].Cells[y].CurUnit != null) { isApplicable = false; break; }
+                    }
+                    #endregion
+
+                    if (isApplicable) 
+                    {
+                        GameObject overlay = InstantiateFromPool(Tag.Movement, BoardManager.Instance.BoardToWorldPosition(positions).Value, 
+                            Quaternion.identity);
+                        ePu.Add(overlay);
+                    }
+                }
+            }
+            #endregion
+
+            if (!UnitEffectsToHide.ContainsKey(u)) { UnitEffectsToHide.Add(u, ePu); }
+            
+        }
+    }
+    void HideDeployment(List<Unit> units)
     {
         //Debug.Log("Hid movement");
         foreach (Unit u in units)

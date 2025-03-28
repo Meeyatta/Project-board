@@ -24,9 +24,8 @@ using UnityEngine.InputSystem;
         Deploy(List<Vector2Int> CellsCoordinates, GameObject Object, int IntNumber) - Places randomly a 
             number of units from roster in their deployment zone            
         CreateBattlefield(TODO: More parameters) - Places the battlefield things like objectives & obstacles
-
-        Action_Deployment.Deploy(List<Unit> roster, int amount, List<Vector2Int> dZone) - Deploys <amount> number of units
-            from <roster> within <dZone> coordinates
+        Deploy(List<Unit> roster, int amount, List<Vector2Int> dZone) - Deploys <amount> number of units from <roster> within <dZone> coordinates
+        Redeploy - Places the unit on the position within the deployment zone
             
         --ABILITIES--
 
@@ -65,7 +64,7 @@ public class GameManager : MonoBehaviour
     [HideInInspector] public UnityEvent CancelEvent;
     public enum ActionType 
     { 
-    Attack, AttackFromKeyworded, Move, Place, SelectUnit, PlayerCreate, Pre_NextTurn, NextTurn, Create, Deploy, CreateBattlefield,
+    Attack, AttackFromKeyworded, Move, Place, SelectUnit, PlayerCreate, Pre_NextTurn, NextTurn, Create, CreateBattlefield, Deploy, Redeploy,
 
     Score, Slip,
     };
@@ -80,6 +79,9 @@ public class GameManager : MonoBehaviour
     #region Events 
     public UnityEvent<List<Unit>> ShowMovementEvent;
     public UnityEvent<List<Unit>> HideMovementEvent;
+
+    public UnityEvent<List<Unit>> ShowDeploymentEvent;
+    public UnityEvent<List<Unit>> HideDeploymentEvent;
 
     public UnityEvent<List<Unit>> ShowPlacementEvent;
     public UnityEvent<List<Unit>> HidePlacementEvent;
@@ -205,8 +207,8 @@ public class GameManager : MonoBehaviour
             //Places randomly a number of units from roster in their deployment zone
             #region Deploy(List<Vector2Int> CellsCoordinates, GameObject Object, int IntNumber)
             case ActionType.Deploy:
-                ActionSlot playerDeployment = new ActionSlot(Action_Deployment.Deploy(parameters), ActionType.Deploy, parameters);
-                ActionQueue.Enqueue(playerDeployment);
+                ActionSlot deployment = new ActionSlot(Action_Deployment.Deploy(parameters), ActionType.Deploy, parameters);
+                ActionQueue.Enqueue(deployment);
 
                 break;
             #endregion Deploy(List<Vector2Int> CellsCoordinates, GameObject Object, int IntNumber)
@@ -219,6 +221,15 @@ public class GameManager : MonoBehaviour
 
                 break;
             #endregion CreateBattlefield()
+
+            //Places the unit on the position within the deployment zone
+            #region Redeploy()
+            case ActionType.Redeploy:
+                ActionSlot redeploy = new ActionSlot(Action_Redeploy.Redeploy(parameters), ActionType.Redeploy, parameters);
+                ActionQueue.Enqueue(redeploy);
+
+                break;
+            #endregion Redeploy()
 
             /* --ABILITIES-- */
 
@@ -320,21 +331,38 @@ public class GameManager : MonoBehaviour
         }
         #endregion
 
-        #region No - Check if there is a unit to move on thesse coordinates
+        #region No - Check if there is a unit to move to these coordinates
         else
         {
             #region Do we have a unit and cell is unoccupied?
             if (CurUnitSelected != null && BoardManager.Instance.Board[coords.x].Cells[coords.y].CurUnit == null &&
                 ScoreManager.Instance.PlayerTurnActionCondition())
-            #region Yes - move it to the cell
-            { 
-                
-                List<Vector2Int> nCoords = new List<Vector2Int>(); nCoords.Add(coords);
-                List<Unit> unitToList = new List<Unit>(); unitToList.Add(CurUnitSelected);
+            #region Yes - Are we in the deployment phase?
+            {
+                #region Yes - Redeploy unit to the coordinates
+                if (ScoreManager.Instance.CurRound <= 0)
+                {
+                    Debug.Log("Supposed to redeploy the unit");
 
-                ActionParameters parameters = new ActionParameters(ActionType.Move, unitToList, null, nCoords, null, 0);
-                yield return StartCoroutine(Action(parameters));
-                CurUnitSelected = null;
+                    List<Vector2Int> nCoords = new List<Vector2Int>(); nCoords.Add(coords);
+                    List<Unit> unitToList = new List<Unit>(); unitToList.Add(CurUnitSelected);
+
+                    ActionParameters parameters = new ActionParameters(ActionType.Redeploy, unitToList, null, nCoords, null, 0);
+                    yield return StartCoroutine(Action(parameters));
+                    CurUnitSelected = null;
+                }
+                #endregion
+                #region No - Move unit to the position
+                else
+                {
+                    List<Vector2Int> nCoords = new List<Vector2Int>(); nCoords.Add(coords);
+                    List<Unit> unitToList = new List<Unit>(); unitToList.Add(CurUnitSelected);
+
+                    ActionParameters parameters = new ActionParameters(ActionType.Move, unitToList, null, nCoords, null, 0);
+                    yield return StartCoroutine(Action(parameters));
+                    CurUnitSelected = null;
+                }
+                #endregion
             }
             #endregion
 
@@ -350,7 +378,7 @@ public class GameManager : MonoBehaviour
                     if (BoardManager.Instance.Board[coords.x].Cells[coords.y].CurUnit.CurKeywords.Contains(Keyword.Player)
                         && CurUnitSelected != BoardManager.Instance.Board[coords.x].Cells[coords.y].CurUnit)
                     #region Yes - select it
-                    { //a4)
+                    { 
                         ActionParameters parameters = new ActionParameters(ActionType.SelectUnit, null, null, nCoords, null, 0);
                         yield return StartCoroutine(Action(parameters));
                     }
