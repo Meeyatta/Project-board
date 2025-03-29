@@ -342,8 +342,6 @@ public class GameManager : MonoBehaviour
                 #region Yes - Redeploy unit to the coordinates
                 if (ScoreManager.Instance.CurRound <= 0)
                 {
-                    Debug.Log("Supposed to redeploy the unit");
-
                     List<Vector2Int> nCoords = new List<Vector2Int>(); nCoords.Add(coords);
                     List<Unit> unitToList = new List<Unit>(); unitToList.Add(CurUnitSelected);
 

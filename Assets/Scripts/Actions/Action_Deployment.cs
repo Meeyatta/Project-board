@@ -58,7 +58,7 @@ public static class Action_Deployment
             #region Trying to fit unit in random positions, if tried to do it 999 times and failed - means there is no space left
             int safeGuard = 9999; 
             List<Vector2Int> newPos = randPos(unit, remainingCells, miX, maX, miY, maY);
-            while ((!BoardManager.Instance.AreInBounds(newPos) || !BoardManager.Instance.AreAnyOccupied(newPos))
+            while ((!BoardManager.Instance.AreInBounds(newPos) || BoardManager.Instance.AreAnyOccupied(newPos))
                 && unitsLeft > 0 && safeGuard > 0)
             {
                 newPos = randPos(unit, remainingCells, miX, maX, miY, maY);

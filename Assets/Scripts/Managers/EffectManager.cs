@@ -5,6 +5,8 @@ using System.Security.Cryptography;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.VFX;
+using System.Linq;
+
 
 
 //Handles visual effects in the game
@@ -247,7 +249,7 @@ public class EffectManager : MonoBehaviour
     {
         if (CurUnitMovePosShowcase == null)
         {
-            CurUnitMovePosShowcase = StartCoroutine(ShowingPossibleUnitMovement(unit));
+            CurUnitMovePosShowcase = StartCoroutine(ShowingPossibleUnitRedeployment(unit));
         }
 
     }
@@ -268,18 +270,23 @@ public class EffectManager : MonoBehaviour
         while (CurUnitMovePosShowcase != null && ScoreManager.Instance.PlayerTurnActionCondition())
         {
             yield return new WaitForSeconds(Time.deltaTime * 0.001f);
-            if (BoardManager.Instance.ClosestUnitPosToCursor(unit) == null) { continue; }
+            if (BoardManager.Instance.ClosestUnitPosToCursor(unit) == null) { Debug.Log("Exited here"); continue; }
 
             List<Vector2Int> poss = BoardManager.Instance.ClosestUnitPosToCursor(unit);
             for (int i = 0; i < poss.Count; i++)
             {
                 List<Vector2Int> l = new List<Vector2Int> { BoardManager.Instance.CursorToCellPosition() };
-                List<Vector2Int> ll = Action_Move.Get_MovementPositionsFromSingleCoordinate(unit, l);
+               
+                List<List<Vector2Int>> ll = Action_Redeploy.Get_PossibleDeployments(unit);
 
-                if (BoardManager.Instance.BoardToWorldPosition(ll).HasValue)
+                if (ll.Any(p => p.SequenceEqual(l)))
                 {
                     unit.UnitModelShowcase.SetActive(true);
-                    unit.UnitModelShowcase.transform.position = BoardManager.Instance.BoardToWorldPosition(ll).Value + unit.ModelOffset;
+                    unit.UnitModelShowcase.transform.position = BoardManager.Instance.BoardToWorldPosition(l).Value + unit.ModelOffset;
+                }
+                else
+                {
+                    Debug.Log("Exited here");
                 }
             }
 
@@ -320,7 +327,7 @@ public class EffectManager : MonoBehaviour
         foreach (Unit u in units)
         {
             if (!UnitEffectsToHide.ContainsKey(u)) return;
-            StopShowingPossibleUnitPosition(u);
+            StopShowingPossibleUnitMovement(u);
 
             foreach (var ef in UnitEffectsToHide[u])
             {
@@ -378,7 +385,7 @@ public class EffectManager : MonoBehaviour
         foreach (Unit u in units)
         {
             if (!UnitEffectsToHide.ContainsKey(u)) return;
-            StopShowingPossibleUnitPosition(u);
+            StopShowingPossibleUnitRedeployment(u);
 
             foreach (var ef in UnitEffectsToHide[u])
             {

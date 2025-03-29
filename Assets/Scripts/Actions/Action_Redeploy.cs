@@ -89,19 +89,14 @@ public static class Action_Redeploy
         Debug.Log("Redeploying " + target.UnitName + " to " + coordinates[0]);
 
         List<List<Vector2Int>> posses = Get_PossibleDeployments(target);
-        List<Vector2Int> endPos = null;
-        bool occupied = false;
-        foreach (var poss in posses) 
-        {
-            if (poss.Intersect<Vector2Int>(coordinates).Any()) { endPos = poss; break; }
-            occupied = BoardManager.Instance.AreAnyOccupied(poss);
-        }
 
-        if (endPos == null || occupied) //If position is not in the deployment zone - do nothing
-        { 
-            Debug.Log("Positions do not fit in the deployment zone"); 
-            yield break; 
-        } 
+        // |    Scary vodoo expression I've copy-pasted
+        // v
+        if (!posses.Any(p => p.SequenceEqual(coordinates)) || BoardManager.Instance.AreAnyOccupied(coordinates))
+        {
+            Debug.Log("Positions do not fit in the deployment zone");
+            yield break;
+        }
 
         #region Moving the unit
         List<Vector2Int> oldPos = BoardManager.Instance.Get_UnitPositions(target);
@@ -113,7 +108,7 @@ public static class Action_Redeploy
             }
         }
         
-        yield return BoardManager.Instance.StartCoroutine(BoardManager.Instance.PlaceUnit(target, endPos));
+        yield return BoardManager.Instance.StartCoroutine(BoardManager.Instance.PlaceUnit(target, coordinates));
         #endregion
 
         yield return new WaitForSeconds(Time.deltaTime);

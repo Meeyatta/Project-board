@@ -423,10 +423,10 @@ public class BoardManager : MonoBehaviour
     {
         foreach (var v in newPoss)
         {
-            if (Board[v.x].Cells[v.y].CurUnit != null) { return false; }
+            if (Board[v.x].Cells[v.y].CurUnit != null) { Debug.Log(v.x + " " + v.y + " is occupied by " + Board[v.x].Cells[v.y].CurUnit.UnitName); return true; }
         }
 
-        return true;
+        return false;
     }
     //Returns true if unit is on board
     public bool IsOnBoard(Unit u)
