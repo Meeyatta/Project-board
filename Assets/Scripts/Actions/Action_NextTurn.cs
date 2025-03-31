@@ -8,6 +8,7 @@ using UnityEngine;
 */
 public static class Action_NextTurn
 {
+    public static float Delay = 15;
     public static IEnumerator Pre_nextTurn(ActionParameters parameters)
     {
         //Debug.Log("Started pre NextTurn actions");
@@ -60,6 +61,8 @@ public static class Action_NextTurn
 
     public static IEnumerator NextTurn(ActionParameters parameters)
     {
+
+        yield return new WaitForSeconds(Time.deltaTime * Delay);
 
         #region If the current round is deployment
         if (ScoreManager.Instance.CurRound == 0)

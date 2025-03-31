@@ -14,6 +14,7 @@ public class Settingsmenu : MonoBehaviour
     bool Fullscreen = true;
     float MasterVolume = 0.02f;
     float MusicVolume = 0.08f;
+    float SfxVolume = 0.5f;
 
 
     List<Resolution> Resolutions = new List<Resolution>();
@@ -23,6 +24,7 @@ public class Settingsmenu : MonoBehaviour
     public Toggle FullScreenToggle;
     public Slider MasterSlider;
     public Slider MusicSlider;
+    public Slider SFXSlider;
 
     public GameObject Canvas;
     public AudioMixer Mixer;
@@ -38,6 +40,8 @@ public class Settingsmenu : MonoBehaviour
         FullScreenToggle.isOn = Fullscreen;
         MasterSlider.value = MasterVolume;
         MusicSlider.value = MusicVolume;
+        SFXSlider.value = SfxVolume;
+
         ApplySettings();
     }
     void ResolutionsSetup()
@@ -100,7 +104,13 @@ public class Settingsmenu : MonoBehaviour
         MusicVolume = volume;
         Mixer.SetFloat("vMusic", Mathf.Log10(MusicVolume) * 20);
     }
-    
+
+    public void VolumeChange_SFX(float volume)
+    {
+        SfxVolume = volume;
+        Mixer.SetFloat("vSFX", Mathf.Log10(SfxVolume) * 20);
+    }
+
     public void ApplySettings()
     {
         //Resolution
@@ -112,10 +122,13 @@ public class Settingsmenu : MonoBehaviour
         else { QualitySettings.vSyncCount = 0; }
         //Fullscreen
         Screen.fullScreen = Fullscreen;
+
         //Master Volume
-        Mixer.SetFloat("VolumeMaster", Mathf.Log10(MasterVolume)*20);
+        Mixer.SetFloat("vMaster", Mathf.Log10(MasterVolume)*20);
         //Music Volume
-        Mixer.SetFloat("VolumeMusic", Mathf.Log10(MusicVolume) * 20);
+        Mixer.SetFloat("vMusic", Mathf.Log10(MusicVolume) * 20);
+        //SFX Volume
+        Mixer.SetFloat("vSFX", Mathf.Log10(SfxVolume) * 20);
 
         //Debug.Log(string.Format("Applied settings - {0} {1} {2} {3} {4} {5}", Resolution, Graphics, VSync, Fullscreen, MasterVolume, MusicVolume));
 

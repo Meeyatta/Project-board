@@ -62,6 +62,14 @@ public class ScoreManager : MonoBehaviour
         TurnText.text = "-";
         RoundEvent.AddListener(GameManager.Instance.ResetMovement);
     }
+    public void AddPointPlayer()
+    {
+        Score_Player++;
+    }
+    public void AddPointEnemy()
+    {
+        Score_Enemy++;
+    }
     public IEnumerator EndPlayerTurn()
     {
         CurTurn = ScoreManager.Side.Enemy;
@@ -73,6 +81,9 @@ public class ScoreManager : MonoBehaviour
     }
     public IEnumerator EndEnemyTurn()
     {
+        AudioManager.Instance.Play(SoundName.ClockPling, transform);
+        yield return new WaitForSeconds(Time.deltaTime * 2);
+
         CurTurn = ScoreManager.Side.Player;
 
         TurnText.text = CurTurn.ToString();

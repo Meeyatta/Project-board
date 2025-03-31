@@ -60,33 +60,11 @@ public static class Action_AttackFromKeyworded
         
         foreach (var unit in DamageDealing.OrderedUnits(affected))
         {
-            if (!IsAbleToAttack(unit)) { continue; }
-
-            Animator anim = unit.Anim;
-            anim.SetTrigger(AttackAnimTrigger);
-
-            while (!anim.GetBool("IsAttacking"))
-            {
-                yield return new WaitForSeconds(Time.deltaTime * 0.4f);
-            }
-
-            AudioManager.Instance.Play(SoundName.Attack, unit.transform);
-
-            while (anim.GetBool("IsAttacking"))
-            {
-                yield return new WaitForSeconds(Time.deltaTime * 0.4f);
-            }
-
-            //At the end of animation, damage all of the units
-            List<Keyword> keywords = new List<Keyword>();
-            if (unit.CurKeywords.Contains(Keyword.Player)) { keywords.Add(Keyword.Enemy); }
-            else { keywords.Add(Keyword.Player); }
-
-            yield return GameManager.Instance.StartCoroutine(DamageAllInRange(unit, keywords));
+            yield return Action_Attack.UnitAttack(unit);
         }
 
 
-        yield return new WaitForSeconds(0.001f);
+        yield return new WaitForSeconds(Time.deltaTime);
         //Debug.Log("Sent what ended the attack");
         GameManager.Instance.RemoveAction(parameters);
     }

@@ -22,15 +22,21 @@ using System.Linq;
 
 public class EffectManager : MonoBehaviour
 {
-    public static EffectManager Instance;
+    public Material ObjMat_Neutral;
+    public Material ObjMat_Player;
+    public Material ObjMat_Enemy;
 
     public GameObject CellOverlay;
     public float ModelOffset;
+
+    public GameObject EffectsObj; //Parent of all effect objects
+
+    #region Storing current effects
     public Dictionary<Unit, List<GameObject>> UnitEffectsToHide = new Dictionary<Unit, List<GameObject>>();
-
-    public GameObject EffectsObj;
     public Dictionary<Unit, List<GameObject>> PlacementEffectsToHide = new Dictionary<Unit, List<GameObject>>();
+    #endregion
 
+    #region For creating pools of objects we create
     [System.Serializable]
     public class Pool
     {
@@ -42,6 +48,7 @@ public class EffectManager : MonoBehaviour
     public enum Tag { Movement, Placement };
     public List<Pool> Pools = new List<Pool>();
     public Dictionary<Tag, Queue<GameObject>> CurrentPools = new Dictionary<Tag, Queue<GameObject>>();
+    #endregion
 
     //Placement specific
     Coroutine CurPlacement;
@@ -53,20 +60,6 @@ public class EffectManager : MonoBehaviour
     void Start()
     {
         EffectsObj = GameObject.Find("Effects");
-
-        #region EventsAdd
-        GameManager.Instance.ShowMovementEvent.AddListener(ShowMovement);
-        GameManager.Instance.HideMovementEvent.AddListener(HideMovement);
-
-        GameManager.Instance.ShowDeploymentEvent.AddListener(ShowDeployment);
-        GameManager.Instance.HideDeploymentEvent.AddListener(HideDeployment);
-
-
-        ScoreManager.Instance.EndPlayerTurnEvent.AddListener(HideMovement);
-
-        GameManager.Instance.ShowPlacementEvent.AddListener(StartShowingPlacement);
-        GameManager.Instance.HidePlacementEvent.AddListener(StopShowingPlacement);
-        #endregion EventsAdd
         foreach (Pool p in Pools)
         {
             Queue<GameObject> objPool = new Queue<GameObject>();
@@ -78,6 +71,21 @@ public class EffectManager : MonoBehaviour
             }
             CurrentPools.Add(p.Tag, objPool);
         }
+
+        #region EventsAdd
+        GameManager.Instance.ShowMovementEvent.AddListener(ShowMovement);
+        GameManager.Instance.HideMovementEvent.AddListener(HideMovement);
+
+        GameManager.Instance.ShowDeploymentEvent.AddListener(ShowDeployment);
+        GameManager.Instance.HideDeploymentEvent.AddListener(HideDeployment);
+
+        GameplayManager.Instance.eBattlefieldCreation.AddListener(StartUpdatingObjectiveControl);
+
+        ScoreManager.Instance.EndPlayerTurnEvent.AddListener(HideMovement);
+
+        GameManager.Instance.ShowPlacementEvent.AddListener(StartShowingPlacement);
+        GameManager.Instance.HidePlacementEvent.AddListener(StopShowingPlacement);
+        #endregion EventsAdd
     }
     #region EventsRemove
     void OnDisable()
@@ -87,8 +95,18 @@ public class EffectManager : MonoBehaviour
 
         GameManager.Instance.ShowDeploymentEvent.RemoveListener(ShowDeployment);
         GameManager.Instance.HideDeploymentEvent.RemoveListener(HideDeployment);
+
+        GameplayManager.Instance.eBattlefieldCreation.RemoveListener(StartUpdatingObjectiveControl);
+
+        ScoreManager.Instance.EndPlayerTurnEvent.RemoveListener(HideMovement);
+
+        GameManager.Instance.ShowPlacementEvent.RemoveListener(StartShowingPlacement);
+        GameManager.Instance.HidePlacementEvent.RemoveListener(StopShowingPlacement);
     }
     #endregion EventsRemove
+
+    #region Singleton
+    public static EffectManager Instance;
     void Singleton()
     {
         if (Instance != null)
@@ -105,6 +123,45 @@ public class EffectManager : MonoBehaviour
     {
         Singleton();
     }
+    #endregion
+
+    #region Visually updating objectives depending on who controls them
+    public void StartUpdatingObjectiveControl()
+    {
+        StartCoroutine(UpdatingObjectiveControl()); 
+    }
+
+    IEnumerator UpdatingObjectiveControl()
+    {
+        yield return new WaitForSeconds(Time.deltaTime * 40);
+
+        Dictionary<Unit, MeshRenderer> list = new Dictionary<Unit, MeshRenderer>(); 
+        foreach (var v in BoardManager.Instance.Get_AllUnitsWithKeywords( new List<Keyword> { Keyword.Objective }))
+        {
+            //Debug.Log(v.name + " " +
+            //    v.transform.Find("ModelHolder").name +
+            //    v.transform.Find("ModelHolder").transform.Find("Objective").name);
+
+            list.Add(v, v.transform.Find("ModelHolder").transform.Find("Objective").GetComponent<MeshRenderer>());
+        }
+
+        while (true)
+        {
+            foreach (var v in list)
+            {
+                int s = Ability_Score.Check(v.Key);
+
+                v.Value.material = ObjMat_Neutral;
+                if (s > 0) { v.Value.material = ObjMat_Player; }
+                if (s < 0) { v.Value.material = ObjMat_Enemy; }
+
+            }
+
+            yield return new WaitForSeconds(Time.deltaTime);
+        }
+        
+    }
+    #endregion
 
     #region For raising and lowering unit's model
     void RaiseModel(Unit u)
@@ -414,6 +471,7 @@ public class EffectManager : MonoBehaviour
     }
     #endregion
 
+    #region Working with object pools
     public GameObject InstantiateFromPool(Tag tag, Vector3 position, Quaternion rotation) 
     {
         if (!CurrentPools.ContainsKey(Tag.Movement)) { Debug.LogWarning("No tag in pools named " + tag); return null; }
@@ -432,5 +490,6 @@ public class EffectManager : MonoBehaviour
     {
         obj.SetActive(false);
     }
-    
+    #endregion
+
 }

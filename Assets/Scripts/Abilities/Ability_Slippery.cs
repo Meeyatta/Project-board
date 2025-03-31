@@ -5,6 +5,7 @@ using UnityEngine;
 
 public static class Ability_Slippery
 {
+    public static float Delay = 10f;
     public static void Try(Unit u)
     {
         if (!u.CurAbilities.Contains(Ability.Slippery)) { return; }
@@ -75,12 +76,14 @@ public static class Ability_Slippery
     {
         Unit unit = parameters.ActionTargetUnits[0];
         List<Vector2Int> endPoss = GetRandPos(unit);
-        bool IsValid = BoardManager.Instance.AreInBounds(endPoss) && BoardManager.Instance.AreAnyOccupied(endPoss);
+        bool IsValid = BoardManager.Instance.AreInBounds(endPoss) && !BoardManager.Instance.AreAnyOccupied(endPoss);
 
-        yield return new WaitForSeconds(0.4f);
+        yield return new WaitForSeconds(Delay * Time.deltaTime);
 
         if (IsValid) 
         {
+            Debug.Log("Supposed to slip");
+
             List<Vector2Int> oldPos = BoardManager.Instance.Get_UnitPositions(unit);
             foreach (Vector2Int v in oldPos)
             {
@@ -90,7 +93,7 @@ public static class Ability_Slippery
             yield return BoardManager.Instance.StartCoroutine(BoardManager.Instance.PlaceUnit(unit, endPoss));
         }
 
-        yield return new WaitForSeconds(0.01f);
+        yield return new WaitForSeconds(Time.deltaTime);
         GameManager.Instance.RemoveAction(parameters);
     }
 

@@ -23,7 +23,7 @@ public class HPVisualizer : MonoBehaviour
         if (thisUnit != null && hpText != null && hpSlider != null)
         {
             hpText.text = thisUnit.CurrentHealth + "/" + thisUnit.MaxHealth;
-            hpSlider.value = thisUnit.CurrentHealth / thisUnit.MaxHealth;
+            hpSlider.value = (float) ((float)thisUnit.CurrentHealth / (float)thisUnit.MaxHealth);
         }
     }
 }

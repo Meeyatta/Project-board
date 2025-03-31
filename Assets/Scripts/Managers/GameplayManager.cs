@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class GameplayManager : MonoBehaviour
 {
@@ -29,9 +30,10 @@ public class GameplayManager : MonoBehaviour
 
     [Header("---Functionality stuff---")]
     public float Delay;
+    public UnityEvent eBattlefieldCreation;
 
 
-    public void MakeBattlefield(List<Vector2Int> objective_Positions)
+    IEnumerator MakeBattlefield(List<Vector2Int> objective_Positions)
     {
         #region Place objectives
         foreach (var p in objective_Positions)
@@ -39,7 +41,7 @@ public class GameplayManager : MonoBehaviour
             List<Vector2Int> pos = new List<Vector2Int> { p };
             ActionParameters paramets = new ActionParameters(
                         GameManager.ActionType.Create, null, null, pos, Objective_Obj, 0);
-            StartCoroutine( GameManager.Instance.Action(paramets));
+            yield return StartCoroutine( GameManager.Instance.Action(paramets));
         }
 
         #endregion
@@ -47,11 +49,11 @@ public class GameplayManager : MonoBehaviour
     IEnumerator StartBattle()
     {
         yield return new WaitForSeconds(Delay * Time.deltaTime);
-        MakeBattlefield(Objective_Positions);
+        yield return MakeBattlefield(Objective_Positions);
 
         EnemyManager.Instance.DeployEnemies();
-
         ResourceManager.Instance.DeployPlayerUnits();
+        eBattlefieldCreation.Invoke();
 
     }
     void Start()

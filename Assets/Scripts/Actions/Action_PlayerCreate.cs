@@ -6,6 +6,9 @@ using UnityEngine.Events;
 
 public static class Action_PlayerCreate
 {
+    static string UnitPlacementHolderStr = "UnitPlacementHolder";
+    static GameObject UnitPlacementHolderObj;
+
     public static bool IsWaitingForData;
     static bool ShouldCancel = false;
     static void Cancel()
@@ -20,12 +23,16 @@ public static class Action_PlayerCreate
     }
     public static IEnumerator PlayerCreate(ActionParameters parameters)
     {
+
         GameObject Object = parameters.Object;
         GameManager.Instance.CancelEvent.AddListener(Cancel);
 
+        UnitPlacementHolderObj = GameObject.Find(UnitPlacementHolderStr);
+        Vector3 holdPos = Vector3.zero; if (UnitPlacementHolderObj != null) { holdPos = UnitPlacementHolderObj.transform.position; }
+
         //Create a unit as an object, it's not on the board yet, so it should be hidden
         Unit unit =
-            GameManager.Instantiate(Object, Vector3.zero, Quaternion.identity).GetComponent<Unit>();
+            GameManager.Instantiate(Object, holdPos, Quaternion.identity).GetComponent<Unit>();
         List<Unit> unitList = new List<Unit>(); unitList.Add(unit);
 
 

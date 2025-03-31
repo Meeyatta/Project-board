@@ -259,7 +259,7 @@ MonoBehaviour:
   CurAttackZone: {fileID: 11400000, guid: 0975c85d43f513e4788e5c187d780b69, type: 2}
   MaxHealth: 4
   CurrentHealth: 0
-  BaseAbilities: 08000000
+  BaseAbilities: 0c000000
   BaseKeywords: 01000000
   Moved: 0
   UnitModelShowcase: {fileID: 697914020349656426}

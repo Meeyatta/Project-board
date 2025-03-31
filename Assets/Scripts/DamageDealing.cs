@@ -13,7 +13,7 @@ public enum DamageType
 public static class DamageDealing
 {
     const string ShrugAnimTrigger = "shrug";
-    const string DieAnimTrigger = "shrug";
+    const string DieAnimTrigger = "die";
     public static List<Unit> OrderedUnits(List<Unit> ActionTargetUnits)
     {
 
@@ -100,11 +100,11 @@ public static class DamageDealing
         #endregion
         if (target.CurAbilities.Contains(Ability.Invincible) || EndDamage < 0) { EndDamage = 0; }
 
-        Debug.Log(source.gameObject.name + " has dealt " + EndDamage + " " + type + " damage to " + target.gameObject.name);
+        //Debug.Log(source.gameObject.name + " has dealt " + EndDamage + " " + type + " damage to " + target.gameObject.name);
 
         #region Graphical stuff
         target.Anim.SetTrigger(ShrugAnimTrigger);
-        //TODO: Play damage sound
+        //AudioManager.Instance.Play() TODO: Add a sound file
         #endregion
 
         #region Dealing damage and checking if the enemy died
@@ -123,7 +123,7 @@ public static class DamageDealing
         //TODO: Play damage sound
         #endregion
 
-        yield return new WaitForSeconds(Time.deltaTime);
+        yield return new WaitForSeconds(Time.deltaTime * 35);
         target.gameObject.SetActive(false);
 
         yield return new WaitForSeconds(Time.deltaTime);
