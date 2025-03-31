@@ -17,7 +17,7 @@ public class CameraManager : MonoBehaviour
         cam = Camera.main;
     }
 
-    void SetCam(GameObject camm)
+    public void SetCam(GameObject camm)
     {
         List<GameObject> all = new List<GameObject> { FrontLower, FrontUpper, TopDown, Right, Left };
 

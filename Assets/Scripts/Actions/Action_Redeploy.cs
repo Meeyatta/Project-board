@@ -109,6 +109,7 @@ public static class Action_Redeploy
         }
         
         yield return BoardManager.Instance.StartCoroutine(BoardManager.Instance.PlaceUnit(target, coordinates));
+        AudioManager.Instance.Play(SoundName.Step, target.transform);
         #endregion
 
         yield return new WaitForSeconds(Time.deltaTime);

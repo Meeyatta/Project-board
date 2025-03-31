@@ -27,6 +27,9 @@ public class PassTurnButton : MonoBehaviour
         if (ScoreManager.Instance.CurTurn == ScoreManager.Side.Player && CanPass)
         {
             if (ScoreManager.Instance.CurRound != 0) CanPass = false;
+
+            AudioManager.Instance.Play(SoundName.ClockPling, transform);
+
             ActionParameters parameters = new ActionParameters(GameManager.ActionType.NextTurn, null, null, null, null, 0);
             StartCoroutine(GameManager.Instance.Action(parameters));
         }

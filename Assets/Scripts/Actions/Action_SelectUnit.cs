@@ -49,6 +49,7 @@ public static class Action_SelectUnit
             }
             #endregion
 
+            AudioManager.Instance.Play(SoundName.Click, GameManager.Instance.CurUnitSelected.transform);
             yield return new WaitForSeconds(Time.deltaTime);
 
             #region Wait shile we are selecting the unit

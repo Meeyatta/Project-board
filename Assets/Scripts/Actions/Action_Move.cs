@@ -187,6 +187,9 @@ public static class Action_Move
                 BoardManager.Instance.Board[v.x].Cells[v.y].CurUnit = null;
             }
             ActionTargetUnit.Moved = true;
+
+            AudioManager.Instance.Play(SoundName.Step, ActionTargetUnit.transform);
+
             yield return BoardManager.Instance.StartCoroutine(BoardManager.Instance.PlaceUnit(ActionTargetUnit, newPoss));
         }
         else

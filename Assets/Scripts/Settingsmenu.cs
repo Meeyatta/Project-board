@@ -12,8 +12,8 @@ public class Settingsmenu : MonoBehaviour
     int Graphics = 5;
     bool VSync = false;
     bool Fullscreen = true;
-    float MasterVolume = 0.4f;
-    float MusicVolume = 0.4f;
+    float MasterVolume = 0.02f;
+    float MusicVolume = 0.08f;
 
 
     List<Resolution> Resolutions = new List<Resolution>();
@@ -93,10 +93,12 @@ public class Settingsmenu : MonoBehaviour
     public void VolumeChange_Master(float volume)
     {
         MasterVolume = volume;
+        Mixer.SetFloat("vMaster", Mathf.Log10(MasterVolume) * 20);
     }
     public void VolumeChange_Music(float volume)
     {
         MusicVolume = volume;
+        Mixer.SetFloat("vMusic", Mathf.Log10(MusicVolume) * 20);
     }
     
     public void ApplySettings()

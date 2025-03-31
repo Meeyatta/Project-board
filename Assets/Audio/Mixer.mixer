@@ -31,9 +31,11 @@ AudioMixerController:
   m_UpdateMode: 0
   m_ExposedParameters:
   - guid: 440de20167dc4de4f88ed9ef3cca0e76
-    name: VolumeMaster
+    name: vMaster
   - guid: f2ead587800385d44aa7ec09ff49f90d
-    name: VolumeMusic
+    name: vMusic
+  - guid: 291c88f274a747a43af97b6fb5b7fa42
+    name: vSFX
   m_AudioMixerGroupViews:
   - guids:
     - 88a50a682d630344d861cca5060c5183
@@ -88,6 +90,7 @@ AudioMixerSnapshotController:
   m_SnapshotID: 906dbc4ded24e3346baf3ba0f7a33a00
   m_FloatValues:
     440de20167dc4de4f88ed9ef3cca0e76: -0.037667945
+    f2ead587800385d44aa7ec09ff49f90d: -25.2
   m_TransitionOverrides: {}
 --- !u!243 &1020491577104157088
 AudioMixerGroupController:

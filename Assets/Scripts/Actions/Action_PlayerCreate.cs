@@ -53,26 +53,34 @@ public static class Action_PlayerCreate
         Action_SelectPosition.ESendPositionBack.AddListener(StartAwaiting_ListOfPositions);
         IsWaitingForData = true;
 
-        //Start the action to select a position
+        #region Start the action to select a position
         GameManager.Instance.ShowPlacementEvent.Invoke(unitList);
         GameManager.Instance.I_PositionSelect = Action_SelectPosition.Selecting(unit);
         yield return GameManager.Instance.StartCoroutine(GameManager.Instance.I_PositionSelect);
         GameManager.Instance.I_PositionSelect = null;
+        #endregion
+
+
+        #region While we are selecting a new position for a unit, hold that unit in a position near player's bag
+        //TODO: change the object's position
+        #endregion
 
         //Waiting until we have the data
-        while (IsWaitingForData && !ShouldCancel) { Debug.Log(ShouldCancel); yield return new WaitForSeconds(0.01f); }
 
-         //Check if can place a unit there
-         bool ViablePos = true;
+        while (IsWaitingForData && !ShouldCancel) { yield return new WaitForSeconds(Time.deltaTime * 0.5f); }
+
+        #region Check if can place a unit there
+        bool ViablePos = true;
          foreach (var v in positions)
          {
             if (!BoardManager.Instance.IsInBounds(v)) { ViablePos = false; break; }
 
             if (BoardManager.Instance.Board[v.x].Cells[v.y].CurUnit != null) { ViablePos = false; break; }
          }
+        #endregion
 
-         //Place a unit on said selected positions if they are viable
-         GameManager.Instance.HidePlacementEvent.Invoke(unitList);
+        #region Place a unit on said selected positions if they are viable
+        GameManager.Instance.HidePlacementEvent.Invoke(unitList);
          if (ViablePos)
          {
              yield return GameManager.Instance.StartCoroutine(BoardManager.Instance.PlaceUnit(unit, positions));
@@ -81,6 +89,7 @@ public static class Action_PlayerCreate
          {
              Debug.Log("Non viable position");
          }
+        #endregion
 
 
 
