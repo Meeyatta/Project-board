@@ -47,7 +47,9 @@ public class EffectManager : MonoBehaviour
     Coroutine CurPlacement;
     Coroutine CurUnitMovePosShowcase;
 
-     
+    const string isRaisedStr = "isRaised";
+
+
     void Start()
     {
         EffectsObj = GameObject.Find("Effects");
@@ -103,6 +105,24 @@ public class EffectManager : MonoBehaviour
     {
         Singleton();
     }
+
+    #region For raising and lowering unit's model
+    void RaiseModel(Unit u)
+    {
+        Animator anim = u.Anim;
+
+        anim.SetBool(isRaisedStr, true);          
+    }
+
+    void LowerModel(Unit u)
+    {
+        Animator anim = u.Anim;
+
+        anim.SetBool(isRaisedStr, false);
+        
+    }
+    #endregion
+
     #region Showing unit placement when creating a new unit
     void StartShowingPlacement(List<Unit> units)
     {
@@ -214,8 +234,7 @@ public class EffectManager : MonoBehaviour
     {
         yield return new WaitForSeconds(Time.deltaTime * 0.01f);
 
-        Vector3 ogPos = unit.transform.position;            //Change this to a unique raising animation since it can result 
-        unit.transform.position += Vector3.up * ModelOffset;//in some problems with units model not moving with the unit
+        RaiseModel(unit);
 
         while (CurUnitMovePosShowcase != null && ScoreManager.Instance.PlayerTurnActionCondition())
         {
@@ -237,8 +256,8 @@ public class EffectManager : MonoBehaviour
 
         }
 
+        LowerModel(unit);
         CurUnitMovePosShowcase = null;
-        unit.transform.position = ogPos; //This should also be changed to work with the animator
         unit.UnitModelShowcase.SetActive(false);
 
     }
@@ -264,13 +283,12 @@ public class EffectManager : MonoBehaviour
     {
         yield return new WaitForSeconds(Time.deltaTime * 0.01f);
 
-        Vector3 ogPos = unit.transform.position;            //Change this to a unique raising animation since it can result 
-        unit.transform.position += Vector3.up * ModelOffset;//in some problems with units model not moving with the unit
+        RaiseModel(unit);
 
         while (CurUnitMovePosShowcase != null && ScoreManager.Instance.PlayerTurnActionCondition())
         {
             yield return new WaitForSeconds(Time.deltaTime * 0.001f);
-            if (BoardManager.Instance.ClosestUnitPosToCursor(unit) == null) { Debug.Log("Exited here"); continue; }
+            if (BoardManager.Instance.ClosestUnitPosToCursor(unit) == null) { continue; }
 
             List<Vector2Int> poss = BoardManager.Instance.ClosestUnitPosToCursor(unit);
             for (int i = 0; i < poss.Count; i++)
@@ -286,14 +304,14 @@ public class EffectManager : MonoBehaviour
                 }
                 else
                 {
-                    Debug.Log("Exited here");
+
                 }
             }
 
         }
 
         CurUnitMovePosShowcase = null;
-        unit.transform.position = ogPos; //This should also be changed to work with the animator
+        LowerModel(unit);
         unit.UnitModelShowcase.SetActive(false);
 
     }
@@ -305,7 +323,7 @@ public class EffectManager : MonoBehaviour
         foreach (Unit u in units)
         {
             List<GameObject> ePu = new List<GameObject>();
-            StartShowingPossibleUnitRedeployment(u);
+            StartShowingPossibleUnitMovement(u);
                 foreach (var v in Action_Move.Get_PossibleMovement(u))
                 {
                     foreach (var vv in v)
