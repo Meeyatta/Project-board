@@ -45,6 +45,7 @@ public static class Action_Redeploy
     }
     #endregion
 
+    //Returns the list of possible positions unit can be redeployed to
     public static List<List<Vector2Int>> Get_PossibleDeployments(Unit u)
     {
         List<List<Vector2Int>> res = new List<List<Vector2Int>>();

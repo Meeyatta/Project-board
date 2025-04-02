@@ -271,12 +271,37 @@ public class EffectManager : MonoBehaviour
     }
     #endregion
 
+    IEnumerator ShowingPossibleUnitPosition(Unit unit, List<Vector2Int> availableZone)
+    {
+        yield return new WaitForSeconds(Time.deltaTime * 0.01f);
+
+        RaiseModel(unit);
+
+        while (CurUnitMovePosShowcase != null && ScoreManager.Instance.PlayerTurnActionCondition())
+        {
+            yield return new WaitForSeconds(Time.deltaTime * 0.001f);
+
+            List <Vector2Int> pos = BoardManager.Instance.ClosestUnitPosToCursor(unit);
+            if (availableZone.Intersect<Vector2Int>(pos).Any())
+            {
+                unit.UnitModelShowcase.SetActive(true);
+                unit.UnitModelShowcase.transform.position = BoardManager.Instance.BoardToWorldPosition(pos).Value + unit.ModelOffset;
+            }
+        }
+
+        LowerModel(unit);
+        CurUnitMovePosShowcase = null;
+        unit.UnitModelShowcase.SetActive(false);
+    }
+
     #region Showing position of unit under the cursor when moving
     void StartShowingPossibleUnitMovement(Unit unit)
     {
         if (CurUnitMovePosShowcase == null) 
         {
-            CurUnitMovePosShowcase = StartCoroutine(ShowingPossibleUnitMovement(unit)); 
+            List<Vector2Int> poss = new List<Vector2Int>(); 
+            foreach (var v in Action_Move.Get_PossibleMovement(unit)) { foreach (var vv in v) { poss.AddRange(vv); } }
+            CurUnitMovePosShowcase = StartCoroutine(ShowingPossibleUnitPosition(unit, poss)); 
         }
 
     }
@@ -304,7 +329,8 @@ public class EffectManager : MonoBehaviour
                 List<Vector2Int> l = new List<Vector2Int> { BoardManager.Instance.CursorToCellPosition() };
                 List<Vector2Int> ll = Action_Move.Get_MovementPositionsFromSingleCoordinate(unit, l);
 
-                if (BoardManager.Instance.BoardToWorldPosition(ll).HasValue)
+                if (BoardManager.Instance.BoardToWorldPosition(ll).HasValue &&
+                    ll.Intersect<Vector2Int>(l).Any())
                 {
                     unit.UnitModelShowcase.SetActive(true);
                     unit.UnitModelShowcase.transform.position = BoardManager.Instance.BoardToWorldPosition(ll).Value + unit.ModelOffset;
@@ -351,10 +377,15 @@ public class EffectManager : MonoBehaviour
             for (int i = 0; i < poss.Count; i++)
             {
                 List<Vector2Int> l = new List<Vector2Int> { BoardManager.Instance.CursorToCellPosition() };
-               
-                List<List<Vector2Int>> ll = Action_Redeploy.Get_PossibleDeployments(unit);
 
-                if (ll.Any(p => p.SequenceEqual(l)))
+                List<Vector2Int> ll = new List<Vector2Int>();
+                foreach (var v in Action_Redeploy.Get_PossibleDeployments(unit))
+                {
+                    ll.AddRange(v);
+                }
+
+                if (BoardManager.Instance.BoardToWorldPosition(ll).HasValue &&
+                    ll.Intersect<Vector2Int>(l).Any())
                 {
                     unit.UnitModelShowcase.SetActive(true);
                     unit.UnitModelShowcase.transform.position = BoardManager.Instance.BoardToWorldPosition(l).Value + unit.ModelOffset;
