@@ -351,7 +351,10 @@ public class EffectManager : MonoBehaviour
     {
         if (CurUnitMovePosShowcase == null)
         {
-            CurUnitMovePosShowcase = StartCoroutine(ShowingPossibleUnitRedeployment(unit));
+            List<Vector2Int> poss = new List<Vector2Int>();
+            foreach (var v in Action_Redeploy.Get_PossibleDeployments(unit)) { foreach (var vv in v) { poss.Add(vv); } }
+
+            CurUnitMovePosShowcase = StartCoroutine(ShowingPossibleUnitPosition(unit, poss));
         }
 
     }

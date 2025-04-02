@@ -104,11 +104,11 @@ public static class DamageDealing
 
         #region Graphical stuff
         target.Anim.SetTrigger(ShrugAnimTrigger);
-        //AudioManager.Instance.Play() TODO: Add a sound file
         #endregion
 
         #region Dealing damage and checking if the enemy died
         target.CurrentHealth = Mathf.Clamp(target.CurrentHealth - EndDamage, 0, target.CurrentHealth);
+        AudioManager.Instance.Play(SoundName.Damaged, target.transform);
         if (target.CurrentHealth <= 0) { yield return GameManager.Instance.StartCoroutine(Kill(target, source)); }
         #endregion
 
@@ -120,7 +120,6 @@ public static class DamageDealing
 
         #region Graphical stuff
         target.Anim.SetTrigger(DieAnimTrigger);
-        //TODO: Play damage sound
         #endregion
 
         yield return new WaitForSeconds(Time.deltaTime * 35);

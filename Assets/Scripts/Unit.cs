@@ -58,7 +58,10 @@ public class Unit : MonoBehaviour
         else { Debug.Log(UnitName + " " + gameObject.name + " HAS NO UnitModelShowcase"); }
         
     }
-
+    public void PlaySound(SoundName name)
+    {
+        AudioManager.Instance.Play(name, transform);
+    }
     void UpdateInfo()
     {
         var curA = new HashSet<Ability>();

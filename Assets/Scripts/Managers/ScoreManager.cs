@@ -81,6 +81,7 @@ public class ScoreManager : MonoBehaviour
     }
     public IEnumerator EndEnemyTurn()
     {
+        Debug.Log("EndEnemyTurn");
         AudioManager.Instance.Play(SoundName.ClockPling, transform);
         yield return new WaitForSeconds(Time.deltaTime * 2);
 

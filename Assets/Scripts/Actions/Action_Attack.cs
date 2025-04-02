@@ -56,15 +56,14 @@ public static class Action_Attack
 
         while (!anim.GetBool("IsAttacking"))
         {
-            yield return new WaitForSeconds(Time.deltaTime * 0.4f);
+            yield return new WaitForSeconds(Time.deltaTime * 0.01f);
         }
-
-        AudioManager.Instance.Play(SoundName.Attack, unit.transform);
 
         while (anim.GetBool("IsAttacking"))
         {
-            yield return new WaitForSeconds(Time.deltaTime * 0.4f);
+            yield return new WaitForSeconds(Time.deltaTime * 0.01f);
         }
+
 
         //At the end of animation, damage all of the units
         List<Keyword> keywords = new List<Keyword>();
