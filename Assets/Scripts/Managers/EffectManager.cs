@@ -180,41 +180,6 @@ public class EffectManager : MonoBehaviour
     }
     #endregion
 
-    IEnumerator ShowingPossibleUnitPosition(Unit unit, List<List<Vector2Int>> availablePosses)
-    {
-        yield return new WaitForSeconds(Time.deltaTime * 0.01f);
-
-        RaiseModel(unit);
-
-        while (CurUnitMovePosShowcase != null && ScoreManager.Instance.PlayerTurnActionCondition())
-        {
-            yield return new WaitForSeconds(Time.deltaTime * 0.001f);
-            if (BoardManager.Instance.ClosestUnitPosToCursor(unit) == null) { continue; }
-
-            List<Vector2Int> poss = BoardManager.Instance.ClosestUnitPosToCursor(unit);
-            for (int i = 0; i < poss.Count; i++)
-            {
-                List<Vector2Int> l = new List<Vector2Int> { BoardManager.Instance.CursorToCellPosition() };
-
-                if (availablePosses.Any(p => p.SequenceEqual(l)))
-                {
-                    unit.UnitModelShowcase.SetActive(true);
-                    unit.UnitModelShowcase.transform.position = BoardManager.Instance.BoardToWorldPosition(l).Value + unit.ModelOffset;
-                }
-                else
-                {
-
-                }
-            }
-
-        }
-
-        CurUnitMovePosShowcase = null;
-        LowerModel(unit);
-        unit.UnitModelShowcase.SetActive(false);
-
-    }
-
     #region Showing unit placement when creating a new unit
     void StartShowingPlacement(List<Unit> units)
     {
@@ -324,9 +289,33 @@ public class EffectManager : MonoBehaviour
     }
     IEnumerator ShowingPossibleUnitMovement(Unit unit)
     {
-        List<List<Vector2Int>> availablePos = new List<List<Vector2Int>> { Action_Move.Get_CursorToNewMovementPos(unit, List < Vector2Int > CellsCoordinates) };
+        yield return new WaitForSeconds(Time.deltaTime * 0.01f);
 
-        yield return ShowingPossibleUnitPosition(unit, LUnitPositionUnderCursor);
+        RaiseModel(unit);
+
+        while (CurUnitMovePosShowcase != null && ScoreManager.Instance.PlayerTurnActionCondition())
+        {
+            yield return new WaitForSeconds(Time.deltaTime * 0.001f);
+            if (BoardManager.Instance.ClosestUnitPosToCursor(unit) == null) { continue; }
+
+            List<Vector2Int> poss = BoardManager.Instance.ClosestUnitPosToCursor(unit);
+            for (int i = 0; i < poss.Count; i++)
+            {
+                List<Vector2Int> l = new List<Vector2Int> { BoardManager.Instance.CursorToCellPosition() };
+                List<Vector2Int> ll = Action_Move.Get_MovementPositionsFromSingleCoordinate(unit, l);
+
+                if (BoardManager.Instance.BoardToWorldPosition(ll).HasValue)
+                {
+                    unit.UnitModelShowcase.SetActive(true);
+                    unit.UnitModelShowcase.transform.position = BoardManager.Instance.BoardToWorldPosition(ll).Value + unit.ModelOffset;
+                }              
+            }
+
+        }
+
+        LowerModel(unit);
+        CurUnitMovePosShowcase = null;
+        unit.UnitModelShowcase.SetActive(false);
 
     }
     #endregion

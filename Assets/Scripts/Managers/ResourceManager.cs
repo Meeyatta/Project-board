@@ -85,9 +85,9 @@ public class ResourceManager : MonoBehaviour
         if (side == ScoreManager.Side.Enemy || ScoreManager.Instance.CurRound < 1) return;
         if (Army_NotPlaced.Count <= 0) return;
 
-        List<Unit> newUnit = new List<Unit> {  };
+        List<Unit> newUnit = new List<Unit> { Army_NotPlaced[0] };
         ActionParameters parameters = new ActionParameters(
-                    GameManager.ActionType.PlayerCreate, null, null, null, Army_NotPlaced[0].gameObject, 0);
+                    GameManager.ActionType.Deploy, newUnit, null, BoardManager.Instance.PlayerDeploymentZone, null, 1);
         StartCoroutine(GameManager.Instance.Action(parameters));
 
         RecordPlacedUnit(Army_NotPlaced[0]);

@@ -149,9 +149,10 @@ public static class Action_Move
     }
 
     #region Goes through possible positions unit can move and picks the earliest one
-    public static List<Vector2Int> Get_CursorToNewMovementPos(Unit ActionTargetUnit, List<Vector2Int> CellsCoordinates)
+    public static List<Vector2Int> Get_MovementPositionsFromSingleCoordinate(Unit ActionTargetUnit, List<Vector2Int> CellsCoordinates)
     {
-
+        List<List<List<Vector2Int>>> res = Get_PossibleMovement(ActionTargetUnit);
+  
         for (int i = 0; i < BoardManager.Instance.Height; i++)
         {
             foreach (var line in res)
@@ -174,7 +175,7 @@ public static class Action_Move
 
         if (!UnitCanMove(ActionTargetUnit)) { yield break; }
 
-        List<Vector2Int> newPoss = Get_CursorToNewMovementPos(ActionTargetUnit, CellsCoordinates);
+        List<Vector2Int> newPoss = Get_MovementPositionsFromSingleCoordinate(ActionTargetUnit, CellsCoordinates);
 
         if (newPoss != null && newPoss.Count > 0 && !ActionTargetUnit.Moved)
         {
