@@ -2,12 +2,13 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public enum SoundName { Attack, Damaged, Step, ClockPling, Click,  }
+public enum SoundName { Attack, Damaged, Step, ClockPling, Click, Score  }
 
 [System.Serializable]
 public class Sound 
 {
-    public SoundName Name;
+    public string Name;
+    public SoundName SName;
     public List<AudioClip> Clips; //Sounds can have multiple audioclips so the sound is a bit different each time
     public float Volume;
 }
@@ -43,7 +44,7 @@ public class AudioManager : MonoBehaviour
     {
         foreach (Sound v in Sounds)
         {
-            if (v.Name == name) { return v; }
+            if (v.SName == name) { return v; }
         }
 
         return null;
