@@ -11,11 +11,20 @@ public static class Action_PlayerCreate
 
     public static bool IsWaitingForData;
     static bool ShouldCancel = false;
+
+    #region Cancel() - cancels current action if can do so, 2 versions for events what pass a side and a normal one
     static void Cancel()
     {
         Debug.Log("Normal cancel");
         ShouldCancel = true;
     }
+    static void Cancel(ScoreManager.Side s)
+    {
+        Debug.Log("Normal cancel");
+        ShouldCancel = true;
+    }
+    #endregion
+
     static void Cancel(List<Unit> l)
     {
         Debug.Log("Cancel after the end of turn");
@@ -48,7 +57,7 @@ public static class Action_PlayerCreate
             yield break;
         }
 
-        ScoreManager.Instance.EndPlayerTurnEvent.AddListener(Cancel);
+        ScoreManager.Instance.eTurnEvent_Functional.AddListener(Cancel);
         void StartAwaiting_ListOfPositions(List<Vector2Int> v2)
         {
             IsWaitingForData = false;
@@ -100,7 +109,7 @@ public static class Action_PlayerCreate
 
 
 
-        ScoreManager.Instance.EndPlayerTurnEvent.RemoveListener(Cancel);
+        ScoreManager.Instance.eTurnEvent_Functional.RemoveListener(Cancel);
         ShouldCancel = false;
         GameManager.Instance.CancelEvent.RemoveListener(Cancel);
         yield return new WaitForSeconds(0.001f);

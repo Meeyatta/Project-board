@@ -41,6 +41,9 @@ public static class Action_NextTurn
             #endregion
             case ScoreManager.Side.Enemy:
                 #region Enemy turn ended
+
+                ScoreManager.Instance.eTurnEvent_Visuals.Invoke(ScoreManager.Instance.CurTurn);
+
                 ActionParameters attackE = new ActionParameters(
                     GameManager.ActionType.AttackFromKeyworded, null, new List<Keyword> { Keyword.Enemy }, null, null, 0);
                 yield return GameManager.Instance.StartCoroutine(GameManager.Instance.Action(attackE));

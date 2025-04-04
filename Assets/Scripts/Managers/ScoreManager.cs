@@ -2,7 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
-using TMPro;
 
 /*
 
@@ -43,23 +42,17 @@ public class ScoreManager : MonoBehaviour
     public int Score_Enemy;
 
     [Header("------")]
-    public TextMeshProUGUI RoundText;
-    public TextMeshProUGUI TurnText;
 
-    public TextMeshProUGUI PlayerPointsText;
-    public TextMeshProUGUI SymbolText; //This is the symbol between player and enemy points to show the relative number
-    public TextMeshProUGUI EnemyPointsText;
 
-    public UnityEvent<Side> TurnEvent;
-    public UnityEvent<List<Unit>> EndPlayerTurnEvent;
+    public UnityEvent<Side> eTurnEvent_Functional;
+    public UnityEvent<Side> eTurnEvent_Visuals;
+    //public UnityEvent<List<Unit>> EndPlayerTurnEvent;
     public UnityEvent RoundEvent;
     private void Start()
     {
         CurRound = 0;
         CurTurn = Side.Player;
 
-        RoundText.text = "Deployment";
-        TurnText.text = "-";
         RoundEvent.AddListener(GameManager.Instance.ResetMovement);
     }
     public void AddPointPlayer()
@@ -73,31 +66,22 @@ public class ScoreManager : MonoBehaviour
     public IEnumerator EndPlayerTurn()
     {
         CurTurn = ScoreManager.Side.Enemy;
-        TurnEvent.Invoke(ScoreManager.Instance.CurTurn);
-        TurnText.text = ScoreManager.Instance.CurTurn.ToString();
-        EndPlayerTurnEvent.Invoke( BoardManager.Instance.Get_AllUnitsWithKeywords(new List<Keyword> { Keyword.Player }));
+        eTurnEvent_Functional.Invoke(ScoreManager.Instance.CurTurn);
+        //eTurnEvent_Visuals.Invoke(ScoreManager.Instance.CurTurn);
 
         yield return new WaitForSeconds(Time.deltaTime);
     }
     public IEnumerator EndEnemyTurn()
     {
-        Debug.Log("EndEnemyTurn");
-        AudioManager.Instance.Play(SoundName.ClockPling, transform);
-        yield return new WaitForSeconds(Time.deltaTime * 2);
-
         CurTurn = ScoreManager.Side.Player;
 
-        TurnText.text = CurTurn.ToString();
+        eTurnEvent_Functional.Invoke(ScoreManager.Instance.CurTurn);
+
         yield return StartCoroutine(NextRound());
-        TurnEvent.Invoke(CurTurn);
     }
     public IEnumerator NextRound()
     {
-        //Debug.Log("Started Next Round actions");
         CurRound++;
-
-        RoundText.text = ScoreManager.Instance.CurRound.ToString();
-        TurnText.text = ScoreManager.Instance.CurTurn.ToString();
 
         RoundEvent.Invoke();
         yield return new WaitForSeconds(Time.deltaTime);
@@ -114,21 +98,10 @@ public class ScoreManager : MonoBehaviour
     {
         CurRound = 1;
         CurTurn = Side.Player;
-
-        RoundText.text = CurRound.ToString();
     }
 
     void Update()
     {
-        #region Displaying current points
-        PlayerPointsText.text = Score_Player.ToString();
-        EnemyPointsText.text = Score_Enemy.ToString();
-        if (Score_Player == Score_Enemy) { SymbolText.text = "="; }
-        else {
-            string res = (Score_Player - Score_Enemy).ToString(); if (Score_Player > Score_Enemy) { res = "+" + res; }
-            SymbolText.text = res; }
-        #endregion
-
         #region Checking if any of the side won
         if (Score_Player >= Score_Enemy + NScoreDiff) 
         { 

@@ -81,7 +81,7 @@ public class EffectManager : MonoBehaviour
 
         GameplayManager.Instance.eBattlefieldCreation.AddListener(StartUpdatingObjectiveControl);
 
-        ScoreManager.Instance.EndPlayerTurnEvent.AddListener(HideMovement);
+        ScoreManager.Instance.eTurnEvent_Functional.AddListener(HideAllPlayerMovement);
 
         GameManager.Instance.ShowPlacementEvent.AddListener(StartShowingPlacement);
         GameManager.Instance.HidePlacementEvent.AddListener(StopShowingPlacement);
@@ -98,7 +98,7 @@ public class EffectManager : MonoBehaviour
 
         GameplayManager.Instance.eBattlefieldCreation.RemoveListener(StartUpdatingObjectiveControl);
 
-        ScoreManager.Instance.EndPlayerTurnEvent.RemoveListener(HideMovement);
+        ScoreManager.Instance.eTurnEvent_Functional.RemoveListener(HideAllPlayerMovement);
 
         GameManager.Instance.ShowPlacementEvent.RemoveListener(StartShowingPlacement);
         GameManager.Instance.HidePlacementEvent.RemoveListener(StopShowingPlacement);
@@ -430,9 +430,14 @@ public class EffectManager : MonoBehaviour
                 }
         }
     }
+    void HideAllPlayerMovement(ScoreManager.Side s)
+    {
+        List<Unit> units = BoardManager.Instance.Get_AllUnitsWithKeywords(new List<Keyword> { Keyword.Player });
+
+        HideMovement(units);
+    }
     void HideMovement(List<Unit> units)
     {
-        //Debug.Log("Hid movement");
         foreach (Unit u in units)
         {
             if (!UnitEffectsToHide.ContainsKey(u)) return;

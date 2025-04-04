@@ -32,11 +32,11 @@ public class ResourceManager : MonoBehaviour
     #endregion
     void Start()
     {
-        ScoreManager.Instance.TurnEvent.AddListener(DeployNewplayerU);
+        ScoreManager.Instance.eTurnEvent_Functional.AddListener(DeployNewplayerU);
     }
     void OnDisable()
     {
-        ScoreManager.Instance.TurnEvent.RemoveListener(DeployNewplayerU);
+        ScoreManager.Instance.eTurnEvent_Functional.RemoveListener(DeployNewplayerU);
     }
 
     //Gets the whole army back into the NotPlaced category

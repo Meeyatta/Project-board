@@ -87,11 +87,11 @@ public class GameManager : MonoBehaviour
     public UnityEvent<List<Unit>> HidePlacementEvent;
     void Start()
     {
-        ScoreManager.Instance.EndPlayerTurnEvent.AddListener(UnselectCurrentUnit);
+        ScoreManager.Instance.eTurnEvent_Functional.AddListener(UnselectCurrentUnit);
     }
     void OnDisable()
     {
-        ScoreManager.Instance.EndPlayerTurnEvent.RemoveListener(UnselectCurrentUnit);
+        ScoreManager.Instance.eTurnEvent_Functional.RemoveListener(UnselectCurrentUnit);
 
     }
     #endregion Events
@@ -264,7 +264,7 @@ public class GameManager : MonoBehaviour
         }
         yield return null;
     }
-    public void UnselectCurrentUnit(List<Unit> l)
+    public void UnselectCurrentUnit(ScoreManager.Side s)
     {
         CurUnitSelected = null;
     }
