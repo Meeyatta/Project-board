@@ -6,6 +6,8 @@ using UnityEngine.Windows;
 
 public static class Ability_Score
 {
+    const float DelayBetweenScores = 40;
+
     const string JitterAnimTrigger = "jitter";
     public static int Check(Unit obj)
     {
@@ -25,24 +27,28 @@ public static class Ability_Score
         List<Keyword> keywords = parameters.Keywords;
         yield return new WaitForSeconds(Time.deltaTime);
 
-        List<Keyword> ks = new List<Keyword> { Keyword.Objective };
-        List<Unit> all = BoardManager.Instance.Get_AllUnitsWithKeywords(ks);
+        List<Keyword> objs = new List<Keyword> { Keyword.Objective };
+        List<Unit> all = BoardManager.Instance.Get_AllUnitsWithKeywords(objs);
 
         foreach (var a in all)
         {
             int res = Check(a);
 
             #region Player scores
-            if (res > 0)
+            if (res > 0 && ScoreManager.Instance.CurTurn == ScoreManager.Side.Player)
             {
                 a.Anim.SetTrigger(JitterAnimTrigger);
+                ScoreClock.Instance.Shrug_Visuals();
+
                 ScoreManager.Instance.AddPointPlayer();
             }
             #endregion
             #region Enemy scores
-            if (res < 0)
+            if (res < 0 && ScoreManager.Instance.CurTurn == ScoreManager.Side.Enemy)
             {
                 a.Anim.SetTrigger(JitterAnimTrigger);
+                ScoreClock.Instance.Shrug_Visuals();
+
                 ScoreManager.Instance.AddPointEnemy();
             }
             #endregion
@@ -50,9 +56,10 @@ public static class Ability_Score
             //TODO:
             #endregion
 
+            yield return new WaitForSeconds(DelayBetweenScores * Time.deltaTime);
         }
 
-        yield return new WaitForSeconds(Time.deltaTime);
+        yield return new WaitForSeconds(2 * Time.deltaTime);
         GameManager.Instance.RemoveAction(parameters);
     }
     #region Conditions for either player or enemy scoring

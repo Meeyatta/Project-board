@@ -76,7 +76,6 @@ public static class Action_PlayerCreate
         GameManager.Instance.I_PositionSelect = null;
         #endregion
 
-
         #region While we are selecting a new position for a unit, hold that unit in a position near player's bag
         //TODO: change the object's position
         #endregion

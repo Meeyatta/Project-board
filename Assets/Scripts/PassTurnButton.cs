@@ -12,7 +12,7 @@ public class PassTurnButton : MonoBehaviour
     public GameObject Button;
     public bool CanPass = true;
 
-    string Shrugstr = "Shrug";
+    const string Shrugstr = "shrug";
     Animator anim;
 
     #region Singleton
@@ -57,11 +57,15 @@ public class PassTurnButton : MonoBehaviour
         TurnText.text = "-";     
     }
 
+    public void PlaySound(SoundName n)
+    {
+        AudioManager.Instance.Play(n, transform);
+    }
+
     #region Visual effects for when the turnButton is activated, for in-script use and event
     public void Shrug_Visuals()
     {
         anim.SetTrigger(Shrugstr);
-        AudioManager.Instance.Play(SoundName.ClockPling, transform);
     }
     public void Shrug_Visuals(ScoreManager.Side s)
     {

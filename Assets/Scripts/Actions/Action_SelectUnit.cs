@@ -4,8 +4,16 @@ using UnityEngine;
 
 public static class Action_SelectUnit
 {
+    static bool ShouldCancel = false;
+
+    static void Cancel()
+    {
+        ShouldCancel = true;
+    }
     public static IEnumerator Select(ActionParameters parameters)
     {
+        GameManager.Instance.CancelEvent.AddListener(Cancel);
+
         List<Vector2Int> CellsCoordinates = parameters.CellsCoordinates;
         if (CellsCoordinates.Count == 0) Debug.LogError("INVALID ACTION PARAMETERS - SELECT(CellCoordinates)");
     
@@ -49,11 +57,11 @@ public static class Action_SelectUnit
             }
             #endregion
 
-            AudioManager.Instance.Play(SoundName.Click, GameManager.Instance.CurUnitSelected.transform);
+            //AudioManager.Instance.Play(SoundName.Click, GameManager.Instance.CurUnitSelected.transform);
             yield return new WaitForSeconds(Time.deltaTime);
 
             #region Wait shile we are selecting the unit
-            while (GameManager.Instance.CurUnitSelected != null && ogUnit == GameManager.Instance.CurUnitSelected)
+            while (GameManager.Instance.CurUnitSelected != null && ogUnit == GameManager.Instance.CurUnitSelected && !ShouldCancel)
             {
                 //Debug.Log("IS SELECTING A UNIT");
                 yield return new WaitForSeconds(Time.deltaTime);
@@ -65,7 +73,6 @@ public static class Action_SelectUnit
 
 
             GameManager.Instance.RemoveAction(parameters);
-            yield break;
         }
         #endregion
 
@@ -75,8 +82,11 @@ public static class Action_SelectUnit
             //TODO:
 
             GameManager.Instance.RemoveAction(parameters);
-            yield break;
         }
         #endregion
+
+        ShouldCancel = false;
+        GameManager.Instance.CurUnitSelected = null;
+        GameManager.Instance.CancelEvent.RemoveListener(Cancel);
     }
 }

@@ -58,10 +58,13 @@ public class AudioManager : MonoBehaviour
 
         AudioSource source = Instantiate(SFXObject, transform);
 
-        source.clip = sound.Clips[Random.Range(0, sound.Clips.Count)];
+        if (sound.Clips == null || sound.Clips.Count == 0) return;
+        AudioClip clip = sound.Clips[Random.Range(0, sound.Clips.Count)];
 
+        if (clip == null) { return; }
+
+        source.clip = clip;        
         source.volume = sound.Volume;
-
         source.Play();
 
         float length = source.clip.length;

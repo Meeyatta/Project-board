@@ -11,6 +11,7 @@ public class ScoreClock : MonoBehaviour
     public TextMeshProUGUI EnemyPointsText;
 
     [HideInInspector]
+    const string Shrugstr = "shrug";
     public Animator Anim;
 
     #region Singleton
@@ -34,6 +35,24 @@ public class ScoreClock : MonoBehaviour
     #endregion
     void Start()
     {
+        Anim = GetComponent<Animator>();
+    }
+
+
+    #region Visual effects for when the turnButton is activated, for in-script use and event
+    public void Shrug_Visuals()
+    {
+        Anim.SetTrigger(Shrugstr);
+    }
+    public void Shrug_Visuals(ScoreManager.Side s)
+    {
+        Shrug_Visuals();
+    }
+    #endregion
+
+    public void PlaySound(SoundName n)
+    {
+        AudioManager.Instance.Play(n, transform);
     }
     public void UpdateText()
     {

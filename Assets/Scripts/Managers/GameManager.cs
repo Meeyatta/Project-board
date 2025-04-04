@@ -320,8 +320,6 @@ public class GameManager : MonoBehaviour
     {
         yield return new WaitForSeconds(Time.deltaTime * 0.01f); //For some reason this is vital, otherwise Unity shits itself
 
-        Debug.Log("Received coordinates - " + coords);
-
         #region Are we selecting a position for creating a unit?
         if (CurrentAction != null && CurrentAction.Type == ActionType.PlayerCreate && Action_PlayerCreate.IsWaitingForData)
         #region Yes - Invoke an event to send coordinates where the unit is going to be created
@@ -371,7 +369,7 @@ public class GameManager : MonoBehaviour
                 if (BoardManager.Instance.Board[coords.x].Cells[coords.y].CurUnit != null)
                 #region Yes - Check what kind of unit this is
                 {
-                    #region Is selected unit a player unit we are not currently selecting?
+                    #region Is selected unit a player unit we are currently NOT selecting?
                     List<Vector2Int> nCoords = new List<Vector2Int>(); nCoords.Add(coords);
                     if (BoardManager.Instance.Board[coords.x].Cells[coords.y].CurUnit.CurKeywords.Contains(Keyword.Player)
                         && CurUnitSelected != BoardManager.Instance.Board[coords.x].Cells[coords.y].CurUnit)
@@ -390,7 +388,6 @@ public class GameManager : MonoBehaviour
                     #endregion
 
                     #endregion
-
                 }
                 #endregion
 
@@ -422,21 +419,21 @@ public class GameManager : MonoBehaviour
         if (CurrentAction.Params == parms) { CurrentAction = null; }
 
         if (ActionQueue != null && ActionQueue.Count > 0 &&
-            ActionQueue.Peek().Params == parms) { ActionQueue.Dequeue(); } // <- Might need to change it to "while", but I am afraid Unity will shit itself thinking its an infinite loop
+            ActionQueue.Peek().Params == parms) { ActionQueue.Dequeue(); } // <- Might need to change it to "while", but I am afraid Unity will destroy itself thinking its an infinite loop
     }
 
     //Continuously cycles through each action in current action queue 
     IEnumerator GoThroughActions()
     {
-        yield return new WaitForSeconds(0.0001f);
+        yield return new WaitForSeconds(Time.deltaTime);
 
         while (ActionQueue.Count > 0)
         {
-            if (CurrentAction != null) { yield return new WaitForSeconds(0.01f); continue; }
+            if (CurrentAction != null) { yield return new WaitForSeconds(Time.deltaTime); continue; }
 
             CurrentAction = ActionQueue.Dequeue();
             yield return StartCoroutine(CurrentAction.IEnum);
-            yield return new WaitForSeconds(0.01f);
+            yield return new WaitForSeconds(Time.deltaTime);
         }
         ActionQueue.Clear();
         CurrentAction = null;

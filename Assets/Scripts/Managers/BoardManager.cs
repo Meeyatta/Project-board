@@ -112,7 +112,11 @@ public class BoardManager : MonoBehaviour
                 #region Setup cells in a script table
                 Cell cell = new Cell();
                 cell.Coordinates = new Vector2Int(x, y);
-                cell.Position = CellsObj.transform.position + new Vector3(InBetweenSpace + x * (InBetweenSpace + CellSize), DefaultY, -1 * (InBetweenSpace + y * (InBetweenSpace + CellSize)) );
+                cell.Position = CellsObj.transform.position +
+                    new Vector3(
+                        InBetweenSpace + x * (InBetweenSpace + CellSize), 
+                        DefaultY, 
+                        -1 * (InBetweenSpace + y * (InBetweenSpace + CellSize)) );
                 cell.CoveredBy = Covering.None;
 
                 #region Check if zone is a player deployment zone
@@ -240,7 +244,7 @@ public class BoardManager : MonoBehaviour
 
         newP.x /= poss.Count; newP.y /= poss.Count; newP.z /= poss.Count;
 
-        return newP;
+        return newP + CellsObj.transform.position + transform.position;
 
     }
 
@@ -302,9 +306,9 @@ public class BoardManager : MonoBehaviour
             for (int y = 0; y < Board[x].Cells.Count; y++)
             {
                 if (Board[x].Cells[y].CurUnit != null) { continue; }
-                if (Vector3.Distance(Board[x].Cells[y].Position, hitPosition) < minDist) 
+                if (Vector3.Distance(Board[x].Cells[y].Position + CellsObj.transform.position + transform.position, hitPosition) < minDist) 
                 { 
-                    minDist = Vector3.Distance(Board[x].Cells[y].Position, hitPosition); 
+                    minDist = Vector3.Distance(Board[x].Cells[y].Position + CellsObj.transform.position + transform.position, hitPosition); 
                     res = new Vector2Int(x, y); 
                 }
             }
@@ -372,14 +376,17 @@ public class BoardManager : MonoBehaviour
         {
             for (int yi = 0; yi < Board[xi].Cells.Count; yi++)
             {
-                if (Board[xi].Cells[yi].Position == pos)
+                if (Board[xi].Cells[yi].Position + CellsObj.transform.position == pos)
                 {                    return new Vector2Int(xi, yi); 
                 }
             }
         }
 
-        float fx = (pos.x - CellsObj.transform.position.x - InBetweenSpace) / (InBetweenSpace + CellSize); int x = (int) fx;
-        float fy = (CellsObj.transform.position.z - pos.z - InBetweenSpace) / (InBetweenSpace + CellSize); int y = (int) fy;
+        float fx = (pos.x - CellsObj.transform.position.x - InBetweenSpace + CellsObj.transform.position.x + transform.position.x) / (InBetweenSpace + CellSize); 
+        int x = (int) fx;
+
+        float fy = (CellsObj.transform.position.z - pos.z - InBetweenSpace + CellsObj.transform.position.z + transform.position.z) / (InBetweenSpace + CellSize);
+        int y = (int) fy;
 
         Debug.Log(new Vector2Int(x, y));
         return new Vector2Int(x, y);
@@ -397,7 +404,7 @@ public class BoardManager : MonoBehaviour
         }
 
         yield return new WaitForSeconds(2 * Time.deltaTime);
-        unit.gameObject.transform.position = BoardToWorldPosition(s).Value + unit.ModelOffset;
+        unit.gameObject.transform.position = BoardToWorldPosition(s).Value + unit.ModelOffset + transform.position;
     }
 
     //Returns true if the position is within bounds of the board
