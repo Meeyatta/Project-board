@@ -34,18 +34,54 @@ public class Unit : MonoBehaviour
     public HashSet<Keyword> CurKeywords = new HashSet<Keyword>();
     #endregion
 
+    [Header("Visuals:")]
+    public Color PlayerColor = new Color(0, 255, 255);
+    public Material PlayerBaseMat;
+
+    public Color EnemyColor = new Color(255, 0, 0);
+    public Material EnemyBaseMat;
+
     [Header("----Read only information----")]
+    GameObject Base;
+    public GameObject Model;
     public bool Moved = false;
     [Header("---------")]
+    public Outline BaseOutline;
+    public Renderer BaseRend;
+
     public GameObject UnitModelShowcase; //This is used to showcase where the unit model COULD be placed with move of creation
     public Vector3 ModelOffset;
 
     [HideInInspector] public Animator Anim;
 
+    private void OnEnable()
+    {
+        Anim = GetComponent<Animator>();
+
+        Transform t = transform.Find("base");
+        if (t != null) Base = t.gameObject;
+
+        Transform tt = transform.Find("model");
+        if (tt != null) Model = tt.gameObject;
+
+        if (Base != null ) BaseOutline = Base.GetComponent<Outline>();
+        if (Base != null) BaseRend = Base.GetComponent<Renderer>();
+    }
+
     private void Awake()
     {
         Anim = GetComponent<Animator>();
+
+        Transform t = transform.Find("base");
+        if (t != null) Base = t.gameObject;
+
+        Transform tt = transform.Find("model");
+        if (tt != null) Model = tt.gameObject;
+
+        if (Base != null) BaseOutline = Base.GetComponent<Outline>();
+        if (Base != null) BaseRend = Base.GetComponent<Renderer>();
     }
+
     void Start()
     {
         CurrentHealth = MaxHealth;
@@ -56,8 +92,41 @@ public class Unit : MonoBehaviour
             UnitModelShowcase.SetActive(false);
         }
         else { Debug.Log(UnitName + " " + gameObject.name + " HAS NO UnitModelShowcase"); }
-        
+
     }
+
+
+    #region Turns this into a player unit
+    
+    public void SetToPlayer()
+    {
+        if (BaseOutline != null) BaseOutline.OutlineColor = PlayerColor;
+
+        if (BaseRend != null) BaseRend.material = PlayerBaseMat;
+
+        if (BaseKeywords.Contains(Keyword.Enemy)) BaseKeywords.Remove(Keyword.Enemy);
+        if (!BaseKeywords.Contains(Keyword.Player)) BaseKeywords.Add(Keyword.Player);
+
+
+    }
+    #endregion 
+
+    #region Turns this into an enemy unit
+    public IEnumerator SetToEnemy()
+    {
+        yield return new WaitForSeconds(Time.deltaTime);
+
+        Debug.Log("Set " + UnitName + " to enemy");
+
+        if (BaseOutline != null) BaseOutline.OutlineColor = EnemyColor;
+
+        if (BaseRend != null) BaseRend.material = EnemyBaseMat;
+
+        if (BaseKeywords.Contains(Keyword.Player)) BaseKeywords.Remove(Keyword.Player);
+        if (!BaseKeywords.Contains(Keyword.Enemy)) BaseKeywords.Add(Keyword.Enemy);
+    }
+    #endregion
+
     public void PlaySound(SoundName name)
     {
         AudioManager.Instance.Play(name, transform);
@@ -76,14 +145,9 @@ public class Unit : MonoBehaviour
         curK.AddRange(CondKeywords);
         CurKeywords = curK;
 
-        //foreach (var k in CurKeywords)
-        //{
-        //    Debug.Log(k);
-        //}
-        //foreach (var k in CurAbilities)
-        //{
-        //    Debug.Log(k);
-        //}
+        if (BaseOutline != null) BaseOutline.enabled = !Moved;
+        if (BaseKeywords.Contains(Keyword.Player)) { Model.transform.rotation = Quaternion.LookRotation(new Vector3(0,0,1)); }
+        if (BaseKeywords.Contains(Keyword.Enemy)) { Model.transform.rotation = Quaternion.LookRotation(new Vector3(0, 0, -1));  }
 
     }
     void FixedUpdate()

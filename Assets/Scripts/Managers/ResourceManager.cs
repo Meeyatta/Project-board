@@ -6,9 +6,14 @@ public class ResourceManager : MonoBehaviour
 {
     public int StarterUnitsAmount;
 
-    public List<Unit> Army = new List<Unit>();
+    public List<Unit> UnitsToCreate = new List<Unit>();
+
+    List<Unit> Army = new List<Unit>();
     public List<Unit> Army_NotPlaced = new List<Unit>();
     public List<Unit> Army_Placed = new List<Unit>();
+
+    [Header("---Assigning for convenience sake---")]
+    public Transform PlayerUitsTr;
 
     #region Singleton
     public static ResourceManager Instance;
@@ -63,7 +68,18 @@ public class ResourceManager : MonoBehaviour
         Army_Placed.Add(unit);
     }
 
-    public void DeployPlayerUnits()
+    public IEnumerator InstantiatePlayerUnits()
+    {
+        foreach (var v in UnitsToCreate)
+        {
+            Unit u = Instantiate(v.gameObject, new Vector3(255, 0, 0), Quaternion.identity, PlayerUitsTr).GetComponent<Unit>();
+            u.SetToPlayer();
+            Army.Add(u);
+            yield return new WaitForSeconds(Time.deltaTime);
+        }
+    }
+
+    public IEnumerator DeployPlayerUnits()
     {
         List<Unit> toDeploy = new List<Unit>();
         int totalAm = 0;
@@ -75,7 +91,7 @@ public class ResourceManager : MonoBehaviour
 
         ActionParameters parameters = new ActionParameters(
                     GameManager.ActionType.Deploy, toDeploy, null, BoardManager.Instance.PlayerDeploymentZone, null, totalAm);
-        StartCoroutine(GameManager.Instance.Action(parameters));
+        yield return StartCoroutine(GameManager.Instance.Action(parameters));
 
         foreach (var u in toDeploy) { RecordPlacedUnit(u); }
     }

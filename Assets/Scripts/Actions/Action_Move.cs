@@ -194,7 +194,7 @@ public static class Action_Move
         }
         else
         {
-            //Debug.Log("Didn't move: " + newPoss != null + " " + (newPoss.Count > 0) + " " + !ActionTargetUnit.Moved);
+            
         }
 
         Ability_Slippery.Try(ActionTargetUnit);

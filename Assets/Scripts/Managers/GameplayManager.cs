@@ -51,8 +51,14 @@ public class GameplayManager : MonoBehaviour
         yield return new WaitForSeconds(Delay * Time.deltaTime);
         yield return MakeBattlefield(Objective_Positions);
 
-        EnemyManager.Instance.DeployEnemies();
-        ResourceManager.Instance.DeployPlayerUnits();
+        yield return EnemyManager.Instance.InstantiateEnemyUnits();
+        EnemyManager.Instance.ResetArmy();
+        yield return EnemyManager.Instance.DeployEnemies();
+
+        yield return ResourceManager.Instance.InstantiatePlayerUnits();
+        ResourceManager.Instance.ResetArmy();
+        yield return ResourceManager.Instance.DeployPlayerUnits();
+
         eBattlefieldCreation.Invoke();
 
     }

@@ -7,9 +7,14 @@ public class EnemyManager : MonoBehaviour
 {
     public int StarterUnitsAmount;
 
-    public List<Unit> Army = new List<Unit>();
+    public List<Unit> UnitsToCreate = new List<Unit>();
+
+    List<Unit> Army = new List<Unit>();
     public List<Unit> Army_NotPlaced = new List<Unit>();
     public List<Unit> Army_Placed = new List<Unit>();
+
+    [Header("---Assigning for convenience sake---")]
+    public Transform EnemyUitsTr;
 
     #region Singleton
     public static EnemyManager Instance;
@@ -75,7 +80,19 @@ public class EnemyManager : MonoBehaviour
         Army_Placed.Add(unit);
     }
 
-    public void DeployEnemies()
+    public IEnumerator InstantiateEnemyUnits()
+    {
+        foreach (var v in UnitsToCreate)
+        {
+            Unit u = Instantiate(v.gameObject, new Vector3(255, 0, 0), Quaternion.identity, EnemyUitsTr).GetComponent<Unit>();
+            yield return new WaitForSeconds(Time.deltaTime);
+            yield return u.SetToEnemy();
+            Army.Add(u);
+            
+        }
+    }
+
+    public IEnumerator DeployEnemies()
     {
         List<Unit> toDeploy = new List<Unit>();
         int totalAm = 0;
@@ -87,7 +104,7 @@ public class EnemyManager : MonoBehaviour
 
         ActionParameters parameters = new ActionParameters(
                     GameManager.ActionType.Deploy, toDeploy, null, BoardManager.Instance.EnemyDeploymentZone, null, totalAm);
-        StartCoroutine(GameManager.Instance.Action(parameters));
+        yield return StartCoroutine(GameManager.Instance.Action(parameters));
 
         foreach (var u in toDeploy) { RecordPlacedUnit(u); }
     }
