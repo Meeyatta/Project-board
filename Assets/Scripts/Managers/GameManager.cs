@@ -25,7 +25,8 @@ using UnityEngine.InputSystem;
             number of units from roster in their deployment zone            
         CreateBattlefield(TODO: More parameters) - Places the battlefield things like objectives & obstacles
         Deploy(List<Unit> roster, int amount, List<Vector2Int> dZone) - Deploys <amount> number of units from <roster> within <dZone> coordinates
-        Redeploy - Places the unit on the position within the deployment zone
+        Redeploy(Unit unit, List<Vector2Int> CellsCoordinates) - Places the unit on the position within the deployment zone
+        DeployNew() - Gives player a choice between 3 not-deployed units and places one of them on the board
             
         --ABILITIES--
 
@@ -65,6 +66,7 @@ public class GameManager : MonoBehaviour
     public enum ActionType 
     { 
     Attack, AttackFromKeyworded, Move, Place, SelectUnit, PlayerCreate, Pre_NextTurn, NextTurn, Create, CreateBattlefield, Deploy, Redeploy,
+    DeployNew,
 
     Score, Slip,
     };
@@ -223,13 +225,22 @@ public class GameManager : MonoBehaviour
             #endregion CreateBattlefield()
 
             //Places the unit on the position within the deployment zone
-            #region Redeploy()
+            #region Redeploy(Unit unit, List<Vector2Int> CellsCoordinates)
             case ActionType.Redeploy:
                 ActionSlot redeploy = new ActionSlot(Action_Redeploy.Redeploy(parameters), ActionType.Redeploy, parameters);
                 ActionQueue.Enqueue(redeploy);
 
                 break;
             #endregion Redeploy()
+
+            //Gives player a choice between 3 not-deployed units and places one of them on the board
+            #region DeployNew()
+            case ActionType.DeployNew:
+                ActionSlot deployNew = new ActionSlot(Action_DeployNewPlayerUnit.DeployNewUnit(parameters), ActionType.DeployNew, parameters);
+                ActionQueue.Enqueue(deployNew);
+
+                break;
+            #endregion DeployNew()
 
             /* --ABILITIES-- */
 
