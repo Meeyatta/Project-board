@@ -4,7 +4,11 @@ using UnityEngine;
 
 public class UnitPlacementBag : MonoBehaviour
 {
-    public GameObject NewUnitsPosObj;
+    public Animator Anim;
+    public GameObject UnitsPos_InFront; //Position in front of camera when we select units
+    public GameObject UnitsPos_Below; //Position sitting on the board when player looks away
+
+    const string shrugStr = "shrug";
     public static UnitPlacementBag Instance;
     void Singleton()
     {
@@ -20,17 +24,12 @@ public class UnitPlacementBag : MonoBehaviour
     }
     private void Awake()
     {
+        Anim = GetComponent<Animator>();
         Singleton();
     }
 
-    void Start()
+    public void PullOutUnits()
     {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
+        //Play the animation what has a sound of units being taken out
     }
 }
