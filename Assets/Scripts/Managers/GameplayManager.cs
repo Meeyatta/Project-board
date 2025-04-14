@@ -26,7 +26,7 @@ public class GameplayManager : MonoBehaviour
     #endregion
 
     public List<Vector2Int> Objective_Positions;
-    public Unit Objective_Obj;
+    public GameObject Objective_Obj;
 
     [Header("---Functionality stuff---")]
     public float Delay;
@@ -39,10 +39,8 @@ public class GameplayManager : MonoBehaviour
         foreach (var p in objective_Positions)
         {
             List<Vector2Int> pos = new List<Vector2Int> { p };
-
-
             ActionParameters paramets = new ActionParameters(
-                        GameManager.ActionType.Create, new List<Unit> { Objective_Obj }, null, pos, 0);
+                        GameManager.ActionType.Create, null, null, pos, Objective_Obj, 0);
             yield return StartCoroutine( GameManager.Instance.Action(paramets));
         }
 

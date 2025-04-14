@@ -78,19 +78,11 @@ public static class Action_Redeploy
 
         return res;
     }
-    public static bool IsFittingInDeploymentZone(Unit u, List<Vector2Int> coordinates)
-    {
-        List<List<Vector2Int>> posses = Get_PossibleDeployments(u);
 
-        // |    Scary vodoo expression I've copy-pasted
-        // v
-        return !((!posses.Any(p => p.SequenceEqual(coordinates)) || BoardManager.Instance.AreAnyOccupied(coordinates)));
-        
-    }
-        
     public static IEnumerator Redeploy(ActionParameters parameters)
     {
         yield return new WaitForSeconds(Time.deltaTime * 0.5f);
+
 
         Unit target = parameters.ActionTargetUnits[0];
         List<Vector2Int> coordinates = parameters.CellsCoordinates;

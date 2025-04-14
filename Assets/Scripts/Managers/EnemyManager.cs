@@ -103,7 +103,7 @@ public class EnemyManager : MonoBehaviour
         }
 
         ActionParameters parameters = new ActionParameters(
-                    GameManager.ActionType.Deploy, toDeploy, null, BoardManager.Instance.EnemyDeploymentZone, totalAm);
+                    GameManager.ActionType.Deploy, toDeploy, null, BoardManager.Instance.EnemyDeploymentZone, null, totalAm);
         yield return StartCoroutine(GameManager.Instance.Action(parameters));
 
         foreach (var u in toDeploy) { RecordPlacedUnit(u); }
@@ -115,7 +115,7 @@ public class EnemyManager : MonoBehaviour
 
         List<Unit> newEnemy = new List<Unit> { Army_NotPlaced[0] };
         ActionParameters parameters = new ActionParameters(
-                    GameManager.ActionType.Deploy, newEnemy, null, BoardManager.Instance.EnemyDeploymentZone, 1);
+                    GameManager.ActionType.Deploy, newEnemy, null, BoardManager.Instance.EnemyDeploymentZone, null, 1);
         StartCoroutine(GameManager.Instance.Action(parameters));
 
         RecordPlacedUnit(Army_NotPlaced[0]);
@@ -290,7 +290,7 @@ public class EnemyManager : MonoBehaviour
             {
                 ActionParameters parameters = new ActionParameters(
                     GameManager.ActionType.Move,
-                    new List<Unit> { unit }, null, newPos, 0);
+                    new List<Unit> { unit }, null, newPos, null, 0);
                 MoveActions.Add(parameters);
                 yield return StartCoroutine(GameManager.Instance.Action(parameters));
             }
@@ -322,7 +322,7 @@ public class EnemyManager : MonoBehaviour
         Debug.Log("Finished moving all enemy units");
         CMakingMoves = null; 
 
-        ActionParameters turnParameters = new ActionParameters(GameManager.ActionType.NextTurn, null, null, null, 0);
+        ActionParameters turnParameters = new ActionParameters(GameManager.ActionType.NextTurn, null, null, null, null, 0);
         StartCoroutine(GameManager.Instance.Action(turnParameters));
         #endregion
     }
