@@ -10,7 +10,7 @@ public static class Ability_Slippery
     {
         if (!u.CurAbilities.Contains(Ability.Slippery)) { return; }
 
-        ActionParameters parameters = new ActionParameters(GameManager.ActionType.Slip, new List<Unit> { u }, null, null, 0);
+        ActionParameters parameters = new ActionParameters(GameManager.ActionType.Slip, new List<Unit> {u}, null, null, null, 0);
         GameManager.Instance.StartCoroutine(GameManager.Instance.Action(parameters));
     }
     public static List<Vector2Int> GetRandPos(Unit u)
