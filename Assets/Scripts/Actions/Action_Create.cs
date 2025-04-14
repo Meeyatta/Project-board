@@ -8,10 +8,10 @@ public static class Action_Create
     public static IEnumerator Create(ActionParameters parameters)
     {
         yield return new WaitForSeconds(0.001f);
-        GameObject Object = parameters.Object; List<Vector2Int> poss = parameters.CellsCoordinates;
+        Unit unit = parameters.ActionTargetUnits[0]; List<Vector2Int> poss = parameters.CellsCoordinates;
 
-        Unit unit =
-            GameManager.Instantiate(Object, Vector3.zero, Quaternion.identity).GetComponent<Unit>();
+        if (unit.IsPrefab) unit = GameManager.Instantiate(unit.gameObject, Vector3.zero, Quaternion.identity).GetComponent<Unit>();
+        List<Unit> unitList = new List<Unit>(); unitList.Add(unit);
 
         bool ViablePos = true;
         foreach (var v in poss)

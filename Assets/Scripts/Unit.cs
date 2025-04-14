@@ -38,10 +38,11 @@ public class Unit : MonoBehaviour
     public Color PlayerColor = new Color(0, 255, 255);
     public Material PlayerBaseMat;
 
-    public Color EnemyColor = new Color(255, 0, 0);
+    public Color EnemyColor = new Color(255, 0, 255);
     public Material EnemyBaseMat;
 
     [Header("----Read only information----")]
+    public bool IsPrefab = true;
     GameObject Base;
     public GameObject Model;
     public bool Moved = false;
@@ -56,6 +57,7 @@ public class Unit : MonoBehaviour
 
     private void OnEnable()
     {
+        IsPrefab = false;
         Anim = GetComponent<Animator>();
 
         Transform t = transform.Find("base");
@@ -70,6 +72,7 @@ public class Unit : MonoBehaviour
 
     private void Awake()
     {
+        IsPrefab = false;
         Anim = GetComponent<Animator>();
 
         Transform t = transform.Find("base");

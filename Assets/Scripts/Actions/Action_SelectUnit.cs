@@ -10,18 +10,32 @@ public static class Action_SelectUnit
     {
         ShouldCancel = true;
     }
+    
     public static IEnumerator Select(ActionParameters parameters)
     {
         GameManager.Instance.CancelEvent.AddListener(Cancel);
 
-        List<Vector2Int> CellsCoordinates = parameters.CellsCoordinates;
-        if (CellsCoordinates.Count == 0) Debug.LogError("INVALID ACTION PARAMETERS - SELECT(CellCoordinates)");
-    
-        Vector2Int coords = CellsCoordinates[0];
-        Debug.Log("SELECTED ON" + coords);
-        Unit ogUnit = GameManager.Instance.CurUnitSelected; List<Unit> us = new List<Unit>();
-    
-        GameManager.Instance.CurUnitSelected = BoardManager.Instance.Board[coords.x].Cells[coords.y].CurUnit;
+        Unit ogUnit = GameManager.Instance.CurUnitSelected;
+        List<Unit> us = new List<Unit>();
+        #region If we are selecting a unit we click on
+        if (parameters.CellsCoordinates != null && parameters.CellsCoordinates.Count > 0)
+        {
+            List<Vector2Int> CellsCoordinates = parameters.CellsCoordinates;
+            if (CellsCoordinates.Count == 0) Debug.LogError("INVALID ACTION PARAMETERS - SELECT(CellCoordinates)");
+
+            Vector2Int coords = CellsCoordinates[0];
+            Debug.Log("SELECTED ON" + coords);
+
+            GameManager.Instance.CurUnitSelected = BoardManager.Instance.Board[coords.x].Cells[coords.y].CurUnit;
+        }
+        #endregion
+        #region If we pass a unit to select
+        else if (parameters.ActionTargetUnits != null)
+        {
+            GameManager.Instance.CurUnitSelected = parameters.ActionTargetUnits[0];
+        }
+        #endregion
+
         ogUnit = GameManager.Instance.CurUnitSelected;
         us.Add(GameManager.Instance.CurUnitSelected);
 
@@ -43,8 +57,8 @@ public static class Action_SelectUnit
                 #endregion
             }
             #endregion
-            #region If round is deployment ( 0 round ) - show available deployment positions
-            else
+            #region If round is deployment or placing a new unit - show available deployment positions
+            else if (ScoreManager.Instance.CurRound == 0 || parameters.CellsCoordinates == null)
             {
                 List<Unit> redeploy = new List<Unit>();
                 foreach (var v in us)

@@ -11,9 +11,10 @@ public static class Action_CreateBattlefield
         #region Placing objectives
         for (int i = 0; i < parameters.CellsCoordinates.Count; i++) 
         {
-            GameObject objective = GameplayManager.Instance.Objective_Obj;
+            GameObject objective = GameplayManager.Instance.Objective_Obj.gameObject;
+            List<Unit> l = new List<Unit> { objective.GetComponent<Unit>() };
             ActionParameters parametersCreate = new ActionParameters(
-            GameManager.ActionType.Create, null, null, parameters.CellsCoordinates, objective, 0);
+            GameManager.ActionType.Create, l, null, parameters.CellsCoordinates, 0);
 
             yield return Action_Create.Create(parametersCreate);
         }

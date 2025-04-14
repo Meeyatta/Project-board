@@ -88,7 +88,7 @@ public class PassTurnButton : MonoBehaviour
             Shrug_Visuals();
             if (ScoreManager.Instance.CurRound != 0) CanPass = false;
 
-            ActionParameters parameters = new ActionParameters(GameManager.ActionType.NextTurn, null, null, null, null, 0);
+            ActionParameters parameters = new ActionParameters(GameManager.ActionType.NextTurn, null, null, null, 0);
             StartCoroutine(GameManager.Instance.Action(parameters));
         }
     }

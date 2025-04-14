@@ -177,7 +177,7 @@ public class GameManager : MonoBehaviour
             //Awaits for player's input on cell coordinates, then places the unit on these coordinates
             #region PlayerCreate(GameObject Object)
             case ActionType.PlayerCreate:
-                ActionSlot playercreate = new ActionSlot(Action_PlayerCreate.PlayerCreate(parameters), ActionType.PlayerCreate, parameters);
+                ActionSlot playercreate = new ActionSlot(Action_PlayerCreate.PlayerCreateOld(parameters), ActionType.PlayerCreate, parameters);
                 ActionQueue.Enqueue(playercreate);
 
                 break;
@@ -332,7 +332,7 @@ public class GameManager : MonoBehaviour
         yield return new WaitForSeconds(Time.deltaTime * 0.01f); //For some reason this is vital, otherwise Unity shits itself
 
         #region Are we selecting a position for creating a unit?
-        if (CurrentAction != null && CurrentAction.Type == ActionType.PlayerCreate && Action_PlayerCreate.IsWaitingForData)
+        if (CurrentAction != null && Action_PlayerCreate.IsWaitingForData)
         #region Yes - Invoke an event to send coordinates where the unit is going to be created
         { //a1
             //Debug.Log(CurrentAction.Type);  //<- Important note, current action is stored in a separate field, not in the queue
@@ -354,7 +354,7 @@ public class GameManager : MonoBehaviour
                     List<Vector2Int> nCoords = new List<Vector2Int>(); nCoords.Add(coords);
                     List<Unit> unitToList = new List<Unit>(); unitToList.Add(CurUnitSelected);
 
-                    ActionParameters parameters = new ActionParameters(ActionType.Redeploy, unitToList, null, nCoords, null, 0);
+                    ActionParameters parameters = new ActionParameters(ActionType.Redeploy, unitToList, null, nCoords, 0);
                     yield return StartCoroutine(Action(parameters));
                     CurUnitSelected = null;
                 }
@@ -365,7 +365,7 @@ public class GameManager : MonoBehaviour
                     List<Vector2Int> nCoords = new List<Vector2Int>(); nCoords.Add(coords);
                     List<Unit> unitToList = new List<Unit>(); unitToList.Add(CurUnitSelected);
 
-                    ActionParameters parameters = new ActionParameters(ActionType.Move, unitToList, null, nCoords, null, 0);
+                    ActionParameters parameters = new ActionParameters(ActionType.Move, unitToList, null, nCoords, 0);
                     yield return StartCoroutine(Action(parameters));
                     CurUnitSelected = null;
                 }
@@ -386,7 +386,7 @@ public class GameManager : MonoBehaviour
                         && CurUnitSelected != BoardManager.Instance.Board[coords.x].Cells[coords.y].CurUnit)
                     #region Yes - select it
                     { 
-                        ActionParameters parameters = new ActionParameters(ActionType.SelectUnit, null, null, nCoords, null, 0);
+                        ActionParameters parameters = new ActionParameters(ActionType.SelectUnit, null, null, nCoords, 0);
                         yield return StartCoroutine(Action(parameters));
                     }
                     #endregion
@@ -406,6 +406,7 @@ public class GameManager : MonoBehaviour
                 else
                 { //b3)
                     Debug.Log("HAVE NOTHING SELECTED, " + coords + " HAS NO UNITS ");
+                    ClickBackEvent.Invoke(coords);
                     //No unit on that cell, do nothing
                 }
                 #endregion

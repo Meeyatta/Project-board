@@ -59,7 +59,7 @@ public class ResourceManager : MonoBehaviour
             res[randI] = f;
         }
 
-        Debug.Log(res.Count);
+        //Debug.Log(res.Count);
         return res;
     }
     #endregion
@@ -105,7 +105,7 @@ public class ResourceManager : MonoBehaviour
         }
 
         ActionParameters parameters = new ActionParameters(
-                    GameManager.ActionType.Deploy, toDeploy, null, BoardManager.Instance.PlayerDeploymentZone, null, totalAm);
+                    GameManager.ActionType.Deploy, toDeploy, null, BoardManager.Instance.PlayerDeploymentZone, totalAm);
         yield return StartCoroutine(GameManager.Instance.Action(parameters));
 
         foreach (var u in toDeploy) { RecordPlacedUnit(u); }
@@ -117,7 +117,7 @@ public class ResourceManager : MonoBehaviour
         if (Army_NotPlaced.Count <= 0) return;
 
         ActionParameters parameters = new ActionParameters(
-                    GameManager.ActionType.DeployNew, null, null, null, null, 0);
+                    GameManager.ActionType.DeployNew, null, null, null, 0);
         StartCoroutine(GameManager.Instance.Action(parameters));
 
         //List<Unit> newUnit = new List<Unit> { Army_NotPlaced[0] };

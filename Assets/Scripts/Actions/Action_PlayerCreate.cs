@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.UIElements;
 
 public static class Action_PlayerCreate
 {
@@ -30,21 +31,57 @@ public static class Action_PlayerCreate
         Debug.Log("Cancel after the end of turn");
         ShouldCancel = true;
     }
+
     public static IEnumerator PlayerCreate(ActionParameters parameters)
     {
+        Unit unit = parameters.ActionTargetUnits[0]; List<Unit> unitList = new List<Unit> { unit };
 
-        GameObject Object = parameters.Object;
-        GameManager.Instance.CancelEvent.AddListener(Cancel);
+        bool isAwaitingPos = true;
+        void stopAwaitingPos(Vector2Int v)
+        {
+           List<Vector2Int> pos = new List<Vector2Int> { v };
+            if (Action_Redeploy.IsFittingInDeploymentZone(unit, pos)) { isAwaitingPos = false; }
+        }
+        GameManager.Instance.ClickBackEvent.AddListener(stopAwaitingPos);
+        ActionParameters p = new ActionParameters(GameManager.ActionType.SelectUnit, unitList, null, null, 0);
+        yield return Action_SelectUnit.Select(p);
+
+        while (isAwaitingPos) 
+        {
+            Debug.Log("Awaiting for the player to click");
+            yield return new WaitForSeconds(Time.deltaTime);
+        }
+
+        GameManager.Instance.ClickBackEvent.RemoveListener(stopAwaitingPos);
+    }
+
+    public static IEnumerator PlayerCreateOld(ActionParameters parameters)
+    {
+        yield return PlayerCreate(parameters);
+        yield break;
+
+        Unit unit1 = parameters.ActionTargetUnits[0];
+        Unit unit;
+
+        if (parameters.CellsCoordinates == null || parameters.CellsCoordinates.Count != 2) { Debug.LogError("PlayerCreate() needs 2 coordinates for applicable zone"); }
+        //GameManager.Instance.CancelEvent.AddListener(Cancel);
 
         UnitPlacementHolderObj = GameObject.Find(UnitPlacementHolderStr);
         Vector3 holdPos = Vector3.zero; if (UnitPlacementHolderObj != null) { holdPos = UnitPlacementHolderObj.transform.position; }
 
         //Create a unit as an object, it's not on the board yet, so it should be hidden
-        Unit unit =
-            GameManager.Instantiate(Object, holdPos, Quaternion.identity).GetComponent<Unit>();
-        List<Unit> unitList = new List<Unit>(); unitList.Add(unit);
-
-
+        List<Unit> unitList = new List<Unit>();
+        if (unit1.IsPrefab) 
+        {
+            unit = GameManager.Instantiate(unit1.gameObject, holdPos, Quaternion.identity).GetComponent<Unit>();
+            unitList.Add(unit);
+        }
+        else 
+        {
+            unit = unit1;
+            unitList.Add(unit); 
+        }
+        
         //Add a listener what executes after players selects a position and returns it
         List<Vector2Int> positions = new List<Vector2Int>();
 
@@ -105,8 +142,6 @@ public static class Action_PlayerCreate
              Debug.Log("Non viable position");
          }
         #endregion
-
-
 
         ScoreManager.Instance.eTurnEvent_Functional.RemoveListener(Cancel);
         ShouldCancel = false;
