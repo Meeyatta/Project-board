@@ -87,6 +87,7 @@ public class EffectManager : MonoBehaviour
         GameManager.Instance.HidePlacementEvent.AddListener(StopShowingPlacement);
         #endregion EventsAdd
     }
+
     #region EventsRemove
     void OnDisable()
     {
@@ -273,13 +274,15 @@ public class EffectManager : MonoBehaviour
 
     IEnumerator ShowingPossibleUnitPosition(Unit unit, List<Vector2Int> availableZone)
     {
+        
         yield return new WaitForSeconds(Time.deltaTime * 0.01f);
 
         RaiseModel(unit);
 
         while (CurUnitMovePosShowcase != null && ScoreManager.Instance.PlayerTurnActionCondition())
         {
-            yield return new WaitForSeconds(Time.deltaTime * 0.001f);
+            yield return new WaitForSeconds(Time.deltaTime);
+            Debug.Log("ShowingPossibleUnitPosition");
 
             List <Vector2Int> pos = BoardManager.Instance.ClosestUnitPosToCursor(unit);
             if (availableZone.Intersect<Vector2Int>(pos).Any())
@@ -307,48 +310,18 @@ public class EffectManager : MonoBehaviour
     }
     void StopShowingPossibleUnitMovement(Unit unit)
     {
-
-        StopCoroutine(ShowingPossibleUnitMovement(unit)); 
+        CurUnitMovePosShowcase = null;
         unit.UnitModelShowcase.SetActive(false);
         CurUnitMovePosShowcase = null;
     }
-    IEnumerator ShowingPossibleUnitMovement(Unit unit)
-    {
-        yield return new WaitForSeconds(Time.deltaTime * 0.01f);
-
-        RaiseModel(unit);
-
-        while (CurUnitMovePosShowcase != null && ScoreManager.Instance.PlayerTurnActionCondition())
-        {
-            yield return new WaitForSeconds(Time.deltaTime * 0.001f);
-            if (BoardManager.Instance.ClosestUnitPosToCursor(unit) == null) { continue; }
-
-            List<Vector2Int> poss = BoardManager.Instance.ClosestUnitPosToCursor(unit);
-            for (int i = 0; i < poss.Count; i++)
-            {
-                List<Vector2Int> l = new List<Vector2Int> { BoardManager.Instance.CursorToCellPosition() };
-                List<Vector2Int> ll = Action_Move.Get_MovementPositionsFromSingleCoordinate(unit, l);
-
-                if (BoardManager.Instance.BoardToWorldPosition(ll).HasValue &&
-                    ll.Intersect<Vector2Int>(l).Any())
-                {
-                    unit.UnitModelShowcase.SetActive(true);
-                    unit.UnitModelShowcase.transform.position = BoardManager.Instance.BoardToWorldPosition(ll).Value + unit.ModelOffset;
-                }              
-            }
-
-        }
-
-        LowerModel(unit);
-        CurUnitMovePosShowcase = null;
-        unit.UnitModelShowcase.SetActive(false);
-
-    }
+    
     #endregion
 
     #region Showing position of unit under the cursor when redeploying
     void StartShowingPossibleUnitRedeployment(Unit unit)
     {
+        Debug.Log("StartShowingPossibleUnitRedeployment");
+
         if (CurUnitMovePosShowcase == null)
         {
             List<Vector2Int> poss = new List<Vector2Int>();
@@ -356,54 +329,6 @@ public class EffectManager : MonoBehaviour
 
             CurUnitMovePosShowcase = StartCoroutine(ShowingPossibleUnitPosition(unit, poss));
         }
-
-    }
-    void StopShowingPossibleUnitRedeployment(Unit unit)
-    {
-
-        StopCoroutine(ShowingPossibleUnitRedeployment(unit));
-        unit.UnitModelShowcase.SetActive(false);
-        CurUnitMovePosShowcase = null;
-    }
-    IEnumerator ShowingPossibleUnitRedeployment(Unit unit)
-    {
-        yield return new WaitForSeconds(Time.deltaTime * 0.01f);
-
-        RaiseModel(unit);
-
-        while (CurUnitMovePosShowcase != null && ScoreManager.Instance.PlayerTurnActionCondition())
-        {
-            yield return new WaitForSeconds(Time.deltaTime * 0.001f);
-            if (BoardManager.Instance.ClosestUnitPosToCursor(unit) == null) { continue; }
-
-            List<Vector2Int> poss = BoardManager.Instance.ClosestUnitPosToCursor(unit);
-            for (int i = 0; i < poss.Count; i++)
-            {
-                List<Vector2Int> l = new List<Vector2Int> { BoardManager.Instance.CursorToCellPosition() };
-
-                List<Vector2Int> ll = new List<Vector2Int>();
-                foreach (var v in Action_Redeploy.Get_PossibleDeployments(unit))
-                {
-                    ll.AddRange(v);
-                }
-
-                if (BoardManager.Instance.BoardToWorldPosition(ll).HasValue &&
-                    ll.Intersect<Vector2Int>(l).Any())
-                {
-                    unit.UnitModelShowcase.SetActive(true);
-                    unit.UnitModelShowcase.transform.position = BoardManager.Instance.BoardToWorldPosition(l).Value + unit.ModelOffset;
-                }
-                else
-                {
-
-                }
-            }
-
-        }
-
-        CurUnitMovePosShowcase = null;
-        LowerModel(unit);
-        unit.UnitModelShowcase.SetActive(false);
 
     }
     #endregion
@@ -499,7 +424,7 @@ public class EffectManager : MonoBehaviour
         foreach (Unit u in units)
         {
             if (!UnitEffectsToHide.ContainsKey(u)) return;
-            StopShowingPossibleUnitRedeployment(u);
+            CurUnitMovePosShowcase = null;
 
             foreach (var ef in UnitEffectsToHide[u])
             {
