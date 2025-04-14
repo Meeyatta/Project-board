@@ -332,10 +332,10 @@ public class GameManager : MonoBehaviour
         yield return new WaitForSeconds(Time.deltaTime * 0.01f); //For some reason this is vital, otherwise Unity shits itself
 
         #region Are we selecting a position for creating a unit?
-        if (CurrentAction != null && CurrentAction.Type == ActionType.PlayerCreate && Action_PlayerCreate.IsWaitingForData)
+        if (CurrentAction != null && Action_PlayerCreate.IsWaitingForData)
         #region Yes - Invoke an event to send coordinates where the unit is going to be created
         { //a1
-            //Debug.Log(CurrentAction.Type);  //<- Important note, current action is stored in a separate field, not in the queue
+            Debug.Log("Creating a unit");  //<- Important note, current action is stored in a separate field, not in the queue
             ClickBackEvent.Invoke(coords);
         }
         #endregion

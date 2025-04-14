@@ -26,7 +26,7 @@ public static class Action_PlayerSpawn
         GameManager.Instance.ShowPlacementEvent.Invoke(unitList);
         Action_SelectPosition.ESendPositionBack.AddListener(GetListOfPositions); //Add a listener what executes after players
                                                                                               //selects a position and returns it
-        yield return GameManager.Instance.StartCoroutine(Action_SelectPosition.Selecting(unit));
+        yield return GameManager.Instance.StartCoroutine(Action_SelectPosition.Selecting(unit, false));
 
         //Waiting until we have the data, then hide the effects
         while (Is_AwaitingData) { Debug.Log("Awaiting data"); yield return new WaitForSeconds(0.01f); }

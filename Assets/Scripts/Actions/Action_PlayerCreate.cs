@@ -10,54 +10,32 @@ public static class Action_PlayerCreate
     static GameObject UnitPlacementHolderObj;
 
     public static bool IsWaitingForData;
-    static bool ShouldCancel = false;
 
-    #region Cancel() - cancels current action if can do so, 2 versions for events what pass a side and a normal one
-    static void Cancel()
-    {
-        Debug.Log("Normal cancel");
-        ShouldCancel = true;
-    }
-    static void Cancel(ScoreManager.Side s)
-    {
-        Debug.Log("Normal cancel");
-        ShouldCancel = true;
-    }
-    #endregion
-
-    static void Cancel(List<Unit> l)
-    {
-        Debug.Log("Cancel after the end of turn");
-        ShouldCancel = true;
-    }
     public static IEnumerator PlayerCreate(ActionParameters parameters)
     {
 
         GameObject Object = parameters.Object;
-        GameManager.Instance.CancelEvent.AddListener(Cancel);
 
         UnitPlacementHolderObj = GameObject.Find(UnitPlacementHolderStr);
         Vector3 holdPos = Vector3.zero; if (UnitPlacementHolderObj != null) { holdPos = UnitPlacementHolderObj.transform.position; }
 
-        //Create a unit as an object, it's not on the board yet, so it should be hidden
-        Unit unit =
-            GameManager.Instantiate(Object, holdPos, Quaternion.identity).GetComponent<Unit>();
+        #region Check if an object is already created or needs to be instantiated
+        Unit unit = null;
+        if (parameters.ActionTargetUnits != null && !parameters.ActionTargetUnits[0].IsPrefab)
+        {
+            unit = parameters.ActionTargetUnits[0];
+        }
+        else
+        {
+            unit = GameManager.Instantiate(Object, holdPos, Quaternion.identity).GetComponent<Unit>();
+        }
+        #endregion
         List<Unit> unitList = new List<Unit>(); unitList.Add(unit);
-
 
         //Add a listener what executes after players selects a position and returns it
         List<Vector2Int> positions = new List<Vector2Int>();
 
-        if (ShouldCancel)
-        {
-            Debug.Log("PLAYERCREATE ACTION IS CANCELED");
-            ShouldCancel = false;
-            GameManager.Instance.HidePlacementEvent.Invoke(unitList);
-            GameManager.Instance.CancelEvent.RemoveListener(Cancel);
-            yield break;
-        }
-
-        ScoreManager.Instance.eTurnEvent_Functional.AddListener(Cancel);
+        //ScoreManager.Instance.eTurnEvent_Functional.AddListener(Cancel);
         void StartAwaiting_ListOfPositions(List<Vector2Int> v2)
         {
             IsWaitingForData = false;
@@ -71,7 +49,7 @@ public static class Action_PlayerCreate
 
         #region Start the action to select a position
         GameManager.Instance.ShowPlacementEvent.Invoke(unitList);
-        GameManager.Instance.I_PositionSelect = Action_SelectPosition.Selecting(unit);
+        GameManager.Instance.I_PositionSelect = Action_SelectPosition.Selecting(unit, false);
         yield return GameManager.Instance.StartCoroutine(GameManager.Instance.I_PositionSelect);
         GameManager.Instance.I_PositionSelect = null;
         #endregion
@@ -82,7 +60,7 @@ public static class Action_PlayerCreate
 
         //Waiting until we have the data
 
-        while (IsWaitingForData && !ShouldCancel) { yield return new WaitForSeconds(Time.deltaTime * 0.5f); }
+        while (IsWaitingForData) { yield return new WaitForSeconds(Time.deltaTime * 0.5f); }
 
         #region Check if can place a unit there
         bool ViablePos = true;
@@ -108,9 +86,8 @@ public static class Action_PlayerCreate
 
 
 
-        ScoreManager.Instance.eTurnEvent_Functional.RemoveListener(Cancel);
-        ShouldCancel = false;
-        GameManager.Instance.CancelEvent.RemoveListener(Cancel);
+        //ScoreManager.Instance.eTurnEvent_Functional.RemoveListener(Cancel);
+        //GameManager.Instance.CancelEvent.RemoveListener(Cancel);
         yield return new WaitForSeconds(0.1f * Time.deltaTime);
         GameManager.Instance.RemoveAction(parameters);
     }

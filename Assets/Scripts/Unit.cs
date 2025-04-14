@@ -42,6 +42,7 @@ public class Unit : MonoBehaviour
     public Material EnemyBaseMat;
 
     [Header("----Read only information----")]
+    public bool IsPrefab = true;
     GameObject Base;
     public GameObject Model;
     public bool Moved = false;
@@ -71,6 +72,7 @@ public class Unit : MonoBehaviour
     private void Awake()
     {
         Anim = GetComponent<Animator>();
+        IsPrefab = false;
 
         Transform t = transform.Find("base");
         if (t != null) Base = t.gameObject;

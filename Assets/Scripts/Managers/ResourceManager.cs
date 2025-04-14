@@ -59,7 +59,7 @@ public class ResourceManager : MonoBehaviour
             res[randI] = f;
         }
 
-        Debug.Log(res.Count);
+       
         return res;
     }
     #endregion

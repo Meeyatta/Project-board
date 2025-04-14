@@ -54,12 +54,12 @@ public static class Action_Attack
         Animator anim = unit.Anim;
         anim.SetTrigger(AttackAnimTrigger);
 
-        while (!anim.GetBool("IsAttacking"))
+        while (!anim.GetBool("isAttacking"))
         {
             yield return new WaitForSeconds(Time.deltaTime * 0.01f);
         }
 
-        while (anim.GetBool("IsAttacking"))
+        while (anim.GetBool("isAttacking"))
         {
             yield return new WaitForSeconds(Time.deltaTime * 0.01f);
         }

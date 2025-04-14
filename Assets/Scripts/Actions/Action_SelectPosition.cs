@@ -16,12 +16,13 @@ public static class Action_SelectPosition
         ShouldCancel = true;
     }
 
-    public static IEnumerator Selecting(Unit unit)
+    public static IEnumerator Selecting(Unit unit, bool canCancel)
     {
-        GameManager.Instance.CancelEvent.AddListener(Cancel);
+        if (canCancel) GameManager.Instance.CancelEvent.AddListener(Cancel);
 
         void StopWaiting(Vector2Int v)
         {
+            Debug.Log("Stopped waiting");
             IsAwaitingAClickBack = false;
 
             if (CurUnit != null)
@@ -54,24 +55,28 @@ public static class Action_SelectPosition
 
         }
         GameManager.Instance.ClickBackEvent.AddListener(StopWaiting);
+        Debug.Log("Added a listener to clickback");
+
         CurUnit = unit;
 
         IsAwaitingAClickBack = true;
-        while (IsAwaitingAClickBack && !ShouldCancel) { yield return new WaitForSeconds(0.01f); }
+        
+        while (IsAwaitingAClickBack && !canCancel || (IsAwaitingAClickBack && !ShouldCancel && canCancel)) 
+        { yield return new WaitForSeconds(0.01f); }
 
-        if (ShouldCancel)
+        if (ShouldCancel && canCancel)
         {
             Debug.Log("SELECTPOSITION ACTION IS CANCELED");
             ShouldCancel = false;
             List<Unit> nv = new List<Unit>(); nv.Add(unit);
             GameManager.Instance.HidePlacementEvent.Invoke(nv);
-            GameManager.Instance.CancelEvent.RemoveListener(Cancel);
+            if (canCancel) GameManager.Instance.CancelEvent.RemoveListener(Cancel);
             yield break;
         }
 
         GameManager.Instance.ClickBackEvent.RemoveListener(StopWaiting);
         ShouldCancel = false;
-        GameManager.Instance.CancelEvent.RemoveListener(Cancel);
+        if (canCancel) GameManager.Instance.CancelEvent.RemoveListener(Cancel);
         yield return new WaitForSeconds(0.001f);
     }
 
