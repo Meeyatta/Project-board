@@ -111,7 +111,7 @@ public static class Action_PlayerCreate
         ScoreManager.Instance.eTurnEvent_Functional.RemoveListener(Cancel);
         ShouldCancel = false;
         GameManager.Instance.CancelEvent.RemoveListener(Cancel);
-        yield return new WaitForSeconds(0.001f);
+        yield return new WaitForSeconds(0.1f * Time.deltaTime);
         GameManager.Instance.RemoveAction(parameters);
     }
 

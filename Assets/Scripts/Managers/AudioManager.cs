@@ -17,11 +17,11 @@ public class AudioManager : MonoBehaviour
 {
     public List<Sound> Sounds = new List<Sound>();
 
-    public static AudioManager Instance;
+    
 
     [SerializeField]
     private AudioSource SFXObject;
-
+    public static AudioManager Instance;
     void Singleton()
     {
         if (Instance != null)

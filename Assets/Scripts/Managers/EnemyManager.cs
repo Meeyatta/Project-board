@@ -7,9 +7,9 @@ public class EnemyManager : MonoBehaviour
 {
     public int StarterUnitsAmount;
 
-    public List<Unit> UnitsToCreate = new List<Unit>();
+    public List<Unit> Army = new List<Unit>();
 
-    List<Unit> Army = new List<Unit>();
+    List<Unit> FullArmy = new List<Unit>();
     public List<Unit> Army_NotPlaced = new List<Unit>();
     public List<Unit> Army_Placed = new List<Unit>();
 
@@ -60,7 +60,7 @@ public class EnemyManager : MonoBehaviour
     //Gets the whole army back into the NotPlaced category
     public void ResetArmy()
     {
-        List<Unit> randArmy = Army;
+        List<Unit> randArmy = FullArmy;
         for (int i = 0; i < randArmy.Count; i++)
         {
             Unit f = randArmy[i];
@@ -82,12 +82,12 @@ public class EnemyManager : MonoBehaviour
 
     public IEnumerator InstantiateEnemyUnits()
     {
-        foreach (var v in UnitsToCreate)
+        foreach (var v in Army)
         {
             Unit u = Instantiate(v.gameObject, new Vector3(255, 0, 0), Quaternion.identity, EnemyUitsTr).GetComponent<Unit>();
             yield return new WaitForSeconds(Time.deltaTime);
             yield return u.SetToEnemy();
-            Army.Add(u);
+            FullArmy.Add(u);
             
         }
     }

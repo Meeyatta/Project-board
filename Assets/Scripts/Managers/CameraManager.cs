@@ -5,21 +5,37 @@ using UnityEngine.InputSystem;
 public class CameraManager : MonoBehaviour
 {
     public GameObject CurPos;
-    public GameObject FrontLower;
+    public GameObject InFrontOfBoad;
     public GameObject FrontUpper;
     public GameObject TopDown;
     public GameObject Right;
     public GameObject Left;
 
     Camera cam;
-    void Awake()
+    public static CameraManager Instance;
+    void Singleton()
     {
+        if (Instance != null)
+        {
+            Destroy(this);
+        }
+        else
+        {
+            Instance = this;
+        }
+        DontDestroyOnLoad(this);
+    }
+    
+    private void Awake()
+    {
+        Singleton();
         cam = Camera.main;
     }
 
+    #region Sets camera to the specific position
     public void SetCam(GameObject camm)
     {
-        List<GameObject> all = new List<GameObject> { FrontLower, FrontUpper, TopDown, Right, Left };
+        List<GameObject> all = new List<GameObject> { InFrontOfBoad, FrontUpper, TopDown, Right, Left };
 
         foreach (var v in all)
         {
@@ -34,11 +50,12 @@ public class CameraManager : MonoBehaviour
             }
         }
     }
+    #endregion
 
     #region Moving forwards/backwards
     public void Swap_Forward(InputAction.CallbackContext context)
     {
-        if (FrontLower == null || FrontUpper == null || TopDown == null || Right == null || FrontLower == Left) return;
+        if (InFrontOfBoad == null || FrontUpper == null || TopDown == null || Right == null || InFrontOfBoad == Left) return;
 
         if (context.performed)
         {
@@ -54,7 +71,7 @@ public class CameraManager : MonoBehaviour
     }
     public void Swap_Back(InputAction.CallbackContext context)
     {
-        if (FrontLower == null || FrontUpper == null || TopDown == null || Right == null || FrontLower == Left) return;
+        if (InFrontOfBoad == null || FrontUpper == null || TopDown == null || Right == null || InFrontOfBoad == Left) return;
 
         if (context.performed)
         {
@@ -62,9 +79,9 @@ public class CameraManager : MonoBehaviour
             {
                 SetCam(FrontUpper);
             }
-            else if (CurPos != FrontLower)
+            else if (CurPos != InFrontOfBoad)
             {
-                SetCam(FrontLower);
+                SetCam(InFrontOfBoad);
             }
         }
     }
@@ -74,7 +91,7 @@ public class CameraManager : MonoBehaviour
     #region Moving left/right
     public void Swap_Left(InputAction.CallbackContext context)
     {
-        if (FrontLower == null || FrontUpper == null || TopDown == null || Right == null || FrontLower == Left) return;
+        if (InFrontOfBoad == null || FrontUpper == null || TopDown == null || Right == null || InFrontOfBoad == Left) return;
 
         if (context.performed)
         {
@@ -90,7 +107,7 @@ public class CameraManager : MonoBehaviour
     }
     public void Swap_Right(InputAction.CallbackContext context)
     {
-        if(FrontLower == null || FrontUpper == null || TopDown == null || Right == null || FrontLower == Left) return;
+        if(InFrontOfBoad == null || FrontUpper == null || TopDown == null || Right == null || InFrontOfBoad == Left) return;
 
         if (context.performed)
         {
