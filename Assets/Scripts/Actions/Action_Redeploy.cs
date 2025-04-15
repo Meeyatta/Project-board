@@ -54,7 +54,7 @@ public static class Action_Redeploy
         if (u.CurKeywords.Contains(Keyword.Player)) { zone.AddRange(BoardManager.Instance.PlayerDeploymentZone); } 
         else { zone.AddRange(BoardManager.Instance.EnemyDeploymentZone);}
 
-        #region Going through all deployment zone positions and fitting unit insidie of them
+        #region Going through all deployment zone positions and fitting unit inside of them
         for (int x = zone[0].x; x <= zone[1].x; x++) 
         {
             for (int y = zone[0].y; y <= zone[1].y; y++)

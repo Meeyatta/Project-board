@@ -282,7 +282,7 @@ public class EffectManager : MonoBehaviour
         while (CurUnitMovePosShowcase != null && ScoreManager.Instance.PlayerTurnActionCondition())
         {
             yield return new WaitForSeconds(Time.deltaTime);
-            Debug.Log("ShowingPossibleUnitPosition");
+            //Debug.Log("ShowingPossibleUnitPosition");
 
             List <Vector2Int> pos = BoardManager.Instance.ClosestUnitPosToCursor(unit);
             if (availableZone.Intersect<Vector2Int>(pos).Any())

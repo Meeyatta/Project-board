@@ -3,13 +3,35 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Events;
+using System.Linq;
 
 public static class Action_PlayerCreate
 {
     static string UnitPlacementHolderStr = "UnitPlacementHolder";
+    public static Unit Unit;
     static GameObject UnitPlacementHolderObj;
 
     public static bool IsWaitingForData;
+
+    public static bool CanCreateThere(Unit u, Vector2Int pos)
+    {
+        Debug.Log("Checking if can create " + u.gameObject.name + " at " + pos);
+
+        List<Vector2Int> uPos = BoardManager.Instance.SingleCellToUnitPositions(u, pos);
+
+        List<Vector2Int> availableDeploymentsPosses = new List<Vector2Int>();
+        int miX = BoardManager.Instance.PlayerDeploymentZone[0].x; int maX = BoardManager.Instance.PlayerDeploymentZone[1].x; 
+        int miY = BoardManager.Instance.PlayerDeploymentZone[0].y; int maY = BoardManager.Instance.PlayerDeploymentZone[1].y;
+        for (int x = miX; x < maX; x++) 
+        {
+            for (int y = miY; y < maY; y++) 
+            {
+                if (BoardManager.Instance.Board[x].Cells[y].CurUnit == null) { availableDeploymentsPosses.Add(new Vector2Int(x, y));}
+            }
+        }
+
+        return uPos.Intersect<Vector2Int>(availableDeploymentsPosses).Any();
+    }
 
     public static IEnumerator PlayerCreate(ActionParameters parameters)
     {
@@ -20,47 +42,50 @@ public static class Action_PlayerCreate
         Vector3 holdPos = Vector3.zero; if (UnitPlacementHolderObj != null) { holdPos = UnitPlacementHolderObj.transform.position; }
 
         #region Check if an object is already created or needs to be instantiated
-        Unit unit = null;
+        Unit = null;
         if (parameters.ActionTargetUnits != null && !parameters.ActionTargetUnits[0].IsPrefab)
         {
-            unit = parameters.ActionTargetUnits[0];
+            Unit = parameters.ActionTargetUnits[0];
         }
         else
         {
-            unit = GameManager.Instantiate(Object, holdPos, Quaternion.identity).GetComponent<Unit>();
+            Unit = GameManager.Instantiate(Object, holdPos, Quaternion.identity).GetComponent<Unit>();
         }
         #endregion
-        List<Unit> unitList = new List<Unit>(); unitList.Add(unit);
+
+        List<Unit> unitList = new List<Unit>(); unitList.Add(Unit);
 
         //Add a listener what executes after players selects a position and returns it
         List<Vector2Int> positions = new List<Vector2Int>();
-
-        //ScoreManager.Instance.eTurnEvent_Functional.AddListener(Cancel);
-        void StartAwaiting_ListOfPositions(List<Vector2Int> v2)
+        void Get_ClickedCellCoordinates(List<Vector2Int> v2)
         {
-            IsWaitingForData = false;
-            positions = v2;
-            Action_SelectPosition.ESendPositionBack.RemoveListener(StartAwaiting_ListOfPositions);
+            if (CanCreateThere(unitList[0], v2[0]))
+            {
+                IsWaitingForData = false;
+                positions = v2;
+                Action_SelectPosition.ESendPositionBack.RemoveListener(Get_ClickedCellCoordinates);
+            }        
         }
+
         UnityEvent<List<Vector2Int>> newEv = new UnityEngine.Events.UnityEvent<List<Vector2Int>>() { };
         Action_SelectPosition.ESendPositionBack = newEv;
-        Action_SelectPosition.ESendPositionBack.AddListener(StartAwaiting_ListOfPositions);
+        Action_SelectPosition.ESendPositionBack.AddListener(Get_ClickedCellCoordinates);
         IsWaitingForData = true;
 
         #region Start the action to select a position
         GameManager.Instance.ShowPlacementEvent.Invoke(unitList);
-        GameManager.Instance.I_PositionSelect = Action_SelectPosition.Selecting(unit, false);
+        GameManager.Instance.I_PositionSelect = Action_SelectPosition.Selecting(Unit, false);
         yield return GameManager.Instance.StartCoroutine(GameManager.Instance.I_PositionSelect);
         GameManager.Instance.I_PositionSelect = null;
         #endregion
 
-        #region While we are selecting a new position for a unit, hold that unit in a position near player's bag
-        //TODO: change the object's position
-        #endregion
+        GameManager.Instance.ShowDeploymentEvent.Invoke(new List<Unit> { Unit });
 
         //Waiting until we have the data
 
         while (IsWaitingForData) { yield return new WaitForSeconds(Time.deltaTime * 0.5f); }
+
+        Debug.Log("Got past waiting for data");
 
         #region Check if can place a unit there
         bool ViablePos = true;
@@ -76,7 +101,8 @@ public static class Action_PlayerCreate
         GameManager.Instance.HidePlacementEvent.Invoke(unitList);
          if (ViablePos)
          {
-             yield return GameManager.Instance.StartCoroutine(BoardManager.Instance.PlaceUnit(unit, positions));
+            Debug.Log("Viable position, supposed to be creating");
+            yield return GameManager.Instance.StartCoroutine(BoardManager.Instance.PlaceUnit(Unit, positions));
          }
          else
          {
