@@ -15,7 +15,8 @@ public static class Action_PlayerCreate
     {
 
         GameObject Object = parameters.Object;
-
+        List<Vector2Int> zone = parameters.CellsCoordinates;
+   
         UnitPlacementHolderObj = GameObject.Find(UnitPlacementHolderStr);
         Vector3 holdPos = Vector3.zero; if (UnitPlacementHolderObj != null) { holdPos = UnitPlacementHolderObj.transform.position; }
 
