@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.InputSystem;
+using static UnityEditor.PlayerSettings;
 
 //Main script, handles all of the actions what can be done with units
 
@@ -332,10 +333,10 @@ public class GameManager : MonoBehaviour
         yield return new WaitForSeconds(Time.deltaTime * 0.01f); //For some reason this is vital, otherwise Unity shits itself
 
         #region Are we selecting a position for creating a unit?
-        if (CurrentAction != null && Action_PlayerCreate.IsWaitingForData)
-        #region Yes - Invoke an event to send coordinates where the unit is going to be created
+        if (Action_PlayerCreate.IsWaitingForData && Action_PlayerCreate.CanCreateThere(Action_PlayerCreate.Unit, coords))
+        #region Yes - Invoke an event to send coordinates where the unit is going to be created (If can be created)
         { //a1
-            Debug.Log("Creating a unit");  //<- Important note, current action is stored in a separate field, not in the queue
+            Debug.Log("Creating a unit"); 
             ClickBackEvent.Invoke(coords);
         }
         #endregion

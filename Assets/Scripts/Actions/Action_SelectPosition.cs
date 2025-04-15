@@ -62,7 +62,7 @@ public static class Action_SelectPosition
         IsAwaitingAClickBack = true;
         
         while (IsAwaitingAClickBack && !canCancel || (IsAwaitingAClickBack && !ShouldCancel && canCancel)) 
-        { yield return new WaitForSeconds(0.01f); }
+        { yield return new WaitForSeconds(Time.deltaTime); }
 
         if (ShouldCancel && canCancel)
         {

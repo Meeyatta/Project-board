@@ -16007,9 +16007,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 11416984, guid: c080686877cf77f42a1a078076d57fe5, type: 3}
       propertyPath: textList.Array.data[2].s
-      value: 'Make PlayerCreation work only within
+      value: 'Assigned an event to show redeployment
 
-        a specific border'
+        positions for playerCreate,
+        didnt test'
       objectReference: {fileID: 0}
     - target: {fileID: 11416984, guid: c080686877cf77f42a1a078076d57fe5, type: 3}
       propertyPath: textList.Array.data[3].s

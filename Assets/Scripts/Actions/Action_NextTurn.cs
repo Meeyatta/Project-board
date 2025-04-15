@@ -11,7 +11,7 @@ public static class Action_NextTurn
     public static float Delay = 15;
     public static IEnumerator Pre_nextTurn(ActionParameters parameters)
     {
-        Debug.Log("Started pre NextTurn actions");
+        //Debug.Log("Started pre NextTurn actions");
         ScoreManager.Side CurTurn = ScoreManager.Instance.CurTurn;
 
         if (ScoreManager.Instance.CurRound == 0)
@@ -64,7 +64,7 @@ public static class Action_NextTurn
 
     public static IEnumerator NextTurn(ActionParameters parameters)
     {
-        Debug.Log("Started NextTurn actions");
+        //Debug.Log("Started NextTurn actions");
         yield return new WaitForSeconds(Time.deltaTime * Delay);
 
         #region If the current round is deployment
