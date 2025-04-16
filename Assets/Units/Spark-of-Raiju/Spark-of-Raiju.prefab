@@ -362,6 +362,7 @@ GameObject:
   - component: {fileID: 7397111759927521079}
   - component: {fileID: 1467022029548607331}
   - component: {fileID: 4330917457599669080}
+  - component: {fileID: 2399514365777618791}
   m_Layer: 0
   m_Name: Spark-of-Raiju
   m_TagString: Unit
@@ -410,6 +411,7 @@ MonoBehaviour:
   PlayerBaseMat: {fileID: 2100000, guid: 6a8b410cc2cd240438356a36937894a9, type: 2}
   EnemyColor: {r: 255, g: 0, b: 0, a: 1}
   EnemyBaseMat: {fileID: 2100000, guid: 7347d27bca00bd04a9021a0137cd1900, type: 2}
+  IsPrefab: 1
   Model: {fileID: 89099521786084856}
   Moved: 0
   BaseOutline: {fileID: 6112829814112151407}
@@ -438,6 +440,27 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!65 &2399514365777618791
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3775099879997789255}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1.3338394, y: 1.0749454, z: 1.6813226}
+  m_Center: {x: 0.07153702, y: -0.52121186, z: 0.15670466}
 --- !u!1 &3968668981648578717
 GameObject:
   m_ObjectHideFlags: 0
