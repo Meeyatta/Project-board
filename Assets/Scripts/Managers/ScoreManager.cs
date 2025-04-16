@@ -11,7 +11,8 @@ using UnityEngine.Events;
 public class ScoreManager : MonoBehaviour
 {
     //Event for the conclusion of the battle 
-    public UnityEvent<Side> WinEvent;
+    public UnityEvent<Side> WinEvent; //Since i have little object what use it, events will only make code more confusing, so right now
+    //This is unused
 
     public int CurRound;
     public Side CurTurn;
@@ -105,13 +106,16 @@ public class ScoreManager : MonoBehaviour
         #region Checking if any of the side won
         if (Score_Player >= Score_Enemy + NScoreDiff) 
         { 
-            WinEvent.Invoke(Side.Player); 
+            WinEvent.Invoke(Side.Player);
+            EndScreen.Instance.Win();
+
             //Debug.Log("Player has won"); 
         }
 
         if (Score_Enemy >= Score_Player + NScoreDiff) 
         { 
-            WinEvent.Invoke(Side.Enemy); 
+            WinEvent.Invoke(Side.Enemy);
+            EndScreen.Instance.Loss();
             //Debug.Log("Enemy has won"); 
         }
         #endregion

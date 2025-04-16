@@ -5,7 +5,8 @@ using TMPro;
 
 public class ScoreClock : MonoBehaviour
 {
-
+    public Color CalmColor;
+    public Color AttentionColor;
     public TextMeshProUGUI PlayerPointsText;
     public TextMeshProUGUI SymbolText; //This is the symbol between player and enemy points to show the relative number
     public TextMeshProUGUI EnemyPointsText;
@@ -59,9 +60,20 @@ public class ScoreClock : MonoBehaviour
         PlayerPointsText.text = ScoreManager.Instance.Score_Player.ToString();
         EnemyPointsText.text = ScoreManager.Instance.Score_Enemy.ToString();
 
+        #region Changing the color if player is close to losing
+        if (ScoreManager.Instance.Score_Enemy - ScoreManager.Instance.Score_Player  == ScoreManager.Instance.NScoreDiff - 1 )
+        {
+            EnemyPointsText.color = AttentionColor;
+            SymbolText.color = AttentionColor;
+        }
+        else 
+        { 
+            EnemyPointsText.color = CalmColor;
+            SymbolText.color = CalmColor;
+        }
+        #endregion
 
-        #region Displaying current points
-
+        #region Displaying the differenc symbol
         if (ScoreManager.Instance.Score_Player == ScoreManager.Instance.Score_Enemy) 
         {
             SymbolText.text = "="; 
@@ -73,6 +85,7 @@ public class ScoreClock : MonoBehaviour
             SymbolText.text = res;
         }
         #endregion
+
     }
     
     void FixedUpdate()

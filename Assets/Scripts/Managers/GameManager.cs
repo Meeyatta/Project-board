@@ -44,6 +44,10 @@ using static UnityEditor.PlayerSettings;
         List<Unit> Get_OnlyUnitsWithKeywords(List<Unit> all, List<Keyword> keywords) - Groups units from a list into a different list only if
             they have the keywords in "keywords"
         void ResetMovement(List<Unit.keyword> keywords) - resets all units with keywords in a list to be able to move again. 
+
+        There are 2 ways game checks for pressing on cells:
+            1) Each cell is a button what sends an event call with it's position when it is pressed
+            2) "void CheckUnitUnderCursor()" in Update continuously checks if we aim at a unit and calls an event when we click
 */
 
 public class GameManager : MonoBehaviour
@@ -452,6 +456,28 @@ public class GameManager : MonoBehaviour
         C_GoingThroughActions = null;
     }
 
+    #region Checking what unit is cursor pointing at
+    void CheckUnitUnderCursor()
+    {
+        RaycastHit hit;
+        Vector3 vect = Input.mousePosition;
+        vect.z = 999999;
+        Vector3 cPos = Camera.main.ScreenToWorldPoint(vect);
+        Physics.Raycast(Camera.main.transform.position, cPos, out hit);
+
+        if (hit.transform != null && hit.transform.tag.ToLower() == "unit")
+        {
+            //Vector2Int v = BoardManager.Instance.WorldToBoardPosition(hit.point);
+            
+            Debug.Log("Pointing at a unit " + hit.transform.gameObject.name + " at " + v);
+            if (Input.GetMouseButtonDown(0)) 
+            {
+                CellClickHandle(v);
+            }
+        }
+    }
+    #endregion
+
     private void FixedUpdate()
     {
         while (ActionQueue.Count > 0 && C_GoingThroughActions == null)
@@ -459,6 +485,7 @@ public class GameManager : MonoBehaviour
             C_GoingThroughActions = StartCoroutine(GoThroughActions());
         }
     }
+
     private void Update()
     {
         #region Debug inputs
@@ -482,7 +509,7 @@ public class GameManager : MonoBehaviour
         //    ActionParameters parameters = new ActionParameters(ActionType.AttackFromKeyworded, null, k, null, null, 0);
         //    StartCoroutine(Action(parameters));
         //}
-        
+
         //if (Input.GetKeyDown("x"))
         //{
         //    Debug.Log("SCORING FOR ENEMY:");
@@ -493,15 +520,6 @@ public class GameManager : MonoBehaviour
         //}
         #endregion
 
-        #region Constantly printing current action
-        string ActionInfo = "";
-        if (CurrentAction != null)
-        {
-            ActionInfo = CurrentAction.Type.ToString();
-            //Debug.Log("Current action " + ActionInfo);
-
-        }
-        #endregion
-
+        CheckUnitUnderCursor();
     }
 }

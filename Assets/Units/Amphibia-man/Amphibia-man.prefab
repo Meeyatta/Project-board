@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 5999371207393151477}
   - component: {fileID: 7414565371915086219}
   - component: {fileID: 3966127357866609508}
+  - component: {fileID: 6228343270505643353}
   m_Layer: 0
   m_Name: Amphibia-man
   m_TagString: Unit
@@ -59,6 +60,7 @@ MonoBehaviour:
   PlayerBaseMat: {fileID: 2100000, guid: 6a8b410cc2cd240438356a36937894a9, type: 2}
   EnemyColor: {r: 255, g: 0, b: 0, a: 1}
   EnemyBaseMat: {fileID: 2100000, guid: 7347d27bca00bd04a9021a0137cd1900, type: 2}
+  IsPrefab: 1
   Model: {fileID: 1716069997271958112}
   Moved: 0
   BaseOutline: {fileID: 8963421101277263068}
@@ -87,6 +89,27 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!65 &6228343270505643353
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 165246156402382916}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1.9068985, y: 2.3212562, z: 1.4221768}
+  m_Center: {x: -0.06254196, y: 0.10554433, z: 0.031272173}
 --- !u!1 &583688965079126272
 GameObject:
   m_ObjectHideFlags: 0

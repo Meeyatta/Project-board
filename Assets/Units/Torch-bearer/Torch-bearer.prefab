@@ -747,6 +747,7 @@ MonoBehaviour:
   PlayerBaseMat: {fileID: 2100000, guid: 6a8b410cc2cd240438356a36937894a9, type: 2}
   EnemyColor: {r: 255, g: 0, b: 0, a: 1}
   EnemyBaseMat: {fileID: 2100000, guid: 7347d27bca00bd04a9021a0137cd1900, type: 2}
+  IsPrefab: 1
   Model: {fileID: 1202204059585782307}
   Moved: 0
   BaseOutline: {fileID: 6877002156504821858}
@@ -794,8 +795,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 1.12, y: 2.92, z: 1.14}
-  m_Center: {x: 0, y: 0.38, z: 0.01}
+  m_Size: {x: 1.3743987, y: 3.1531997, z: 1.4509311}
+  m_Center: {x: -0.00000011920929, y: 0.49659967, z: -0.032399893}
 --- !u!1 &7244342995068159824
 GameObject:
   m_ObjectHideFlags: 0

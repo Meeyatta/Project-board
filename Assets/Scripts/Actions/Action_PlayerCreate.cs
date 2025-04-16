@@ -80,7 +80,7 @@ public static class Action_PlayerCreate
         GameManager.Instance.I_PositionSelect = null;
         #endregion
 
-        GameManager.Instance.ShowDeploymentEvent.Invoke(new List<Unit> { Unit });
+       // GameManager.Instance.ShowDeploymentEvent.Invoke(new List<Unit> { Unit });
 
         //Waiting until we have the data
 
