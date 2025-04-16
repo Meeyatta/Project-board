@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public static class Action_DeployNewPlayerUnit 
+public static class Action_DeployNewPlayerUnit
 {
     static int PulledNumber = 3;
     static float SpaceBetweenUnits = 2;
@@ -92,7 +92,6 @@ public static class Action_DeployNewPlayerUnit
         while (selectedUnit == null)
         {
             yield return new WaitForSeconds(Time.deltaTime);
-            Debug.Log("Selecting a new unit");
 
             #region If player foces on new units
             if (IsFocused())
@@ -105,10 +104,10 @@ public static class Action_DeployNewPlayerUnit
                 vect.z = 999999;
                 Vector3 cPos = Camera.main.ScreenToWorldPoint(vect);
                 Physics.Raycast(Camera.main.transform.position, cPos, out hit);
-                
+
                 if (hit.transform != null)
                 {
-                    
+
                     Unit u = GetUnitWithTransform(pulledUnits, hit.transform);
                     if (u != null)
                     #region If hovering over a unit - wait until we click on it
@@ -131,7 +130,7 @@ public static class Action_DeployNewPlayerUnit
                     #endregion
                 }
                 #endregion
-                
+
             }
             #endregion
             #region If looking somewhere else
@@ -160,9 +159,11 @@ public static class Action_DeployNewPlayerUnit
             selectedUnit.Anim.SetBool(IsRaisedStr, false);
             ResourceManager.Instance.RecordPlacedUnit(selectedUnit);
 
+            GameManager.Instance.ShowDeploymentEvent.Invoke(new List<Unit> { selectedUnit });
             ActionParameters createPar = new ActionParameters(
                         GameManager.ActionType.PlayerCreate, new List<Unit> { selectedUnit }, null, null, null, 0);
             yield return Action_PlayerCreate.PlayerCreate(createPar);
+            GameManager.Instance.HideDeploymentEvent.Invoke(new List<Unit> { selectedUnit });
         }
         #endregion
 

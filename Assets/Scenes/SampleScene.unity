@@ -47442,7 +47442,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   CalmColor: {r: 1, g: 1, b: 1, a: 1}
-  AttentionColor: {r: 1, g: 0.42830187, b: 0.42830187, a: 1}
+  AttentionColor: {r: 1, g: 0, b: 0, a: 1}
   PlayerPointsText: {fileID: 703865168}
   SymbolText: {fileID: 1073853246}
   EnemyPointsText: {fileID: 422000313}

@@ -467,7 +467,7 @@ public class GameManager : MonoBehaviour
 
         if (hit.transform != null && hit.transform.tag.ToLower() == "unit")
         {
-            //Vector2Int v = BoardManager.Instance.WorldToBoardPosition(hit.point);
+            Vector2Int v = BoardManager.Instance.WorldToBoardPosition(hit.point);
             
             Debug.Log("Pointing at a unit " + hit.transform.gameObject.name + " at " + v);
             if (Input.GetMouseButtonDown(0)) 
