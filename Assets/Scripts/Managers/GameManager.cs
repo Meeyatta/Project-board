@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.InputSystem;
-using static UnityEditor.PlayerSettings;
 
 //Main script, handles all of the actions what can be done with units
 
@@ -75,7 +74,8 @@ public class GameManager : MonoBehaviour
 
     Score, Slip,
     };
-    public Unit CurUnitSelected = null; //What unit is currently selected, if no unit - should be null
+    public LayerMask LayerMask;
+    [HideInInspector] public Unit CurUnitSelected = null; //What unit is currently selected, if no unit - should be null
     public static GameManager Instance;
     public Coroutine C_GoingThroughActions;
     public Coroutine C_UnitSelect;
@@ -456,25 +456,90 @@ public class GameManager : MonoBehaviour
         C_GoingThroughActions = null;
     }
 
-    #region Checking what unit is cursor pointing at
+    #region Checking if player is hovering over a unit, if they click - this counts as clicking on that unit's cell
+    Transform LastPointedAt = null; 
+    Vector2Int CellClickP = Vector2Int.zero; Vector2Int UnitClickP = Vector2Int.zero;
+    Vector2Int NullV2 = new Vector2Int(-1,-1);
     void CheckUnitUnderCursor()
     {
         RaycastHit hit;
         Vector3 vect = Input.mousePosition;
         vect.z = 999999;
         Vector3 cPos = Camera.main.ScreenToWorldPoint(vect);
-        Physics.Raycast(Camera.main.transform.position, cPos, out hit);
+        Physics.Raycast(Camera.main.transform.position, cPos, out hit, Mathf.Infinity, LayerMask);
 
-        if (hit.transform != null && hit.transform.tag.ToLower() == "unit")
+        Debug.DrawRay(Camera.main.transform.position, cPos, Color.red);
+        //Debug.Log("Raycastin time " + hit.transform);
+
+        #region If hit something
+        bool foundSmth = false;
+        if (hit.transform != null )
         {
-            Vector2Int v = BoardManager.Instance.WorldToBoardPosition(hit.point);
-            
-            Debug.Log("Pointing at a unit " + hit.transform.gameObject.name + " at " + v);
-            if (Input.GetMouseButtonDown(0)) 
+            #region If hit unit
+            if (hit.transform.tag.ToLower() == "unit")
             {
-                CellClickHandle(v);
+                //Debug.Log(hit.transform.gameObject.name + " was hit with raycast");
+
+                #region If keep pointing at the same unit
+                if (hit.transform == LastPointedAt)
+                {
+                    if (Input.GetMouseButtonDown(0))
+                    {
+                        //Debug.Log(hit.transform.gameObject.name + " was clicked on");
+                        foundSmth = true;
+                    }
+                }
+                #endregion
+                #region If hover over a new unit
+                else
+                {
+                    //Debug.Log(hit.transform.gameObject.name + " is new, making current");
+                    LastPointedAt = hit.transform;
+                    Unit u = LastPointedAt.GetComponent<Unit>();
+                    if (u != null) { UnitClickP = BoardManager.Instance.Get_UnitPositions(u)[0]; CellClickP = NullV2; }
+                }
+                #endregion
+            }
+            #endregion
+            #region If hit a cell
+            else if (hit.transform.tag.ToLower() == "cell")
+            {
+                #region If hover and click on an old cell
+                if (hit.transform == LastPointedAt)
+                {
+                    if (Input.GetMouseButtonDown(0))
+                    {
+                        foundSmth = true;
+                    }
+                }
+                #endregion
+                #region If hover over a new cell
+                else
+                {
+                    LastPointedAt = hit.transform;
+                    BoardCell b = LastPointedAt.GetComponent<BoardCell>();
+                    if (b != null) { CellClickP = b.Coordinates; }
+                }
+                #endregion
+            }
+            #endregion
+        }
+
+        #region Check what position did we click on and send the click event
+        if (foundSmth && Input.GetMouseButton(0)) 
+        {
+            if (CellClickP != NullV2)
+            {
+                CellClickHandle(CellClickP);
+            }
+            else if (UnitClickP != NullV2)
+            {
+                CellClickHandle(UnitClickP);
             }
         }
+        #endregion
+
+        #endregion
     }
     #endregion
 

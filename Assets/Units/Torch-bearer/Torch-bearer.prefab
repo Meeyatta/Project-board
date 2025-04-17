@@ -11,7 +11,6 @@ GameObject:
   - component: {fileID: 6593957617995070824}
   - component: {fileID: 7922599880743093124}
   - component: {fileID: 7888275706712510668}
-  - component: {fileID: 7219032286004296255}
   m_Layer: 0
   m_Name: Preview
   m_TagString: Untagged
@@ -85,29 +84,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!136 &7219032286004296255
-CapsuleCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 103585049714133143}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 0
-  serializedVersion: 2
-  m_Radius: 0.5
-  m_Height: 2
-  m_Direction: 1
-  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &324999275350935393
 GameObject:
   m_ObjectHideFlags: 0
@@ -119,7 +95,7 @@ GameObject:
   - component: {fileID: 7221288986748284802}
   - component: {fileID: 6487907777403572176}
   - component: {fileID: 1884963746063724082}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Fill
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -323,7 +299,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6460250435526730082}
   - component: {fileID: 9120445626059901944}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Slider
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -661,7 +637,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6915064283024548897}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Handle Slide Area
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -808,7 +784,7 @@ GameObject:
   - component: {fileID: 646586167394236253}
   - component: {fileID: 2598418976441989532}
   - component: {fileID: 421129487894947056}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Background
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -881,7 +857,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5641810004255235411}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Fill Area
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -920,7 +896,7 @@ GameObject:
   - component: {fileID: 5152079881307053302}
   - component: {fileID: 8349107738796916558}
   - component: {fileID: 8888134615388669222}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: HPCanvas
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1022,7 +998,7 @@ GameObject:
   - component: {fileID: 2540852300328709007}
   - component: {fileID: 6997561854626470503}
   - component: {fileID: 3098156872242271297}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: hpText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1235,7 +1211,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   outlineMode: 1
   outlineColor: {r: 1, g: 1, b: 1, a: 1}
-  outlineWidth: 2
+  outlineWidth: 5
   precomputeOutline: 0
   bakeKeys: []
   bakeValues: []

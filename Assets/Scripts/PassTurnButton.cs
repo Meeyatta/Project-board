@@ -85,6 +85,7 @@ public class PassTurnButton : MonoBehaviour
     {
         if (ScoreManager.Instance.CurTurn == ScoreManager.Side.Player && CanPass)
         {
+            GameManager.Instance.CancelEvent.Invoke();
             Shrug_Visuals();
             if (ScoreManager.Instance.CurRound != 0) CanPass = false;
 

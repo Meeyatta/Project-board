@@ -370,7 +370,7 @@ public class BoardManager : MonoBehaviour
         float fy = (CellsObj.transform.position.z - pos.z - InBetweenSpace + CellsObj.transform.position.z + transform.position.z) / (InBetweenSpace + CellSize);
         int y = (int) fy;
 
-        Debug.Log(new Vector2Int(x, y));
+        //Debug.Log(new Vector2Int(x, y));
         return new Vector2Int(x, y);
     }
 
