@@ -68,7 +68,7 @@ public static class Action_SelectUnit
             #endregion
 
             if (us.Count > 0) { GameManager.Instance.HideMovementEvent.Invoke(us); } //Event to hide movement effects of selected units
-            if (us.Count > 0) { GameManager.Instance.HideDeploymentEvent.Invoke(us); } //Event to hide deployment effects of selected units
+            if (us.Count > 0) { GameManager.Instance.HideDeploymentEvent.Invoke(); } //Event to hide deployment effects of selected units
 
 
             GameManager.Instance.RemoveAction(parameters);

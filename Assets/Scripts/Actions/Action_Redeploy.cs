@@ -87,7 +87,7 @@ public static class Action_Redeploy
         Unit target = parameters.ActionTargetUnits[0];
         List<Vector2Int> coordinates = parameters.CellsCoordinates;
 
-        Debug.Log("Redeploying " + target.UnitName + " to " + coordinates[0]);
+        //Debug.Log("Redeploying " + target.UnitName + " to " + coordinates[0]);
 
         List<List<Vector2Int>> posses = Get_PossibleDeployments(target);
 
@@ -95,7 +95,7 @@ public static class Action_Redeploy
         // v
         if (!posses.Any(p => p.SequenceEqual(coordinates)) || BoardManager.Instance.AreAnyOccupied(coordinates))
         {
-            Debug.Log("Positions do not fit in the deployment zone");
+           // Debug.Log("Positions do not fit in the deployment zone");
             yield break;
         }
 

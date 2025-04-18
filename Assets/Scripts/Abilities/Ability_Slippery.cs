@@ -82,7 +82,7 @@ public static class Ability_Slippery
 
         if (IsValid) 
         {
-            Debug.Log("Supposed to slip");
+            //Debug.Log("Supposed to slip");
 
             List<Vector2Int> oldPos = BoardManager.Instance.Get_UnitPositions(unit);
             foreach (Vector2Int v in oldPos)

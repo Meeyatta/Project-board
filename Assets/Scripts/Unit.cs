@@ -118,7 +118,7 @@ public class Unit : MonoBehaviour
     {
         yield return new WaitForSeconds(Time.deltaTime);
 
-        Debug.Log("Set " + UnitName + " to enemy");
+        //Debug.Log("Set " + UnitName + " to enemy");
 
         if (BaseOutline != null) BaseOutline.OutlineColor = EnemyColor;
 

@@ -6,6 +6,7 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.VFX;
 using System.Linq;
+using Unity.VisualScripting;
 
 
 
@@ -32,7 +33,8 @@ public class EffectManager : MonoBehaviour
     public GameObject EffectsObj; //Parent of all effect objects
 
     #region Storing current effects
-    public Dictionary<Unit, List<GameObject>> UnitEffectsToHide = new Dictionary<Unit, List<GameObject>>();
+    public Dictionary<Unit, List<GameObject>> MovementEffectsToHide = new Dictionary<Unit, List<GameObject>>();
+    public Dictionary<Unit, List<GameObject>> DeploymentEffectsToHide = new Dictionary<Unit, List<GameObject>>();
     public Dictionary<Unit, List<GameObject>> PlacementEffectsToHide = new Dictionary<Unit, List<GameObject>>();
     #endregion
 
@@ -174,7 +176,7 @@ public class EffectManager : MonoBehaviour
 
     void LowerModel(Unit u)
     {
-        Debug.Log("Lowered the unit");
+        //Debug.Log("Lowered the unit");
 
         Animator anim = u.Anim;
 
@@ -276,7 +278,6 @@ public class EffectManager : MonoBehaviour
 
     IEnumerator ShowingPossibleUnitPosition(Unit unit, List<Vector2Int> availableZone)
     {
-
         yield return new WaitForSeconds(Time.deltaTime * 0.01f);
 
         RaiseModel(unit);
@@ -287,7 +288,8 @@ public class EffectManager : MonoBehaviour
             //Debug.Log("ShowingPossibleUnitPosition");
 
             List<Vector2Int> pos = BoardManager.Instance.ClosestUnitPosToCursor(unit);
-            if (availableZone.Intersect<Vector2Int>(pos).Any())
+            if (availableZone != null && availableZone.Count >0 && pos != null && pos.Count > 0 && 
+                availableZone.Intersect<Vector2Int>(pos).Any())
             {
                 unit.UnitModelShowcase.SetActive(true);
                 unit.UnitModelShowcase.transform.position = BoardManager.Instance.BoardToWorldPosition(pos).Value + unit.ModelOffset;
@@ -323,7 +325,7 @@ public class EffectManager : MonoBehaviour
     #region Showing position of unit under the cursor when redeploying
     void StartShowingPossibleUnitRedeployment(Unit unit)
     {
-        Debug.Log("StartShowingPossibleUnitRedeployment");
+        //Debug.Log("StartShowingPossibleUnitRedeployment");
 
         if (CurUnitMovePosShowcase == null)
         {
@@ -341,6 +343,7 @@ public class EffectManager : MonoBehaviour
     {
         foreach (Unit u in units)
         {
+            Debug.Log("Called to show possible movement of " + u.gameObject.name);
             List<GameObject> ePu = new List<GameObject>();
             StartShowingPossibleUnitMovement(u);
             foreach (var v in Action_Move.Get_PossibleMovement(u))
@@ -354,11 +357,11 @@ public class EffectManager : MonoBehaviour
                         ePu.Add(overlay);
                     }
                 }
-                if (!UnitEffectsToHide.ContainsKey(u)) { UnitEffectsToHide.Add(u, ePu); }
+                if (!MovementEffectsToHide.ContainsKey(u)) { MovementEffectsToHide.Add(u, ePu); }
             }
         }
     }
-    void HideAllPlayerMovement(ScoreManager.Side s)
+    public void HideAllPlayerMovement(ScoreManager.Side s)
     {
         List<Unit> units = BoardManager.Instance.Get_AllUnitsWithKeywords(new List<Keyword> { Keyword.Player });
 
@@ -368,14 +371,14 @@ public class EffectManager : MonoBehaviour
     {
         foreach (Unit u in units)
         {
-            if (!UnitEffectsToHide.ContainsKey(u)) return;
+            if (!MovementEffectsToHide.ContainsKey(u)) return;
             StopShowingPossibleUnitMovement(u);
 
-            foreach (var ef in UnitEffectsToHide[u])
+            foreach (var ef in MovementEffectsToHide[u])
             {
                 DestroyToPool(ef);
             }
-            UnitEffectsToHide.Remove(u);
+            MovementEffectsToHide.Remove(u);
         }
     }
     #endregion
@@ -417,23 +420,21 @@ public class EffectManager : MonoBehaviour
             }
             #endregion
 
-            if (!UnitEffectsToHide.ContainsKey(u)) { UnitEffectsToHide.Add(u, ePu); }
+            if (!DeploymentEffectsToHide.ContainsKey(u)) { DeploymentEffectsToHide.Add(u, ePu); }
 
         }
     }
-    void HideDeployment(List<Unit> units)
+    
+    void HideDeployment()
     {
-        //Debug.Log("Hid movement");
-        foreach (Unit u in units)
+        Dictionary<Unit, List<GameObject>> copy = new Dictionary<Unit, List<GameObject>>();
+        copy.AddRange(DeploymentEffectsToHide);
+
+        foreach (var v in copy)
         {
-            if (!UnitEffectsToHide.ContainsKey(u)) return;
             CurUnitMovePosShowcase = null;
 
-            foreach (var ef in UnitEffectsToHide[u])
-            {
-                DestroyToPool(ef);
-            }
-            UnitEffectsToHide.Remove(u);
+            foreach (var vv in v.Value) { DestroyToPool(vv); DeploymentEffectsToHide.Remove(v.Key); }
         }
     }
     #endregion

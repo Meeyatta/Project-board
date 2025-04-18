@@ -57,7 +57,7 @@ public class EnemyManager : MonoBehaviour
     }
 
 
-    //Gets the whole army back into the NotPlaced category
+    #region ResetArmy() - Gets the whole army back into the NotPlaced category
     public void ResetArmy()
     {
         List<Unit> randArmy = FullArmy;
@@ -73,9 +73,11 @@ public class EnemyManager : MonoBehaviour
         Army_NotPlaced.AddRange(randArmy);
         Army_Placed.Clear();
     }
+    #endregion
+
     public void RecordPlacedUnit(Unit unit)
     {
-        Debug.Log("Placed enemy " + unit.UnitName + ", removing from NotPlaced");
+        //Debug.Log("Placed enemy " + unit.UnitName + ", removing from NotPlaced");
         Army_NotPlaced.Remove(unit);
         Army_Placed.Add(unit);
     }
@@ -110,7 +112,7 @@ public class EnemyManager : MonoBehaviour
     }
     public void DeployNewEnemy(ScoreManager.Side side)
     {
-        if (side == ScoreManager.Side.Player || ScoreManager.Instance.CurRound < 1) return;
+        if (side == ScoreManager.Side.Player || ScoreManager.Instance.CurRound <= 1) return;
         if (Army_NotPlaced.Count <= 0) return;
 
         List<Unit> newEnemy = new List<Unit> { Army_NotPlaced[0] };
@@ -139,7 +141,7 @@ public class EnemyManager : MonoBehaviour
 
         float minD = Mathf.Infinity; List<Vector2Int> res = new List<Vector2Int>();
 
-        Debug.Log(posMov.Count);
+        //Debug.Log(posMov.Count);
 
         foreach (var line in posMov)
         {
@@ -157,7 +159,7 @@ public class EnemyManager : MonoBehaviour
             }
         }
 
-        Debug.Log(res.Count);
+        //Debug.Log(res.Count);
         return res;
     }
     #endregion
@@ -226,7 +228,7 @@ public class EnemyManager : MonoBehaviour
             if (eU.Count <= pU.Count) 
             {
                 //Closest objective doesn't have enough of a lead, go to it
-                Debug.Log(u.UnitName + " found closest objective doesn't have enough lead - moves to closest");
+                //Debug.Log(u.UnitName + " found closest objective doesn't have enough lead - moves to closest");
                 return GetPosToPoint(closestObj, u);
             }
         }
@@ -319,7 +321,7 @@ public class EnemyManager : MonoBehaviour
 
         #region End moving all units and end the turn
         yield return new WaitForSeconds(DelayBeforeEndingTurn * Time.deltaTime);
-        Debug.Log("Finished moving all enemy units");
+        //Debug.Log("Finished moving all enemy units");
         CMakingMoves = null; 
 
         ActionParameters turnParameters = new ActionParameters(GameManager.ActionType.NextTurn, null, null, null, null, 0);

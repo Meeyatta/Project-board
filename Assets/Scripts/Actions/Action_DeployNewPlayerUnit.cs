@@ -67,7 +67,6 @@ public static class Action_DeployNewPlayerUnit
             4CheckData) TODO:
          */
 
-
         GameObject unitsPoint = UnitPlacementBag.Instance.UnitsPos_InFront;
 
         //Camera is drawn in front of the board
@@ -163,7 +162,7 @@ public static class Action_DeployNewPlayerUnit
             ActionParameters createPar = new ActionParameters(
                         GameManager.ActionType.PlayerCreate, new List<Unit> { selectedUnit }, null, null, null, 0);
             yield return Action_PlayerCreate.PlayerCreate(createPar);
-            GameManager.Instance.HideDeploymentEvent.Invoke(new List<Unit> { selectedUnit });
+            GameManager.Instance.HideDeploymentEvent.Invoke();
         }
         #endregion
 

@@ -15,7 +15,7 @@ public static class Action_PlayerCreate
 
     public static bool CanCreateThere(Unit u, Vector2Int pos)
     {
-        Debug.Log("Checking if can create " + u.gameObject.name + " at " + pos);
+        //Debug.Log("Checking if can create " + u.gameObject.name + " at " + pos);
 
         List<Vector2Int> uPos = BoardManager.Instance.SingleCellToUnitPositions(u, pos);
 
@@ -83,7 +83,7 @@ public static class Action_PlayerCreate
 
         while (IsWaitingForData) { yield return new WaitForSeconds(Time.deltaTime * 0.5f); }
 
-        Debug.Log("Got past waiting for data");
+        //Debug.Log("Got past waiting for data");
 
         #region Check if can place a unit there
         bool ViablePos = true;
@@ -99,12 +99,12 @@ public static class Action_PlayerCreate
         GameManager.Instance.HidePlacementEvent.Invoke(unitList);
         if (ViablePos)
         {
-            Debug.Log("Viable position, supposed to be creating");
+            //Debug.Log("Viable position, supposed to be creating");
             yield return GameManager.Instance.StartCoroutine(BoardManager.Instance.PlaceUnit(Unit, positions));
         }
         else
         {
-            Debug.Log("Non viable position");
+            //Debug.Log("Non viable position");
         }
         #endregion
 

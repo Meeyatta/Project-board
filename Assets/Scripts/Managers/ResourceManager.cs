@@ -77,7 +77,7 @@ public class ResourceManager : MonoBehaviour
     #region Should be called each time we place a new unit on the board
     public void RecordPlacedUnit(Unit unit)
     {
-        Debug.Log("Placed player " + unit.UnitName + ", removing from NotPlaced");
+        //Debug.Log("Placed player " + unit.UnitName + ", removing from NotPlaced");
         Army_NotPlaced.Remove(unit);
         Army_Placed.Add(unit);
     }
@@ -96,36 +96,37 @@ public class ResourceManager : MonoBehaviour
 
     public IEnumerator DeployPlayerUnits()
     {
-        List<Unit> toDeploy = new List<Unit>();
-        int totalAm = 0;
-        for (int i = 0; i < StarterUnitsAmount && i < Army_NotPlaced.Count; i++) 
-        {
-            toDeploy.Add(Army_NotPlaced[i]);
-            totalAm++;
-        }
-
         ActionParameters parameters = new ActionParameters(
-                    GameManager.ActionType.Deploy, toDeploy, null, BoardManager.Instance.PlayerDeploymentZone, null, totalAm);
+            GameManager.ActionType.DeployPlayerStarters, null, null, null, null, StarterUnitsAmount);
         yield return StartCoroutine(GameManager.Instance.Action(parameters));
 
-        foreach (var u in toDeploy) { RecordPlacedUnit(u); }
+        yield return new WaitForSeconds(Time.deltaTime);
+
+        //List<Unit> toDeploy = new List<Unit>();
+        //int totalAm = 0;
+        //for (int i = 0; i < StarterUnitsAmount && i < Army_NotPlaced.Count; i++)
+        //{
+        //    toDeploy.Add(Army_NotPlaced[i]);
+        //    totalAm++;
+        //}
+
+        //ActionParameters parameters = new ActionParameters(
+        //            GameManager.ActionType.Deploy, toDeploy, null, BoardManager.Instance.PlayerDeploymentZone, null, totalAm);
+        //yield return StartCoroutine(GameManager.Instance.Action(parameters));
+
+        //foreach (var u in toDeploy) { RecordPlacedUnit(u); }
     }
 
     public void DeployNewplayerUnit(ScoreManager.Side side)
     {
-        if (side == ScoreManager.Side.Enemy || ScoreManager.Instance.CurRound < 1) return;
+        if (side == ScoreManager.Side.Enemy || ScoreManager.Instance.CurRound == 0) return;
         if (Army_NotPlaced.Count <= 0) return;
+        EffectManager.Instance.HideAllPlayerMovement(side); // <- Safeguards just in case
 
         ActionParameters parameters = new ActionParameters(
                     GameManager.ActionType.DeployNew, null, null, null, null, 0);
         StartCoroutine(GameManager.Instance.Action(parameters));
-
-        //List<Unit> newUnit = new List<Unit> { Army_NotPlaced[0] };
-        //ActionParameters parameters = new ActionParameters(
-        //            GameManager.ActionType.Deploy, newUnit, null, BoardManager.Instance.PlayerDeploymentZone, null, 1);
-        //StartCoroutine(GameManager.Instance.Action(parameters));
-
-        //RecordPlacedUnit(Army_NotPlaced[0]);
+        EffectManager.Instance.HideAllPlayerMovement(side); // <- Safeguards just in case
     }
 
     //Adds selected unit into player's total army

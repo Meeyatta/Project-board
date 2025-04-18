@@ -68,7 +68,7 @@ public static class Action_Deployment
                 {
                     d += p.ToString() + " ";
                 }
-                Debug.Log(d);
+                //Debug.Log(d);
 
                 safeGuard--;
                 yield return new WaitForSeconds(0.0001f * Time.deltaTime);

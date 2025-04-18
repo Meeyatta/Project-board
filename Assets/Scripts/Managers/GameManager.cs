@@ -16,18 +16,20 @@ using UnityEngine.InputSystem;
         Move(ActionTargetUnits, CellsCoordinates) - Move the unit to the coordinates if it can move there with it's moveset, 
         Select(CellsCoordinates) - Set a unit under coordinates as a Current selected unit by the player
         ForcedMove(ActionTargetUnits, CellsCoordinates) - Move the unit to the coordinates, doesn't check for unit's moveset 
+
         Attack(ActionTargetUnits) - Make a target unit initiate an attack on all units in it's attack zone
         KeywordedAttack(Keywords) - Make all units with specific keywords initiate an attack on all units in their individual attack zones
+
         PlayerCreate(Object) - Awaits for player's input on cell coordinates, then places the unit on these coordinates
         Action_NextTurn() - Makes all units on one side attack, then scores all objectives, then passes the turn/round to the other side
         Create(GameObject Object, List<Vector2Int> CellsCoordinates) - Creates a new unit on coordinates
-        Deploy(List<Vector2Int> CellsCoordinates, GameObject Object, int IntNumber) - Places randomly a 
-            number of units from roster in their deployment zone            
+          
         CreateBattlefield(TODO: More parameters) - Places the battlefield things like objectives & obstacles
         Deploy(List<Unit> roster, int amount, List<Vector2Int> dZone) - Deploys <amount> number of units from <roster> within <dZone> coordinates
         Redeploy(Unit unit, List<Vector2Int> CellsCoordinates) - Places the unit on the position within the deployment zone
         DeployNew() - Gives player a choice between 3 not-deployed units and places one of them on the board
-            
+        DeployPlayerStarter(int IntNumber) - Places makes player draw one of 3 units a certain amount of times
+       
         --ABILITIES--
 
         Score(ActionTargetUnits) - Ability: Ability_Score, checks for units nearby, adds points to player if more player units, 
@@ -70,7 +72,7 @@ public class GameManager : MonoBehaviour
     public enum ActionType 
     { 
     Attack, AttackFromKeyworded, Move, Place, SelectUnit, PlayerCreate, Pre_NextTurn, NextTurn, Create, CreateBattlefield, Deploy, Redeploy,
-    DeployNew,
+    DeployNew, DeployPlayerStarters,
 
     Score, Slip,
     };
@@ -88,7 +90,7 @@ public class GameManager : MonoBehaviour
     public UnityEvent<List<Unit>> HideMovementEvent;
 
     public UnityEvent<List<Unit>> ShowDeploymentEvent;
-    public UnityEvent<List<Unit>> HideDeploymentEvent;
+    public UnityEvent HideDeploymentEvent;
 
     public UnityEvent<List<Unit>> ShowPlacementEvent;
     public UnityEvent<List<Unit>> HidePlacementEvent;
@@ -246,6 +248,15 @@ public class GameManager : MonoBehaviour
 
                 break;
             #endregion DeployNew()
+
+            //Places makes player draw one of 3 units a certain amount of times
+            #region DeployPlayerStarter(int IntNumber)
+            case ActionType.DeployPlayerStarters:
+                ActionSlot starterDeployment = new ActionSlot(Action_DeployPlayerStarters.DeployPlayerStarters(parameters), ActionType.DeployPlayerStarters, parameters);
+                ActionQueue.Enqueue(starterDeployment);
+
+                break;
+            #endregion DeployPlayerStarter(int IntNumber)
 
             /* --ABILITIES-- */
 
@@ -457,6 +468,7 @@ public class GameManager : MonoBehaviour
     }
 
     #region Checking if player is hovering over a unit, if they click - this counts as clicking on that unit's cell
+    public bool CellsCheckClicks = true;
     Transform LastPointedAt = null; 
     Vector2Int CellClickP = Vector2Int.zero; Vector2Int UnitClickP = Vector2Int.zero;
     Vector2Int NullV2 = new Vector2Int(-1,-1);
@@ -496,7 +508,11 @@ public class GameManager : MonoBehaviour
                     //Debug.Log(hit.transform.gameObject.name + " is new, making current");
                     LastPointedAt = hit.transform;
                     Unit u = LastPointedAt.GetComponent<Unit>();
-                    if (u != null) { UnitClickP = BoardManager.Instance.Get_UnitPositions(u)[0]; CellClickP = NullV2; }
+                    if (u != null) 
+                    { 
+                        List<Vector2Int> p = BoardManager.Instance.Get_UnitPositions(u);
+                        if (p != null && p.Count > 0 ) { CellClickP = NullV2; UnitClickP = p[0]; }            
+                    }
                 }
                 #endregion
             }
@@ -526,7 +542,7 @@ public class GameManager : MonoBehaviour
         }
 
         #region Check what position did we click on and send the click event
-        if (foundSmth && Input.GetMouseButton(0)) 
+        if (/*CellsCheckClicks &&*/ foundSmth && Input.GetMouseButtonDown(0)) 
         {
             if (CellClickP != NullV2)
             {
