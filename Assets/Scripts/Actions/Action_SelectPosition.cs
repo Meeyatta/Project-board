@@ -22,7 +22,7 @@ public static class Action_SelectPosition
 
         void StopWaiting(Vector2Int v)
         {
-            Debug.Log("Stopped waiting");
+            //Debug.Log("Stopped waiting");
             IsAwaitingAClickBack = false;
 
             if (CurUnit != null)
@@ -55,7 +55,7 @@ public static class Action_SelectPosition
 
         }
         GameManager.Instance.ClickBackEvent.AddListener(StopWaiting);
-        Debug.Log("Added a listener to clickback");
+        //Debug.Log("Added a listener to clickback");
 
         CurUnit = unit;
 

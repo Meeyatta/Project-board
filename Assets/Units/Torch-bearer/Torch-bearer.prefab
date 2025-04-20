@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 6593957617995070824}
   - component: {fileID: 7922599880743093124}
   - component: {fileID: 7888275706712510668}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: Preview
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -168,7 +168,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6279063167721795641}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: model
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -200,7 +200,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1524295201025867697}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: ModelHolder
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -232,7 +232,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2319594336364521574}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: torch-bearer
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -265,7 +265,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4738225269130887916}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: torch-bearer
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -390,7 +390,7 @@ GameObject:
   - component: {fileID: 8275417875115706595}
   - component: {fileID: 4008824115470241570}
   - component: {fileID: 3094343650958422794}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: base
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -473,7 +473,7 @@ GameObject:
   - component: {fileID: 3291019535220306991}
   - component: {fileID: 8762955710134808628}
   - component: {fileID: 6649770136932303}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: model
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -556,7 +556,7 @@ GameObject:
   - component: {fileID: 1095022967876945899}
   - component: {fileID: 1934795619652003270}
   - component: {fileID: 6638774133606153303}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: mesh
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -716,13 +716,14 @@ MonoBehaviour:
   CurMoveset: {fileID: 11400000, guid: 27a90ebe39d33a64490d4e4bae4f78ee, type: 2}
   CurAttackZone: {fileID: 11400000, guid: 59b6673213aa0aa4594e93302ef17f53, type: 2}
   MaxHealth: 2
-  CurrentHealth: 0
+  CodexPage: 2
   BaseAbilities: 
   BaseKeywords: 00000000
   PlayerColor: {r: 0, g: 255, b: 255, a: 1}
   PlayerBaseMat: {fileID: 2100000, guid: 6a8b410cc2cd240438356a36937894a9, type: 2}
   EnemyColor: {r: 255, g: 0, b: 0, a: 1}
   EnemyBaseMat: {fileID: 2100000, guid: 7347d27bca00bd04a9021a0137cd1900, type: 2}
+  CurrentHealth: 0
   IsPrefab: 1
   Model: {fileID: 1202204059585782307}
   Moved: 0
@@ -1172,6 +1173,10 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: a81f343a53a283845a0167143adf193f, type: 3}
       propertyPath: m_Name
       value: base
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: a81f343a53a283845a0167143adf193f, type: 3}
+      propertyPath: m_Layer
+      value: 2
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

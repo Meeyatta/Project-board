@@ -60,6 +60,7 @@ public class DialogueManager : MonoBehaviour
     public IEnumerator SpeakLines(List<DialogueLine> lines)
     {
         yield return new WaitForSeconds(Time.deltaTime);
+        DialogueWindow.SetActive(true);
 
         foreach (DialogueLine line in lines)
         {

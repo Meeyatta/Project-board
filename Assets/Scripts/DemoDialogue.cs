@@ -5,7 +5,6 @@ using UnityEngine;
 public class DemoDialogue : MonoBehaviour
 {
     public float DelayBeforeIntro;
-    public List<DialogueLine> StarterIntro;
     public List<DialogueLine> PiecesIntro;
     public List<DialogueLine> TorchBearerIntro;
     public List<DialogueLine> UnitMovementIntro;
@@ -26,7 +25,6 @@ public class DemoDialogue : MonoBehaviour
     IEnumerator StartIntro() 
     {
         yield return new WaitForSeconds(Time.deltaTime * DelayBeforeIntro); 
-        DialogueManager.Instance.StartDialogue(StarterIntro); 
     }
     void Start()
     {

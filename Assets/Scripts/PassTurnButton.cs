@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 using TMPro;
+using UnityEngine.Events;
 
 public class PassTurnButton : MonoBehaviour
 {
@@ -14,6 +15,8 @@ public class PassTurnButton : MonoBehaviour
 
     const string Shrugstr = "shrug";
     Animator anim;
+
+    public UnityEvent E_PassedTurn;
 
     #region Singleton
     public static PassTurnButton Instance;
@@ -91,6 +94,8 @@ public class PassTurnButton : MonoBehaviour
 
             ActionParameters parameters = new ActionParameters(GameManager.ActionType.NextTurn, null, null, null, null, 0);
             StartCoroutine(GameManager.Instance.Action(parameters));
+
+            E_PassedTurn.Invoke();
         }
     }
     void FixedUpdate()

@@ -60,7 +60,6 @@ public class BoardManager : MonoBehaviour
     public List<Column> Board;
     
     public static BoardManager Instance;
-    Vector2Int lastPres = new Vector2Int(-90, -90);
     #region Events 
     public UnityEvent<Vector2Int> ClickEvent;
     void Start()
@@ -230,7 +229,6 @@ public class BoardManager : MonoBehaviour
     //Returns the Vector3 position of a cell under coordinates
     public Vector3? BoardToWorldPosition(List<Vector2Int> poss)
     {
-
         Vector3 newP = Vector3.zero;
         if (poss == null || poss.Count <= 0) { return null; }
         foreach (Vector2Int v in poss)
@@ -263,38 +261,35 @@ public class BoardManager : MonoBehaviour
 
         return units;
     }
-    
+
     //Returns the cell under the player's cursor
+    Vector2Int lastPres = new Vector2Int(-90, -90);
+    BoardCell lastBoardCell; GameObject lastCellObj;
     public Vector2Int CursorToCellPosition()
     {
-        Vector2Int res = Vector2Int.zero;
-
-        Vector3 v = Input.mousePosition;
-        v.z = 999999;
-        Vector3 cPos = Camera.main.ScreenToWorldPoint(v);
         RaycastHit hit;
-        Physics.Raycast(Camera.main.transform.position, cPos, out hit, CellMask);
+        Vector3 vect = Input.mousePosition;
+        vect.z = 999999;
+        Vector3 cPos = Camera.main.ScreenToWorldPoint(vect);
+        Physics.Raycast(Camera.main.transform.position, cPos, out hit, Mathf.Infinity, CellMask);
+        Debug.DrawRay(Camera.main.transform.position, cPos, Color.green); 
 
         if (hit.transform != null)
         {
-            if (hit.transform.tag == "Cell")
+            if (lastCellObj != hit.transform.gameObject)
             {
-                res = WorldToBoardPosition(hit.transform.gameObject.transform.position);
+                lastBoardCell = hit.transform.gameObject.GetComponent<BoardCell>();
             }
             else
             {
-                //Debug.Log("Cursor is not on a board " + hit.transform.position);
-                //Debug.DrawLine(Camera.main.transform.position, cPos, Color.red);
-                res = CellClosestToPosition(hit.point);
+
             }
         }
-        else
-        {
-            res = lastPres;
-        }
 
-        lastPres = res;
+        if (lastBoardCell != null) { return lastBoardCell.Coordinates; }
+        
         return lastPres;
+
     }
 
     //Returns a singular cell closest to the used Vector3
@@ -320,17 +315,10 @@ public class BoardManager : MonoBehaviour
     //Determines how unit is going to fit according to the single cell provided
     public List<Vector2Int> SingleCellToUnitPositions(Unit unit, Vector2Int cell)
     {
-        for (int i = 0; i < unit.Size.Positions.Count; i++)
-        {
-            //Find positions of other cells relative to this cell
-            List<Vector2Int> relativePoss = new List<Vector2Int>();
-            for (int ii = 0; ii < unit.Size.Positions.Count; ii++)
-            {
-                //Add this positions to form possible coordinates
-                //Debug.Log(ii + " - " + (single + unit.Size.Positions[i] - unit.Size.Positions[ii]));
-                relativePoss.Add(cell + unit.Size.Positions[i] - unit.Size.Positions[ii]);
-            }
-
+        List<Vector2Int> relativePoss = new List<Vector2Int>();
+        foreach (var pos in unit.Size.Positions)
+        {         
+            relativePoss.Add(cell + pos);
             bool areAll = AreInBounds(relativePoss);
 
             //If all of these coordinates are within a border, return  these positions
@@ -347,8 +335,8 @@ public class BoardManager : MonoBehaviour
     public List<Vector2Int> ClosestUnitPosToCursor(Unit unit)
     {
         Vector2Int single = CursorToCellPosition();
-        
-        return SingleCellToUnitPositions((Unit)unit, single);
+
+        return SingleCellToUnitPositions(unit, single);
     }
 
     //Converts Vector3 position to a position on the board

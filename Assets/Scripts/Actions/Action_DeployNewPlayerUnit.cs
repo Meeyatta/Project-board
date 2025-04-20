@@ -166,6 +166,7 @@ public static class Action_DeployNewPlayerUnit
         }
         #endregion
 
+        UnitPlacementBag.Instance.StopPullingUnits();
         yield return new WaitForSeconds(0.1f * Time.deltaTime);
         GameManager.Instance.RemoveAction(parameters);
 

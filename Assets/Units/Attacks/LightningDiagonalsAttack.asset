@@ -32,5 +32,6 @@ MonoBehaviour:
     IsEvading: 0
   - Direction: left-up
     Positions:
+    - {x: -1, y: -1}
     - {x: -2, y: -2}
     IsEvading: 0

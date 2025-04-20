@@ -18,7 +18,7 @@ public class Unit : MonoBehaviour
     public Moveset CurMoveset;
     public AttackZone CurAttackZone;
     public int MaxHealth;
-    public int CurrentHealth;
+    public int CodexPage;
     [Header("Abilities:")]
     #region Abilities
     public List<Ability> BaseAbilities = new List<Ability>(); //Abilities unit has as a base, these are rarely changed
@@ -42,6 +42,7 @@ public class Unit : MonoBehaviour
     public Material EnemyBaseMat;
 
     [Header("----Read only information----")]
+    public int CurrentHealth;
     public bool IsPrefab = true;
     GameObject Base;
     public GameObject Model;
@@ -148,8 +149,8 @@ public class Unit : MonoBehaviour
         CurKeywords = curK;
 
         if (BaseOutline != null) BaseOutline.enabled = !Moved;
-        if (BaseKeywords.Contains(Keyword.Player)) { Model.transform.rotation = Quaternion.LookRotation(new Vector3(0,0,1)); }
-        if (BaseKeywords.Contains(Keyword.Enemy)) { Model.transform.rotation = Quaternion.LookRotation(new Vector3(0, 0, -1));  }
+        if (BaseKeywords.Contains(Keyword.Player) && Model != null) { Model.transform.rotation = Quaternion.LookRotation(new Vector3(0,0,1)); }
+        if (BaseKeywords.Contains(Keyword.Enemy) && Model != null) { Model.transform.rotation = Quaternion.LookRotation(new Vector3(0, 0, -1));  }
 
     }
     void FixedUpdate()

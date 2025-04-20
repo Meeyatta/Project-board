@@ -53,13 +53,14 @@ MonoBehaviour:
   CurMoveset: {fileID: 11400000, guid: 27a90ebe39d33a64490d4e4bae4f78ee, type: 2}
   CurAttackZone: {fileID: 11400000, guid: 0975c85d43f513e4788e5c187d780b69, type: 2}
   MaxHealth: 4
-  CurrentHealth: 0
+  CodexPage: 3
   BaseAbilities: 0c000000
   BaseKeywords: 00000000
   PlayerColor: {r: 0, g: 255, b: 255, a: 1}
   PlayerBaseMat: {fileID: 2100000, guid: 6a8b410cc2cd240438356a36937894a9, type: 2}
   EnemyColor: {r: 255, g: 0, b: 0, a: 1}
   EnemyBaseMat: {fileID: 2100000, guid: 7347d27bca00bd04a9021a0137cd1900, type: 2}
+  CurrentHealth: 0
   IsPrefab: 1
   Model: {fileID: 1716069997271958112}
   Moved: 0
@@ -253,7 +254,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5105714256486968568}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: model
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -322,7 +323,7 @@ GameObject:
   - component: {fileID: 1155163776669269803}
   - component: {fileID: 2443633929143923150}
   - component: {fileID: 4370111986635480426}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: model
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -405,7 +406,7 @@ GameObject:
   - component: {fileID: 6312103094653169057}
   - component: {fileID: 8614805680258279151}
   - component: {fileID: 7172891344683338841}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: base
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -681,7 +682,7 @@ GameObject:
   - component: {fileID: 2108872050365287699}
   - component: {fileID: 4803640887185905189}
   - component: {fileID: 1802969198227920264}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: ModelPreview
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -766,7 +767,7 @@ GameObject:
   - component: {fileID: 8074436469301511518}
   - component: {fileID: 717049398557701056}
   - component: {fileID: 9004231995050176287}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: modell
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -847,7 +848,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4935821643740094011}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: amphibia-man
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -880,7 +881,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5049407311925089195}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: ModelHolder
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1140,6 +1141,10 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: a81f343a53a283845a0167143adf193f, type: 3}
       propertyPath: m_Name
       value: base
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: a81f343a53a283845a0167143adf193f, type: 3}
+      propertyPath: m_Layer
+      value: 2
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

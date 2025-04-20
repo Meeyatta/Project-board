@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public enum SoundName { Attack, Damaged, Step, AlarmBeep, Click, Score  }
+public enum SoundName { Attack, Damaged, Step, AlarmBeep, Click, Score, Slip }
 
 [System.Serializable]
 public class Sound 

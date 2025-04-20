@@ -75,6 +75,9 @@ public static class Ability_Slippery
     public static IEnumerator Slip(ActionParameters parameters)
     {
         Unit unit = parameters.ActionTargetUnits[0];
+
+        AudioManager.Instance.Play(SoundName.Slip, unit.transform);
+
         List<Vector2Int> endPoss = GetRandPos(unit);
         bool IsValid = BoardManager.Instance.AreInBounds(endPoss) && !BoardManager.Instance.AreAnyOccupied(endPoss);
 

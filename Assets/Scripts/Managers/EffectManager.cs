@@ -81,7 +81,7 @@ public class EffectManager : MonoBehaviour
         GameManager.Instance.ShowDeploymentEvent.AddListener(ShowDeployment);
         GameManager.Instance.HideDeploymentEvent.AddListener(HideDeployment);
 
-        GameplayManager.Instance.eBattlefieldCreation.AddListener(StartUpdatingObjectiveControl);
+        if (GameplayManager.Instance != null) GameplayManager.Instance.eBattlefieldCreation.AddListener(StartUpdatingObjectiveControl);
 
         ScoreManager.Instance.eTurnEvent_Functional.AddListener(HideAllPlayerMovement);
 
@@ -99,7 +99,7 @@ public class EffectManager : MonoBehaviour
         GameManager.Instance.ShowDeploymentEvent.RemoveListener(ShowDeployment);
         GameManager.Instance.HideDeploymentEvent.RemoveListener(HideDeployment);
 
-        GameplayManager.Instance.eBattlefieldCreation.RemoveListener(StartUpdatingObjectiveControl);
+        if (GameplayManager.Instance != null) GameplayManager.Instance.eBattlefieldCreation.RemoveListener(StartUpdatingObjectiveControl);
 
         ScoreManager.Instance.eTurnEvent_Functional.RemoveListener(HideAllPlayerMovement);
 
@@ -284,11 +284,11 @@ public class EffectManager : MonoBehaviour
 
         while (CurUnitMovePosShowcase != null && ScoreManager.Instance.PlayerTurnActionCondition())
         {
-            yield return new WaitForSeconds(Time.deltaTime);
+            yield return new WaitForSeconds(Time.deltaTime * 0.1f);
             //Debug.Log("ShowingPossibleUnitPosition");
 
             List<Vector2Int> pos = BoardManager.Instance.ClosestUnitPosToCursor(unit);
-            if (availableZone != null && availableZone.Count >0 && pos != null && pos.Count > 0 && 
+            if (availableZone != null && availableZone.Count > 0 && pos != null && pos.Count > 0 && 
                 availableZone.Intersect<Vector2Int>(pos).Any())
             {
                 unit.UnitModelShowcase.SetActive(true);
@@ -343,7 +343,7 @@ public class EffectManager : MonoBehaviour
     {
         foreach (Unit u in units)
         {
-            Debug.Log("Called to show possible movement of " + u.gameObject.name);
+            //Debug.Log("Called to show possible movement of " + u.gameObject.name);
             List<GameObject> ePu = new List<GameObject>();
             StartShowingPossibleUnitMovement(u);
             foreach (var v in Action_Move.Get_PossibleMovement(u))

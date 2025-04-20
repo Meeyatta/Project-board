@@ -9,7 +9,7 @@ public static class Action_Move
 {
     //Returns all possible positions what a unit can move using their current moveset
 
-    public static UnityEvent<Unit> E_AfterMove;
+    public static UnityEvent<Unit> E_AfterMove = new UnityEvent<Unit>();
 
     public static bool UnitCanMove(Unit u)
     {
@@ -198,6 +198,7 @@ public static class Action_Move
         }
 
         Ability_Slippery.Try(ActionTargetUnit);
+        E_AfterMove.Invoke(ActionTargetUnit);
 
         yield return new WaitForSeconds(Time.deltaTime);
         GameManager.Instance.RemoveAction(parameters);
