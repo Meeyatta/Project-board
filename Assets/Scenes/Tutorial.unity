@@ -236,7 +236,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &10283304
 Transform:
   m_ObjectHideFlags: 0
@@ -7031,7 +7031,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &163984874
 Transform:
   m_ObjectHideFlags: 0
@@ -11248,8 +11248,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: da006f30ad41ae3489819a3a37d986f0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Speed: 3
-  DelayBeforeAutoSkip: 3
+  Speed: 2
+  DelayBeforeAutoSkip: 6
   SkipDialogue: 0
   DialogueWindow: {fileID: 380664594}
   Text: {fileID: 1137347814}
@@ -11805,7 +11805,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &263228470
 Transform:
   m_ObjectHideFlags: 0
@@ -29392,6 +29392,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   RoundText: {fileID: 1893479213}
   TurnText: {fileID: 1646674602}
+  ClickReload: 0
   Button: {fileID: 108654539}
   CanPass: 1
   E_PassedTurn:
@@ -30130,17 +30131,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e319a1d63310c7f41b1188cd299ccba2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  StarterUnitsAmount: 2
+  StarterUnitsAmount: 1
   Army:
   - {fileID: 1682432416608124755, guid: 08825e29c16e3e54eab9f28c3ec32750, type: 3}
-  - {fileID: 1682432416608124755, guid: 08825e29c16e3e54eab9f28c3ec32750, type: 3}
-  - {fileID: 1467022029548607331, guid: 47055914ca9fac745a13d5de04bfe097, type: 3}
-  - {fileID: 1467022029548607331, guid: 47055914ca9fac745a13d5de04bfe097, type: 3}
-  - {fileID: 7414565371915086219, guid: ca00f1841f6954c48bd6541892bdb97b, type: 3}
-  - {fileID: 7414565371915086219, guid: ca00f1841f6954c48bd6541892bdb97b, type: 3}
   Army_NotPlaced: []
   Army_Placed: []
-  PlayerUitsTr: {fileID: 0}
+  PlayerUitsTr: {fileID: 387184781}
 --- !u!1 &737917994
 GameObject:
   m_ObjectHideFlags: 0
@@ -48087,7 +48083,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1102688735
 Transform:
   m_ObjectHideFlags: 0
@@ -49344,7 +49340,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -4.0947, y: 322.7002}
+  m_AnchoredPosition: {x: -4.0947, y: 137.7002}
   m_SizeDelta: {x: 787.2366, y: 196.2956}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1137347814
@@ -51684,7 +51680,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1181997741
 Transform:
   m_ObjectHideFlags: 0
@@ -58288,7 +58284,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1308033331
 Transform:
   m_ObjectHideFlags: 0
@@ -60096,7 +60092,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1349326195
 Transform:
   m_ObjectHideFlags: 0
@@ -70620,7 +70616,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -48.477417, y: 364}
+  m_AnchoredPosition: {x: -48.477417, y: 179}
   m_SizeDelta: {x: 698.4733, y: 113.6812}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1634025547
@@ -83723,7 +83719,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1904610391
 Transform:
   m_ObjectHideFlags: 0
@@ -89154,16 +89150,25 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fd06c5e8ac66eaa44913613147409321, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  IntroPos:
-  - {x: 6, y: 11}
-  FirstUnit: {fileID: 6327052052689537303, guid: 08825e29c16e3e54eab9f28c3ec32750, type: 3}
+  CanClickOnCells: 1
+  Tutorial_CanPass: 1
   FirstLines:
   - {fileID: 11400000, guid: 340e0b92712ec48478d7cd4d40df8fb7, type: 2}
   - {fileID: 11400000, guid: 752b5d6b397920749bd4f2c296200fd6, type: 2}
-  ScndLines:
+  - {fileID: 11400000, guid: 048f1423f0052cc468ddaad2eebd7371, type: 2}
   - {fileID: 11400000, guid: ee2ed1612367d3c43ba163e3b163ed01, type: 2}
-  ThrdLines:
   - {fileID: 11400000, guid: bc2d6bb70a03675489e0f6c5ee8b91c4, type: 2}
+  SecondLines:
+  - {fileID: 11400000, guid: 80463a00767f8f24ba7f81983f4e3a37, type: 2}
+  ThirdLines:
+  - {fileID: 11400000, guid: 9f69c68c3a3a5304c8ed4fbe0064b1a9, type: 2}
+  - {fileID: 11400000, guid: 56a1425165703f540a8bf6af9f1b4ecf, type: 2}
+  Fourth1Lines:
+  - {fileID: 11400000, guid: c822f214cf76a034d9ef05dcf6a30086, type: 2}
+  - {fileID: 11400000, guid: e462d070d10f83748a5b761086ef5c7e, type: 2}
+  Objective: {fileID: 3774015871857991685, guid: 7c7d2d1dc6bbf8d4e87be9ef8db52944, type: 3}
+  Fourth2Lines:
+  - {fileID: 11400000, guid: 6b379a2af0096a54f9a9d5a8be3785b8, type: 2}
 --- !u!1 &2031860577
 GameObject:
   m_ObjectHideFlags: 0
@@ -89410,7 +89415,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &2034756127
 Transform:
   m_ObjectHideFlags: 0

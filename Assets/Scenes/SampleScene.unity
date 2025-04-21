@@ -236,7 +236,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &10283304
 Transform:
   m_ObjectHideFlags: 0
@@ -7031,7 +7031,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &163984874
 Transform:
   m_ObjectHideFlags: 0
@@ -11805,7 +11805,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &263228470
 Transform:
   m_ObjectHideFlags: 0
@@ -29394,6 +29394,9 @@ MonoBehaviour:
   TurnText: {fileID: 1646674602}
   Button: {fileID: 108654539}
   CanPass: 1
+  E_PassedTurn:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!95 &695396558
 Animator:
   serializedVersion: 5
@@ -48084,7 +48087,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1102688735
 Transform:
   m_ObjectHideFlags: 0
@@ -51681,7 +51684,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1181997741
 Transform:
   m_ObjectHideFlags: 0
@@ -58285,7 +58288,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1308033331
 Transform:
   m_ObjectHideFlags: 0
@@ -60093,7 +60096,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1349326195
 Transform:
   m_ObjectHideFlags: 0
@@ -83719,7 +83722,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1904610391
 Transform:
   m_ObjectHideFlags: 0
@@ -85566,9 +85569,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   DelayBeforeIntro: 10
-  StarterIntro:
-  - {fileID: 11400000, guid: 593ab84b731bacf4d8005eae8909a9e2, type: 2}
-  - {fileID: 11400000, guid: ffadac1de0171de49b339f4e3ced9e13, type: 2}
   PiecesIntro:
   - {fileID: 11400000, guid: f859801b176084b45a967a5c572cb302, type: 2}
   - {fileID: 11400000, guid: cf1a72feebce10c488bf116c9bb94c0a, type: 2}
@@ -89355,7 +89355,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &2034756127
 Transform:
   m_ObjectHideFlags: 0

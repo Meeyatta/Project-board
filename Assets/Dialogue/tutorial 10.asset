@@ -10,8 +10,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c8afc66d21413fe47b8a28db7dd9c000, type: 3}
-  m_Name: tutorial 2
+  m_Name: tutorial 10
   m_EditorClassIdentifier: 
   Language: 0
-  Name: 2
-  Text: Lets teach you the basics
+  Name: 10
+  Text: You score 1 point after passing a turn if your units are near an OBJECTIVE

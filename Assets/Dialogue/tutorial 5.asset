@@ -13,6 +13,5 @@ MonoBehaviour:
   m_Name: tutorial 5
   m_EditorClassIdentifier: 
   Language: 0
-  Name: 1
-  Text: After moving all of your units, click the turn clock on your right to pass
-    the turn
+  Name: 5
+  Text: Deploy one anywhere in your deployment zone

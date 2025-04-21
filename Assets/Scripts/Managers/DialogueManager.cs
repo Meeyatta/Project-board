@@ -15,7 +15,8 @@ public class DialogueManager : MonoBehaviour
     [Header("------------")]
     public GameObject DialogueWindow;
     public TextMeshProUGUI Text;
-    Coroutine CDialogue;
+    Coroutine cDialogue;
+    Coroutine cLine;
 
     #region Singleton
     public static DialogueManager Instance;
@@ -37,16 +38,15 @@ public class DialogueManager : MonoBehaviour
     }
     #endregion
     public void StartDialogue(List<DialogueLine> lines)
-    {
-        if (CDialogue == null) 
-        {
-            DialogueWindow.SetActive(true);
-            CDialogue = StartCoroutine(SpeakLines(lines));
-        }
+    {   
+        if (cDialogue != null) StopCoroutine(cDialogue);
+
+        DialogueWindow.SetActive(true);
+        cDialogue = StartCoroutine(SpeakLines(lines));      
     }
     public void HideDialogue()
     {
-        CDialogue = null;
+        cDialogue = null;
         DialogueWindow.SetActive(false);
     }
     public void Skip(InputAction.CallbackContext context)
@@ -59,13 +59,16 @@ public class DialogueManager : MonoBehaviour
 
     public IEnumerator SpeakLines(List<DialogueLine> lines)
     {
+        Debug.Log("Started speaking lines");
         yield return new WaitForSeconds(Time.deltaTime);
         DialogueWindow.SetActive(true);
 
         foreach (DialogueLine line in lines)
         {
-            yield return StartCoroutine(SpeakLine(line));
 
+            if (cLine != null) { StopCoroutine(cLine); }
+            yield return cLine = StartCoroutine(SpeakLine(line));
+            
             #region Await until player skips to the next line
             float skipMoment = Time.time + DelayBeforeAutoSkip;
             while (!SkipDialogue && skipMoment > Time.time)
@@ -86,7 +89,7 @@ public class DialogueManager : MonoBehaviour
         Text.text = "";
         foreach (var i in words) 
         {
-            if (SkipDialogue)
+            if (SkipDialogue && cLine != null)
             {
                 Text.text = words;
                 SkipDialogue = false;
@@ -96,6 +99,8 @@ public class DialogueManager : MonoBehaviour
             Text.text += i;
             yield return new WaitForSeconds(Time.deltaTime * 15f / Speed);
         }
+
+        cLine = null;
     }
     
     void Start()

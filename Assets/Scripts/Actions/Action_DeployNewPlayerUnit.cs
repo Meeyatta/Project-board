@@ -1,9 +1,12 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 public static class Action_DeployNewPlayerUnit
 {
+    public static UnityEvent<Unit> E_DeployedNewPlayerUnit = new UnityEvent<Unit>();
+
     static int PulledNumber = 3;
     static float SpaceBetweenUnits = 2;
 
@@ -52,6 +55,16 @@ public static class Action_DeployNewPlayerUnit
     public static IEnumerator DeployNewUnit(ActionParameters parameters)
     {
         yield return new WaitForSeconds(Time.deltaTime);
+
+        #region If we have no units to deploy
+        if (ResourceManager.Instance.Army_NotPlaced.Count == 0)
+        {
+            yield return new WaitForSeconds(Time.deltaTime);
+            E_DeployedNewPlayerUnit.Invoke(null);
+            GameManager.Instance.RemoveAction(parameters);
+            yield break;
+        }
+        #endregion
 
         /*
          1) Camera is drawn in front of the board
@@ -166,7 +179,10 @@ public static class Action_DeployNewPlayerUnit
         }
         #endregion
 
+
         UnitPlacementBag.Instance.StopPullingUnits();
+
+        E_DeployedNewPlayerUnit.Invoke(selectedUnit);
         yield return new WaitForSeconds(0.1f * Time.deltaTime);
         GameManager.Instance.RemoveAction(parameters);
 

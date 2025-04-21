@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: tutorial 4
   m_EditorClassIdentifier: 
   Language: 0
-  Name: 1
-  Text: You can move units by clicking on them. Try it
+  Name: 4
+  Text: You place it one by one each turn
