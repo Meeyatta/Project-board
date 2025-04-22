@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Unit
   - Cell
+  - turnclock
   layers:
   - Default
   - TransparentFX

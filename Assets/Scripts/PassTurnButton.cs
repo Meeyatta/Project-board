@@ -11,7 +11,6 @@ public class PassTurnButton : MonoBehaviour
     public TextMeshProUGUI TurnText;
 
     public float ClickReload; float nextClickTime = 1;
-    public GameObject Button;
     public bool CanPass = true;
 
     const string Shrugstr = "shrug";
@@ -85,11 +84,17 @@ public class PassTurnButton : MonoBehaviour
             CanPass = true;
         }
     }
+
+    bool TutorialCond()
+    {
+        return (TutorialManager.Instance == null || (TutorialManager.Instance != null && TutorialManager.Instance.Tutorial_CanPass));
+    }
+
     public void Pass()
     {
-
+        Debug.Log("Button passed the turn");
         if (ScoreManager.Instance.CurTurn == ScoreManager.Side.Player && CanPass && Time.time > nextClickTime
-            && (TutorialManager.Instance != null && TutorialManager.Instance.Tutorial_CanPass)) //<- This is purely for tutorial
+            && TutorialCond()) //<- This is purely for tutorial
         {
             nextClickTime = Time.time + ClickReload ;
             GameManager.Instance.CancelEvent.Invoke();
@@ -120,6 +125,5 @@ public class PassTurnButton : MonoBehaviour
         }
 
 
-        Button.transform.LookAt(Camera.main.transform.position);
     }
 }

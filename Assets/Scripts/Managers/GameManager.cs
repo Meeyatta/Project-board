@@ -560,11 +560,13 @@ public class GameManager : MonoBehaviour
     Vector2Int NullV2 = new Vector2Int(-1,-1);
 
     bool ShouldCheckForClicks()
-    {
-        
-        if (nextClickTime > Time.time) return false;
-        if (CurrentAction != null && CurrentAction.Params.Type == ActionType.PlayerCreate) { return false; }
-        if (CurrentAction != null && CurrentAction.Params.Type == ActionType.Deploy) { return false; }
+    {        
+        if (nextClickTime >= Time.time) return false;
+
+        if (CurrentAction != null && CurrentAction.Params.Type == ActionType.PlayerCreate) 
+            { nextClickTime = Time.time + ClickCooldown; return false; }
+        if (CurrentAction != null && CurrentAction.Params.Type == ActionType.Deploy) 
+            { nextClickTime = Time.time + ClickCooldown; return false; }
 
         return true;
     }
@@ -586,9 +588,6 @@ public class GameManager : MonoBehaviour
         bool foundSmth = false;
         if (hit.transform != null )
         {
-
-            //Debug.Log(hit.transform.gameObject.name);
-
             #region If hit unit
             if (hit.transform.tag.ToLower() == "unit")
             {
@@ -639,6 +638,12 @@ public class GameManager : MonoBehaviour
                     if (b != null) { CellClickP = b.Coordinates; }
                 }
                 #endregion
+            }
+            #endregion
+            #region If hit a turn clock
+            else if (hit.transform.tag.ToLower() == "turnclock" && Input.GetMouseButtonDown(0))
+            {
+                PassTurnButton.Instance.Pass();
             }
             #endregion
         }

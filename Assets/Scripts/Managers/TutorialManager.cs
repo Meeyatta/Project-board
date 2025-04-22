@@ -60,13 +60,13 @@ public class TutorialManager : MonoBehaviour
         yield return DialogueManager.Instance.SpeakLines(FirstLines);
 
         CanClickOnCells = true;
-
         ActionParameters pars = new ActionParameters(GameManager.ActionType.DeployNew, null, null, null, null, 0);
         yield return GameManager.Instance.Action(pars);
 
         while (iswaiting_1) { yield return new WaitForSeconds(Time.deltaTime); }
         Action_DeployNewPlayerUnit.E_DeployedNewPlayerUnit.RemoveListener(stopwaiting_1);
-         Tutorial_CanPass = true;
+        Tutorial_CanPass = true;
+
         #endregion
 
         yield return new WaitForSeconds(Time.deltaTime);
@@ -141,7 +141,7 @@ public class TutorialManager : MonoBehaviour
 
         DialogueManager.Instance.StartCoroutine(DialogueManager.Instance.SpeakLines(Fourth2Lines));
         Tutorial_CanPass = true;
-        CanClickOnCells = false;
+        CanClickOnCells = true;
         #endregion
 
     }
