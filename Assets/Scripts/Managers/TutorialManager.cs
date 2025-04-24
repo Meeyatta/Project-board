@@ -32,6 +32,8 @@ public class TutorialManager : MonoBehaviour
     public List<DialogueLine> Fourth2Lines;
     [Header("Fifth - enemy units and attacks")]
     public List<DialogueLine> Fifth1Lines;
+    public Unit EnemyUnit;
+    public List<DialogueLine> Fifth2Lines;
 
     void Singleton()
     {
@@ -53,6 +55,7 @@ public class TutorialManager : MonoBehaviour
 
     IEnumerator StartTutorial()
     {
+        Debug.Log("Started first");
         #region First - deploying a unit
         Tutorial_SupposedRoundTurn = 0;
         CanClickOnCells = false; Tutorial_CanPass = false;
@@ -78,8 +81,9 @@ public class TutorialManager : MonoBehaviour
 
         yield return new WaitForSeconds(Time.deltaTime);
 
+        Debug.Log("Started second");
         #region Second - passing a turn
-        bool iswaiting_2 = true; void stopwaiting_2() { iswaiting_2 = false; }
+        bool iswaiting_2 = true; void stopwaiting_2() { iswaiting_2 = false; iswaiting_1 = false; }
         PassTurnButton.Instance.E_PassedTurn.AddListener(stopwaiting_2);
 
         DialogueManager.Instance.StartCoroutine(DialogueManager.Instance.SpeakLines(SecondLines));
@@ -93,8 +97,9 @@ public class TutorialManager : MonoBehaviour
 
         yield return new WaitForSeconds(Time.deltaTime);
 
+        Debug.Log("Started third");
         #region Third - moving
-        bool iswaiting_3 = true; void stopwaiting_3(Unit u) { iswaiting_3 = false; } 
+        bool iswaiting_3 = true; void stopwaiting_3(Unit u) { iswaiting_3 = false; iswaiting_2 = false; iswaiting_1 = false; } 
         Action_Move.E_AfterMove.AddListener(stopwaiting_3);
         Tutorial_CanPass = false;
 
@@ -119,6 +124,7 @@ public class TutorialManager : MonoBehaviour
 
         yield return new WaitForSeconds(Time.deltaTime);
 
+        Debug.Log("Started fourth");
         #region Fourth - objective scoring
         CanClickOnCells = false; Tutorial_CanPass = false;
         yield return DialogueManager.Instance.SpeakLines(Fourth1Lines);
@@ -159,20 +165,49 @@ public class TutorialManager : MonoBehaviour
         CanClickOnCells = true;
 
         #region Waiting until player scores a point
-        bool iswaiting_ToScore = true; void stopwaiting_score(Side s) { iswaiting_ToScore = false; }
+        bool iswaiting_ToScore = true; void stopwaiting_score(Side s) { Debug.Log("Scored"); iswaiting_ToScore = false; iswaiting_3 = false; iswaiting_2 = false; iswaiting_1 = false; }
         Tutorial_SupposedRoundTurn = 2.5f;
         ScoreClock.Instance.e_PointScored.AddListener(stopwaiting_score);
 
         curDelay = DelayBeforeAutomaticProceeding;
-        while (iswaiting_ToScore && curDelay > 0) { curDelay -= Time.deltaTime; yield return new WaitForSeconds(Time.deltaTime); }
+        while (iswaiting_ToScore && curDelay > 0) { Debug.Log("Waiting for score"); curDelay -= Time.deltaTime; yield return new WaitForSeconds(Time.deltaTime); }
         #endregion
 
         #endregion
 
-
+        Debug.Log("Started fifth");
         #region Fifth - enemy units and attacks
         CanClickOnCells = false; Tutorial_CanPass = false;
         yield return DialogueManager.Instance.SpeakLines(Fifth1Lines);
+
+        #region Find an appropriate location for an enemy unit
+        List<Vector2Int> posO = BoardManager.Instance.Get_UnitPositions(Objective);
+        List<Vector2Int> newEnemyPos = new List<Vector2Int>();
+        for (int dir = 0; dir < 4; dir++)
+        {
+            Vector2Int offset = new Vector2Int(0, -1);
+            switch (dir)
+            {
+                case 0: offset = new Vector2Int(0, -1); break;
+                case 1: offset = new Vector2Int(1, 0); break;
+                case 2: offset = new Vector2Int(0, 1); break;
+                default: offset = new Vector2Int(-1, 0); break;
+            }
+
+            newEnemyPos = new List<Vector2Int> { offset + posO[0] };
+
+            if (BoardManager.Instance.IsInBounds(newEnemyPos[0]) && BoardManager.Instance.Board[newEnemyPos[0].x].Cells[newEnemyPos[0].y].CurUnit == null)
+            {/* Debug.Log("I AM NOT A MORON");*/ break; }
+        }
+        #endregion
+
+        Debug.Log("Placing enemy at " + newEnemyPos[0]);
+        ActionParameters parsE = new ActionParameters(GameManager.ActionType.Create, new List<Unit> { EnemyUnit }, null, newEnemyPos, null, 1);
+        yield return Action_Create.Create(parsE);
+
+
+        //yield return DialogueManager.Instance.SpeakLines(Fifth2Lines);
+
         #endregion
     }
 

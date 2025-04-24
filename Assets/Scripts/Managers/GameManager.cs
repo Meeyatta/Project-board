@@ -350,6 +350,7 @@ public class GameManager : MonoBehaviour
             #region Yes - Invoke an event to send coordinates where the unit is going to be created (If can be created)
             { //a1
               //Debug.Log("Creating a unit"); 
+                Debug.Log("selecting a position for creating a unit");
                 ClickBackEvent.Invoke(coords);
             }
             #endregion
@@ -362,6 +363,7 @@ public class GameManager : MonoBehaviour
                     ScoreManager.Instance.PlayerTurnActionCondition())
                 #region Yes - Move the unit
                 {
+                    Debug.Log("moving a unit");
                     List<Vector2Int> nCoords = new List<Vector2Int>(); nCoords.Add(coords);
                     List<Unit> unitToList = new List<Unit>(); unitToList.Add(CurUnitSelected);
 
@@ -369,7 +371,6 @@ public class GameManager : MonoBehaviour
                     yield return StartCoroutine(Action(parameters));
                     CurUnitSelected = null;
 
-                    #endregion
                 }
                 #endregion
 
@@ -386,6 +387,7 @@ public class GameManager : MonoBehaviour
                             && CurUnitSelected != BoardManager.Instance.Board[coords.x].Cells[coords.y].CurUnit)
                         #region Yes - select it if we can
                         {
+                            Debug.Log("selecting a unit");
                             ActionParameters parameters = new ActionParameters(ActionType.SelectUnit, null, null, nCoords, null, 0); yield return StartCoroutine(Action(parameters));
                             //else { Debug.Log(ScoreManager.Instance.CurTurn); }
                         }
@@ -414,8 +416,13 @@ public class GameManager : MonoBehaviour
                 #endregion
 
                 #endregion
+                #endregion
             }
             #endregion
+        }
+        else
+        {
+            Debug.Log("CAN'T CLICK ON CELLS");
         }
 
         yield return null;
@@ -428,7 +435,7 @@ public class GameManager : MonoBehaviour
     IEnumerator CellClickCoroutine(Vector2Int coords)
     {
         yield return new WaitForSeconds(Time.deltaTime * 0.01f); //For some reason this is vital, otherwise Unity shits itself
-        Debug.Log("Clicked on a cell " + coords);
+        //Debug.Log("Clicked on a cell " + coords);
 
         if (TutorialManager.Instance != null) { yield return TutorialClickCoroutine(coords); yield break; }
 
@@ -586,7 +593,7 @@ public class GameManager : MonoBehaviour
         if (SwitchedAction)
         {
             nextClickTime = Time.time + (ActionSwapCooldown * Time.deltaTime * 100);
-            Debug.Log("Changed: " + nextClickTime + " " + Time.time);
+            //Debug.Log("Changed: " + nextClickTime + " " + Time.time);
             SwitchedAction = false; 
             return true;
         }
@@ -682,13 +689,13 @@ public class GameManager : MonoBehaviour
             {
                 CellClickHandle(CellClickP);
                 nextClickTime = Time.time + (ClickCooldown * Time.deltaTime * 100);
-                Debug.Log("Clicked: " + nextClickTime + " " + Time.time);
+                //Debug.Log("Clicked: " + nextClickTime + " " + Time.time);
             }
             else if (UnitClickP != NullV2)
             {
                 CellClickHandle(UnitClickP);
                 nextClickTime = Time.time + (ClickCooldown * Time.deltaTime * 100);
-                Debug.Log("Clicked: " + nextClickTime + " " + Time.time);
+                //Debug.Log("Clicked: " + nextClickTime + " " + Time.time);
             }
         }
         #endregion

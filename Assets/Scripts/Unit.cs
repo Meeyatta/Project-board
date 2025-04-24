@@ -115,12 +115,8 @@ public class Unit : MonoBehaviour
     #endregion 
 
     #region Turns this into an enemy unit
-    public IEnumerator SetToEnemy()
+    public void SetToEnemy()
     {
-        yield return new WaitForSeconds(Time.deltaTime);
-
-        //Debug.Log("Set " + UnitName + " to enemy");
-
         if (BaseOutline != null) BaseOutline.OutlineColor = EnemyColor;
 
         if (BaseRend != null) BaseRend.material = EnemyBaseMat;

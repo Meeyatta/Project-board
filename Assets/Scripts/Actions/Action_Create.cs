@@ -7,7 +7,6 @@ public static class Action_Create
 {
     public static IEnumerator Create(ActionParameters parameters)
     {
-        yield return new WaitForSeconds(Time.deltaTime);
         GameObject Object = parameters.Object; List<Vector2Int> poss = parameters.CellsCoordinates;
         int side = parameters.IntNumber;
 
@@ -28,9 +27,10 @@ public static class Action_Create
         bool ViablePos = true;
         foreach (var v in poss)
         {
-            if (!BoardManager.Instance.IsInBounds(v)) { ViablePos = false; break; }
+            if (!BoardManager.Instance.IsInBounds(v)) { ViablePos = false; Debug.Log(v + " is out of bounds"); break; }
 
-            if (BoardManager.Instance.Board[v.x].Cells[v.y].CurUnit != null) { ViablePos = false; break; }
+            if (BoardManager.Instance.Board[v.x].Cells[v.y].CurUnit != null) 
+            { ViablePos = false; Debug.Log(v + " is occupied by " + BoardManager.Instance.Board[v.x].Cells[v.y].CurUnit.gameObject.name); break; }
         }
 
         //Debug.Log("ViablePos is: " + ViablePos);

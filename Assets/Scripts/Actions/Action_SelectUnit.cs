@@ -18,7 +18,7 @@ public static class Action_SelectUnit
         if (CellsCoordinates.Count == 0) Debug.LogError("INVALID ACTION PARAMETERS - SELECT(CellCoordinates)");
     
         Vector2Int coords = CellsCoordinates[0];
-        Debug.Log("SELECTED ON" + coords);
+        //Debug.Log("SELECTED ON" + coords);
         Unit ogUnit = GameManager.Instance.CurUnitSelected; List<Unit> us = new List<Unit>();
     
         GameManager.Instance.CurUnitSelected = BoardManager.Instance.Board[coords.x].Cells[coords.y].CurUnit;

@@ -88,7 +88,7 @@ public class EnemyManager : MonoBehaviour
         {
             Unit u = Instantiate(v.gameObject, new Vector3(255, 0, 0), Quaternion.identity, EnemyUitsTr).GetComponent<Unit>();
             yield return new WaitForSeconds(Time.deltaTime);
-            yield return u.SetToEnemy();
+            u.SetToEnemy();
             FullArmy.Add(u);
             
         }
