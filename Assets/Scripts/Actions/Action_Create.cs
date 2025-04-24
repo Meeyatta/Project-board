@@ -11,10 +11,17 @@ public static class Action_Create
         GameObject Object = parameters.Object; List<Vector2Int> poss = parameters.CellsCoordinates;
         int side = parameters.IntNumber;
 
-        //Debug.Log("Creating a unit: ");
-
-        Unit unit =
-            GameManager.Instantiate(Object, Vector3.zero, Quaternion.identity).GetComponent<Unit>();
+        #region Checking if we need to instantiate a new unit or if we can use an old one
+        Unit unit = new Unit();
+        if (parameters.ActionTargetUnits != null && parameters.ActionTargetUnits.Count > 0) 
+        {
+            unit = parameters.ActionTargetUnits[0]; 
+        }
+        else
+        {
+            unit = GameManager.Instantiate(Object, Vector3.zero, Quaternion.identity).GetComponent<Unit>();
+        }
+        #endregion
 
         if (side == 0) { unit.SetToPlayer(); } else { unit.SetToEnemy(); }
 
@@ -36,7 +43,7 @@ public static class Action_Create
             Debug.Log("Non viable position");
         }
 
-        yield return new WaitForSeconds(0.001f);
+        yield return new WaitForSeconds(Time.deltaTime);
         GameManager.Instance.RemoveAction(parameters);
     }
 }

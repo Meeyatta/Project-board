@@ -19,6 +19,7 @@ public class TutorialManager : MonoBehaviour
     public bool Tutorial_CanPass;
     public float Tutorial_SupposedRoundTurn; //This keeps track of current roundturn (1 - first player round, 1.5 - first enemy round, etc...) 
 
+    public float DelayBeforeAutomaticProceeding; float curDelay; //These are safeguards in case some parts of the tutorial loop infinitely
     [Header("First - deploying a unit")]
     public List<DialogueLine> FirstLines;
     [Header("Second - passing a turn")]
@@ -27,7 +28,7 @@ public class TutorialManager : MonoBehaviour
     public List<DialogueLine> ThirdLines;
     [Header("Fourth - objective scoring")]
     public List<DialogueLine> Fourth1Lines;
-    public GameObject Objective;
+    public Unit Objective;
     public List<DialogueLine> Fourth2Lines;
     [Header("Fifth - enemy units and attacks")]
     public List<DialogueLine> Fifth1Lines;
@@ -67,7 +68,8 @@ public class TutorialManager : MonoBehaviour
         ActionParameters pars = new ActionParameters(GameManager.ActionType.DeployNew, null, null, null, null, 0);
         yield return GameManager.Instance.Action(pars);
 
-        while (iswaiting_1) { yield return new WaitForSeconds(Time.deltaTime); }
+        curDelay = DelayBeforeAutomaticProceeding;
+        while (iswaiting_1 && curDelay > 0) { curDelay -= Time.deltaTime;; yield return new WaitForSeconds(Time.deltaTime); }
         Action_DeployNewPlayerUnit.E_DeployedNewPlayerUnit.RemoveListener(stopwaiting_1);
         Tutorial_SupposedRoundTurn = 1;
         Tutorial_CanPass = true;
@@ -83,7 +85,8 @@ public class TutorialManager : MonoBehaviour
         DialogueManager.Instance.StartCoroutine(DialogueManager.Instance.SpeakLines(SecondLines));
         CameraManager.Instance.SetCam(CameraManager.Instance.Left);
 
-        while (iswaiting_2) { yield return new WaitForSeconds(Time.deltaTime); }
+        curDelay = DelayBeforeAutomaticProceeding;
+        while (iswaiting_2 && curDelay > 0) { curDelay -= Time.deltaTime;; yield return new WaitForSeconds(Time.deltaTime); }
 
         PassTurnButton.Instance.E_PassedTurn.RemoveListener(stopwaiting_2);
         #endregion
@@ -97,7 +100,8 @@ public class TutorialManager : MonoBehaviour
 
         DialogueManager.Instance.StartCoroutine(DialogueManager.Instance.SpeakLines(ThirdLines));
 
-        while (iswaiting_3) { yield return new WaitForSeconds(Time.deltaTime); }
+        curDelay = DelayBeforeAutomaticProceeding;
+        while (iswaiting_3 && curDelay > 0) { curDelay -= Time.deltaTime;; yield return new WaitForSeconds(Time.deltaTime); }
         Tutorial_SupposedRoundTurn = 2;
         Action_Move.E_AfterMove.RemoveListener(stopwaiting_3);
         Tutorial_CanPass = true;
@@ -106,7 +110,8 @@ public class TutorialManager : MonoBehaviour
         void stopwaiting_32() { iswaiting_32 = false; }
         PassTurnButton.Instance.E_PassedTurn.AddListener(stopwaiting_32);
 
-        while (iswaiting_32) { yield return new WaitForSeconds(Time.deltaTime); }
+        curDelay = DelayBeforeAutomaticProceeding;
+        while (iswaiting_32 && curDelay > 0) { curDelay -= Time.deltaTime;; yield return new WaitForSeconds(Time.deltaTime); }
 
         PassTurnButton.Instance.E_PassedTurn.RemoveListener(stopwaiting_32);
 
@@ -144,7 +149,7 @@ public class TutorialManager : MonoBehaviour
         }
         #endregion
 
-        ActionParameters parsO = new ActionParameters(GameManager.ActionType.Create, null, null, newObjPos, Objective, 0);
+        ActionParameters parsO = new ActionParameters(GameManager.ActionType.Create, new List<Unit> { Objective }, null, newObjPos, null, 0);
         yield return Action_Create.Create(parsO);
 
         DialogueManager.Instance.StartCoroutine(DialogueManager.Instance.SpeakLines(Fourth2Lines));
@@ -158,7 +163,8 @@ public class TutorialManager : MonoBehaviour
         Tutorial_SupposedRoundTurn = 2.5f;
         ScoreClock.Instance.e_PointScored.AddListener(stopwaiting_score);
 
-        while (iswaiting_ToScore) { yield return new WaitForSeconds(Time.deltaTime); }
+        curDelay = DelayBeforeAutomaticProceeding;
+        while (iswaiting_ToScore && curDelay > 0) { curDelay -= Time.deltaTime; yield return new WaitForSeconds(Time.deltaTime); }
         #endregion
 
         #endregion

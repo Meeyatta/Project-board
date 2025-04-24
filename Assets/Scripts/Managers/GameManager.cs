@@ -562,39 +562,41 @@ public class GameManager : MonoBehaviour
     }
 
     #region Checking if player is hovering over a unit, if they click - this counts as clicking on that unit's cell
-    float ClickCooldown = 40; float nextClickTime = 1;
+    public float ClickCooldown; public float ActionSwapCooldown; 
+    float nextClickTime = 1;
 
     Transform LastPointedAt = null; public Unit CurrentPointedAtUnit = new Unit();
     Vector2Int CellClickP = Vector2Int.zero; Vector2Int UnitClickP = Vector2Int.zero;
     Vector2Int NullV2 = new Vector2Int(-1,-1);
 
-    bool ShouldCheckForClicks()
+    bool ShouldStopCheckingClicks()
     {
-        if (nextClickTime >= Time.time) return false;
+        if (nextClickTime >= Time.time) { /*Debug.Log(nextClickTime + " " + Time.time);*/ return true; }
 
-        if (CurrentAction != null)
-        {
-            if (CurrentAction.Params.Type == ActionType.PlayerCreate || CurrentAction.Params.Type == ActionType.Deploy)
-            {
-                Debug.Log("Creation action");
-                nextClickTime = Time.time + ClickCooldown; return false;
-            }
+        //if (CurrentAction != null)
+        //{
+        //    if (CurrentAction.Params.Type == ActionType.PlayerCreate || CurrentAction.Params.Type == ActionType.Deploy)
+        //    {
+        //        //Debug.Log("Creation action");
+        //        nextClickTime = Time.time + ClickCooldown; return true;
+        //    }
             
-        }
+        //}
 
         if (SwitchedAction)
         {
-            Debug.Log("Switched action");
-            nextClickTime = Time.time + ClickCooldown; SwitchedAction = false; return false;
+            nextClickTime = Time.time + (ActionSwapCooldown * Time.deltaTime * 100);
+            Debug.Log("Changed: " + nextClickTime + " " + Time.time);
+            SwitchedAction = false; 
+            return true;
         }
 
-        Debug.Log("Can click");
-        return true;
+        return false;
     }
-
     void CheckUnitUnderCursor()
     {
-        if (ShouldCheckForClicks()) return;
+        //Debug.Log(ShouldStopCheckingClicks());
+        if (ShouldStopCheckingClicks()) return;
 
         RaycastHit hit;
         Vector3 vect = Input.mousePosition;
@@ -675,17 +677,18 @@ public class GameManager : MonoBehaviour
         #region Check what position did we click on and send the click event
         if (foundSmth && Input.GetMouseButtonDown(0)) 
         {
-            //Debug.Log(foundSmth + " " + Input.GetMouseButtonDown(0));
 
             if (CellClickP != NullV2)
             {
                 CellClickHandle(CellClickP);
-                nextClickTime = Time.time + ClickCooldown * Time.deltaTime;
+                nextClickTime = Time.time + (ClickCooldown * Time.deltaTime * 100);
+                Debug.Log("Clicked: " + nextClickTime + " " + Time.time);
             }
             else if (UnitClickP != NullV2)
             {
                 CellClickHandle(UnitClickP);
-                nextClickTime = Time.time + ClickCooldown * Time.deltaTime;
+                nextClickTime = Time.time + (ClickCooldown * Time.deltaTime * 100);
+                Debug.Log("Clicked: " + nextClickTime + " " + Time.time);
             }
         }
         #endregion
