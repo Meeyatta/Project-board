@@ -42821,6 +42821,9 @@ MonoBehaviour:
   PlayerPointsText: {fileID: 703865168}
   SymbolText: {fileID: 1073853246}
   EnemyPointsText: {fileID: 422000313}
+  e_PointScored:
+    m_PersistentCalls:
+      m_Calls: []
   Anim: {fileID: 0}
 --- !u!95 &1006338691
 Animator:
@@ -88446,6 +88449,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   CanClickOnCells: 1
   Tutorial_CanPass: 1
+  Tutorial_SupposedRoundTurn: 0
   FirstLines:
   - {fileID: 11400000, guid: 340e0b92712ec48478d7cd4d40df8fb7, type: 2}
   - {fileID: 11400000, guid: 752b5d6b397920749bd4f2c296200fd6, type: 2}
@@ -88454,6 +88458,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: bc2d6bb70a03675489e0f6c5ee8b91c4, type: 2}
   SecondLines:
   - {fileID: 11400000, guid: 80463a00767f8f24ba7f81983f4e3a37, type: 2}
+  - {fileID: 11400000, guid: 238cac3dbc2c50d4fac618712ffa357e, type: 2}
   ThirdLines:
   - {fileID: 11400000, guid: 9f69c68c3a3a5304c8ed4fbe0064b1a9, type: 2}
   - {fileID: 11400000, guid: 56a1425165703f540a8bf6af9f1b4ecf, type: 2}
@@ -88463,6 +88468,9 @@ MonoBehaviour:
   Objective: {fileID: 3774015871857991685, guid: 7c7d2d1dc6bbf8d4e87be9ef8db52944, type: 3}
   Fourth2Lines:
   - {fileID: 11400000, guid: 6b379a2af0096a54f9a9d5a8be3785b8, type: 2}
+  Fifth1Lines:
+  - {fileID: 11400000, guid: 1f72441111d742d409f5143eb721b7ec, type: 2}
+  - {fileID: 11400000, guid: 85c5ae24309e6614a937a10b8e284c0e, type: 2}
 --- !u!1 &2031860577
 GameObject:
   m_ObjectHideFlags: 0

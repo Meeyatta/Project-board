@@ -14,7 +14,8 @@ public static class Action_Move
     public static bool UnitCanMove(Unit u)
     {
         if (u.Moved) { Debug.Log("Unit can't move"); return false; }
-        //if (ScoreManager.Instance.CurTurn == ScoreManager.Side.Enemy && u.CurKeywords) return false;
+        //if (ScoreManager.Instance.CurTurn ==
+        //.Enemy && u.CurKeywords) return false;
 
         return true;
     }

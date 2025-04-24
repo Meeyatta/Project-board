@@ -35,7 +35,7 @@ public static class Ability_Score
             int res = Check(a);
 
             #region Player scores
-            if (res > 0 && ScoreManager.Instance.CurTurn == ScoreManager.Side.Player)
+            if (res > 0 && ScoreManager.Instance.CurTurn == Side.Player)
             {
                 a.Anim.SetTrigger(JitterAnimTrigger);
                 ScoreClock.Instance.Shrug_Visuals();
@@ -44,7 +44,7 @@ public static class Ability_Score
             }
             #endregion
             #region Enemy scores
-            if (res < 0 && ScoreManager.Instance.CurTurn == ScoreManager.Side.Enemy)
+            if (res < 0 && ScoreManager.Instance.CurTurn == Side.Enemy)
             {
                 a.Anim.SetTrigger(JitterAnimTrigger);
                 ScoreClock.Instance.Shrug_Visuals();

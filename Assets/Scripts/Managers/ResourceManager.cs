@@ -117,9 +117,9 @@ public class ResourceManager : MonoBehaviour
         //foreach (var u in toDeploy) { RecordPlacedUnit(u); }
     }
 
-    public void DeployNewplayerUnit(ScoreManager.Side side)
+    public void DeployNewplayerUnit(Side side)
     {
-        if (side == ScoreManager.Side.Enemy || ScoreManager.Instance.CurRound == 0) return;
+        if (side == Side.Enemy || ScoreManager.Instance.CurRound == 0) return;
         if (Army_NotPlaced.Count <= 0) return;
         EffectManager.Instance.HideAllPlayerMovement(side); // <- Safeguards just in case
 

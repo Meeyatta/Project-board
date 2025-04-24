@@ -70,16 +70,16 @@ public class PassTurnButton : MonoBehaviour
     {
         anim.SetTrigger(Shrugstr);
     }
-    public void Shrug_Visuals(ScoreManager.Side s)
+    public void Shrug_Visuals(Side s)
     {
-        //if (s == ScoreManager.Side.Enemy) return;
+        //if (s == Side.Enemy) return;
         Shrug_Visuals();
     }
     #endregion
 
-    void EnablePass(ScoreManager.Side side)
+    void EnablePass(Side side)
     {
-        if (side == ScoreManager.Side.Player) 
+        if (side == Side.Player) 
         {
             CanPass = true;
         }
@@ -92,8 +92,8 @@ public class PassTurnButton : MonoBehaviour
 
     public void Pass()
     {
-        Debug.Log("Button passed the turn");
-        if (ScoreManager.Instance.CurTurn == ScoreManager.Side.Player && CanPass && Time.time > nextClickTime
+        //Debug.Log("Button passed the turn");
+        if (ScoreManager.Instance.CurTurn == Side.Player && CanPass && Time.time > nextClickTime
             && TutorialCond()) //<- This is purely for tutorial
         {
             nextClickTime = Time.time + ClickReload ;

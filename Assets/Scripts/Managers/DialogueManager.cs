@@ -59,7 +59,7 @@ public class DialogueManager : MonoBehaviour
 
     public IEnumerator SpeakLines(List<DialogueLine> lines)
     {
-        Debug.Log("Started speaking lines");
+       // Debug.Log("Started speaking lines");
         yield return new WaitForSeconds(Time.deltaTime);
         DialogueWindow.SetActive(true);
 

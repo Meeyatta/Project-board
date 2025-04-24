@@ -202,7 +202,7 @@ public class GameManager : MonoBehaviour
                 ActionQueue.Enqueue(nextturn);
 
                 break;
-            #endregion Create(GameObject Object, Vector2Int CellsCoordinates)
+            #endregion NextTurn()
 
             //Creates a new unit on coordinates
             #region Create(GameObject Object, List<Vector2Int> CellsCoordinates)
@@ -291,7 +291,7 @@ public class GameManager : MonoBehaviour
         }
         yield return null;
     }
-    public void UnselectCurrentUnit(ScoreManager.Side s)
+    public void UnselectCurrentUnit(Side s)
     {
         CurUnitSelected = null;
     }
@@ -428,6 +428,7 @@ public class GameManager : MonoBehaviour
     IEnumerator CellClickCoroutine(Vector2Int coords)
     {
         yield return new WaitForSeconds(Time.deltaTime * 0.01f); //For some reason this is vital, otherwise Unity shits itself
+        Debug.Log("Clicked on a cell " + coords);
 
         if (TutorialManager.Instance != null) { yield return TutorialClickCoroutine(coords); yield break; }
 
@@ -535,6 +536,7 @@ public class GameManager : MonoBehaviour
     }
 
     //Continuously cycles through each action in current action queue 
+    public bool SwitchedAction = false; //This is so "click check" can stop checking cell clicks while we change an action
     IEnumerator GoThroughActions()
     {
         yield return new WaitForSeconds(Time.deltaTime);
@@ -544,12 +546,19 @@ public class GameManager : MonoBehaviour
             if (CurrentAction != null) { yield return new WaitForSeconds(Time.deltaTime); continue; }
 
             CurrentAction = ActionQueue.Dequeue();
+            SwitchedAction = true;
             yield return StartCoroutine(CurrentAction.IEnum);
+
             yield return new WaitForSeconds(Time.deltaTime);
+            SwitchedAction = false;
         }
         ActionQueue.Clear();
         CurrentAction = null;
         C_GoingThroughActions = null;
+
+        SwitchedAction = true;
+        yield return new WaitForSeconds(Time.deltaTime);
+        SwitchedAction = false;
     }
 
     #region Checking if player is hovering over a unit, if they click - this counts as clicking on that unit's cell
@@ -560,20 +569,32 @@ public class GameManager : MonoBehaviour
     Vector2Int NullV2 = new Vector2Int(-1,-1);
 
     bool ShouldCheckForClicks()
-    {        
+    {
         if (nextClickTime >= Time.time) return false;
 
-        if (CurrentAction != null && CurrentAction.Params.Type == ActionType.PlayerCreate) 
-            { nextClickTime = Time.time + ClickCooldown; return false; }
-        if (CurrentAction != null && CurrentAction.Params.Type == ActionType.Deploy) 
-            { nextClickTime = Time.time + ClickCooldown; return false; }
+        if (CurrentAction != null)
+        {
+            if (CurrentAction.Params.Type == ActionType.PlayerCreate || CurrentAction.Params.Type == ActionType.Deploy)
+            {
+                Debug.Log("Creation action");
+                nextClickTime = Time.time + ClickCooldown; return false;
+            }
+            
+        }
 
+        if (SwitchedAction)
+        {
+            Debug.Log("Switched action");
+            nextClickTime = Time.time + ClickCooldown; SwitchedAction = false; return false;
+        }
+
+        Debug.Log("Can click");
         return true;
     }
 
     void CheckUnitUnderCursor()
     {
-        if (!ShouldCheckForClicks()) return;
+        if (ShouldCheckForClicks()) return;
 
         RaycastHit hit;
         Vector3 vect = Input.mousePosition;

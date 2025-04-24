@@ -110,9 +110,9 @@ public class EnemyManager : MonoBehaviour
 
         foreach (var u in toDeploy) { RecordPlacedUnit(u); }
     }
-    public void DeployNewEnemy(ScoreManager.Side side)
+    public void DeployNewEnemy(Side side)
     {
-        if (side == ScoreManager.Side.Player || ScoreManager.Instance.CurRound <= 1) return;
+        if (side == Side.Player || ScoreManager.Instance.CurRound <= 1) return;
         if (Army_NotPlaced.Count <= 0) return;
 
         List<Unit> newEnemy = new List<Unit> { Army_NotPlaced[0] };
@@ -123,9 +123,9 @@ public class EnemyManager : MonoBehaviour
         RecordPlacedUnit(Army_NotPlaced[0]);
     }
 
-    public void MoveAllEnemyUnits(ScoreManager.Side side)
+    public void MoveAllEnemyUnits(Side side)
     {
-        if (side == ScoreManager.Side.Player) return;
+        if (side == Side.Player) return;
 
         if (CMakingMoves == null) 
         {

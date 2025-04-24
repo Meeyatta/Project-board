@@ -243,7 +243,7 @@ public class EffectManager : MonoBehaviour
 
     bool ShowingPlacementConditions()
     {
-        if (ScoreManager.Instance.CurTurn != ScoreManager.Side.Player) return false;
+        if (ScoreManager.Instance.CurTurn != Side.Player) return false;
 
         return true;
     }
@@ -361,7 +361,7 @@ public class EffectManager : MonoBehaviour
             }
         }
     }
-    public void HideAllPlayerMovement(ScoreManager.Side s)
+    public void HideAllPlayerMovement(Side s)
     {
         List<Unit> units = BoardManager.Instance.Get_AllUnitsWithKeywords(new List<Keyword> { Keyword.Player });
 

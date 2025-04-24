@@ -11,6 +11,8 @@ public static class Action_Create
         GameObject Object = parameters.Object; List<Vector2Int> poss = parameters.CellsCoordinates;
         int side = parameters.IntNumber;
 
+        //Debug.Log("Creating a unit: ");
+
         Unit unit =
             GameManager.Instantiate(Object, Vector3.zero, Quaternion.identity).GetComponent<Unit>();
 
@@ -23,6 +25,8 @@ public static class Action_Create
 
             if (BoardManager.Instance.Board[v.x].Cells[v.y].CurUnit != null) { ViablePos = false; break; }
         }
+
+        //Debug.Log("ViablePos is: " + ViablePos);
         if (ViablePos)
         {
             yield return GameManager.Instance.StartCoroutine(BoardManager.Instance.PlaceUnit(unit, poss));

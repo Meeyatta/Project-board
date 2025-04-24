@@ -14,4 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Language: 0
   Name: 10
-  Text: You score 1 point after passing a turn if your units are near an OBJECTIVE
+  Text: You score a point if you have a unit near an OBJECTIVE

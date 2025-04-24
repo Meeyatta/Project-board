@@ -9,20 +9,44 @@ using UnityEngine;
 public static class Action_NextTurn
 {
     public static float Delay = 15;
+    static bool isAwaitingNextTurn; //Check if we have already tried getting to next turn and are waiting for it
+
+    static bool ShouldWaitBeforeNextTurn() //If we have to wait for other actions to be done before ending the turn
+    {
+        /*
+        Debug.Log("CurRound: " + ScoreManager.Instance.CurRound + "| CurTurn: " + ScoreManager.Instance.CurTurn +
+            "| Tutorial_SupposedRoundTurn: " + TutorialManager.Instance.Tutorial_SupposedRoundTurn);
+        */
+
+
+        if (TutorialManager.Instance != null && ScoreManager.Instance.CurRound >= TutorialManager.Instance.Tutorial_SupposedRoundTurn) 
+            { return true; }
+        if (TutorialManager.Instance != null && ScoreManager.Instance.CurTurn == Side.Enemy
+            && ScoreManager.Instance.CurRound + 0.5f >= TutorialManager.Instance.Tutorial_SupposedRoundTurn)
+            { return true; }
+
+        return false;
+    }
+
     public static IEnumerator Pre_nextTurn(ActionParameters parameters)
     {
         //Debug.Log("Started pre NextTurn actions");
-        ScoreManager.Side CurTurn = ScoreManager.Instance.CurTurn;
+        Side CurTurn = ScoreManager.Instance.CurTurn;
 
-        if (ScoreManager.Instance.CurRound == 0)
+        if (ScoreManager.Instance.CurRound == 0 || isAwaitingNextTurn)
         {
+            Debug.Log("Canceling next turn action: " + ScoreManager.Instance.CurRound + " " + isAwaitingNextTurn);
+
             GameManager.Instance.RemoveAction(parameters);
             yield break;
         }
 
+        while (ShouldWaitBeforeNextTurn()) { isAwaitingNextTurn = true; yield return new WaitForSeconds(Time.deltaTime); }
+        isAwaitingNextTurn =false;
+
         switch (CurTurn)
         {
-            case ScoreManager.Side.Player:
+            case Side.Player:
                 #region Player turn ended
 
                 ActionParameters attackP = new ActionParameters(
@@ -38,8 +62,8 @@ public static class Action_NextTurn
                 //Debug.Log("Initiated score for the player");
 
                 break;
-            #endregion
-            case ScoreManager.Side.Enemy:
+                #endregion
+            case Side.Enemy:
                 #region Enemy turn ended
 
                 ScoreManager.Instance.eTurnEvent_Visuals.Invoke(ScoreManager.Instance.CurTurn);
@@ -78,12 +102,12 @@ public static class Action_NextTurn
         {
             switch (ScoreManager.Instance.CurTurn)
             {
-                case ScoreManager.Side.Player:
+                case Side.Player:
                     #region Player turn ended
                     yield return ScoreManager.Instance.StartCoroutine(ScoreManager.Instance.EndPlayerTurn());
                     break;
                 #endregion
-                case ScoreManager.Side.Enemy:
+                case Side.Enemy:
                     #region Enemy turn ended             
                     yield return ScoreManager.Instance.StartCoroutine(ScoreManager.Instance.EndEnemyTurn());
                     break;

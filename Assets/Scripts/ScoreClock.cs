@@ -2,6 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using UnityEngine.Events;
+using Unity.VisualScripting;
 
 public class ScoreClock : MonoBehaviour
 {
@@ -10,6 +12,8 @@ public class ScoreClock : MonoBehaviour
     public TextMeshProUGUI PlayerPointsText;
     public TextMeshProUGUI SymbolText; //This is the symbol between player and enemy points to show the relative number
     public TextMeshProUGUI EnemyPointsText;
+
+    public UnityEvent<Side> e_PointScored;
 
     [HideInInspector]
     const string Shrugstr = "shrug";
@@ -45,8 +49,9 @@ public class ScoreClock : MonoBehaviour
     {
         Anim.SetTrigger(Shrugstr);
     }
-    public void Shrug_Visuals(ScoreManager.Side s)
+    public void Shrug_Visuals(Side s)
     {
+        e_PointScored.Invoke(s);
         Shrug_Visuals();
     }
     #endregion

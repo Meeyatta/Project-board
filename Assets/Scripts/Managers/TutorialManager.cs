@@ -17,17 +17,20 @@ public class TutorialManager : MonoBehaviour
 
     public bool CanClickOnCells = true;
     public bool Tutorial_CanPass;
+    public float Tutorial_SupposedRoundTurn; //This keeps track of current roundturn (1 - first player round, 1.5 - first enemy round, etc...) 
 
-    [Header("First")]
+    [Header("First - deploying a unit")]
     public List<DialogueLine> FirstLines;
-    [Header("Second")]
+    [Header("Second - passing a turn")]
     public List<DialogueLine> SecondLines;  
-    [Header("Third")]
+    [Header("Third - moving")]
     public List<DialogueLine> ThirdLines;
-    [Header("Fourth")]
+    [Header("Fourth - objective scoring")]
     public List<DialogueLine> Fourth1Lines;
     public GameObject Objective;
     public List<DialogueLine> Fourth2Lines;
+    [Header("Fifth - enemy units and attacks")]
+    public List<DialogueLine> Fifth1Lines;
 
     void Singleton()
     {
@@ -49,7 +52,8 @@ public class TutorialManager : MonoBehaviour
 
     IEnumerator StartTutorial()
     {
-        #region First
+        #region First - deploying a unit
+        Tutorial_SupposedRoundTurn = 0;
         CanClickOnCells = false; Tutorial_CanPass = false;
         bool iswaiting_1 = true; void stopwaiting_1(Unit u) { iswaiting_1 = false; }
         yield return ResourceManager.Instance.InstantiatePlayerUnits();
@@ -65,13 +69,14 @@ public class TutorialManager : MonoBehaviour
 
         while (iswaiting_1) { yield return new WaitForSeconds(Time.deltaTime); }
         Action_DeployNewPlayerUnit.E_DeployedNewPlayerUnit.RemoveListener(stopwaiting_1);
+        Tutorial_SupposedRoundTurn = 1;
         Tutorial_CanPass = true;
 
         #endregion
 
         yield return new WaitForSeconds(Time.deltaTime);
 
-        #region Second
+        #region Second - passing a turn
         bool iswaiting_2 = true; void stopwaiting_2() { iswaiting_2 = false; }
         PassTurnButton.Instance.E_PassedTurn.AddListener(stopwaiting_2);
 
@@ -85,7 +90,7 @@ public class TutorialManager : MonoBehaviour
 
         yield return new WaitForSeconds(Time.deltaTime);
 
-        #region Third
+        #region Third - moving
         bool iswaiting_3 = true; void stopwaiting_3(Unit u) { iswaiting_3 = false; } 
         Action_Move.E_AfterMove.AddListener(stopwaiting_3);
         Tutorial_CanPass = false;
@@ -93,6 +98,7 @@ public class TutorialManager : MonoBehaviour
         DialogueManager.Instance.StartCoroutine(DialogueManager.Instance.SpeakLines(ThirdLines));
 
         while (iswaiting_3) { yield return new WaitForSeconds(Time.deltaTime); }
+        Tutorial_SupposedRoundTurn = 2;
         Action_Move.E_AfterMove.RemoveListener(stopwaiting_3);
         Tutorial_CanPass = true;
 
@@ -106,7 +112,9 @@ public class TutorialManager : MonoBehaviour
 
         #endregion
 
-        #region Fourth
+        yield return new WaitForSeconds(Time.deltaTime);
+
+        #region Fourth - objective scoring
         CanClickOnCells = false; Tutorial_CanPass = false;
         yield return DialogueManager.Instance.SpeakLines(Fourth1Lines);
 
@@ -129,21 +137,37 @@ public class TutorialManager : MonoBehaviour
 
             newObjPos = new List<Vector2Int> { offset + pos[0] };
 
-            Debug.Log(newObjPos[0]);
+            //Debug.Log(newObjPos[0]);
                 //You would have to purposly try to break the tutorial for these to matter, but there WILL be one idiot who triggers it
             if (BoardManager.Instance.IsInBounds(newObjPos[0]) && BoardManager.Instance.Board[newObjPos[0].x].Cells[newObjPos[0].y].CurUnit == null) 
-            { Debug.Log("I AM NOT A MORON"); break; }
+            {/* Debug.Log("I AM NOT A MORON");*/ break; }
         }
         #endregion
 
         ActionParameters parsO = new ActionParameters(GameManager.ActionType.Create, null, null, newObjPos, Objective, 0);
-        yield return GameManager.Instance.Action(pars);
+        yield return Action_Create.Create(parsO);
 
         DialogueManager.Instance.StartCoroutine(DialogueManager.Instance.SpeakLines(Fourth2Lines));
+        Tutorial_SupposedRoundTurn = 3;
         Tutorial_CanPass = true;
+
         CanClickOnCells = true;
+
+        #region Waiting until player scores a point
+        bool iswaiting_ToScore = true; void stopwaiting_score(Side s) { iswaiting_ToScore = false; }
+        Tutorial_SupposedRoundTurn = 2.5f;
+        ScoreClock.Instance.e_PointScored.AddListener(stopwaiting_score);
+
+        while (iswaiting_ToScore) { yield return new WaitForSeconds(Time.deltaTime); }
         #endregion
 
+        #endregion
+
+
+        #region Fifth - enemy units and attacks
+        CanClickOnCells = false; Tutorial_CanPass = false;
+        yield return DialogueManager.Instance.SpeakLines(Fifth1Lines);
+        #endregion
     }
 
     void Start()

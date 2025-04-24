@@ -8,6 +8,7 @@ using UnityEngine.Events;
     bool PlayerTurnActionCondition - Quick way for other actions to check if they are performed during the player's turn
 
 */
+public enum Side { Player, Enemy };
 public class ScoreManager : MonoBehaviour
 {
     //Event for the conclusion of the battle 
@@ -16,7 +17,6 @@ public class ScoreManager : MonoBehaviour
 
     public int CurRound;
     public Side CurTurn;
-    public enum Side { Player, Enemy };
 
     #region Singleton
     public static ScoreManager Instance;
@@ -66,7 +66,7 @@ public class ScoreManager : MonoBehaviour
     }
     public IEnumerator EndPlayerTurn()
     {
-        CurTurn = ScoreManager.Side.Enemy;
+        CurTurn = Side.Enemy;
         eTurnEvent_Functional.Invoke(ScoreManager.Instance.CurTurn);
         //eTurnEvent_Visuals.Invoke(ScoreManager.Instance.CurTurn);
 
@@ -74,7 +74,7 @@ public class ScoreManager : MonoBehaviour
     }
     public IEnumerator EndEnemyTurn()
     {
-        CurTurn = ScoreManager.Side.Player;
+        CurTurn = Side.Player;
 
         eTurnEvent_Functional.Invoke(ScoreManager.Instance.CurTurn);
 
