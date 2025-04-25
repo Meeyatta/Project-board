@@ -586,7 +586,7 @@ public class GameManager : MonoBehaviour
         if (SwitchedAction)
         {
             nextClickTime = Time.time + (ActionSwapCooldown * Time.deltaTime * 100);
-            Debug.Log("Changed: " + nextClickTime + " " + Time.time);
+            //Debug.Log("Changed: " + nextClickTime + " " + Time.time);
             SwitchedAction = false; 
             return true;
         }

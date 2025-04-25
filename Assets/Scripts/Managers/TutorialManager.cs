@@ -159,7 +159,7 @@ public class TutorialManager : MonoBehaviour
         CanClickOnCells = true;
 
         #region Waiting until player scores a point
-        bool iswaiting_ToScore = true; void stopwaiting_score(Side s) { iswaiting_ToScore = false; }
+        bool iswaiting_ToScore = true; void stopwaiting_score(Side s) { Debug.Log("Scored"); iswaiting_ToScore = false; }
         Tutorial_SupposedRoundTurn = 2.5f;
         ScoreClock.Instance.e_PointScored.AddListener(stopwaiting_score);
 
