@@ -54,7 +54,7 @@ public static class Action_NextTurn
                 yield return GameManager.Instance.StartCoroutine(GameManager.Instance.Action(attackP));
                 //Debug.Log("Initiated attack for the player");
 
-                yield return new WaitForSeconds(0.01f);
+                yield return new WaitForSeconds(Time.deltaTime);
 
                 ActionParameters scoreP = new ActionParameters(
                     GameManager.ActionType.Score, null, new List<Keyword> { Keyword.Player }, null, null, 0);
@@ -72,7 +72,7 @@ public static class Action_NextTurn
                     GameManager.ActionType.AttackFromKeyworded, null, new List<Keyword> { Keyword.Enemy }, null, null, 0);
                 yield return GameManager.Instance.StartCoroutine(GameManager.Instance.Action(attackE));
 
-                yield return new WaitForSeconds(0.01f);
+                yield return new WaitForSeconds(Time.deltaTime);
 
                 ActionParameters scoreE = new ActionParameters(
                     GameManager.ActionType.Score, null, new List<Keyword> { Keyword.Enemy }, null, null, 0);

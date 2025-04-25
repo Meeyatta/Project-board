@@ -59,8 +59,6 @@ public class DialogueManager : MonoBehaviour
 
     public IEnumerator SpeakLines(List<DialogueLine> lines)
     {
-       // Debug.Log("Started speaking lines");
-        yield return new WaitForSeconds(Time.deltaTime);
         DialogueWindow.SetActive(true);
 
         foreach (DialogueLine line in lines)
@@ -73,6 +71,7 @@ public class DialogueManager : MonoBehaviour
             float skipMoment = Time.time + DelayBeforeAutoSkip;
             while (!SkipDialogue && skipMoment > Time.time)
             {
+                if (cLine != null) skipMoment = Time.time + DelayBeforeAutoSkip;
                 yield return new WaitForSeconds(Time.deltaTime);
             }
             SkipDialogue = false;
@@ -97,7 +96,7 @@ public class DialogueManager : MonoBehaviour
             }
 
             Text.text += i;
-            yield return new WaitForSeconds(Time.deltaTime * 15f / Speed);
+            yield return new WaitForSeconds(Time.deltaTime * 100 / Speed);
         }
 
         cLine = null;

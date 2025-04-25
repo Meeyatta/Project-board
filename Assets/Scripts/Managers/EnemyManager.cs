@@ -266,7 +266,7 @@ public class EnemyManager : MonoBehaviour
     #endregion
 
     #region Go through each unit on the board and move them towards objectives
-    IEnumerator MovingAllEnemyUnits()
+    public IEnumerator MovingAllEnemyUnits()
     {
         yield return new WaitForSeconds(Time.deltaTime * DelayBeforeMovingUnit);
 

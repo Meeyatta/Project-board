@@ -341,7 +341,7 @@ public class GameManager : MonoBehaviour
 
     public IEnumerator TutorialClickCoroutine(Vector2Int coords)
     {
-        yield return new WaitForSeconds(Time.deltaTime * 0.01f); //For some reason this is vital, otherwise Unity shits itself
+        yield return new WaitForSeconds(Time.deltaTime); //For some reason this is vital, otherwise Unity shits itself
 
         if (TutorialManager.Instance.CanClickOnCells)
         {
@@ -363,7 +363,6 @@ public class GameManager : MonoBehaviour
                     ScoreManager.Instance.PlayerTurnActionCondition())
                 #region Yes - Move the unit
                 {
-                    Debug.Log("moving a unit");
                     List<Vector2Int> nCoords = new List<Vector2Int>(); nCoords.Add(coords);
                     List<Unit> unitToList = new List<Unit>(); unitToList.Add(CurUnitSelected);
 
