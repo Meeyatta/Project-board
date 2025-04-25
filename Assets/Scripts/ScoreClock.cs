@@ -47,11 +47,11 @@ public class ScoreClock : MonoBehaviour
     #region Visual effects for when the turnButton is activated, for in-script use and event
     public void Shrug_Visuals()
     {
+        e_PointScored.Invoke(Side.Player);
         Anim.SetTrigger(Shrugstr);
     }
     public void Shrug_Visuals(Side s)
     {
-        e_PointScored.Invoke(s);
         Shrug_Visuals();
     }
     #endregion

@@ -39,6 +39,55 @@ using System;
  */
 #endregion
 
+public class Sorter
+{
+    public static List<Vector2Int> QuickSort(List<Vector2Int> og)
+    {
+        List<Vector2Int> temp = new List<Vector2Int>(); temp.AddRange(og);
+        QuickSortHelper(temp, 0, temp.Count - 1);
+
+        return temp;
+    }
+
+    private static void QuickSortHelper(List<Vector2Int> temp, int low, int high)
+    {
+        if (low < high)
+        {
+            int pivotIndex = Partition(temp, low, high);
+            QuickSortHelper(temp, low, pivotIndex - 1);
+            QuickSortHelper(temp, pivotIndex + 1, high);
+        }
+    }
+
+    private static int Partition(List<Vector2Int> temp, int low, int high)
+    {
+        Vector2Int pivot = temp[high];
+        int i = low - 1;
+
+        for (int j = low; j < high; j++)
+        {
+            // Compare first by y, then by x if y's are equal
+            if (temp[j].y < pivot.y || (temp[j].y == pivot.y && temp[j].x < pivot.x))
+            {
+                i++;
+                // Swap temp[i] and temp[j]
+                Swap(temp, i, j);
+            }
+        }
+
+        // Swap the pivot element with temp[i + 1]
+        Swap(temp, i + 1, high);
+        return i + 1;
+    }
+
+    private static void Swap(List<Vector2Int> temp, int i, int j)
+    {
+        Vector2Int tempValue = temp[i];
+        temp[i] = temp[j];
+        temp[j] = tempValue;
+    }
+}
+
 public class BoardManager : MonoBehaviour
 {
     public LayerMask CellMask;
@@ -156,37 +205,7 @@ public class BoardManager : MonoBehaviour
         //The sorting algoryth doesn't work for a single element, so this needs to be done
         if (temp.Count <= 1) { return temp; }
 
-        #region Sorting algorythm
-        long justincase = 999999;
-        bool needsSorting = true;
-        while (needsSorting && justincase > 0)
-        {
-            needsSorting = false;
-            justincase--;
-            for (int i = 0; i < temp.Count-1; i++) 
-            {
-                Vector2Int Cur = temp[i];
-                Vector2Int Nex = temp[i + 1];
-
-                if (Cur.y > Nex.y) 
-                {
-                    needsSorting = true;
-
-                    temp[i] = Nex;
-                    temp[i+1] = Cur;
-                }
-                if (Cur.y == Nex.y && Cur.x > Nex.x)
-                {
-                    needsSorting = true;
-
-                    temp[i] = Nex;
-                    temp[i+1] = Cur;
-                }
-            }
-        }
-        #endregion
-
-        return temp;
+        return Sorter.QuickSort(temp); ;
     }
 
     //Prints current board and units on it in the console
@@ -373,7 +392,6 @@ public class BoardManager : MonoBehaviour
             Board[v.x].Cells[v.y].CurUnit = unit;
         }
 
-        yield return new WaitForSeconds(2 * Time.deltaTime);
         unit.gameObject.transform.position = BoardToWorldPosition(s).Value + unit.ModelOffset + transform.position;
     }
 
