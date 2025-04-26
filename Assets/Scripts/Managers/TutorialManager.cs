@@ -57,6 +57,8 @@ public class TutorialManager : MonoBehaviour
     #region First - deploying a unit
     IEnumerator First_Deployment()
     {
+        Debug.Log("Started first");
+
         Tutorial_SupposedRoundTurn = 0;
         CanClickOnCells = false; Tutorial_CanPass = false;
         bool iswaiting_1 = true; void stopwaiting_1(Unit u) { iswaiting_1 = false; }
@@ -76,12 +78,16 @@ public class TutorialManager : MonoBehaviour
         Action_DeployNewPlayerUnit.E_DeployedNewPlayerUnit.RemoveListener(stopwaiting_1);
         Tutorial_SupposedRoundTurn = 1;
         Tutorial_CanPass = true;
+
+        Debug.Log("Ended first");
     }
     #endregion
 
     #region Second - passing a turn
     IEnumerator Second_Passing()
     {
+        Debug.Log("Started second");
+
         bool iswaiting_2 = true; void stopwaiting_2() { iswaiting_2 = false; }
         PassTurnButton.Instance.E_PassedTurn.AddListener(stopwaiting_2);
 
@@ -92,12 +98,16 @@ public class TutorialManager : MonoBehaviour
         while (iswaiting_2 && curDelay > 0) { curDelay -= Time.deltaTime; ; yield return new WaitForSeconds(Time.deltaTime); }
 
         PassTurnButton.Instance.E_PassedTurn.RemoveListener(stopwaiting_2);
+
+        Debug.Log("Ended second");
     }
     #endregion
 
     #region Third - moving
     IEnumerator Third_Movement()
     {
+        Debug.Log("Started third");
+
         bool iswaiting_3 = true; void stopwaiting_3(Unit u) { iswaiting_3 = false; }
         Action_Move.E_AfterMove.AddListener(stopwaiting_3);
         Tutorial_CanPass = false;
@@ -118,12 +128,16 @@ public class TutorialManager : MonoBehaviour
         while (iswaiting_32 && curDelay > 0) { curDelay -= Time.deltaTime; ; yield return new WaitForSeconds(Time.deltaTime); }
 
         PassTurnButton.Instance.E_PassedTurn.RemoveListener(stopwaiting_32);
+
+        Debug.Log("Ended third");
     }
     #endregion
 
     #region Fourth - objective scoring
     IEnumerator Fourth_Objectives()
     {
+        Debug.Log("Started fourth");
+
         CanClickOnCells = false; Tutorial_CanPass = false;
         yield return DialogueManager.Instance.SpeakLines(Fourth1Lines);
 
@@ -153,7 +167,7 @@ public class TutorialManager : MonoBehaviour
         }
         #endregion
 
-        ActionParameters parsO = new ActionParameters(GameManager.ActionType.Create, new List<Unit> { Objective }, null, newObjPos, null, 0);
+        ActionParameters parsO = new ActionParameters(GameManager.ActionType.Create, new List<Unit> { Objective }, null, newObjPos, null, -1);
         yield return Action_Create.Create(parsO);
 
         DialogueManager.Instance.StartCoroutine(DialogueManager.Instance.SpeakLines(Fourth2Lines));
@@ -170,6 +184,8 @@ public class TutorialManager : MonoBehaviour
         curDelay = DelayBeforeAutomaticProceeding;
         while (iswaiting_ToScore && curDelay > 0) { curDelay -= Time.deltaTime; yield return new WaitForSeconds(Time.deltaTime); }
         #endregion
+
+        Debug.Log("Ended fourth");
     }
     #endregion
 
@@ -177,14 +193,14 @@ public class TutorialManager : MonoBehaviour
     IEnumerator Fifth_Enemies()
     {
         Debug.Log("Started fifth");
+
         CanClickOnCells = false; Tutorial_CanPass = false;
         yield return DialogueManager.Instance.SpeakLines(Fifth1Lines);
 
-        yield return new WaitForSeconds(AestheticDelay);
-
-
         #region Find an appropriate location for an enemy unit
-        List<Vector2Int> posO = BoardManager.Instance.Get_UnitPositions(Objective);
+        Debug.Log("Started looking for an enemy position");
+        List<Vector2Int> posP = BoardManager.Instance.Get_UnitPositions(
+            BoardManager.Instance.Get_AllUnitsWithKeywords(new List<Keyword> { Keyword.Player })[0]);
         List<Vector2Int> newEnemyPos = new List<Vector2Int>();
         for (int dir = 0; dir < 4; dir++)
         {
@@ -197,22 +213,30 @@ public class TutorialManager : MonoBehaviour
                 default: offset = new Vector2Int(-1, 0); break;
             }
 
-            newEnemyPos = new List<Vector2Int> { offset + posO[0] };
+            newEnemyPos = new List<Vector2Int> { offset + posP[0] };
 
-            if (BoardManager.Instance.IsInBounds(newEnemyPos[0]) && BoardManager.Instance.Board[newEnemyPos[0].x].Cells[newEnemyPos[0].y].CurUnit == null)
-            { Debug.Log("I AM NOT A MORON"); break; }
+            if (BoardManager.Instance.IsInBounds(newEnemyPos[0]) && 
+                BoardManager.Instance.Board[newEnemyPos[0].x].Cells[newEnemyPos[0].y].CurUnit == null)
+            { break; }
         }
+        Debug.Log("Stopped looking for an enemy position");
         #endregion
 
         Debug.Log("Placing enemy at " + newEnemyPos[0]);
         ActionParameters parsE = new ActionParameters(GameManager.ActionType.Create, new List<Unit> { EnemyUnit }, null, newEnemyPos, null, 1);
         yield return Action_Create.Create(parsE);
+        Debug.Log("Ended placing enemy at " + newEnemyPos[0]);
 
         yield return new WaitForSeconds(AestheticDelay);
         yield return DialogueManager.Instance.SpeakLines(Fifth2Lines);
 
         yield return new WaitForSeconds(AestheticDelay);
         yield return EnemyManager.Instance.MovingAllEnemyUnits();
+
+        Tutorial_CanPass = true; CanClickOnCells = true;
+        Tutorial_SupposedRoundTurn = 3;
+
+        Debug.Log("Ended fifth");
     }
     #endregion
 

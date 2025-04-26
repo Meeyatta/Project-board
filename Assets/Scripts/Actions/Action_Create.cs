@@ -22,7 +22,20 @@ public static class Action_Create
         }
         #endregion
 
-        if (side == 0) { unit.SetToPlayer(); } else { unit.SetToEnemy(); }
+        #region Setting unit to one of the sides - player, enemy or neither
+        switch (side) 
+        {
+            case -1:
+                
+                break;
+            case 0:
+                unit.SetToPlayer();
+                break;
+            default:
+                unit.SetToEnemy();
+                break;
+        }
+        #endregion
 
         bool ViablePos = true;
         foreach (var v in poss)

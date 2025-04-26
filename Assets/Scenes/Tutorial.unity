@@ -14532,7 +14532,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 11416984, guid: c080686877cf77f42a1a078076d57fe5, type: 3}
       propertyPath: title
-      value: Project board
+      value: 'Bugs:'
       objectReference: {fileID: 0}
     - target: {fileID: 11416984, guid: c080686877cf77f42a1a078076d57fe5, type: 3}
       propertyPath: textList.Array.size
@@ -14540,14 +14540,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 11416984, guid: c080686877cf77f42a1a078076d57fe5, type: 3}
       propertyPath: textList.Array.data[0].s
-      value: 'Break down Actions & ActionParameter into functions
-
-        with different
-        parameters'
+      value: The delay before an enemy unit is placed is too long
       objectReference: {fileID: 0}
     - target: {fileID: 11416984, guid: c080686877cf77f42a1a078076d57fe5, type: 3}
       propertyPath: textList.Array.data[1].s
-      value: Add journal for units
+      value: Enemy unit attacks twice
       objectReference: {fileID: 0}
     - target: {fileID: 11416984, guid: c080686877cf77f42a1a078076d57fe5, type: 3}
       propertyPath: textList.Array.data[2].s
@@ -14600,11 +14597,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 11416984, guid: c080686877cf77f42a1a078076d57fe5, type: 3}
       propertyPath: textList.Array.data[0].show
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 11416984, guid: c080686877cf77f42a1a078076d57fe5, type: 3}
       propertyPath: textList.Array.data[1].show
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 11416984, guid: c080686877cf77f42a1a078076d57fe5, type: 3}
       propertyPath: textList.Array.data[2].show
@@ -14636,7 +14633,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 11416984, guid: c080686877cf77f42a1a078076d57fe5, type: 3}
       propertyPath: textList.Array.data[0].state
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 11416984, guid: c080686877cf77f42a1a078076d57fe5, type: 3}
       propertyPath: textList.Array.data[10].show
@@ -14648,7 +14645,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 11416984, guid: c080686877cf77f42a1a078076d57fe5, type: 3}
       propertyPath: textList.Array.data[1].state
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 11416984, guid: c080686877cf77f42a1a078076d57fe5, type: 3}
       propertyPath: textList.Array.data[2].state
@@ -88593,6 +88590,7 @@ MonoBehaviour:
   CanClickOnCells: 1
   Tutorial_CanPass: 1
   Tutorial_SupposedRoundTurn: 0
+  AestheticDelay: 1
   DelayBeforeAutomaticProceeding: 240
   FirstLines:
   - {fileID: 11400000, guid: 340e0b92712ec48478d7cd4d40df8fb7, type: 2}
@@ -88616,7 +88614,9 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 1f72441111d742d409f5143eb721b7ec, type: 2}
   - {fileID: 11400000, guid: 85c5ae24309e6614a937a10b8e284c0e, type: 2}
   EnemyUnit: {fileID: 1804847838}
-  Fifth2Lines: []
+  Fifth2Lines:
+  - {fileID: 11400000, guid: 5cabfc67eab8d2842b7c62b7689fb34e, type: 2}
+  - {fileID: 11400000, guid: 6c0fffb1ecb20c64bb83bc5e61474add, type: 2}
 --- !u!1 &2031860577
 GameObject:
   m_ObjectHideFlags: 0

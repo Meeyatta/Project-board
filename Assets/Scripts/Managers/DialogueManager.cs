@@ -78,6 +78,7 @@ public class DialogueManager : MonoBehaviour
             #endregion
         }
 
+        Debug.Log("Stopped speaking lines");
         HideDialogue();
     }
 
