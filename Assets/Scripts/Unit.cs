@@ -35,6 +35,9 @@ public class Unit : MonoBehaviour
     #endregion
 
     [Header("Visuals:")]
+    [HideInInspector]
+    public Color CurColor = new Color(255, 255, 255);
+
     public Color PlayerColor = new Color(0, 255, 255);
     public Material PlayerBaseMat;
 
@@ -103,7 +106,7 @@ public class Unit : MonoBehaviour
     
     public void SetToPlayer()
     {
-        if (BaseOutline != null) BaseOutline.OutlineColor = PlayerColor;
+        CurColor = PlayerColor;
 
         if (BaseRend != null) BaseRend.material = PlayerBaseMat;
 
@@ -117,7 +120,7 @@ public class Unit : MonoBehaviour
     #region Turns this into an enemy unit
     public void SetToEnemy()
     {
-        if (BaseOutline != null) BaseOutline.OutlineColor = EnemyColor;
+        CurColor = EnemyColor;
 
         if (BaseRend != null) BaseRend.material = EnemyBaseMat;
 
@@ -144,6 +147,7 @@ public class Unit : MonoBehaviour
         curK.AddRange(CondKeywords);
         CurKeywords = curK;
 
+        if (BaseOutline != null) BaseOutline.OutlineColor = CurColor;
         if (BaseOutline != null) BaseOutline.enabled = !Moved;
         if (BaseKeywords.Contains(Keyword.Player) && Model != null) { Model.transform.rotation = Quaternion.LookRotation(new Vector3(0,0,1)); }
         if (BaseKeywords.Contains(Keyword.Enemy) && Model != null) { Model.transform.rotation = Quaternion.LookRotation(new Vector3(0, 0, -1));  }

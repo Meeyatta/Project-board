@@ -37,11 +37,11 @@ public class ResourceManager : MonoBehaviour
     #endregion
     void Start()
     {
-        ScoreManager.Instance.eTurnEvent_Functional.AddListener(DeployNewplayerUnit);
+        Action_NextTurn.eTurnEvent_Functional.AddListener(DeployNewplayerUnit);
     }
     void OnDisable()
     {
-        ScoreManager.Instance.eTurnEvent_Functional.RemoveListener(DeployNewplayerUnit);
+        Action_NextTurn.eTurnEvent_Functional.RemoveListener(DeployNewplayerUnit);
     }
 
     #region Returns a list of shuffled units within a list
@@ -133,6 +133,7 @@ public class ResourceManager : MonoBehaviour
     public void AddUnit(Unit unit)
     {
         FullArmy.Add(unit);
+        Army_NotPlaced.Add(unit);
     }
 
     //Removes the unit from player's total army

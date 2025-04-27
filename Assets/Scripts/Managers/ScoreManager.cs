@@ -12,7 +12,7 @@ public enum Side { Player, Enemy };
 public class ScoreManager : MonoBehaviour
 {
     //Event for the conclusion of the battle 
-    public UnityEvent<Side> WinEvent; //Since i have little object what use it, events will only make code more confusing, so right now
+    public UnityEvent<Side> E_WinOrLoss; //Since i have little object what use it, events will only make code more confusing, so right now
     //This is unused
 
     public int CurRound;
@@ -42,19 +42,12 @@ public class ScoreManager : MonoBehaviour
     public int Score_Player;
     public int Score_Enemy;
 
-    [Header("------")]
-
-
-    public UnityEvent<Side> eTurnEvent_Functional;
-    public UnityEvent<Side> eTurnEvent_Visuals;
     //public UnityEvent<List<Unit>> EndPlayerTurnEvent;
-    public UnityEvent RoundEvent;
     private void Start()
     {
         CurRound = 0;
         CurTurn = Side.Player;
 
-        RoundEvent.AddListener(GameManager.Instance.ResetMovement);
     }
     public void AddPointPlayer()
     {
@@ -67,7 +60,7 @@ public class ScoreManager : MonoBehaviour
     public IEnumerator EndPlayerTurn()
     {
         CurTurn = Side.Enemy;
-        eTurnEvent_Functional.Invoke(ScoreManager.Instance.CurTurn);
+        Action_NextTurn.eTurnEvent_Functional.Invoke(ScoreManager.Instance.CurTurn);
         //eTurnEvent_Visuals.Invoke(ScoreManager.Instance.CurTurn);
 
         yield return new WaitForSeconds(Time.deltaTime);
@@ -76,7 +69,7 @@ public class ScoreManager : MonoBehaviour
     {
         CurTurn = Side.Player;
 
-        eTurnEvent_Functional.Invoke(ScoreManager.Instance.CurTurn);
+        Action_NextTurn.eTurnEvent_Functional.Invoke(ScoreManager.Instance.CurTurn);
 
         yield return StartCoroutine(NextRound());
     }
@@ -84,7 +77,7 @@ public class ScoreManager : MonoBehaviour
     {
         CurRound++;
 
-        RoundEvent.Invoke();
+        Action_NextTurn.RoundEvent.Invoke(CurRound);
         yield return new WaitForSeconds(Time.deltaTime);
     }
 
@@ -106,7 +99,7 @@ public class ScoreManager : MonoBehaviour
         #region Checking if any of the side won
         if (Score_Player >= Score_Enemy + NScoreDiff) 
         { 
-            WinEvent.Invoke(Side.Player);
+            E_WinOrLoss.Invoke(Side.Player);
             EndScreen.Instance.Win();
 
             //Debug.Log("Player has won"); 
@@ -114,7 +107,7 @@ public class ScoreManager : MonoBehaviour
 
         if (Score_Enemy >= Score_Player + NScoreDiff) 
         { 
-            WinEvent.Invoke(Side.Enemy);
+            E_WinOrLoss.Invoke(Side.Enemy);
             EndScreen.Instance.Loss();
             //Debug.Log("Enemy has won"); 
         }

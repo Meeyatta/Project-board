@@ -44,7 +44,6 @@ using UnityEngine.InputSystem;
         bool UnitHasAllKeywords(Unit u, List<Keyword> keywords) - returns true if unit has all of the keywords in "keywords"
         List<Unit> Get_OnlyUnitsWithKeywords(List<Unit> all, List<Keyword> keywords) - Groups units from a list into a different list only if
             they have the keywords in "keywords"
-        void ResetMovement(List<Unit.keyword> keywords) - resets all units with keywords in a list to be able to move again. 
 
         There are 2 ways game checks for pressing on cells:
             1) Each cell is a button what sends an event call with it's position when it is pressed
@@ -96,11 +95,11 @@ public class GameManager : MonoBehaviour
     public UnityEvent<List<Unit>> HidePlacementEvent;
     void Start()
     {
-        ScoreManager.Instance.eTurnEvent_Functional.AddListener(UnselectCurrentUnit);
+        Action_NextTurn.eTurnEvent_Functional.AddListener(UnselectCurrentUnit);
     }
     void OnDisable()
     {
-        ScoreManager.Instance.eTurnEvent_Functional.RemoveListener(UnselectCurrentUnit);
+        Action_NextTurn.eTurnEvent_Functional.RemoveListener(UnselectCurrentUnit);
 
     }
     #endregion Events
@@ -193,6 +192,7 @@ public class GameManager : MonoBehaviour
             //Makes all units on one side attack, then scores all objectives, then passes the turn/round to the other side
             #region NextTurn()
             case ActionType.NextTurn:
+                //Debug.Log("Initiated next turn");
                 ActionSlot prenextturn = new ActionSlot(Action_NextTurn.Pre_nextTurn(parameters), ActionType.Pre_NextTurn, parameters);
                 ActionQueue.Enqueue(prenextturn);
 
@@ -325,12 +325,7 @@ public class GameManager : MonoBehaviour
         return cycled;
     }
 
-    //Resets all units with keywords in a list to be able to move again. This fucntion is used by "RoundEvent" in ScoreManager
-    public void ResetMovement()
-    {
-        List<Unit> all = BoardManager.Instance.Get_AllUnitsOnBoard();
-        foreach (var u in all) { u.Moved = false; }     
-    }
+    
     //This is called by click events on buttons
     
     public void CellClickHandle(Vector2Int coords)

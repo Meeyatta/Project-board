@@ -83,7 +83,7 @@ public class EffectManager : MonoBehaviour
 
         if (GameplayManager.Instance != null) GameplayManager.Instance.eBattlefieldCreation.AddListener(StartUpdatingObjectiveControl);
 
-        ScoreManager.Instance.eTurnEvent_Functional.AddListener(HideAllPlayerMovement);
+        Action_NextTurn.eTurnEvent_Functional.AddListener(HideAllPlayerMovement);
 
         GameManager.Instance.ShowPlacementEvent.AddListener(StartShowingPlacement);
         GameManager.Instance.HidePlacementEvent.AddListener(StopShowingPlacement);
@@ -101,7 +101,7 @@ public class EffectManager : MonoBehaviour
 
         if (GameplayManager.Instance != null) GameplayManager.Instance.eBattlefieldCreation.RemoveListener(StartUpdatingObjectiveControl);
 
-        ScoreManager.Instance.eTurnEvent_Functional.RemoveListener(HideAllPlayerMovement);
+        Action_NextTurn.eTurnEvent_Functional.RemoveListener(HideAllPlayerMovement);
 
         GameManager.Instance.ShowPlacementEvent.RemoveListener(StartShowingPlacement);
         GameManager.Instance.HidePlacementEvent.RemoveListener(StopShowingPlacement);

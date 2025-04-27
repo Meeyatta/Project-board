@@ -10,8 +10,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c8afc66d21413fe47b8a28db7dd9c000, type: 3}
-  m_Name: tutorial 13
+  m_Name: tutorial 18 Win
   m_EditorClassIdentifier: 
   Language: 0
-  Name: 13
-  Text: 'Your opponent will also have untis '
+  Name: 18
+  Text: Well done!

@@ -25,7 +25,6 @@ public static class Action_SelectUnit
         ogUnit = GameManager.Instance.CurUnitSelected;
         us.Add(GameManager.Instance.CurUnitSelected);
 
-
         #region If current turn is player turn
         if (ScoreManager.Instance.PlayerTurnActionCondition())
         {
@@ -79,7 +78,7 @@ public static class Action_SelectUnit
         else
         {
             //TODO:
-
+            Debug.Log("Can't select unit, cur turn is enemy");
             GameManager.Instance.RemoveAction(parameters);
         }
         #endregion

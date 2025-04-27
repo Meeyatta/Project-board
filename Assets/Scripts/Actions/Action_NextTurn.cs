@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 /*This script is separated into two parts:
     Pre_NextTurn - This handles all units attacking and scoring objectives
@@ -9,113 +10,118 @@ using UnityEngine;
 public static class Action_NextTurn
 {
     public static float Delay = 15;
-    static bool isAwaitingNextTurn; //Check if we have already tried getting to next turn and are waiting for it
+    public static bool IsChangingTurn; //Check if we have already tried getting to next turn and are waiting for it
 
-    static bool ShouldWaitBeforeNextTurn() //If we have to wait for other actions to be done before ending the turn
+    public static UnityEvent<Side> eTurnEvent_Functional = new UnityEvent<Side>();
+    public static UnityEvent<Side> eTurnEvent_Visuals = new UnityEvent<Side>();
+
+    public static UnityEvent<int> RoundEvent = new UnityEvent<int>();
+
+    static bool CanTheyAttack()
     {
-        /*
-        Debug.Log("CurRound: " + ScoreManager.Instance.CurRound + "| CurTurn: " + ScoreManager.Instance.CurTurn +
-            "| Tutorial_SupposedRoundTurn: " + TutorialManager.Instance.Tutorial_SupposedRoundTurn);
-        */
+        if (ScoreManager.Instance.CurRound == 0) return false;
+
+        return true;
+    }
+    static bool CanTheyScore()
+    {
+        if (ScoreManager.Instance.CurRound == 0) return false;
+
+        return true;
+    }
+
+    public static IEnumerator SetRoundNTurn(int round, Side turn, bool shouldScore, bool shouldAttack)
+    {
+        IsChangingTurn = true;
+        int curRound = ScoreManager.Instance.CurRound;
+        Side CurTurn = ScoreManager.Instance.CurTurn;
+
+        if (round == curRound && CurTurn == turn) { IsChangingTurn = false; yield break; } //If trying to change the round/turn to the same one we are now
+
+        #region Making a side attack and then score with their units
+        List<Keyword> sideKeyword = new List<Keyword>();
+        if (CurTurn == Side.Player) { sideKeyword.Add(Keyword.Player); } else { { sideKeyword.Add(Keyword.Enemy); } }
+
+        if (CanTheyAttack() && shouldAttack)
+        {
+            ActionParameters attack = new ActionParameters(
+                                GameManager.ActionType.AttackFromKeyworded, null, sideKeyword, null, null, 0);
+            yield return GameManager.Instance.StartCoroutine(GameManager.Instance.Action(attack));
+        }
+        
+        yield return new WaitForSeconds(Time.deltaTime);
+
+        if (CanTheyScore() && shouldScore)
+        {
+            ActionParameters score = new ActionParameters(
+            GameManager.ActionType.Score, null, sideKeyword, null, null, 0);
+            yield return GameManager.Instance.Action(score);
+        }
+        
+        #endregion
+
+        yield return new WaitForSeconds(Time.deltaTime * Delay);
+
+        #region handling turn/round change and events for them
+        ScoreManager.Instance.CurTurn = turn;
+        ScoreManager.Instance.CurRound = round;
+
+        eTurnEvent_Functional.Invoke(ScoreManager.Instance.CurTurn); 
+        eTurnEvent_Visuals.Invoke(ScoreManager.Instance.CurTurn); 
+
+        if (curRound != round) 
+        { 
+            RoundEvent.Invoke(round);
+            Action_Move.ResetAllUnitsMovement();
+        }
 
 
-        if (TutorialManager.Instance != null && ScoreManager.Instance.CurRound >= TutorialManager.Instance.Tutorial_SupposedRoundTurn) 
-            { return true; }
-        if (TutorialManager.Instance != null && ScoreManager.Instance.CurTurn == Side.Enemy
-            && ScoreManager.Instance.CurRound + 0.5f >= TutorialManager.Instance.Tutorial_SupposedRoundTurn)
-            { return true; }
+        #endregion
 
-        return false;
+        yield return new WaitForSeconds(Time.deltaTime);
     }
 
     public static IEnumerator Pre_nextTurn(ActionParameters parameters)
     {
-        //Debug.Log("Started pre NextTurn actions");
+
         Side CurTurn = ScoreManager.Instance.CurTurn;
 
-        if (ScoreManager.Instance.CurRound == 0 || isAwaitingNextTurn)
+        if (ScoreManager.Instance.CurRound == 0 || IsChangingTurn)
         {
-            Debug.Log("Canceling next turn action: " + ScoreManager.Instance.CurRound + " " + isAwaitingNextTurn);
+            Debug.Log("Canceling next turn action: " + ScoreManager.Instance.CurRound + " " + IsChangingTurn);
 
             GameManager.Instance.RemoveAction(parameters);
             yield break;
         }
 
-        while (ShouldWaitBeforeNextTurn()) { isAwaitingNextTurn = true; yield return new WaitForSeconds(Time.deltaTime); }
-        isAwaitingNextTurn =false;
+        #region Making a side attack and then score with their units
+        IsChangingTurn = true;
+        List<Keyword> sideKeyword = new List<Keyword>();
+        if (CurTurn == Side.Player) { sideKeyword.Add(Keyword.Player); } else { { sideKeyword.Add(Keyword.Enemy); } }
 
-        switch (CurTurn)
-        {
-            case Side.Player:
-                #region Player turn ended
+        ActionParameters attack = new ActionParameters(
+                    GameManager.ActionType.AttackFromKeyworded, null, sideKeyword, null, null, 0);
+        yield return GameManager.Instance.StartCoroutine(GameManager.Instance.Action(attack));
 
-                ActionParameters attackP = new ActionParameters(
-                    GameManager.ActionType.AttackFromKeyworded, null, new List<Keyword> { Keyword.Player }, null, null, 0);
-                yield return GameManager.Instance.StartCoroutine(GameManager.Instance.Action(attackP));
-                //Debug.Log("Initiated attack for the player");
+        yield return new WaitForSeconds(Time.deltaTime);
 
-                yield return new WaitForSeconds(Time.deltaTime);
+        ActionParameters scoreP = new ActionParameters(
+            GameManager.ActionType.Score, null, sideKeyword, null, null, 0);
+        yield return GameManager.Instance.StartCoroutine(GameManager.Instance.Action(scoreP));
+        #endregion
 
-                ActionParameters scoreP = new ActionParameters(
-                    GameManager.ActionType.Score, null, new List<Keyword> { Keyword.Player }, null, null, 0);
-                yield return GameManager.Instance.StartCoroutine(GameManager.Instance.Action(scoreP));
-                //Debug.Log("Initiated score for the player");
-
-                break;
-                #endregion
-            case Side.Enemy:
-                #region Enemy turn ended
-
-                ScoreManager.Instance.eTurnEvent_Visuals.Invoke(ScoreManager.Instance.CurTurn);
-
-                ActionParameters attackE = new ActionParameters(
-                    GameManager.ActionType.AttackFromKeyworded, null, new List<Keyword> { Keyword.Enemy }, null, null, 0);
-                yield return GameManager.Instance.StartCoroutine(GameManager.Instance.Action(attackE));
-
-                yield return new WaitForSeconds(Time.deltaTime);
-
-                ActionParameters scoreE = new ActionParameters(
-                    GameManager.ActionType.Score, null, new List<Keyword> { Keyword.Enemy }, null, null, 0);
-                yield return GameManager.Instance.StartCoroutine(GameManager.Instance.Action(scoreE));
-
-
-                break;
-                #endregion
-        }
 
         GameManager.Instance.RemoveAction(parameters);
     }
 
     public static IEnumerator NextTurn(ActionParameters parameters)
     {
-        //Debug.Log("Started NextTurn actions");
-        yield return new WaitForSeconds(Time.deltaTime * Delay);
+        Side newTurn = ScoreManager.Instance.CurTurn; int newRound = ScoreManager.Instance.CurRound;
 
-        #region If the current round is deployment
-        if (ScoreManager.Instance.CurRound == 0)
-        {
-            ScoreManager.Instance.EndDeployment();
-        }
-        #endregion
-        #region For rounds past deployment
-        else
-        {
-            switch (ScoreManager.Instance.CurTurn)
-            {
-                case Side.Player:
-                    #region Player turn ended
-                    yield return ScoreManager.Instance.StartCoroutine(ScoreManager.Instance.EndPlayerTurn());
-                    break;
-                #endregion
-                case Side.Enemy:
-                    #region Enemy turn ended             
-                    yield return ScoreManager.Instance.StartCoroutine(ScoreManager.Instance.EndEnemyTurn());
-                    break;
-                    #endregion
-            }
-        }
+        if (ScoreManager.Instance.CurTurn == Side.Enemy) { newTurn = Side.Player; newRound += 1; }
+        else { newTurn = Side.Enemy; }
         
-        #endregion
+        yield return SetRoundNTurn(newRound, newTurn, true, true);
 
         GameManager.Instance.RemoveAction(parameters);
     }

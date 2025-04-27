@@ -46,14 +46,14 @@ public class EnemyManager : MonoBehaviour
 
     void Start()
     {
-        ScoreManager.Instance.eTurnEvent_Functional.AddListener(DeployNewEnemy);
-        ScoreManager.Instance.eTurnEvent_Functional.AddListener(MoveAllEnemyUnits);
+        Action_NextTurn.eTurnEvent_Functional.AddListener(DeployNewEnemy);
+        Action_NextTurn.eTurnEvent_Functional.AddListener(MoveAllEnemyUnits);
     }
 
     void OnDisable()
     {
-        ScoreManager.Instance.eTurnEvent_Functional.RemoveListener(DeployNewEnemy);
-        ScoreManager.Instance.eTurnEvent_Functional.RemoveListener(MoveAllEnemyUnits);
+        Action_NextTurn.eTurnEvent_Functional.RemoveListener(DeployNewEnemy);
+        Action_NextTurn.eTurnEvent_Functional.RemoveListener(MoveAllEnemyUnits);
     }
 
 

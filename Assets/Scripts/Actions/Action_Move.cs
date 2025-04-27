@@ -11,6 +11,14 @@ public static class Action_Move
 
     public static UnityEvent<Unit> E_AfterMove = new UnityEvent<Unit>();
 
+    //Resets all units with keywords in a list to be able to move again. 
+    public static void ResetAllUnitsMovement()
+    {
+        Debug.Log("Reset movement");
+        List<Unit> all = BoardManager.Instance.Get_AllUnitsOnBoard();
+        foreach (var u in all) { u.Moved = false; }
+    }
+
     public static bool UnitCanMove(Unit u)
     {
         if (u.Moved) { Debug.Log("Unit can't move"); return false; }

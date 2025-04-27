@@ -406,7 +406,7 @@ MonoBehaviour:
   MaxHealth: 2
   CodexPage: 4
   BaseAbilities: 
-  BaseKeywords: 00000000
+  BaseKeywords: 
   PlayerColor: {r: 0, g: 255, b: 255, a: 1}
   PlayerBaseMat: {fileID: 2100000, guid: 6a8b410cc2cd240438356a36937894a9, type: 2}
   EnemyColor: {r: 255, g: 0, b: 0, a: 1}

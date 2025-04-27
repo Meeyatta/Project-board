@@ -42,13 +42,13 @@ public class PassTurnButton : MonoBehaviour
     #region Subscribing/Unsubscribing events
     void SubscribeEvents()
     {
-        ScoreManager.Instance.eTurnEvent_Functional.AddListener(EnablePass);
-        ScoreManager.Instance.eTurnEvent_Visuals.AddListener(Shrug_Visuals);
+        Action_NextTurn.eTurnEvent_Functional.AddListener(EnablePass);
+        Action_NextTurn.eTurnEvent_Visuals.AddListener(Shrug_Visuals);
     }
     void OnDisable()
     {
-        ScoreManager.Instance.eTurnEvent_Functional.RemoveListener(EnablePass);
-        ScoreManager.Instance.eTurnEvent_Visuals.RemoveListener(Shrug_Visuals);
+        Action_NextTurn.eTurnEvent_Functional.RemoveListener(EnablePass);
+        Action_NextTurn.eTurnEvent_Visuals.RemoveListener(Shrug_Visuals);
     }
     #endregion
 
@@ -68,12 +68,12 @@ public class PassTurnButton : MonoBehaviour
     #region Visual effects for when the turnButton is activated, for in-script use and event
     public void Shrug_Visuals()
     {
-        anim.SetTrigger(Shrugstr);
+       anim.SetTrigger(Shrugstr);
     }
     public void Shrug_Visuals(Side s)
     {
         //if (s == Side.Enemy) return;
-        Shrug_Visuals();
+        //Shrug_Visuals();
     }
     #endregion
 
@@ -87,14 +87,26 @@ public class PassTurnButton : MonoBehaviour
 
     bool TutorialCond()
     {
-        return (TutorialManager.Instance == null || (TutorialManager.Instance != null && TutorialManager.Instance.Tutorial_CanPass));
+        return (TutorialManager.Instance != null && TutorialManager.Instance.Tutorial_CanPass);
     }
 
     public void Pass()
     {
+        if (TutorialManager.Instance != null) //<- This is purely for tutorial
+        {
+            if (TutorialCond() && Time.time > nextClickTime)
+            {
+                nextClickTime = Time.time + ClickReload;
+                Debug.Log("Is passing in tutorial");
+                Shrug_Visuals();
+                E_PassedTurn.Invoke();
+            }
+            
+            return;
+        }
+
         //Debug.Log("Button passed the turn");
-        if (ScoreManager.Instance.CurTurn == Side.Player && CanPass && Time.time > nextClickTime
-            && TutorialCond()) //<- This is purely for tutorial
+        if (ScoreManager.Instance.CurTurn == Side.Player && CanPass && Time.time > nextClickTime) 
         {
             nextClickTime = Time.time + ClickReload ;
             GameManager.Instance.CancelEvent.Invoke();

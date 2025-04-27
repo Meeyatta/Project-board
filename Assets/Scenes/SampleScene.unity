@@ -14573,7 +14573,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 11416984, guid: c080686877cf77f42a1a078076d57fe5, type: 3}
       propertyPath: textList.Array.size
-      value: 4
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 11416984, guid: c080686877cf77f42a1a078076d57fe5, type: 3}
       propertyPath: textList.Array.data[0].s
@@ -14592,17 +14592,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 11416984, guid: c080686877cf77f42a1a078076d57fe5, type: 3}
       propertyPath: textList.Array.data[3].s
-      value: 'After choosing to deploy the first unit,
-
-        it''s movement positions
-        are shown'
+      value: Enemy units do not attack and the game freezes
       objectReference: {fileID: 0}
     - target: {fileID: 11416984, guid: c080686877cf77f42a1a078076d57fe5, type: 3}
       propertyPath: textList.Array.data[4].s
-      value: 'After deploying the 2nd unit some of the deployment
-
-        positions
-        overlays remain'
+      value: Enemy units move after the deployment phase
       objectReference: {fileID: 0}
     - target: {fileID: 11416984, guid: c080686877cf77f42a1a078076d57fe5, type: 3}
       propertyPath: textList.Array.data[5].s
@@ -14745,7 +14739,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 11416984, guid: c080686877cf77f42a1a078076d57fe5, type: 3}
       propertyPath: textList.Array.data[4].deleteQuestion
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 11416984, guid: c080686877cf77f42a1a078076d57fe5, type: 3}
       propertyPath: textList.Array.data[5].deleteQuestion
@@ -22402,6 +22396,9 @@ MonoBehaviour:
   HidePlacementEvent:
     m_PersistentCalls:
       m_Calls: []
+  SwitchedAction: 0
+  ClickCooldown: 0
+  ActionSwapCooldown: 0
   CurrentPointedAtUnit: {fileID: 0}
 --- !u!1 &549930825
 GameObject:
@@ -29392,7 +29389,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   RoundText: {fileID: 1893479213}
   TurnText: {fileID: 1646674602}
-  Button: {fileID: 108654539}
+  ClickReload: 0
   CanPass: 1
   E_PassedTurn:
     m_PersistentCalls:
@@ -43245,6 +43242,9 @@ MonoBehaviour:
   PlayerPointsText: {fileID: 703865168}
   SymbolText: {fileID: 1073853246}
   EnemyPointsText: {fileID: 422000313}
+  e_PointScored:
+    m_PersistentCalls:
+      m_Calls: []
   Anim: {fileID: 0}
 --- !u!95 &1006338691
 Animator:
@@ -59169,15 +59169,6 @@ MonoBehaviour:
   NScoreDiff: 3
   Score_Player: 0
   Score_Enemy: 0
-  eTurnEvent_Functional:
-    m_PersistentCalls:
-      m_Calls: []
-  eTurnEvent_Visuals:
-    m_PersistentCalls:
-      m_Calls: []
-  RoundEvent:
-    m_PersistentCalls:
-      m_Calls: []
 --- !u!1 &1332968391
 GameObject:
   m_ObjectHideFlags: 0

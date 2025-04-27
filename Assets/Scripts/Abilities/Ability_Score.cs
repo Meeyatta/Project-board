@@ -3,10 +3,12 @@ using System.Collections.Generic;
 using System.Diagnostics.Tracing;
 using UnityEngine;
 using UnityEngine.Windows;
+using UnityEngine.Events;
 
 public static class Ability_Score
 {
     const float DelayBetweenScores = 40;
+    public static UnityEvent E_ScoredForPlayer= new UnityEvent();
 
     const string JitterAnimTrigger = "jitter";
     public static int Check(Unit obj)
@@ -39,7 +41,7 @@ public static class Ability_Score
             {
                 a.Anim.SetTrigger(JitterAnimTrigger);
                 ScoreClock.Instance.Shrug_Visuals();
-
+                E_ScoredForPlayer.Invoke();
                 ScoreManager.Instance.AddPointPlayer();
             }
             #endregion
