@@ -64,6 +64,8 @@ public class EnemyManager : MonoBehaviour
     }
     IEnumerator EnemyTurn()
     {
+        yield return new WaitForSeconds(Time.fixedDeltaTime);
+        Debug.Log("Enemy does their turn");
         IsPlayingTurn = true;
 
         if (ScoreManager.Instance.CurRound != 0)
@@ -77,6 +79,7 @@ public class EnemyManager : MonoBehaviour
         IsPlayingTurn = false;
         cEnemyTurn = null;
 
+        yield return new WaitForSeconds(Time.fixedDeltaTime);
         ActionParameters turnParameters = new ActionParameters(GameManager.ActionType.NextTurn, null, null, null, null, 0);
         StartCoroutine(GameManager.Instance.Action(turnParameters));
     }

@@ -45,8 +45,6 @@ public class ScoreManager : MonoBehaviour
     //public UnityEvent<List<Unit>> EndPlayerTurnEvent;
     private void Start()
     {
-        CurRound = 0;
-        CurTurn = Side.Player;
 
     }
     public void AddPointPlayer()
@@ -57,22 +55,7 @@ public class ScoreManager : MonoBehaviour
     {
         Score_Enemy++;
     }
-    public IEnumerator EndPlayerTurn()
-    {
-        CurTurn = Side.Enemy;
-        Action_NextTurn.eTurnEvent_Functional.Invoke(ScoreManager.Instance.CurTurn);
-        //eTurnEvent_Visuals.Invoke(ScoreManager.Instance.CurTurn);
 
-        yield return new WaitForSeconds(Time.fixedDeltaTime);
-    }
-    public IEnumerator EndEnemyTurn()
-    {
-        CurTurn = Side.Player;
-
-        Action_NextTurn.eTurnEvent_Functional.Invoke(ScoreManager.Instance.CurTurn);
-
-        yield return StartCoroutine(NextRound());
-    }
     public IEnumerator NextRound()
     {
         yield return new WaitForSeconds(Time.fixedDeltaTime);

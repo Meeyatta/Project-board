@@ -192,6 +192,7 @@ public class GameManager : MonoBehaviour
             //Makes all units on one side attack, then scores all objectives, then passes the turn/round to the other side
             #region NextTurn()
             case ActionType.NextTurn:
+                Debug.Log("Next turn action");
                 ActionSlot nextturn = new ActionSlot(Action_NextTurn.NextTurn(parameters), ActionType.NextTurn, parameters);
                 ActionQueue.Enqueue(nextturn);
                 break;
@@ -723,25 +724,25 @@ public class GameManager : MonoBehaviour
         //    Debug.Log(")" + CurrentAction); Debug.Log(")" + ActionQueue.Peek().Type);
 
         //}
-        //if (Input.GetKeyDown("a"))
-        //{
-        //    Debug.Log("PRESSED THE ATTACK BUTTON");
-        //    List<Keyword> k = new List<Keyword>();k.Add(Keyword.Player);
+            //if (Input.GetKeyDown("a"))
+            //{
+            //    Debug.Log("PRESSED THE ATTACK BUTTON");
+            //    List<Keyword> k = new List<Keyword>();k.Add(Keyword.Player);
 
-        //    ActionParameters parameters = new ActionParameters(ActionType.AttackFromKeyworded, null, k, null, null, 0);
-        //    StartCoroutine(Action(parameters));
-        //}
+            //    ActionParameters parameters = new ActionParameters(ActionType.AttackFromKeyworded, null, k, null, null, 0);
+            //    StartCoroutine(Action(parameters));
+            //}
 
-        //if (Input.GetKeyDown("x"))
-        //{
-        //    Debug.Log("SCORING FOR ENEMY:");
-        //    List<Keyword> k = new List<Keyword> { Keyword.Enemy };
-        //    ActionParameters parameters = new ActionParameters(ActionType.Score, null, k, null, null, 0);
-        //    StartCoroutine(Action(parameters));
+            //if (Input.GetKeyDown("x"))
+            //{
+            //    Debug.Log("SCORING FOR ENEMY:");
+            //    List<Keyword> k = new List<Keyword> { Keyword.Enemy };
+            //    ActionParameters parameters = new ActionParameters(ActionType.Score, null, k, null, null, 0);
+            //    StartCoroutine(Action(parameters));
 
-        //}
-        #endregion
+            //}
+            #endregion
 
-        CheckUnitUnderCursor();
+            CheckUnitUnderCursor();
     }
 }
