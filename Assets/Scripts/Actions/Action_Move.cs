@@ -209,7 +209,7 @@ public static class Action_Move
         Ability_Slippery.Try(ActionTargetUnit);
         E_AfterMove.Invoke(ActionTargetUnit);
 
-        yield return new WaitForSeconds(Time.deltaTime);
+        yield return new WaitForSeconds(Time.fixedDeltaTime);
         GameManager.Instance.RemoveAction(parameters);
     }
 

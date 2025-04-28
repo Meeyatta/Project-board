@@ -81,7 +81,7 @@ public static class Ability_Slippery
         List<Vector2Int> endPoss = GetRandPos(unit);
         bool IsValid = BoardManager.Instance.AreInBounds(endPoss) && !BoardManager.Instance.AreAnyOccupied(endPoss);
 
-        yield return new WaitForSeconds(Delay * Time.deltaTime);
+        yield return new WaitForSeconds(Delay * Time.fixedDeltaTime);
 
         if (IsValid) 
         {
@@ -96,7 +96,7 @@ public static class Ability_Slippery
             yield return BoardManager.Instance.StartCoroutine(BoardManager.Instance.PlaceUnit(unit, endPoss));
         }
 
-        yield return new WaitForSeconds(Time.deltaTime);
+        yield return new WaitForSeconds(Time.fixedDeltaTime);
         GameManager.Instance.RemoveAction(parameters);
     }
 

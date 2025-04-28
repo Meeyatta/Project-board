@@ -84,7 +84,7 @@ public class TutorialManager : MonoBehaviour
         yield return GameManager.Instance.Action(pars);
 
         curDelay = DelayBeforeAutomaticProceeding;
-        while (iswaiting_1 && curDelay > 0) { curDelay -= Time.deltaTime; ; yield return new WaitForSeconds(Time.deltaTime); }
+        while (iswaiting_1 && curDelay > 0) { curDelay -= Time.fixedDeltaTime; ; yield return new WaitForSeconds(Time.fixedDeltaTime); }
         Action_DeployNewPlayerUnit.E_DeployedNewPlayerUnit.RemoveListener(stopwaiting_1);
         ResumeInteracting();
 
@@ -106,7 +106,7 @@ public class TutorialManager : MonoBehaviour
         CameraManager.Instance.SetCam(CameraManager.Instance.Left);
 
         curDelay = DelayBeforeAutomaticProceeding;
-        while (iswaiting_2 && curDelay > 0) { curDelay -= Time.deltaTime; ; yield return new WaitForSeconds(Time.deltaTime); }
+        while (iswaiting_2 && curDelay > 0) { curDelay -= Time.fixedDeltaTime; ; yield return new WaitForSeconds(Time.fixedDeltaTime); }
 
         PassTurnButton.Instance.E_PassedTurn.RemoveListener(stopwaiting_2);
 
@@ -130,19 +130,20 @@ public class TutorialManager : MonoBehaviour
         }
         Action_Move.E_AfterMove.AddListener(stopwaiting_3);
 
-        while (iswaiting_3) { yield return new WaitForSeconds(Time.deltaTime); }
+        while (iswaiting_3) { yield return new WaitForSeconds(Time.fixedDeltaTime); }
 
         ResumeInteracting();
         bool iswaiting_32 = true;
         void stopwaiting_32() { iswaiting_32 = false; }
         PassTurnButton.Instance.E_PassedTurn.AddListener(stopwaiting_32);
 
-        while (iswaiting_32) { yield return new WaitForSeconds(Time.deltaTime); }
+        while (iswaiting_32) { yield return new WaitForSeconds(Time.fixedDeltaTime); }
 
         Action_Move.E_AfterMove.RemoveListener(stopwaiting_3);
         PassTurnButton.Instance.E_PassedTurn.RemoveListener(stopwaiting_32);
 
         Debug.Log("Ended third");
+        ResumeInteracting();
     }
     #endregion
 
@@ -157,6 +158,7 @@ public class TutorialManager : MonoBehaviour
         CanClickOnCells = true;
 
         CameraManager.Instance.SetCam(CameraManager.Instance.TopDown);
+        CanClickOnCells = true;
 
         #region Find an appropriate location for an objective
         Unit u = BoardManager.Instance.Get_AllUnitsWithKeywords(new List<Keyword> { Keyword.Player })[0];
@@ -188,6 +190,7 @@ public class TutorialManager : MonoBehaviour
         StopInteracting();
         yield return DialogueManager.Instance.SpeakLines(Fourth2Lines);
         ResumeInteracting();
+        CanClickOnCells = true;
 
         #region This checks if player decided NOT to move unit towards the objective
         void stopmovingto(Unit u)
@@ -208,6 +211,8 @@ public class TutorialManager : MonoBehaviour
         Action_Move.E_AfterMove.AddListener(stopmovingto);
         #endregion
 
+        ResumeInteracting();
+
         #region Waiting until player scores a point
         bool iswaiting_ToScore = true; void stopwaiting_score() { iswaiting_ToScore = false; }
         Ability_Score.E_ScoredForPlayer.AddListener(stopwaiting_score);
@@ -221,7 +226,7 @@ public class TutorialManager : MonoBehaviour
         PassTurnButton.Instance.E_PassedTurn.AddListener(ScorePlayer);
         while (iswaiting_ToScore ) 
         {
-            yield return new WaitForSeconds(Time.deltaTime); 
+            yield return new WaitForSeconds(Time.fixedDeltaTime); 
         }
         #endregion
 
@@ -306,12 +311,12 @@ public class TutorialManager : MonoBehaviour
 
         ResourceManager.Instance.AddUnit(NewUnit);
         NewUnit.SetToPlayer();
-        yield return new WaitForSeconds(Time.deltaTime);
+        yield return new WaitForSeconds(Time.fixedDeltaTime);
 
         ActionParameters pars = new ActionParameters(GameManager.ActionType.DeployNew, null, null, null, null, 0);
         yield return GameManager.Instance.Action(pars);
 
-        while (isWaitingForgameEnd) { yield return new WaitForSeconds(Time.deltaTime); }
+        while (isWaitingForgameEnd) { yield return new WaitForSeconds(Time.fixedDeltaTime); }
 
         if (s == Side.Player)
         { //If player won
@@ -328,7 +333,7 @@ public class TutorialManager : MonoBehaviour
         scene.allowSceneActivation = false;
         do
         {
-            yield return new WaitForSeconds(Time.deltaTime);
+            yield return new WaitForSeconds(Time.fixedDeltaTime);
         }
         while (scene.progress < 0.9f);
         scene.allowSceneActivation = true;
@@ -341,31 +346,31 @@ public class TutorialManager : MonoBehaviour
     IEnumerator StartTutorial()
     {
 
-        yield return new WaitForSeconds(Time.deltaTime);
+        yield return new WaitForSeconds(Time.fixedDeltaTime);
         yield return First_Deployment();
 
-        yield return new WaitForSeconds(Time.deltaTime);
+        yield return new WaitForSeconds(Time.fixedDeltaTime);
         yield return Second_Passing();
 
-        yield return new WaitForSeconds(Time.deltaTime);
+        yield return new WaitForSeconds(Time.fixedDeltaTime);
         yield return Action_NextTurn.SetRoundNTurn(1, Side.Player, false, false);
 
-        yield return new WaitForSeconds(Time.deltaTime);
+        yield return new WaitForSeconds(Time.fixedDeltaTime);
         yield return Third_Movement();
 
-        yield return new WaitForSeconds(Time.deltaTime);
+        yield return new WaitForSeconds(Time.fixedDeltaTime);
         yield return Action_NextTurn.SetRoundNTurn(2, Side.Player, false, false);
 
-        yield return new WaitForSeconds(Time.deltaTime);
+        yield return new WaitForSeconds(Time.fixedDeltaTime);
         yield return Fourth_Objectives();
 
-        yield return new WaitForSeconds(Time.deltaTime);
+        yield return new WaitForSeconds(Time.fixedDeltaTime);
         yield return Fifth_Enemies();
 
-        yield return new WaitForSeconds(Time.deltaTime);
+        yield return new WaitForSeconds(Time.fixedDeltaTime);
         yield return Action_NextTurn.SetRoundNTurn(3, Side.Player, false, false);
 
-        yield return new WaitForSeconds(Time.deltaTime);
+        yield return new WaitForSeconds(Time.fixedDeltaTime);
         yield return Sixth_win_loss();
 
     }

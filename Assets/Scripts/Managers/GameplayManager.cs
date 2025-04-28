@@ -48,7 +48,7 @@ public class GameplayManager : MonoBehaviour
     }
     IEnumerator StartBattle()
     {
-        yield return new WaitForSeconds(Delay * Time.deltaTime);
+        yield return new WaitForSeconds(Delay * Time.fixedDeltaTime);
         yield return MakeBattlefield(Objective_Positions);
 
         yield return EnemyManager.Instance.InstantiateEnemyUnits();

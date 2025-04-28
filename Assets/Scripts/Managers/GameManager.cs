@@ -192,15 +192,8 @@ public class GameManager : MonoBehaviour
             //Makes all units on one side attack, then scores all objectives, then passes the turn/round to the other side
             #region NextTurn()
             case ActionType.NextTurn:
-                //Debug.Log("Initiated next turn");
-                ActionSlot prenextturn = new ActionSlot(Action_NextTurn.Pre_nextTurn(parameters), ActionType.Pre_NextTurn, parameters);
-                ActionQueue.Enqueue(prenextturn);
-
-                yield return new WaitForSeconds(0.3f); // <- Load-bearing delay, don't let it get shorter than 0.3 seconds
-
                 ActionSlot nextturn = new ActionSlot(Action_NextTurn.NextTurn(parameters), ActionType.NextTurn, parameters);
                 ActionQueue.Enqueue(nextturn);
-
                 break;
             #endregion NextTurn()
 
@@ -336,7 +329,7 @@ public class GameManager : MonoBehaviour
 
     public IEnumerator TutorialClickCoroutine(Vector2Int coords)
     {
-        yield return new WaitForSeconds(Time.deltaTime); //For some reason this is vital, otherwise Unity shits itself
+        yield return new WaitForSeconds(Time.fixedDeltaTime); //For some reason this is vital, otherwise Unity shits itself
 
         if (TutorialManager.Instance.CanClickOnCells)
         {
@@ -428,16 +421,18 @@ public class GameManager : MonoBehaviour
     */
     IEnumerator CellClickCoroutine(Vector2Int coords)
     {
-        yield return new WaitForSeconds(Time.deltaTime * 0.01f); //For some reason this is vital, otherwise Unity shits itself
+        yield return new WaitForSeconds(Time.fixedDeltaTime); //For some reason this is vital, otherwise Unity shits itself
         //Debug.Log("Clicked on a cell " + coords);
 
         if (TutorialManager.Instance != null) { yield return TutorialClickCoroutine(coords); yield break; }
+
+        Debug.Log("Cell click detected");
 
         #region Are we selecting a position for creating a unit?
         if (Action_PlayerCreate.IsWaitingForData && Action_PlayerCreate.CanCreateThere(Action_PlayerCreate.Unit, coords))
         #region Yes - Invoke an event to send coordinates where the unit is going to be created (If can be created)
         { //a1
-            //Debug.Log("Creating a unit"); 
+            Debug.Log("Creating a unit"); 
             ClickBackEvent.Invoke(coords);
         }
         #endregion
@@ -445,14 +440,17 @@ public class GameManager : MonoBehaviour
         #region No - Check if there is a unit to move to these coordinates
         else
         {
+            Debug.Log("Not Creating a unit");
             #region Do we have a unit and cell is unoccupied?
             if (CurUnitSelected != null && BoardManager.Instance.Board[coords.x].Cells[coords.y].CurUnit == null &&
                 ScoreManager.Instance.PlayerTurnActionCondition())
             #region Yes - Are we in the deployment phase?
             {
+                Debug.Log("Have a unit, cell is unoccupied");
                 #region Yes - Redeploy unit to the coordinates
                 if (ScoreManager.Instance.CurRound <= 0)
                 {
+                    Debug.Log("Supposed to redeploy");
                     List<Vector2Int> nCoords = new List<Vector2Int>(); nCoords.Add(coords);
                     List<Unit> unitToList = new List<Unit>(); unitToList.Add(CurUnitSelected);
 
@@ -478,18 +476,21 @@ public class GameManager : MonoBehaviour
             #region No - check the cell to try to interact with a unit on it
             else
             {
+                Debug.Log("Don't have a unit, interacting with the unit");
                 #region Does this cell have a unit?
                 if (BoardManager.Instance.Board[coords.x].Cells[coords.y].CurUnit != null)
                 #region Yes - Check what kind of unit this is
                 {
-                    #region Is selected unit a player unit we are currently NOT selecting?
+                    Debug.Log("Cell has a unit");
+                    #region Is selected unit a PLAYER unit we are currently NOT selecting?
                     List<Vector2Int> nCoords = new List<Vector2Int>(); nCoords.Add(coords);
                     if (BoardManager.Instance.Board[coords.x].Cells[coords.y].CurUnit.CurKeywords.Contains(Keyword.Player)
                         && CurUnitSelected != BoardManager.Instance.Board[coords.x].Cells[coords.y].CurUnit)
                     #region Yes - select it if we can
                     {
-                        if (ScoreManager.Instance.CurRound != 0)   
-                        { ActionParameters parameters = new ActionParameters(ActionType.SelectUnit, null, null, nCoords, null, 0); yield return StartCoroutine(Action(parameters)); }   
+                        Debug.Log("Initiating the selectUnit action");
+;                        ActionParameters parameters = new ActionParameters(ActionType.SelectUnit, null, null, nCoords, null, 0); 
+                        yield return StartCoroutine(Action(parameters));   
                         //else { Debug.Log(ScoreManager.Instance.CurTurn); }
                     }
                     #endregion
@@ -497,7 +498,8 @@ public class GameManager : MonoBehaviour
                     #region No - TODO:
                     else
                     { //b4)
-                        yield return new WaitForSeconds(0.01f);
+                        Debug.Log("Clicking on a non-player unit or unit is already selected");
+                        yield return new WaitForSeconds(Time.fixedDeltaTime);
                     }
                     #endregion
 
@@ -540,17 +542,17 @@ public class GameManager : MonoBehaviour
     public bool SwitchedAction = false; //This is so "click check" can stop checking cell clicks while we change an action
     IEnumerator GoThroughActions()
     {
-        yield return new WaitForSeconds(Time.deltaTime);
+        yield return new WaitForSeconds(Time.fixedDeltaTime);
 
         while (ActionQueue.Count > 0)
         {
-            if (CurrentAction != null) { yield return new WaitForSeconds(Time.deltaTime); continue; }
+            if (CurrentAction != null) { yield return new WaitForSeconds(Time.fixedDeltaTime); continue; }
 
             CurrentAction = ActionQueue.Dequeue();
             SwitchedAction = true;
             yield return StartCoroutine(CurrentAction.IEnum);
 
-            yield return new WaitForSeconds(Time.deltaTime);
+            yield return new WaitForSeconds(Time.fixedDeltaTime);
             SwitchedAction = false;
         }
         ActionQueue.Clear();
@@ -558,7 +560,7 @@ public class GameManager : MonoBehaviour
         C_GoingThroughActions = null;
 
         SwitchedAction = true;
-        yield return new WaitForSeconds(Time.deltaTime);
+        yield return new WaitForSeconds(Time.fixedDeltaTime);
         SwitchedAction = false;
     }
 
@@ -586,7 +588,7 @@ public class GameManager : MonoBehaviour
 
         if (SwitchedAction)
         {
-            nextClickTime = Time.time + (ActionSwapCooldown * Time.deltaTime * 100);
+            nextClickTime = Time.time + (ActionSwapCooldown * Time.fixedDeltaTime * 100);
             //Debug.Log("Changed: " + nextClickTime + " " + Time.time);
             SwitchedAction = false; 
             return true;
@@ -682,13 +684,13 @@ public class GameManager : MonoBehaviour
             if (CellClickP != NullV2)
             {
                 CellClickHandle(CellClickP);
-                nextClickTime = Time.time + (ClickCooldown * Time.deltaTime * 100);
+                nextClickTime = Time.time + (ClickCooldown * Time.fixedDeltaTime * 100);
                 //Debug.Log("Clicked: " + nextClickTime + " " + Time.time);
             }
             else if (UnitClickP != NullV2)
             {
                 CellClickHandle(UnitClickP);
-                nextClickTime = Time.time + (ClickCooldown * Time.deltaTime * 100);
+                nextClickTime = Time.time + (ClickCooldown * Time.fixedDeltaTime * 100);
                 //Debug.Log("Clicked: " + nextClickTime + " " + Time.time);
             }
         }

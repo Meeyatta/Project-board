@@ -56,7 +56,7 @@ public static class Action_Create
             Debug.Log("Non viable position");
         }
 
-        yield return new WaitForSeconds(Time.deltaTime);
+        yield return new WaitForSeconds(Time.fixedDeltaTime);
         GameManager.Instance.RemoveAction(parameters);
     }
 }

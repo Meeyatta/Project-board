@@ -63,7 +63,7 @@ public class ScoreManager : MonoBehaviour
         Action_NextTurn.eTurnEvent_Functional.Invoke(ScoreManager.Instance.CurTurn);
         //eTurnEvent_Visuals.Invoke(ScoreManager.Instance.CurTurn);
 
-        yield return new WaitForSeconds(Time.deltaTime);
+        yield return new WaitForSeconds(Time.fixedDeltaTime);
     }
     public IEnumerator EndEnemyTurn()
     {
@@ -75,10 +75,7 @@ public class ScoreManager : MonoBehaviour
     }
     public IEnumerator NextRound()
     {
-        CurRound++;
-
-        Action_NextTurn.RoundEvent.Invoke(CurRound);
-        yield return new WaitForSeconds(Time.deltaTime);
+        yield return new WaitForSeconds(Time.fixedDeltaTime);
     }
 
     //Quick way for other actions to check if they are performed during the player's turn
@@ -88,11 +85,6 @@ public class ScoreManager : MonoBehaviour
 
         return true;
     }
-    public void EndDeployment()
-    {
-        CurRound = 1;
-        CurTurn = Side.Player;
-    }
 
     void Update()
     {
@@ -100,7 +92,7 @@ public class ScoreManager : MonoBehaviour
         if (Score_Player >= Score_Enemy + NScoreDiff) 
         { 
             E_WinOrLoss.Invoke(Side.Player);
-            EndScreen.Instance.Win();
+            if (EndScreen.Instance != null) EndScreen.Instance.Win();
 
             //Debug.Log("Player has won"); 
         }
@@ -108,7 +100,7 @@ public class ScoreManager : MonoBehaviour
         if (Score_Enemy >= Score_Player + NScoreDiff) 
         { 
             E_WinOrLoss.Invoke(Side.Enemy);
-            EndScreen.Instance.Loss();
+            if (EndScreen.Instance != null) EndScreen.Instance.Loss();
             //Debug.Log("Enemy has won"); 
         }
         #endregion

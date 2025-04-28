@@ -72,7 +72,7 @@ public class DialogueManager : MonoBehaviour
             while (!SkipDialogue && skipMoment > Time.time)
             {
                 if (cLine != null) skipMoment = Time.time + DelayBeforeAutoSkip;
-                yield return new WaitForSeconds(Time.deltaTime);
+                yield return new WaitForSeconds(Time.fixedDeltaTime);
             }
             SkipDialogue = false;
             #endregion
@@ -97,8 +97,9 @@ public class DialogueManager : MonoBehaviour
             }
 
             Text.text += i;
-            yield return new WaitForSeconds(Time.deltaTime * 100 / Speed);
+            yield return new WaitForSeconds(Time.fixedDeltaTime * 100 / Speed);
         }
+
 
         cLine = null;
     }
@@ -111,6 +112,6 @@ public class DialogueManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+
     }
 }

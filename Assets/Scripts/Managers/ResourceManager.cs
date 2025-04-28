@@ -90,7 +90,7 @@ public class ResourceManager : MonoBehaviour
             Unit u = Instantiate(v.gameObject, new Vector3(255, 0, 0), Quaternion.identity, PlayerUitsTr).GetComponent<Unit>();
             u.SetToPlayer();
             FullArmy.Add(u);
-            yield return new WaitForSeconds(Time.deltaTime);
+            yield return new WaitForSeconds(Time.fixedDeltaTime);
         }
     }
 
@@ -100,7 +100,7 @@ public class ResourceManager : MonoBehaviour
             GameManager.ActionType.DeployPlayerStarters, null, null, null, null, StarterUnitsAmount);
         yield return StartCoroutine(GameManager.Instance.Action(parameters));
 
-        yield return new WaitForSeconds(Time.deltaTime);
+        yield return new WaitForSeconds(Time.fixedDeltaTime);
 
         //List<Unit> toDeploy = new List<Unit>();
         //int totalAm = 0;

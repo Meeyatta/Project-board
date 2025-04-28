@@ -102,7 +102,7 @@ namespace TMPro.Examples
                 {
                     // Using Smoothing
                     cameraTransform.position = Vector3.SmoothDamp(cameraTransform.position, desiredPosition, ref currentVelocity, MovementSmoothingValue * Time.fixedDeltaTime);
-                    //cameraTransform.position = Vector3.Lerp(cameraTransform.position, desiredPosition, Time.deltaTime * 5.0f);
+                    //cameraTransform.position = Vector3.Lerp(cameraTransform.position, desiredPosition, Time.fixedDeltaTime * 5.0f);
                 }
                 else
                 {
@@ -111,7 +111,7 @@ namespace TMPro.Examples
                 }
 
                 if (RotationSmoothing == true)
-                    cameraTransform.rotation = Quaternion.Lerp(cameraTransform.rotation, Quaternion.LookRotation(CameraTarget.position - cameraTransform.position), RotationSmoothingValue * Time.deltaTime);
+                    cameraTransform.rotation = Quaternion.Lerp(cameraTransform.rotation, Quaternion.LookRotation(CameraTarget.position - cameraTransform.position), RotationSmoothingValue * Time.fixedDeltaTime);
                 else
                 {
                     cameraTransform.LookAt(CameraTarget);

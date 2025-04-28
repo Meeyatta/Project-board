@@ -54,12 +54,12 @@ public static class Action_DeployNewPlayerUnit
 
     public static IEnumerator DeployNewUnit(ActionParameters parameters)
     {
-        yield return new WaitForSeconds(Time.deltaTime);
+        yield return new WaitForSeconds(Time.fixedDeltaTime);
 
         #region If we have no units to deploy
-        if (ResourceManager.Instance.Army_NotPlaced.Count == 0)
+        if (ResourceManager.Instance.Army_NotPlaced.Count == 0 || ScoreManager.Instance.CurRound == 1)
         {
-            yield return new WaitForSeconds(Time.deltaTime);
+            yield return new WaitForSeconds(Time.fixedDeltaTime);
             E_DeployedNewPlayerUnit.Invoke(null);
             GameManager.Instance.RemoveAction(parameters);
             yield break;
@@ -103,7 +103,7 @@ public static class Action_DeployNewPlayerUnit
         foreach (var v in pulledUnits) { v.Anim.SetBool(IsHoveringStr, true); } //Making units hover 
         while (selectedUnit == null)
         {
-            yield return new WaitForSeconds(Time.deltaTime);
+            yield return new WaitForSeconds(Time.fixedDeltaTime);
 
             #region If player foces on new units
             if (IsFocused())
@@ -183,7 +183,7 @@ public static class Action_DeployNewPlayerUnit
         UnitPlacementBag.Instance.StopPullingUnits();
 
         E_DeployedNewPlayerUnit.Invoke(selectedUnit);
-        yield return new WaitForSeconds(0.1f * Time.deltaTime);
+        yield return new WaitForSeconds(0.1f * Time.fixedDeltaTime);
         GameManager.Instance.RemoveAction(parameters);
 
     }

@@ -71,7 +71,7 @@ public static class Action_Deployment
                 //Debug.Log(d);
 
                 safeGuard--;
-                yield return new WaitForSeconds(0.0001f * Time.deltaTime);
+                yield return new WaitForSeconds(Time.fixedDeltaTime);
             }
 
             if (unitsLeft <= 0) { Debug.Log("Ran out of units"); break; }
@@ -84,7 +84,7 @@ public static class Action_Deployment
         }
         #endregion
 
-        yield return new WaitForSeconds(Time.deltaTime);
+        yield return new WaitForSeconds(Time.fixedDeltaTime);
         GameManager.Instance.RemoveAction(parameters);
     }
 }

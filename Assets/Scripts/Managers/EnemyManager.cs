@@ -6,6 +6,7 @@ using UnityEngine;
 public class EnemyManager : MonoBehaviour
 {
     public int StarterUnitsAmount;
+    public bool IsPlayingTurn;
 
     public List<Unit> Army = new List<Unit>();
 
@@ -40,127 +41,118 @@ public class EnemyManager : MonoBehaviour
 
     Coroutine CMakingMoves;
     [Header("---Functionality stuff---")]
-    public float DelayBeforeMovingUnit;
-    public float DelayAfterMovingUnit;
-    public float DelayBeforeEndingTurn;
+    public float DelayBeforeMovingAUnit;
+    public float DelayAfterMovingAUnit;
 
     void Start()
     {
-        Action_NextTurn.eTurnEvent_Functional.AddListener(DeployNewEnemy);
-        Action_NextTurn.eTurnEvent_Functional.AddListener(MoveAllEnemyUnits);
+        Action_NextTurn.eTurnEvent_Functional.AddListener(EnemyTurn_Handler);
     }
 
     void OnDisable()
     {
-        Action_NextTurn.eTurnEvent_Functional.RemoveListener(DeployNewEnemy);
-        Action_NextTurn.eTurnEvent_Functional.RemoveListener(MoveAllEnemyUnits);
+        Action_NextTurn.eTurnEvent_Functional.RemoveListener(EnemyTurn_Handler);
     }
 
-
-    #region ResetArmy() - Gets the whole army back into the NotPlaced category
-    public void ResetArmy()
+    Coroutine cEnemyTurn;
+    void EnemyTurn_Handler(Side s)
     {
-        List<Unit> randArmy = FullArmy;
-        for (int i = 0; i < randArmy.Count; i++)
-        {
-            Unit f = randArmy[i];
-            int randI = Random.Range(0, randArmy.Count);
+        if (cEnemyTurn == null && !IsPlayingTurn ||
+            ScoreManager.Instance.CurTurn == Side.Player) 
+        { cEnemyTurn = StartCoroutine(EnemyTurn()); }
 
-            randArmy[i] = randArmy[randI];
-            randArmy[randI] = f;
+    }
+    IEnumerator EnemyTurn()
+    {
+        IsPlayingTurn = true;
+
+        if (ScoreManager.Instance.CurRound != 0)
+        {
+            yield return DeployNewEnemy(); //Deploying a new enemy unit
+            yield return new WaitForSeconds(DelayBeforeMovingAUnit);
+            yield return MovingAllEnemyUnits(); //Moving all units on the board
+            yield return new WaitForSeconds(DelayAfterMovingAUnit);
         }
 
-        Army_NotPlaced.AddRange(randArmy);
-        Army_Placed.Clear();
+        IsPlayingTurn = false;
+        cEnemyTurn = null;
+
+        ActionParameters turnParameters = new ActionParameters(GameManager.ActionType.NextTurn, null, null, null, null, 0);
+        StartCoroutine(GameManager.Instance.Action(turnParameters));
     }
-    #endregion
-
-    public void RecordPlacedUnit(Unit unit)
+    public IEnumerator DeployNewEnemy()
     {
-        //Debug.Log("Placed enemy " + unit.UnitName + ", removing from NotPlaced");
-        Army_NotPlaced.Remove(unit);
-        Army_Placed.Add(unit);
-    }
-
-    public IEnumerator InstantiateEnemyUnits()
-    {
-        foreach (var v in Army)
-        {
-            Unit u = Instantiate(v.gameObject, new Vector3(255, 0, 0), Quaternion.identity, EnemyUitsTr).GetComponent<Unit>();
-            yield return new WaitForSeconds(Time.deltaTime);
-            u.SetToEnemy();
-            FullArmy.Add(u);
-            
-        }
-    }
-
-    public IEnumerator DeployEnemies()
-    {
-        List<Unit> toDeploy = new List<Unit>();
-        int totalAm = 0;
-        for (int i = 0; i < StarterUnitsAmount && i < Army_NotPlaced.Count; i++)
-        {
-            toDeploy.Add(Army_NotPlaced[i]);
-            totalAm++;
-        }
-
-        ActionParameters parameters = new ActionParameters(
-                    GameManager.ActionType.Deploy, toDeploy, null, BoardManager.Instance.EnemyDeploymentZone, null, totalAm);
-        yield return StartCoroutine(GameManager.Instance.Action(parameters));
-
-        foreach (var u in toDeploy) { RecordPlacedUnit(u); }
-    }
-    public void DeployNewEnemy(Side side)
-    {
-        if (side == Side.Player || ScoreManager.Instance.CurRound <= 1) return;
-        if (Army_NotPlaced.Count <= 0) return;
+        if (ScoreManager.Instance.CurRound <= 1 || Army_NotPlaced.Count <= 0) yield break;
 
         List<Unit> newEnemy = new List<Unit> { Army_NotPlaced[0] };
         ActionParameters parameters = new ActionParameters(
                     GameManager.ActionType.Deploy, newEnemy, null, BoardManager.Instance.EnemyDeploymentZone, null, 1);
-        StartCoroutine(GameManager.Instance.Action(parameters));
+        yield return Action_Deployment.Deploy(parameters);
 
         RecordPlacedUnit(Army_NotPlaced[0]);
     }
 
-    public void MoveAllEnemyUnits(Side side)
+    #region Go through each unit on the board and move them towards objectives
+    public IEnumerator MovingAllEnemyUnits()
     {
-        if (side == Side.Player) return;
+        if (ScoreManager.Instance.CurRound <= 1 || Army_Placed.Count <= 0) yield break;
 
-        if (CMakingMoves == null) 
+        yield return new WaitForSeconds(Time.fixedDeltaTime * DelayBeforeMovingAUnit);
+
+        List<Unit> units = BoardManager.Instance.Get_AllUnitsWithKeywords(new List<Keyword> { Keyword.Enemy });
+
+        List<ActionParameters> MoveActions = new List<ActionParameters>();
+        #region Going through each unit one by one and moving them
+        foreach (var unit in units)
         {
-            CMakingMoves = StartCoroutine(MovingAllEnemyUnits());
-        }
-    }
+            #region Raise the unit's model, wait for a couple of seconds, then move them
+            Vector3 ogPos = unit.gameObject.transform.position;
+            unit.transform.position = ogPos + Vector3.up * 1;
+            yield return new WaitForSeconds(Time.fixedDeltaTime * DelayBeforeMovingAUnit);
+            //unit.gameObject.transform.position = ogPos;
 
-    #region Returns the position the target can move what is the closest to the "objective"
-    List<Vector2Int> GetPosToPoint(Unit objective, Unit target)
-    {
-        Vector3 objPos = BoardManager.Instance.BoardToWorldPosition(BoardManager.Instance.Get_UnitPositions(objective)).Value;
-        List<List<List<Vector2Int>>> posMov = Action_Move.Get_PossibleMovement(target);
+            yield return new WaitForSeconds(Time.fixedDeltaTime);
+            #endregion
 
-        float minD = Mathf.Infinity; List<Vector2Int> res = new List<Vector2Int>();
+            #region Move that unit
+            List<Vector2Int> newPos = DecideMovement(unit);
 
-        //Debug.Log(posMov.Count);
-
-        foreach (var line in posMov)
-        {
-            foreach (var poss in line)
+            if (newPos != null)
             {
-                Vector3 pp = BoardManager.Instance.BoardToWorldPosition(poss).Value;
-
-                //Debug.Log(Vector3.Distance(pp, objPos));
-                if (Vector3.Distance(pp, objPos) < minD)
-                {
-                    //Debug.Log("Got a position");
-                    minD = Vector3.Distance(pp, objPos);
-                    res = poss;
-                }
+                ActionParameters parameters = new ActionParameters(
+                    GameManager.ActionType.Move,
+                    new List<Unit> { unit }, null, newPos, null, 0);
+                MoveActions.Add(parameters);
+                yield return StartCoroutine(GameManager.Instance.Action(parameters));
             }
-        }
 
-        //Debug.Log(res.Count);
-        return res;
+            //TODO:CHANGE THIS TO ANIMATION TRIGGER 
+            if (unit.transform.position == ogPos + Vector3.up * 1) { unit.gameObject.transform.position = ogPos; }
+
+            yield return new WaitForSeconds(Time.fixedDeltaTime * DelayAfterMovingAUnit);
+            #endregion
+
+            #region Wait while the unit is being moved
+            int safeGuard = 10000;
+            while (
+                ((GameManager.Instance.CurrentAction != null && MoveActions.Contains(GameManager.Instance.CurrentAction.Params)) ||
+                (GameManager.Instance.ActionQueue.Count > 0 && MoveActions.Contains(GameManager.Instance.ActionQueue.Peek().Params)))
+                 && safeGuard > 0)
+            {
+                safeGuard--;
+                yield return new WaitForSeconds(Time.fixedDeltaTime);
+            }
+            if (safeGuard <= 0) { Debug.LogError("Safeguard expended, something is very wrong"); }
+            #endregion
+
+        }
+        #endregion
+
+        #region End moving all units and end the turn
+        //Debug.Log("Finished moving all enemy units");
+        CMakingMoves = null;
+
+        #endregion
     }
     #endregion
 
@@ -175,6 +167,7 @@ public class EnemyManager : MonoBehaviour
             No) Move towards that objective
     */
     #endregion
+
     #region Goes through enemy AI and decides what target to find
     List<Vector2Int> DecideMovement(Unit u)
     {
@@ -188,9 +181,9 @@ public class EnemyManager : MonoBehaviour
         float minD = Mathf.Infinity; float maxD = -1;
         Unit closestObj = null; Unit scndClosestObj = null; Unit otherObj = null;
         //Closest
-        foreach (var ob in objectives) 
+        foreach (var ob in objectives)
         {
-            if (Vector3.Distance(ob.transform.position, u.transform.position) < minD) 
+            if (Vector3.Distance(ob.transform.position, u.transform.position) < minD)
             {
                 if (closestObj != null) { scndClosestObj = closestObj; }
                 closestObj = ob; minD = Vector3.Distance(ob.transform.position, u.transform.position);
@@ -203,7 +196,7 @@ public class EnemyManager : MonoBehaviour
         //2nd closest
         foreach (var ob in objectives)
         {
-            if (Vector3.Distance(ob.transform.position, u.transform.position) > minD 
+            if (Vector3.Distance(ob.transform.position, u.transform.position) > minD
                 && Vector3.Distance(ob.transform.position, u.transform.position) < maxD)
             {
                 scndClosestObj = ob;
@@ -225,7 +218,7 @@ public class EnemyManager : MonoBehaviour
             List<Unit> pU = BoardManager.Instance.Get_UnitsWithKeywordsInRange(closestObj, 1, new List<Keyword> { Keyword.Player });
             List<Unit> eU = BoardManager.Instance.Get_UnitsWithKeywordsInRange(closestObj, 1, new List<Keyword> { Keyword.Enemy });
 
-            if (eU.Count <= pU.Count) 
+            if (eU.Count <= pU.Count)
             {
                 //Closest objective doesn't have enough of a lead, go to it
                 //Debug.Log(u.UnitName + " found closest objective doesn't have enough lead - moves to closest");
@@ -265,68 +258,92 @@ public class EnemyManager : MonoBehaviour
     }
     #endregion
 
-    #region Go through each unit on the board and move them towards objectives
-    public IEnumerator MovingAllEnemyUnits()
+    #region ResetArmy() - Gets the whole army back into the NotPlaced category
+    public void ResetArmy()
     {
-        yield return new WaitForSeconds(Time.deltaTime * DelayBeforeMovingUnit);
-
-        List<Unit> units = BoardManager.Instance.Get_AllUnitsWithKeywords(new List<Keyword> { Keyword.Enemy });
-
-        List<ActionParameters> MoveActions = new List<ActionParameters>();
-        #region Going through each unit one by one and moving them
-        foreach (var unit in units)
+        List<Unit> randArmy = FullArmy;
+        for (int i = 0; i < randArmy.Count; i++)
         {
-            #region Raise the unit's model, wait for a couple of seconds, then move them
-            Vector3 ogPos = unit.gameObject.transform.position;
-            unit.transform.position = ogPos + Vector3.up * 1;
-            yield return new WaitForSeconds(Time.deltaTime * DelayBeforeMovingUnit);
-            //unit.gameObject.transform.position = ogPos;
+            Unit f = randArmy[i];
+            int randI = Random.Range(0, randArmy.Count);
 
-            yield return new WaitForSeconds(Time.deltaTime);
-            #endregion
-
-            #region Move that unit
-            List<Vector2Int> newPos = DecideMovement(unit);
-
-            if (newPos != null)
-            {
-                ActionParameters parameters = new ActionParameters(
-                    GameManager.ActionType.Move,
-                    new List<Unit> { unit }, null, newPos, null, 0);
-                MoveActions.Add(parameters);
-                yield return StartCoroutine(GameManager.Instance.Action(parameters));
-            }
-
-            //TODO:CHANGE THIS TO ANIMATION TRIGGER 
-            if (unit.transform.position == ogPos + Vector3.up * 1) { unit.gameObject.transform.position = ogPos; }
-
-            yield return new WaitForSeconds(Time.deltaTime * DelayAfterMovingUnit);
-            #endregion
-
-            #region Wait while the unit is being moved
-            int safeGuard = 10000;
-            while (
-                ((GameManager.Instance.CurrentAction != null && MoveActions.Contains(GameManager.Instance.CurrentAction.Params)) ||
-                (GameManager.Instance.ActionQueue.Count > 0 && MoveActions.Contains(GameManager.Instance.ActionQueue.Peek().Params)))
-                 && safeGuard > 0)
-            {
-                safeGuard--;
-                yield return new WaitForSeconds(Time.deltaTime);
-            }
-            if (safeGuard <= 0) { Debug.LogError("Safeguard expended, something is very wrong"); }
-            #endregion
-
+            randArmy[i] = randArmy[randI];
+            randArmy[randI] = f;
         }
-        #endregion
 
-        #region End moving all units and end the turn
-        yield return new WaitForSeconds(DelayBeforeEndingTurn * Time.deltaTime);
-        //Debug.Log("Finished moving all enemy units");
-        CMakingMoves = null; 
-
-        ActionParameters turnParameters = new ActionParameters(GameManager.ActionType.NextTurn, null, null, null, null, 0);
-        StartCoroutine(GameManager.Instance.Action(turnParameters));
-        #endregion
+        Army_NotPlaced.AddRange(randArmy);
+        Army_Placed.Clear();
     }
     #endregion
+
+    public void RecordPlacedUnit(Unit unit)
+    {
+        //Debug.Log("Placed enemy " + unit.UnitName + ", removing from NotPlaced");
+        Army_NotPlaced.Remove(unit);
+        Army_Placed.Add(unit);
+    }
+
+    public IEnumerator InstantiateEnemyUnits()
+    {
+        foreach (var v in Army)
+        {
+            Unit u = Instantiate(v.gameObject, new Vector3(255, 0, 0), Quaternion.identity, EnemyUitsTr).GetComponent<Unit>();
+            yield return new WaitForSeconds(Time.fixedDeltaTime);
+            u.SetToEnemy();
+            FullArmy.Add(u);
+            
+        }
+    }
+
+    public IEnumerator DeployEnemies()
+    {
+        List<Unit> toDeploy = new List<Unit>();
+        int totalAm = 0;
+        for (int i = 0; i < StarterUnitsAmount && i < Army_NotPlaced.Count; i++)
+        {
+            toDeploy.Add(Army_NotPlaced[i]);
+            totalAm++;
+        }
+
+        ActionParameters parameters = new ActionParameters(
+                    GameManager.ActionType.Deploy, toDeploy, null, BoardManager.Instance.EnemyDeploymentZone, null, totalAm);
+        yield return StartCoroutine(GameManager.Instance.Action(parameters));
+
+        foreach (var u in toDeploy) { RecordPlacedUnit(u); }
+    }
+    
+    #region Returns the position the target can move what is the closest to the "objective"
+    List<Vector2Int> GetPosToPoint(Unit objective, Unit target)
+    {
+        Vector3 objPos = BoardManager.Instance.BoardToWorldPosition(BoardManager.Instance.Get_UnitPositions(objective)).Value;
+        List<List<List<Vector2Int>>> posMov = Action_Move.Get_PossibleMovement(target);
+
+        float minD = Mathf.Infinity; List<Vector2Int> res = new List<Vector2Int>();
+
+        //Debug.Log(posMov.Count);
+
+        foreach (var line in posMov)
+        {
+            foreach (var poss in line)
+            {
+                Vector3 pp = BoardManager.Instance.BoardToWorldPosition(poss).Value;
+
+                //Debug.Log(Vector3.Distance(pp, objPos));
+                if (Vector3.Distance(pp, objPos) < minD)
+                {
+                    //Debug.Log("Got a position");
+                    minD = Vector3.Distance(pp, objPos);
+                    res = poss;
+                }
+            }
+        }
+
+        //Debug.Log(res.Count);
+        return res;
+    }
+    #endregion
+
+    
+
+    
 }

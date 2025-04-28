@@ -136,7 +136,7 @@ public class EffectManager : MonoBehaviour
 
     IEnumerator UpdatingObjectiveControl()
     {
-        yield return new WaitForSeconds(Time.deltaTime * 40);
+        yield return new WaitForSeconds(Time.fixedDeltaTime * 40);
 
         Dictionary<Unit, MeshRenderer> list = new Dictionary<Unit, MeshRenderer>();
         foreach (var v in BoardManager.Instance.Get_AllUnitsWithKeywords(new List<Keyword> { Keyword.Objective }))
@@ -160,7 +160,7 @@ public class EffectManager : MonoBehaviour
 
             }
 
-            yield return new WaitForSeconds(Time.deltaTime);
+            yield return new WaitForSeconds(Time.fixedDeltaTime);
         }
 
     }
@@ -249,10 +249,10 @@ public class EffectManager : MonoBehaviour
     }
     IEnumerator ShowingPlacement(List<Unit> units)
     {
-        yield return new WaitForSeconds(Time.deltaTime * 0.05f);
+        yield return new WaitForSeconds(Time.fixedDeltaTime * 0.05f);
         while (CurPlacement != null && ShowingPlacementConditions())
         {
-            yield return new WaitForSeconds(Time.deltaTime * 0.05f);
+            yield return new WaitForSeconds(Time.fixedDeltaTime * 0.05f);
             foreach (var v in PlacementEffectsToHide)
             {
                 if (BoardManager.Instance.ClosestUnitPosToCursor(v.Key) == null) { continue; }
@@ -278,13 +278,13 @@ public class EffectManager : MonoBehaviour
 
     IEnumerator ShowingPossibleUnitPosition(Unit unit, List<Vector2Int> availableZone)
     {
-        yield return new WaitForSeconds(Time.deltaTime * 0.01f);
+        yield return new WaitForSeconds(Time.fixedDeltaTime * 0.01f);
 
         RaiseModel(unit);
 
         while (CurUnitMovePosShowcase != null && ScoreManager.Instance.PlayerTurnActionCondition())
         {
-            yield return new WaitForSeconds(Time.deltaTime * 0.1f);
+            yield return new WaitForSeconds(Time.fixedDeltaTime * 0.1f);
             //Debug.Log("ShowingPossibleUnitPosition");
 
             List<Vector2Int> pos = BoardManager.Instance.ClosestUnitPosToCursor(unit);

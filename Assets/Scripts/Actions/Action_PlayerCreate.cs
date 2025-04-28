@@ -81,7 +81,7 @@ public static class Action_PlayerCreate
 
         //Waiting until we have the data
 
-        while (IsWaitingForData) { yield return new WaitForSeconds(Time.deltaTime * 0.5f); }
+        while (IsWaitingForData) { yield return new WaitForSeconds(Time.fixedDeltaTime * 0.5f); }
 
         //Debug.Log("Got past waiting for data");
 
@@ -111,7 +111,7 @@ public static class Action_PlayerCreate
 
         //Action_NextTurn.eTurnEvent_Functional.RemoveListener(Cancel);
         //GameManager.Instance.CancelEvent.RemoveListener(Cancel);
-        yield return new WaitForSeconds(0.1f * Time.deltaTime);
+        yield return new WaitForSeconds(0.1f * Time.fixedDeltaTime);
         GameManager.Instance.RemoveAction(parameters);
     }
 

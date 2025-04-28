@@ -64,7 +64,7 @@ public static class Action_AttackFromKeyworded
         }
 
 
-        yield return new WaitForSeconds(Time.deltaTime);
+        yield return new WaitForSeconds(Time.fixedDeltaTime);
         //Debug.Log("Sent what ended the attack");
         GameManager.Instance.RemoveAction(parameters);
     }
