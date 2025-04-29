@@ -103,7 +103,7 @@ public static class Action_DeployNewPlayerUnit
         foreach (var v in pulledUnits) { v.Anim.SetBool(IsHoveringStr, true); } //Making units hover 
         while (selectedUnit == null)
         {
-            yield return new WaitForSeconds(Time.fixedDeltaTime);
+            yield return new WaitForSeconds(Time.fixedDeltaTime / 1000);
 
             #region If player foces on new units
             if (IsFocused())
@@ -178,7 +178,6 @@ public static class Action_DeployNewPlayerUnit
             GameManager.Instance.HideDeploymentEvent.Invoke();
         }
         #endregion
-
 
         UnitPlacementBag.Instance.StopPullingUnits();
 

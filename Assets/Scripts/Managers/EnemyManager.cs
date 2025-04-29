@@ -6,6 +6,12 @@ using UnityEngine;
 public class EnemyManager : MonoBehaviour
 {
     public int StarterUnitsAmount;
+
+    [Header("---Delays---")]
+    public float ThinkingDelay;
+    public float DelayAfterRaisingAUnit;
+    public float DelayAfterMovingAUnit;
+
     public bool IsPlayingTurn;
 
     public List<Unit> Army = new List<Unit>();
@@ -17,19 +23,20 @@ public class EnemyManager : MonoBehaviour
     [Header("---Assigning for convenience sake---")]
     public Transform EnemyUitsTr;
 
+    const string IsRaisedStr = "isRaised";
+
     #region Singleton
     public static EnemyManager Instance;
     void Singleton()
     {
-        if (Instance != null)
+        if (Instance != null && Instance != this)
         {
-            Destroy(this);
+            Destroy(gameObject);
+            return;
         }
-        else
-        {
-            Instance = this;
-        }
-        DontDestroyOnLoad(this);
+
+        Instance = this;
+        DontDestroyOnLoad(gameObject);
         ResetArmy();
     }
     void Awake()
@@ -39,10 +46,6 @@ public class EnemyManager : MonoBehaviour
     }
     #endregion
 
-    Coroutine CMakingMoves;
-    [Header("---Functionality stuff---")]
-    public float DelayBeforeMovingAUnit;
-    public float DelayAfterMovingAUnit;
 
     void Start()
     {
@@ -54,34 +57,40 @@ public class EnemyManager : MonoBehaviour
         Action_NextTurn.eTurnEvent_Functional.RemoveListener(EnemyTurn_Handler);
     }
 
-    Coroutine cEnemyTurn;
+    Coroutine cEnemyTurn; float nextEnemyTurnTime = 0.1f; float cooldown = 3;
     void EnemyTurn_Handler(Side s)
     {
-        if (cEnemyTurn == null && !IsPlayingTurn ||
-            ScoreManager.Instance.CurTurn == Side.Player) 
-        { cEnemyTurn = StartCoroutine(EnemyTurn()); }
+        if (cEnemyTurn == null && !IsPlayingTurn && Time.time > nextEnemyTurnTime) 
+        {
+            nextEnemyTurnTime = Time.time + cooldown;
+            cEnemyTurn = StartCoroutine(EnemyTurn()); 
+        }
 
     }
     IEnumerator EnemyTurn()
     {
-        yield return new WaitForSeconds(Time.fixedDeltaTime);
-        Debug.Log("Enemy does their turn");
+        yield return new WaitForSeconds(Time.fixedDeltaTime / 1000);
+
         IsPlayingTurn = true;
 
-        if (ScoreManager.Instance.CurRound != 0)
+        if (ScoreManager.Instance.CurRound > 0)
         {
+            yield return new WaitForSeconds(ThinkingDelay);
+
+            if (ScoreManager.Instance.CurTurn == Side.Player) { yield break; }
+
             yield return DeployNewEnemy(); //Deploying a new enemy unit
-            yield return new WaitForSeconds(DelayBeforeMovingAUnit);
+
+            if (ScoreManager.Instance.CurTurn == Side.Player) { yield break; }
+
             yield return MovingAllEnemyUnits(); //Moving all units on the board
-            yield return new WaitForSeconds(DelayAfterMovingAUnit);
         }
+
+        ActionParameters turnParameters = new ActionParameters(GameManager.ActionType.NextTurn, null, null, null, null, 0);
+        yield return GameManager.Instance.Action(turnParameters);
 
         IsPlayingTurn = false;
         cEnemyTurn = null;
-
-        yield return new WaitForSeconds(Time.fixedDeltaTime);
-        ActionParameters turnParameters = new ActionParameters(GameManager.ActionType.NextTurn, null, null, null, null, 0);
-        StartCoroutine(GameManager.Instance.Action(turnParameters));
     }
     public IEnumerator DeployNewEnemy()
     {
@@ -98,9 +107,7 @@ public class EnemyManager : MonoBehaviour
     #region Go through each unit on the board and move them towards objectives
     public IEnumerator MovingAllEnemyUnits()
     {
-        if (ScoreManager.Instance.CurRound <= 1 || Army_Placed.Count <= 0) yield break;
-
-        yield return new WaitForSeconds(Time.fixedDeltaTime * DelayBeforeMovingAUnit);
+        if (ScoreManager.Instance.CurRound < 1 || Army_Placed.Count <= 0) yield break;
 
         List<Unit> units = BoardManager.Instance.Get_AllUnitsWithKeywords(new List<Keyword> { Keyword.Enemy });
 
@@ -109,12 +116,9 @@ public class EnemyManager : MonoBehaviour
         foreach (var unit in units)
         {
             #region Raise the unit's model, wait for a couple of seconds, then move them
-            Vector3 ogPos = unit.gameObject.transform.position;
-            unit.transform.position = ogPos + Vector3.up * 1;
-            yield return new WaitForSeconds(Time.fixedDeltaTime * DelayBeforeMovingAUnit);
-            //unit.gameObject.transform.position = ogPos;
-
-            yield return new WaitForSeconds(Time.fixedDeltaTime);
+            unit.Anim.SetBool(IsRaisedStr, true);
+            yield return new WaitForSeconds(DelayAfterRaisingAUnit);
+            unit.Anim.SetBool(IsRaisedStr, false);
             #endregion
 
             #region Move that unit
@@ -129,10 +133,6 @@ public class EnemyManager : MonoBehaviour
                 yield return StartCoroutine(GameManager.Instance.Action(parameters));
             }
 
-            //TODO:CHANGE THIS TO ANIMATION TRIGGER 
-            if (unit.transform.position == ogPos + Vector3.up * 1) { unit.gameObject.transform.position = ogPos; }
-
-            yield return new WaitForSeconds(Time.fixedDeltaTime * DelayAfterMovingAUnit);
             #endregion
 
             #region Wait while the unit is being moved
@@ -148,12 +148,12 @@ public class EnemyManager : MonoBehaviour
             if (safeGuard <= 0) { Debug.LogError("Safeguard expended, something is very wrong"); }
             #endregion
 
+            yield return new WaitForSeconds(DelayAfterMovingAUnit);
         }
         #endregion
 
         #region End moving all units and end the turn
         //Debug.Log("Finished moving all enemy units");
-        CMakingMoves = null;
 
         #endregion
     }
@@ -239,7 +239,7 @@ public class EnemyManager : MonoBehaviour
             if (eU.Count <= pU.Count)
             {
                 //Closest objective doesn't have enough of a lead, go to it
-                Debug.Log(u.UnitName + " found 2nd closest objective doesn't have enough lead - moves to 2nd closest");
+                //Debug.Log(u.UnitName + " found 2nd closest objective doesn't have enough lead - moves to 2nd closest");
                 return GetPosToPoint(scndClosestObj, u);
             }
         }

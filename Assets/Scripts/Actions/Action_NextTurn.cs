@@ -33,7 +33,6 @@ public static class Action_NextTurn
 
     public static IEnumerator SetRoundNTurn(int round, Side turn, bool shouldScore, bool shouldAttack)
     {
-        Debug.Log("SetRoundNTurn " + round + " " + turn);
 
         if (IsChangingTurn) yield break;
         IsChangingTurn = true;
@@ -79,6 +78,7 @@ public static class Action_NextTurn
         ScoreManager.Instance.CurRound = round;
 
         eTurnEvent_Functional.Invoke(ScoreManager.Instance.CurTurn);
+
         eTurnEvent_Visuals.Invoke(ScoreManager.Instance.CurTurn);
 
         if (curRound != round) 
@@ -95,12 +95,11 @@ public static class Action_NextTurn
     static int ntc = 0;
     public static IEnumerator NextTurn(ActionParameters parameters)
     {
-        yield return new WaitForSeconds(Time.fixedDeltaTime);
+        yield return new WaitForSeconds(Time.fixedDeltaTime / 100);
         if (IsChangingToNextTurn) yield break;
         IsChangingToNextTurn = true;
 
         Side nT = ScoreManager.Instance.CurTurn; int nR = ScoreManager.Instance.CurRound;
-        Debug.Log(nT + " " + nR);
         if (nT == Side.Player) { nT = Side.Enemy; } else { nT = Side.Player; nR++; }
 
         yield return SetRoundNTurn(nR, nT, true, true);

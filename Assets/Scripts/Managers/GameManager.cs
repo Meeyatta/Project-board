@@ -192,7 +192,6 @@ public class GameManager : MonoBehaviour
             //Makes all units on one side attack, then scores all objectives, then passes the turn/round to the other side
             #region NextTurn()
             case ActionType.NextTurn:
-                Debug.Log("Next turn action");
                 ActionSlot nextturn = new ActionSlot(Action_NextTurn.NextTurn(parameters), ActionType.NextTurn, parameters);
                 ActionQueue.Enqueue(nextturn);
                 break;
@@ -420,6 +419,7 @@ public class GameManager : MonoBehaviour
         Makes different things happen when players clicks on a board cell depending on how exactly player presses a cell
         (For example, moving a unit, selecting a unit, etc...)
     */
+    public bool DebugClicks;
     IEnumerator CellClickCoroutine(Vector2Int coords)
     {
         yield return new WaitForSeconds(Time.fixedDeltaTime); //For some reason this is vital, otherwise Unity shits itself
@@ -427,13 +427,13 @@ public class GameManager : MonoBehaviour
 
         if (TutorialManager.Instance != null) { yield return TutorialClickCoroutine(coords); yield break; }
 
-        Debug.Log("Cell click detected");
+        if (DebugClicks) Debug.Log("Cell click detected");
 
         #region Are we selecting a position for creating a unit?
         if (Action_PlayerCreate.IsWaitingForData && Action_PlayerCreate.CanCreateThere(Action_PlayerCreate.Unit, coords))
         #region Yes - Invoke an event to send coordinates where the unit is going to be created (If can be created)
         { //a1
-            Debug.Log("Creating a unit"); 
+            if (DebugClicks) Debug.Log("Creating a unit"); 
             ClickBackEvent.Invoke(coords);
         }
         #endregion
@@ -441,7 +441,7 @@ public class GameManager : MonoBehaviour
         #region No - Check if there is a unit to move to these coordinates
         else
         {
-            Debug.Log("Not Creating a unit");
+            if (DebugClicks) Debug.Log("Not Creating a unit");
             #region Do we have a unit and cell is unoccupied?
             if (CurUnitSelected != null && BoardManager.Instance.Board[coords.x].Cells[coords.y].CurUnit == null &&
                 ScoreManager.Instance.PlayerTurnActionCondition())
@@ -477,19 +477,19 @@ public class GameManager : MonoBehaviour
             #region No - check the cell to try to interact with a unit on it
             else
             {
-                Debug.Log("Don't have a unit, interacting with the unit");
+                if (DebugClicks) Debug.Log("Don't have a unit, interacting with the unit");
                 #region Does this cell have a unit?
                 if (BoardManager.Instance.Board[coords.x].Cells[coords.y].CurUnit != null)
                 #region Yes - Check what kind of unit this is
                 {
-                    Debug.Log("Cell has a unit");
+                    if (DebugClicks) Debug.Log("Cell has a unit");
                     #region Is selected unit a PLAYER unit we are currently NOT selecting?
                     List<Vector2Int> nCoords = new List<Vector2Int>(); nCoords.Add(coords);
                     if (BoardManager.Instance.Board[coords.x].Cells[coords.y].CurUnit.CurKeywords.Contains(Keyword.Player)
                         && CurUnitSelected != BoardManager.Instance.Board[coords.x].Cells[coords.y].CurUnit)
                     #region Yes - select it if we can
                     {
-                        Debug.Log("Initiating the selectUnit action");
+                        if (DebugClicks) Debug.Log("Initiating the selectUnit action");
 ;                        ActionParameters parameters = new ActionParameters(ActionType.SelectUnit, null, null, nCoords, null, 0); 
                         yield return StartCoroutine(Action(parameters));   
                         //else { Debug.Log(ScoreManager.Instance.CurTurn); }
@@ -499,8 +499,10 @@ public class GameManager : MonoBehaviour
                     #region No - TODO:
                     else
                     { //b4)
-                        Debug.Log("Clicking on a non-player unit or unit is already selected");
-                        yield return new WaitForSeconds(Time.fixedDeltaTime);
+                        if (DebugClicks) Debug.Log("Clicking on a non-player unit or unit is already selected");
+                        CurUnitSelected = null;
+                        ActionParameters parameters = new ActionParameters(ActionType.SelectUnit, null, null, nCoords, null, 0);
+                        yield return StartCoroutine(Action(parameters));
                     }
                     #endregion
 
@@ -511,7 +513,7 @@ public class GameManager : MonoBehaviour
                 #region No - Do nothing, clicked on an empty cell
                 else
                 { //b3)
-                    Debug.Log("HAVE NOTHING SELECTED, " + coords + " HAS NO UNITS ");
+                    if (DebugClicks) Debug.Log("HAVE NOTHING SELECTED, " + coords + " HAS NO UNITS ");
                     //No unit on that cell, do nothing
                 }
                 #endregion

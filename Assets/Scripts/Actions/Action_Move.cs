@@ -14,7 +14,6 @@ public static class Action_Move
     //Resets all units with keywords in a list to be able to move again. 
     public static void ResetAllUnitsMovement()
     {
-        Debug.Log("Reset movement");
         List<Unit> all = BoardManager.Instance.Get_AllUnitsOnBoard();
         foreach (var u in all) { u.Moved = false; }
     }
