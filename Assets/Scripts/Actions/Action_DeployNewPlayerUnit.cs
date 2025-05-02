@@ -171,17 +171,19 @@ public static class Action_DeployNewPlayerUnit
             selectedUnit.Anim.SetBool(IsRaisedStr, false);
             ResourceManager.Instance.RecordPlacedUnit(selectedUnit);
 
-            GameManager.Instance.ShowDeploymentEvent.Invoke(new List<Unit> { selectedUnit });
+            GameManager.Instance.E_ShowDeployment.Invoke(new List<Unit> { selectedUnit });
             ActionParameters createPar = new ActionParameters(
                         GameManager.ActionType.PlayerCreate, new List<Unit> { selectedUnit }, null, null, null, 0);
             yield return Action_PlayerCreate.PlayerCreate(createPar);
-            GameManager.Instance.HideDeploymentEvent.Invoke();
+            GameManager.Instance.E_HideDeployment.Invoke();
         }
         #endregion
 
         UnitPlacementBag.Instance.StopPullingUnits();
 
         E_DeployedNewPlayerUnit.Invoke(selectedUnit);
+        GameManager.Instance.CurUnitSelected = null;
+
         yield return new WaitForSeconds(0.1f * Time.fixedDeltaTime);
         GameManager.Instance.RemoveAction(parameters);
 

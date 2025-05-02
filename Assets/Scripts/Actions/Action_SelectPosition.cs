@@ -13,6 +13,7 @@ public static class Action_SelectPosition
 
     static void Cancel()
     {
+        Debug.Log("SelectPositionCancel");
         ShouldCancel = true;
     }
 
@@ -69,7 +70,7 @@ public static class Action_SelectPosition
             Debug.Log("SELECTPOSITION ACTION IS CANCELED");
             ShouldCancel = false;
             List<Unit> nv = new List<Unit>(); nv.Add(unit);
-            GameManager.Instance.HidePlacementEvent.Invoke(nv);
+            GameManager.Instance.E_HidePlacement.Invoke(nv);
             if (canCancel) GameManager.Instance.CancelEvent.RemoveListener(Cancel);
             yield break;
         }
@@ -77,7 +78,7 @@ public static class Action_SelectPosition
         GameManager.Instance.ClickBackEvent.RemoveListener(StopWaiting);
         ShouldCancel = false;
         if (canCancel) GameManager.Instance.CancelEvent.RemoveListener(Cancel);
-        yield return new WaitForSeconds(0.001f);
+        yield return new WaitForSeconds(Time.fixedDeltaTime);
     }
 
 }

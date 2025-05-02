@@ -23,14 +23,14 @@ public static class Action_PlayerSpawn
 
         //Start the action to select a position
         List<Unit> unitList = new List<Unit>(); unitList.Add(unit);
-        GameManager.Instance.ShowPlacementEvent.Invoke(unitList);
+        GameManager.Instance.E_ShowPlacement.Invoke(unitList);
         Action_SelectPosition.ESendPositionBack.AddListener(GetListOfPositions); //Add a listener what executes after players
                                                                                               //selects a position and returns it
         yield return GameManager.Instance.StartCoroutine(Action_SelectPosition.Selecting(unit, false));
 
         //Waiting until we have the data, then hide the effects
         while (Is_AwaitingData) { Debug.Log("Awaiting data"); yield return new WaitForSeconds(0.01f); }
-        GameManager.Instance.HidePlacementEvent.Invoke(unitList);
+        GameManager.Instance.E_HidePlacement.Invoke(unitList);
 
         //Place a unit on said selected position
         foreach (Vector2Int vv in v)

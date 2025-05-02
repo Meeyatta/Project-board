@@ -96,6 +96,8 @@ public static class Action_NextTurn
     public static IEnumerator NextTurn(ActionParameters parameters)
     {
         yield return new WaitForSeconds(Time.fixedDeltaTime / 100);
+        while (ScoreManager.Instance.IsEnding) { yield return new WaitForSeconds(Time.fixedDeltaTime); }
+
         if (IsChangingToNextTurn) yield break;
         IsChangingToNextTurn = true;
 

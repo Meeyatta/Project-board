@@ -85,20 +85,26 @@ public static class DamageDealing
         switch (type)
         {
             case DamageType.Fire:
-                if (target.CurAbilities.Contains(Ability.Fireproof)) { EndDamage -= 1; }
-                if (target.CurAbilities.Contains(Ability.Flammable)) { EndDamage += 1; }
+                if (target.CurAbilities.Contains(Ability.Resistant_Fire)) { EndDamage -= 1; }
+                if (target.CurAbilities.Contains(Ability.Vulnerable_Fire)) { EndDamage += 1; }
                 break;
             case DamageType.Lightning:
-                if (target.CurAbilities.Contains(Ability.Nonconductive)) { EndDamage -= 1; }
-                if (target.CurAbilities.Contains(Ability.Conductive)) { EndDamage += 1; }
+                if (target.CurAbilities.Contains(Ability.Resistant_Lightning)) { EndDamage -= 1; }
+                if (target.CurAbilities.Contains(Ability.Vulnerable_Lightning)) { EndDamage += 1; }
                 break;
             case DamageType.Physical:
-                if (target.CurAbilities.Contains(Ability.Armored)) { EndDamage -= 1; }
-                if (target.CurAbilities.Contains(Ability.Exposed)) { EndDamage += 1; }
+                if (target.CurAbilities.Contains(Ability.Resistant_Physical)) { EndDamage -= 1; }
+                if (target.CurAbilities.Contains(Ability.Vulnerable_Physical)) { EndDamage += 1; }
                 break;
         }
         #endregion
-        if (target.CurAbilities.Contains(Ability.Invincible) || EndDamage < 0) { EndDamage = 0; }
+
+        if (target.CurAbilities.Contains(Ability.Invincible) || EndDamage < 0) 
+        { 
+            EndDamage = 0;
+            yield return new WaitForSeconds(Time.deltaTime);
+            yield break; 
+        }
 
         //Debug.Log(source.gameObject.name + " has dealt " + EndDamage + " " + type + " damage to " + target.gameObject.name);
 
@@ -116,15 +122,20 @@ public static class DamageDealing
     }
     public static IEnumerator Kill(Unit target, Unit source)
     {
-        Debug.Log(target.UnitName + " has been killed by " + source.UnitName);
+       // Debug.Log(target.UnitName + " has been killed by " + source.UnitName);
 
         #region Graphical stuff
         target.Anim.SetTrigger(DieAnimTrigger);
         #endregion
 
-        yield return new WaitForSeconds(Time.deltaTime * 35);
-        target.gameObject.SetActive(false);
+        yield return new WaitForSeconds(Time.fixedDeltaTime);
 
-        yield return new WaitForSeconds(Time.deltaTime);
+        target.gameObject.SetActive(false);
+        foreach(var v in BoardManager.Instance.Get_UnitPositions(target))
+        {
+            BoardManager.Instance.Board[v.x].Cells[v.y].CurUnit = null;
+        }
+
+        yield return new WaitForSeconds(Time.fixedDeltaTime);
     }
 }

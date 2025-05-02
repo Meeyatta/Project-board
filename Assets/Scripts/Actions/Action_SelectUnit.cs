@@ -4,15 +4,18 @@ using UnityEngine;
 
 public static class Action_SelectUnit
 {
+    static bool CanCancel = false;
     static bool ShouldCancel = false;
 
     static void Cancel()
     {
-        ShouldCancel = true;
+        if (CanCancel) ShouldCancel = true;
     }
     public static IEnumerator Select(ActionParameters parameters)
     {
         GameManager.Instance.CancelEvent.AddListener(Cancel);
+
+        if (parameters.IntNumber == 0) { CanCancel = true; }
 
         List<Vector2Int> CellsCoordinates = parameters.CellsCoordinates;
         if (CellsCoordinates.Count == 0) Debug.LogError("INVALID ACTION PARAMETERS - SELECT(CellCoordinates)");
@@ -38,7 +41,7 @@ public static class Action_SelectUnit
                     if (Action_Move.UnitCanMove(v)) { /*Debug.Log(v + " didn't move yet, adding to the list");*/ movable.Add(v); }
                 }
 
-                GameManager.Instance.ShowMovementEvent.Invoke(movable);
+                GameManager.Instance.E_ShowMovement.Invoke(movable);
                 #endregion
             }
             #endregion
@@ -51,7 +54,7 @@ public static class Action_SelectUnit
                     if (Action_Move.UnitCanMove(v)) { redeploy.Add(v); }
                 }
 
-                GameManager.Instance.ShowDeploymentEvent.Invoke(redeploy);
+                GameManager.Instance.E_ShowDeployment.Invoke(redeploy);
 
             }
             #endregion
@@ -66,8 +69,8 @@ public static class Action_SelectUnit
             }
             #endregion
 
-            if (us.Count > 0) { GameManager.Instance.HideMovementEvent.Invoke(us); } //Event to hide movement effects of selected units
-            if (us.Count > 0) { GameManager.Instance.HideDeploymentEvent.Invoke(); } //Event to hide deployment effects of selected units
+            if (us.Count > 0) { GameManager.Instance.E_HideMovement.Invoke(us); } //Event to hide movement effects of selected units
+            if (us.Count > 0) { GameManager.Instance.E_HideDeployment.Invoke(); } //Event to hide deployment effects of selected units
 
 
             GameManager.Instance.RemoveAction(parameters);
@@ -83,6 +86,7 @@ public static class Action_SelectUnit
         }
         #endregion
 
+        CanCancel = false;
         ShouldCancel = false;
         GameManager.Instance.CurUnitSelected = null;
         GameManager.Instance.CancelEvent.RemoveListener(Cancel);

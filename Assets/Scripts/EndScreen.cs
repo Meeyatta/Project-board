@@ -2,14 +2,19 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using UnityEngine.SceneManagement;
+using System.Threading.Tasks;
+
 public class EndScreen : MonoBehaviour
 {
+    public string NormalGameSceneName;
     public TextMeshProUGUI pScore;
     public TextMeshProUGUI eScore;
     public TextMeshProUGUI Round;
 
     const string win = "w";
     const string loss = "l";
+    const string restart = "r";
 
     Animator Anim;
     #region Singleton
@@ -47,19 +52,41 @@ public class EndScreen : MonoBehaviour
 
     public void Win()
     {
+        ScoreManager.Instance.IsEnding = true;
         AssignStats();
         Anim.SetTrigger(win);
     }
 
     public void Loss()
     {
+        ScoreManager.Instance.IsEnding = true;
         AssignStats();
         Anim.SetTrigger(loss);
     }
 
-    public void ExitGame()
+    public async void Restart()
     {
-        Application.Quit();
+        //The scene restart will need to be remade into manually changing things, but it will work for now
+        var scene = SceneManager.LoadSceneAsync(NormalGameSceneName);
+        scene.allowSceneActivation = false;
+        do
+        {
+            await Task.Delay(50);
+        }
+        while (scene.progress < 0.9f);
+
+        ScoreManager.Instance.IsEnding = false;
+
+        Anim.ResetTrigger(win);
+        Anim.ResetTrigger(loss);
+        Anim.SetTrigger(restart);
+
+        GameManager.Instance.E_Restart.Invoke();
+
+        await Task.Delay(50);
+
+        scene.allowSceneActivation = true;
+
     }
 
 }

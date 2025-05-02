@@ -96,7 +96,7 @@ public static class Action_PlayerCreate
         #endregion
 
         #region Place a unit on said selected positions if they are viable
-        GameManager.Instance.HidePlacementEvent.Invoke(unitList);
+        GameManager.Instance.E_HidePlacement.Invoke(unitList);
         if (ViablePos)
         {
             //Debug.Log("Viable position, supposed to be creating");
@@ -104,10 +104,9 @@ public static class Action_PlayerCreate
         }
         else
         {
-            //Debug.Log("Non viable position");
+            Debug.Log("Non viable position");
         }
         #endregion
-
 
         //Action_NextTurn.eTurnEvent_Functional.RemoveListener(Cancel);
         //GameManager.Instance.CancelEvent.RemoveListener(Cancel);

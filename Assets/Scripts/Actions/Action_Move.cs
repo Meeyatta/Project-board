@@ -205,7 +205,8 @@ public static class Action_Move
             
         }
 
-        Ability_Slippery.Try(ActionTargetUnit);
+        ActionParameters ap = new ActionParameters(GameManager.ActionType.Slip, parameters.ActionTargetUnits, null, null, null, 0);
+        yield return Ability_Slippery.Try(ap);
         E_AfterMove.Invoke(ActionTargetUnit);
 
         yield return new WaitForSeconds(Time.fixedDeltaTime);

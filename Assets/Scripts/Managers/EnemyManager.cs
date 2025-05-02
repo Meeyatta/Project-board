@@ -57,40 +57,57 @@ public class EnemyManager : MonoBehaviour
         Action_NextTurn.eTurnEvent_Functional.RemoveListener(EnemyTurn_Handler);
     }
 
-    Coroutine cEnemyTurn; float nextEnemyTurnTime = 0.1f; float cooldown = 3;
+    Coroutine cEnemyTurn; float nextEnemyTurnTime = 0.1f; public float cooldown = 5;
     void EnemyTurn_Handler(Side s)
     {
         if (cEnemyTurn == null && !IsPlayingTurn && Time.time > nextEnemyTurnTime) 
         {
-            nextEnemyTurnTime = Time.time + cooldown;
+            nextEnemyTurnTime = Time.time + cooldown * Time.deltaTime * 50;
             cEnemyTurn = StartCoroutine(EnemyTurn()); 
         }
 
     }
+    public bool DebugBehaviour;
+
+    void EndEnemyTurn()
+    {
+        IsPlayingTurn = false;
+        if (cEnemyTurn != null) StopCoroutine(cEnemyTurn);
+        cEnemyTurn = null;
+        if (DebugBehaviour) Debug.Log("Ended the enemy turn");
+    }
+
     IEnumerator EnemyTurn()
     {
-        yield return new WaitForSeconds(Time.fixedDeltaTime / 1000);
+        if (ScoreManager.Instance.CurTurn == Side.Player) { EndEnemyTurn(); yield break; }
+        yield return new WaitForSeconds(Time.fixedDeltaTime);
+        if (ScoreManager.Instance.CurTurn == Side.Player) { EndEnemyTurn(); yield break; }
 
         IsPlayingTurn = true;
+        if (DebugBehaviour) Debug.Log("Started enemy turn");
 
         if (ScoreManager.Instance.CurRound > 0)
         {
+            if (ScoreManager.Instance.CurTurn == Side.Player) { EndEnemyTurn(); yield break; }
+            if (DebugBehaviour) Debug.Log("Thinking");
             yield return new WaitForSeconds(ThinkingDelay);
 
-            if (ScoreManager.Instance.CurTurn == Side.Player) { yield break; }
+            if (ScoreManager.Instance.CurTurn == Side.Player) { EndEnemyTurn(); yield break; }
 
+            if (DebugBehaviour) Debug.Log("Deploying new enemy unit");
             yield return DeployNewEnemy(); //Deploying a new enemy unit
 
-            if (ScoreManager.Instance.CurTurn == Side.Player) { yield break; }
+            if (ScoreManager.Instance.CurTurn == Side.Player) { EndEnemyTurn(); yield break; }
 
+            if (DebugBehaviour) Debug.Log("Moving all enemy units");
             yield return MovingAllEnemyUnits(); //Moving all units on the board
         }
 
+        if (DebugBehaviour) Debug.Log("initiated the next turn");
         ActionParameters turnParameters = new ActionParameters(GameManager.ActionType.NextTurn, null, null, null, null, 0);
         yield return GameManager.Instance.Action(turnParameters);
 
-        IsPlayingTurn = false;
-        cEnemyTurn = null;
+        EndEnemyTurn();
     }
     public IEnumerator DeployNewEnemy()
     {
@@ -102,6 +119,8 @@ public class EnemyManager : MonoBehaviour
         yield return Action_Deployment.Deploy(parameters);
 
         RecordPlacedUnit(Army_NotPlaced[0]);
+
+        if (DebugBehaviour) Debug.Log("Ended DeployNewEnemy");
     }
 
     #region Go through each unit on the board and move them towards objectives
@@ -153,7 +172,7 @@ public class EnemyManager : MonoBehaviour
         #endregion
 
         #region End moving all units and end the turn
-        //Debug.Log("Finished moving all enemy units");
+        if (DebugBehaviour) Debug.Log("Ended moving all enemy units");
 
         #endregion
     }

@@ -15,6 +15,7 @@ public class ScoreManager : MonoBehaviour
     public UnityEvent<Side> E_WinOrLoss; //Since i have little object what use it, events will only make code more confusing, so right now
     //This is unused
 
+    public bool IsEnding;
     public int CurRound;
     public Side CurTurn;
 
@@ -45,20 +46,29 @@ public class ScoreManager : MonoBehaviour
     //public UnityEvent<List<Unit>> EndPlayerTurnEvent;
     private void Start()
     {
-
+        GameManager.Instance.E_Restart.AddListener(Restart);
     }
+
+    private void OnDisable()
+    {
+        GameManager.Instance.E_Restart.RemoveListener(Restart);
+    }
+
+    void Restart()
+    {
+        CurRound = 0;
+        CurTurn = Side.Player;
+        Score_Player = 0;
+        Score_Enemy = 0;
+    }
+
     public void AddPointPlayer()
     {
-        Score_Player++;
+        if (!IsEnding) Score_Player++;
     }
     public void AddPointEnemy()
     {
-        Score_Enemy++;
-    }
-
-    public IEnumerator NextRound()
-    {
-        yield return new WaitForSeconds(Time.fixedDeltaTime);
+        if (!IsEnding) Score_Enemy++;
     }
 
     //Quick way for other actions to check if they are performed during the player's turn

@@ -7,12 +7,12 @@ using static UnityEngine.GraphicsBuffer;
 
 public enum Ability { 
     Invincible,       //All incoming damage is set to 0
-    Fireproof,        //-1 incoming fire damage
-    Flammable,        //+1 incoming fire damage
-    Conductive,       //+1 incoming lightning damage
-    Nonconductive,    //-1 incoming lightning damage
-    Armored,          //-1 incoming physical damage
-    Exposed,          //+1 incoming physical damage
+    Resistant_Fire,        //-1 incoming fire damage
+    Vulnerable_Fire,        //+1 incoming fire damage
+    Vulnerable_Lightning,       //+1 incoming lightning damage
+    Resistant_Lightning,    //-1 incoming lightning damage
+    Resistant_Physical,          //-1 incoming physical damage
+    Vulnerable_Physical,          //+1 incoming physical damage
     Endruing,         //-1 incoming poison damage
     Sickly,           //+1 incoming poison damage
     Insulated,        //-1 incoming frost damage
@@ -53,16 +53,16 @@ public class AbilityManager : MonoBehaviour
         switch (type)
         {
             case DamageType.Fire:
-                if (target.CurAbilities.Contains(Ability.Fireproof)) { endDamage -= 1; }
-                if (target.CurAbilities.Contains(Ability.Flammable)) { endDamage += 1; }
+                if (target.CurAbilities.Contains(Ability.Resistant_Fire)) { endDamage -= 1; }
+                if (target.CurAbilities.Contains(Ability.Vulnerable_Fire)) { endDamage += 1; }
                 break;
             case DamageType.Lightning:
-                if (target.CurAbilities.Contains(Ability.Nonconductive)) { endDamage -= 1; }
-                if (target.CurAbilities.Contains(Ability.Conductive)) { endDamage += 1; }
+                if (target.CurAbilities.Contains(Ability.Resistant_Lightning)) { endDamage -= 1; }
+                if (target.CurAbilities.Contains(Ability.Vulnerable_Lightning)) { endDamage += 1; }
                 break;
             case DamageType.Physical:
-                if (target.CurAbilities.Contains(Ability.Armored)) { endDamage -= 1; }
-                if (target.CurAbilities.Contains(Ability.Exposed)) { endDamage += 1; }
+                if (target.CurAbilities.Contains(Ability.Resistant_Physical)) { endDamage -= 1; }
+                if (target.CurAbilities.Contains(Ability.Vulnerable_Physical)) { endDamage += 1; }
                 break;
             case DamageType.Poison:
                 if (target.CurAbilities.Contains(Ability.Endruing)) { endDamage -= 1; }

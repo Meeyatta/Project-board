@@ -75,36 +75,36 @@ public class EffectManager : MonoBehaviour
         }
 
         #region EventsAdd
-        GameManager.Instance.ShowMovementEvent.AddListener(ShowMovement);
-        GameManager.Instance.HideMovementEvent.AddListener(HideMovement);
+        GameManager.Instance.E_ShowMovement.AddListener(ShowMovement);
+        GameManager.Instance.E_HideMovement.AddListener(HideMovement);
 
-        GameManager.Instance.ShowDeploymentEvent.AddListener(ShowDeployment);
-        GameManager.Instance.HideDeploymentEvent.AddListener(HideDeployment);
+        GameManager.Instance.E_ShowDeployment.AddListener(ShowDeployment);
+        GameManager.Instance.E_HideDeployment.AddListener(HideDeployment);
 
         if (GameplayManager.Instance != null) GameplayManager.Instance.eBattlefieldCreation.AddListener(StartUpdatingObjectiveControl);
 
         Action_NextTurn.eTurnEvent_Functional.AddListener(HideAllPlayerMovement);
 
-        GameManager.Instance.ShowPlacementEvent.AddListener(StartShowingPlacement);
-        GameManager.Instance.HidePlacementEvent.AddListener(StopShowingPlacement);
+        GameManager.Instance.E_ShowPlacement.AddListener(StartShowingPlacement);
+        GameManager.Instance.E_HidePlacement.AddListener(StopShowingPlacement);
         #endregion EventsAdd
     }
 
     #region EventsRemove
     void OnDisable()
     {
-        GameManager.Instance.ShowMovementEvent.RemoveListener(ShowMovement);
-        GameManager.Instance.HideMovementEvent.RemoveListener(HideMovement);
+        GameManager.Instance.E_ShowMovement.RemoveListener(ShowMovement);
+        GameManager.Instance.E_HideMovement.RemoveListener(HideMovement);
 
-        GameManager.Instance.ShowDeploymentEvent.RemoveListener(ShowDeployment);
-        GameManager.Instance.HideDeploymentEvent.RemoveListener(HideDeployment);
+        GameManager.Instance.E_ShowDeployment.RemoveListener(ShowDeployment);
+        GameManager.Instance.E_HideDeployment.RemoveListener(HideDeployment);
 
         if (GameplayManager.Instance != null) GameplayManager.Instance.eBattlefieldCreation.RemoveListener(StartUpdatingObjectiveControl);
 
         Action_NextTurn.eTurnEvent_Functional.RemoveListener(HideAllPlayerMovement);
 
-        GameManager.Instance.ShowPlacementEvent.RemoveListener(StartShowingPlacement);
-        GameManager.Instance.HidePlacementEvent.RemoveListener(StopShowingPlacement);
+        GameManager.Instance.E_ShowPlacement.RemoveListener(StartShowingPlacement);
+        GameManager.Instance.E_HidePlacement.RemoveListener(StopShowingPlacement);
     }
     #endregion EventsRemove
 
@@ -315,9 +315,11 @@ public class EffectManager : MonoBehaviour
     void StopShowingPossibleUnitMovement(Unit unit)
     {
         LowerModel(unit);
+
+        if (CurUnitMovePosShowcase != null) StopCoroutine(CurUnitMovePosShowcase);
         CurUnitMovePosShowcase = null;
+
         unit.UnitModelShowcase.SetActive(false);
-        CurUnitMovePosShowcase = null;
     }
 
     #endregion
@@ -343,6 +345,8 @@ public class EffectManager : MonoBehaviour
     {
         foreach (Unit u in units)
         {
+            if (MovementEffectsToHide.ContainsKey(u)) continue;
+
             //Debug.Log("Called to show possible movement of " + u.gameObject.name);
             List<GameObject> ePu = new List<GameObject>();
             StartShowingPossibleUnitMovement(u);
@@ -388,6 +392,8 @@ public class EffectManager : MonoBehaviour
     {
         foreach (Unit u in units)
         {
+            if (DeploymentEffectsToHide.ContainsKey(u)) continue;
+
             List<GameObject> ePu = new List<GameObject>();
             StartShowingPossibleUnitRedeployment(u);
 

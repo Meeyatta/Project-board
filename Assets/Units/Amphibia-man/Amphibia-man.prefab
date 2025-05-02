@@ -52,10 +52,11 @@ MonoBehaviour:
   Size: {fileID: 11400000, guid: f43eef2810c610a449d400113da5059e, type: 2}
   CurMoveset: {fileID: 11400000, guid: 27a90ebe39d33a64490d4e4bae4f78ee, type: 2}
   CurAttackZone: {fileID: 11400000, guid: 0975c85d43f513e4788e5c187d780b69, type: 2}
-  MaxHealth: 4
+  MaxHealth: 3
   CodexPage: 3
-  BaseAbilities: 0c000000
+  BaseAbilities: 0c0000000100000003000000
   BaseKeywords: 
+  CurColor: {r: 255, g: 255, b: 255, a: 1}
   PlayerColor: {r: 0, g: 255, b: 255, a: 1}
   PlayerBaseMat: {fileID: 2100000, guid: 6a8b410cc2cd240438356a36937894a9, type: 2}
   EnemyColor: {r: 255, g: 0, b: 0, a: 1}

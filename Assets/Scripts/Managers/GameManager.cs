@@ -83,16 +83,18 @@ public class GameManager : MonoBehaviour
     public IEnumerator I_PositionSelect;
     public ActionSlot CurrentAction;
     public Queue<ActionSlot> ActionQueue = new Queue<ActionSlot>();
-    
+
     #region Events 
-    public UnityEvent<List<Unit>> ShowMovementEvent;
-    public UnityEvent<List<Unit>> HideMovementEvent;
+    public UnityEvent E_Restart;
 
-    public UnityEvent<List<Unit>> ShowDeploymentEvent;
-    public UnityEvent HideDeploymentEvent;
+    public UnityEvent<List<Unit>> E_ShowMovement;
+    public UnityEvent<List<Unit>> E_HideMovement;
 
-    public UnityEvent<List<Unit>> ShowPlacementEvent;
-    public UnityEvent<List<Unit>> HidePlacementEvent;
+    public UnityEvent<List<Unit>> E_ShowDeployment;
+    public UnityEvent E_HideDeployment;
+
+    public UnityEvent<List<Unit>> E_ShowPlacement;
+    public UnityEvent<List<Unit>> E_HidePlacement;
     void Start()
     {
         Action_NextTurn.eTurnEvent_Functional.AddListener(UnselectCurrentUnit);
@@ -267,7 +269,7 @@ public class GameManager : MonoBehaviour
             #region Slip(ActionTargetUnits)
             case ActionType.Slip:
 
-                ActionSlot slip = new ActionSlot(Ability_Slippery.Slip(parameters), ActionType.Slip, parameters);
+                ActionSlot slip = new ActionSlot(Ability_Slippery.Try(parameters), ActionType.Slip, parameters);
                 ActionQueue.Enqueue(slip);
 
                 break;
@@ -288,12 +290,18 @@ public class GameManager : MonoBehaviour
     {
         CurUnitSelected = null;
     }
+
+    bool CancelCond()
+    {
+        if (CurrentAction != null && CurrentAction.Type == ActionType.DeployPlayerStarters) return false;
+
+        return true;
+    }
     //Fires an event if the player cancels an action. Appropriate cancel function should be applied by currently active action
     public void Cancel(InputAction.CallbackContext context)
     {
-        if (context.performed)
-        {
-            Debug.Log("Cancel");
+        if (context.performed && CancelCond())
+        {            
             CancelEvent.Invoke();
         }
     }
@@ -374,6 +382,8 @@ public class GameManager : MonoBehaviour
                             && CurUnitSelected != BoardManager.Instance.Board[coords.x].Cells[coords.y].CurUnit)
                         #region Yes - select it if we can
                         {
+                            if (CurrentAction != null && CurrentAction.Type != ActionType.DeployPlayerStarters) { yield break; } //Safeguard if we are selecting someone else to deploy
+
                             Debug.Log("selecting a unit");
                             ActionParameters parameters = new ActionParameters(ActionType.SelectUnit, null, null, nCoords, null, 0); yield return StartCoroutine(Action(parameters));
                             //else { Debug.Log(ScoreManager.Instance.CurTurn); }
@@ -447,11 +457,11 @@ public class GameManager : MonoBehaviour
                 ScoreManager.Instance.PlayerTurnActionCondition())
             #region Yes - Are we in the deployment phase?
             {
-                Debug.Log("Have a unit, cell is unoccupied");
+                if (DebugClicks) Debug.Log("Have a unit, cell is unoccupied");
                 #region Yes - Redeploy unit to the coordinates
                 if (ScoreManager.Instance.CurRound <= 0)
                 {
-                    Debug.Log("Supposed to redeploy");
+                    if (DebugClicks) Debug.Log("Supposed to redeploy");
                     List<Vector2Int> nCoords = new List<Vector2Int>(); nCoords.Add(coords);
                     List<Unit> unitToList = new List<Unit>(); unitToList.Add(CurUnitSelected);
 
@@ -542,7 +552,8 @@ public class GameManager : MonoBehaviour
     }
 
     //Continuously cycles through each action in current action queue 
-    public bool SwitchedAction = false; //This is so "click check" can stop checking cell clicks while we change an action
+    public bool SwitchedToAnotherAction = false; //This is so "click check" can stop checking cell clicks while we change from one action to another
+    public bool SwitchedToNoAction = false; //This is so "click check" can stop checking cell clicks while we change from an action to none
     IEnumerator GoThroughActions()
     {
         yield return new WaitForSeconds(Time.fixedDeltaTime);
@@ -552,23 +563,26 @@ public class GameManager : MonoBehaviour
             if (CurrentAction != null) { yield return new WaitForSeconds(Time.fixedDeltaTime); continue; }
 
             CurrentAction = ActionQueue.Dequeue();
-            SwitchedAction = true;
-            yield return StartCoroutine(CurrentAction.IEnum);
 
+            //Debug.Log("Switched to another action");
+            SwitchedToAnotherAction = true;
+            yield return StartCoroutine(CurrentAction.IEnum);
             yield return new WaitForSeconds(Time.fixedDeltaTime);
-            SwitchedAction = false;
+            SwitchedToAnotherAction = false;
         }
         ActionQueue.Clear();
         CurrentAction = null;
         C_GoingThroughActions = null;
 
-        SwitchedAction = true;
+        //Debug.Log("Switched to no action");
+        SwitchedToNoAction = true;
         yield return new WaitForSeconds(Time.fixedDeltaTime);
-        SwitchedAction = false;
+        SwitchedToNoAction = false;
     }
 
     #region Checking if player is hovering over a unit, if they click - this counts as clicking on that unit's cell
-    public float ClickCooldown; public float ActionSwapCooldown; 
+    public float ClickCooldown; 
+    public float ActionToActionSwapCooldown; public float ActionToNoneSwapCooldown;
     float nextClickTime = 1;
 
     Transform LastPointedAt = null; public Unit CurrentPointedAtUnit = new Unit();
@@ -589,11 +603,19 @@ public class GameManager : MonoBehaviour
             
         //}
 
-        if (SwitchedAction)
+        if (SwitchedToAnotherAction)
         {
-            nextClickTime = Time.time + (ActionSwapCooldown * Time.fixedDeltaTime * 100);
+            nextClickTime = Time.time + (ActionToActionSwapCooldown * Time.fixedDeltaTime * 100);
             //Debug.Log("Changed: " + nextClickTime + " " + Time.time);
-            SwitchedAction = false; 
+            SwitchedToAnotherAction = false; 
+            return true;
+        }
+
+        if (SwitchedToNoAction)
+        {
+            nextClickTime = Time.time + (ActionToNoneSwapCooldown * Time.fixedDeltaTime * 100);
+            //Debug.Log("Changed: " + nextClickTime + " " + Time.time);
+            SwitchedToAnotherAction = false;
             return true;
         }
 

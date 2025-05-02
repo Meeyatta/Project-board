@@ -43,15 +43,15 @@ public class CellCoverManager : MonoBehaviour
             #region Checks for coverings on cells occupied by the unit, adds abilities appropriately
             #region Water
             if (covers.Contains(Covering.Water)) 
-            { u.CellCoverAbilities.Add(Ability.Fireproof);  }
-            else if (u.CellCoverAbilities.Contains(Ability.Fireproof)) 
-            { u.CellCoverAbilities.Remove(Ability.Fireproof); }
+            { u.CellCoverAbilities.Add(Ability.Resistant_Fire);  }
+            else if (u.CellCoverAbilities.Contains(Ability.Resistant_Fire)) 
+            { u.CellCoverAbilities.Remove(Ability.Resistant_Fire); }
             #endregion
             #region Oil
             if (covers.Contains(Covering.Oil)) 
-            { u.CellCoverAbilities.Add(Ability.Flammable); u.CellCoverAbilities.Add(Ability.Slippery); }
-            else if (u.CellCoverAbilities.Contains(Ability.Flammable) && u.CellCoverAbilities.Contains(Ability.Slippery)) 
-            { u.CellCoverAbilities.Remove(Ability.Flammable); u.CellCoverAbilities.Remove(Ability.Slippery); }
+            { u.CellCoverAbilities.Add(Ability.Vulnerable_Fire); u.CellCoverAbilities.Add(Ability.Slippery); }
+            else if (u.CellCoverAbilities.Contains(Ability.Vulnerable_Fire) && u.CellCoverAbilities.Contains(Ability.Slippery)) 
+            { u.CellCoverAbilities.Remove(Ability.Vulnerable_Fire); u.CellCoverAbilities.Remove(Ability.Slippery); }
             #endregion
 
             #endregion

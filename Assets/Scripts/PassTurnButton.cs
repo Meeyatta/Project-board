@@ -97,7 +97,6 @@ public class PassTurnButton : MonoBehaviour
             if (TutorialCond() && Time.time > nextClickTime)
             {
                 nextClickTime = Time.time + ClickReload;
-                Debug.Log("Is passing in tutorial");
                 Shrug_Visuals();
                 E_PassedTurn.Invoke();
             }

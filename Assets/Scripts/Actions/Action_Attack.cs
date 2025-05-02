@@ -54,24 +54,27 @@ public static class Action_Attack
         Animator anim = unit.Anim;
         anim.SetTrigger(AttackAnimTrigger);
 
-        while (!anim.GetBool("isAttacking"))
+        float MaxTime = 10;
+        while (!anim.GetBool("isAttacking") && MaxTime > 0)
         {
-            yield return new WaitForSeconds(Time.deltaTime * 0.01f);
+            MaxTime -= Time.fixedDeltaTime;
+            yield return new WaitForSeconds(Time.fixedDeltaTime / 10);
         }
 
-        while (anim.GetBool("isAttacking"))
+        MaxTime = 10;
+        while (anim.GetBool("isAttacking") && MaxTime > 0)
         {
-            yield return new WaitForSeconds(Time.deltaTime * 0.01f);
+            MaxTime -= Time.fixedDeltaTime;
+            yield return new WaitForSeconds(Time.fixedDeltaTime / 10);
         }
 
+        yield return new WaitForSeconds(Time.fixedDeltaTime);
 
-        //At the end of animation, damage all of the units
         List<Keyword> keywords = new List<Keyword>();
         if (unit.CurKeywords.Contains(Keyword.Player)) { keywords.Add(Keyword.Enemy); }
         else { keywords.Add(Keyword.Player); }
 
-
-        yield return GameManager.Instance.StartCoroutine(DamageAllInRange(unit, keywords));
+        yield return DamageAllInRange(unit, keywords);
     }
 
     //Makes units in a list initiate an attack
@@ -85,9 +88,7 @@ public static class Action_Attack
             yield return UnitAttack(unit);
         }
 
-
         yield return new WaitForSeconds(Time.deltaTime);
-        Debug.Log("Sent what ended the attack");
         GameManager.Instance.RemoveAction(parameters);
     }
     public static IEnumerator DamageAllInRange(Unit source, List<Keyword> keywords)
@@ -97,11 +98,11 @@ public static class Action_Attack
 
         foreach (Unit target in targets) 
         {
-            yield return GameManager.Instance.StartCoroutine(
-                DamageDealing.Damage(target, source));
+            yield return GameManager.Instance.StartCoroutine(DamageDealing.Damage(target, source));
+            yield return new WaitForSeconds(Time.fixedDeltaTime);
         }
 
-        yield return new WaitForSeconds(0.01f);
+        yield return new WaitForSeconds(Time.fixedDeltaTime);
     }
 
     

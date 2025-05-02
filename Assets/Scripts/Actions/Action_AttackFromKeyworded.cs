@@ -57,11 +57,14 @@ public static class Action_AttackFromKeyworded
         if (Keywords == null || Keywords.Count == 0) { yield break; }
 
         List <Unit> affected = BoardManager.Instance.Get_AllUnitsWithKeywords(Keywords);
-        
+
+        Debug.Log("Units with " + Keywords[0] + " keyword started attacking");
         foreach (var unit in DamageDealing.OrderedUnits(affected))
         {
             yield return Action_Attack.UnitAttack(unit);
+            yield return new WaitForSeconds(Time.fixedDeltaTime);
         }
+        Debug.Log("Units with " + Keywords[0] + " keyword stopped");
 
 
         yield return new WaitForSeconds(Time.fixedDeltaTime);

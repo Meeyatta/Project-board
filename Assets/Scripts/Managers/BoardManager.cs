@@ -392,6 +392,8 @@ public class BoardManager : MonoBehaviour
             Board[v.x].Cells[v.y].CurUnit = unit;
         }
 
+        //Debug.Log("Placing unit model to " + BoardToWorldPosition(s).Value + unit.ModelOffset + transform.position);
+        AudioManager.Instance.Play(SoundName.Step, unit.transform);
         unit.gameObject.transform.position = BoardToWorldPosition(s).Value + unit.ModelOffset + transform.position;
     }
 

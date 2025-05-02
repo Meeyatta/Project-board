@@ -5,13 +5,10 @@ using UnityEngine;
 
 public static class Ability_Slippery
 {
-    public static float Delay = 10f;
-    public static void Try(Unit u)
+    public static float Delay = 12f;
+    public static bool Can(Unit u)
     {
-        if (!u.CurAbilities.Contains(Ability.Slippery)) { return; }
-
-        ActionParameters parameters = new ActionParameters(GameManager.ActionType.Slip, new List<Unit> {u}, null, null, null, 0);
-        GameManager.Instance.StartCoroutine(GameManager.Instance.Action(parameters));
+        return u.CurAbilities.Contains(Ability.Slippery);
     }
     public static List<Vector2Int> GetRandPos(Unit u)
     {
@@ -72,17 +69,17 @@ public static class Ability_Slippery
 
         return res;
     }
-    public static IEnumerator Slip(ActionParameters parameters)
+    public static IEnumerator Try(ActionParameters parameters)
     {
         Unit unit = parameters.ActionTargetUnits[0];
+        if (!Can(unit)) { GameManager.Instance.RemoveAction(parameters); yield break; }
+
+        yield return new WaitForSeconds(Delay * Time.fixedDeltaTime);
 
         AudioManager.Instance.Play(SoundName.Slip, unit.transform);
 
         List<Vector2Int> endPoss = GetRandPos(unit);
         bool IsValid = BoardManager.Instance.AreInBounds(endPoss) && !BoardManager.Instance.AreAnyOccupied(endPoss);
-
-        yield return new WaitForSeconds(Delay * Time.fixedDeltaTime);
-
         if (IsValid) 
         {
             //Debug.Log("Supposed to slip");

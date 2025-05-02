@@ -14,10 +14,15 @@ public static class Ability_Score
     public static int Check(Unit obj)
     {
         var l = BoardManager.Instance.Get_UnitsInRange(obj, 1);
+        foreach (var v in l) { Debug.Log("all: " + v.gameObject.name); }
         if (l == null || l.Count <= 0) return 0;
 
+        Debug.Log("---");
         List<Unit> pU = GameManager.Instance.Get_OnlyUnitsWithKeywords(l, new List<Keyword> { Keyword.Player });
+        foreach (var v in pU) { Debug.Log("player - " + v.gameObject.name); }
+
         List<Unit> eU = GameManager.Instance.Get_OnlyUnitsWithKeywords(l, new List<Keyword> { Keyword.Enemy });
+        foreach (var v in eU) { Debug.Log("enemy - " + v.gameObject.name); }
 
         return pU.Count - eU.Count;
 
@@ -35,6 +40,7 @@ public static class Ability_Score
         foreach (var a in all)
         {
             int res = Check(a);
+            Debug.Log("result for " + a.gameObject.name + " is " + Check(a));
 
             #region Player scores
             if (res > 0 && ScoreManager.Instance.CurTurn == Side.Player)

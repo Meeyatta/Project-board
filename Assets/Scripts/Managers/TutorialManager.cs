@@ -150,7 +150,6 @@ public class TutorialManager : MonoBehaviour
     #region Fourth - objective scoring
     IEnumerator Fourth_Objectives()
     {
-
         Debug.Log("Started fourth");
 
         StopInteracting();
@@ -226,10 +225,11 @@ public class TutorialManager : MonoBehaviour
         PassTurnButton.Instance.E_PassedTurn.AddListener(ScorePlayer);
         while (iswaiting_ToScore ) 
         {
-            yield return new WaitForSeconds(Time.fixedDeltaTime); 
+            yield return new WaitForSeconds(Time.fixedDeltaTime / 1000); 
         }
         #endregion
 
+        yield return new WaitForSeconds(Time.fixedDeltaTime);
         Action_Move.E_AfterMove.RemoveListener(stopmovingto);
         Ability_Score.E_ScoredForPlayer.RemoveListener(stopwaiting_score);
         PassTurnButton.Instance.E_PassedTurn.RemoveListener(ScorePlayer);

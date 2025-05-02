@@ -143,6 +143,17 @@
                 },
                 {
                     "name": "",
+                    "id": "c1ebf1df-2a35-42d2-9f37-2c496474d4c7",
+                    "path": "<Keyboard>/downArrow",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "CamBack",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
                     "id": "82483eb0-5b21-4cc3-b442-71faeac39cbe",
                     "path": "<Keyboard>/w",
                     "interactions": "",
@@ -156,6 +167,17 @@
                     "name": "",
                     "id": "fc50b361-0658-4e35-805d-db7229fc0265",
                     "path": "<Keyboard>/2",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "CamForw",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "c18a6529-3cad-402e-be65-d0c9c693d7d1",
+                    "path": "<Keyboard>/upArrow",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
@@ -187,6 +209,17 @@
                 },
                 {
                     "name": "",
+                    "id": "4dd1d63b-75a0-4bc8-b363-0e24a7a4f079",
+                    "path": "<Keyboard>/rightArrow",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "CamRight",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
                     "id": "5d2b3d7d-d0ec-411c-a4e0-dbef0f28dfc9",
                     "path": "<Keyboard>/a",
                     "interactions": "",
@@ -200,6 +233,17 @@
                     "name": "",
                     "id": "47f4f0d7-6a16-47a7-95a7-f5451c8f2373",
                     "path": "<Keyboard>/4",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "CamLeft",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "f8c821ca-e6b6-452e-aaa4-ed5e38f1c3bc",
+                    "path": "<Keyboard>/leftArrow",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
