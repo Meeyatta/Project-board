@@ -14308,7 +14308,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 11416984, guid: c080686877cf77f42a1a078076d57fe5, type: 3}
       propertyPath: textList.Array.size
-      value: 2
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 11416984, guid: c080686877cf77f42a1a078076d57fe5, type: 3}
       propertyPath: textList.Array.data[0].s
@@ -14319,15 +14319,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 11416984, guid: c080686877cf77f42a1a078076d57fe5, type: 3}
       propertyPath: textList.Array.data[1].s
-      value: Player can cancel deploying new units during their turn
+      value: Add warning for when player attempts to break the rules
       objectReference: {fileID: 0}
     - target: {fileID: 11416984, guid: c080686877cf77f42a1a078076d57fe5, type: 3}
       propertyPath: textList.Array.data[2].s
-      value: Enemy units do not attack and the game freezes
+      value: "Make it so next enemy unit is decided at player's turn and is \nshwocased
+        beforehand"
       objectReference: {fileID: 0}
     - target: {fileID: 11416984, guid: c080686877cf77f42a1a078076d57fe5, type: 3}
       propertyPath: textList.Array.data[3].s
-      value: Enemy units move after the deployment phase
+      value: 'Make it so unit selection when deploying new Player unit uses existing
+
+        CellManager
+        instead of a custom made one'
       objectReference: {fileID: 0}
     - target: {fileID: 11416984, guid: c080686877cf77f42a1a078076d57fe5, type: 3}
       propertyPath: textList.Array.data[4].s
@@ -14418,11 +14422,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 11416984, guid: c080686877cf77f42a1a078076d57fe5, type: 3}
       propertyPath: textList.Array.data[2].state
-      value: 1
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 11416984, guid: c080686877cf77f42a1a078076d57fe5, type: 3}
       propertyPath: textList.Array.data[3].state
-      value: 1
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 11416984, guid: c080686877cf77f42a1a078076d57fe5, type: 3}
       propertyPath: textList.Array.data[4].state
@@ -14470,7 +14474,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 11416984, guid: c080686877cf77f42a1a078076d57fe5, type: 3}
       propertyPath: textList.Array.data[3].deleteQuestion
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 11416984, guid: c080686877cf77f42a1a078076d57fe5, type: 3}
       propertyPath: textList.Array.data[4].deleteQuestion
@@ -22206,6 +22210,7 @@ GameObject:
   m_Component:
   - component: {fileID: 547694813}
   - component: {fileID: 547694815}
+  - component: {fileID: 547694816}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -22240,15 +22245,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2ef9ef50747000347a2180a1528a93bd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ClickBackEvent:
-    m_PersistentCalls:
-      m_Calls: []
   CancelEvent:
     m_PersistentCalls:
       m_Calls: []
-  LayerMask:
-    serializedVersion: 2
-    m_Bits: 513
   CurUnitSelected: {fileID: 0}
   E_Restart:
     m_PersistentCalls:
@@ -22271,12 +22270,30 @@ MonoBehaviour:
   E_HidePlacement:
     m_PersistentCalls:
       m_Calls: []
-  DebugClicks: 0
   SwitchedToAnotherAction: 0
   SwitchedToNoAction: 0
+--- !u!114 &547694816
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 547694811}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e3bb91162942d254c8821e5a1200ad5a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
   ClickCooldown: 0.1
-  ActionToActionSwapCooldown: 0.2
-  ActionToNoneSwapCooldown: 0.8
+  ActionToActionSwapCooldown: 2
+  ActionToNoneSwapCooldown: 1.5
+  LayerMask:
+    serializedVersion: 2
+    m_Bits: 513
+  ShouldDebug: 1
+  ClickBackEvent:
+    m_PersistentCalls:
+      m_Calls: []
   CurrentPointedAtUnit: {fileID: 0}
 --- !u!1 &549930825
 GameObject:
@@ -70840,7 +70857,7 @@ MonoBehaviour:
     m_ActionName: Basic/Codex[/Keyboard/space,/Keyboard/j]
   - m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 2081130671}
         m_TargetAssemblyTypeName: Codex, Assembly-CSharp
         m_MethodName: NextPage
         m_Mode: 0
@@ -70856,7 +70873,7 @@ MonoBehaviour:
     m_ActionName: Basic/NextPage[/Keyboard/e,/Keyboard/rightArrow]
   - m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 2081130671}
         m_TargetAssemblyTypeName: Codex, Assembly-CSharp
         m_MethodName: PreviousPage
         m_Mode: 0
@@ -70870,6 +70887,22 @@ MonoBehaviour:
         m_CallState: 2
     m_ActionId: ca30554a-c9ce-4000-bdf1-983b4c69ae50
     m_ActionName: Basic/PreviousPage[/Keyboard/q,/Keyboard/leftArrow]
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 547694816}
+        m_TargetAssemblyTypeName: ClickManager, Assembly-CSharp
+        m_MethodName: CheckUnitUnderCursor
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_ActionId: 55872cb0-7e7e-4d9d-ba32-2d84f5094c94
+    m_ActionName: Basic/Click[/Mouse/leftButton]
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: 
   m_DefaultActionMap: Basic
@@ -83117,7 +83150,7 @@ MonoBehaviour:
   Army_Placed: []
   EnemyUitsTr: {fileID: 0}
   cooldown: 2
-  DebugBehaviour: 1
+  DebugBehaviour: 0
 --- !u!1 &1901150982
 GameObject:
   m_ObjectHideFlags: 0

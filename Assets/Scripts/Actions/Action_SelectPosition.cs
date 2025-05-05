@@ -55,7 +55,7 @@ public static class Action_SelectPosition
             }
 
         }
-        GameManager.Instance.ClickBackEvent.AddListener(StopWaiting);
+        ClickManager.Instance.ClickBackEvent.AddListener(StopWaiting);
         //Debug.Log("Added a listener to clickback");
 
         CurUnit = unit;
@@ -75,7 +75,7 @@ public static class Action_SelectPosition
             yield break;
         }
 
-        GameManager.Instance.ClickBackEvent.RemoveListener(StopWaiting);
+        ClickManager.Instance.ClickBackEvent.RemoveListener(StopWaiting);
         ShouldCancel = false;
         if (canCancel) GameManager.Instance.CancelEvent.RemoveListener(Cancel);
         yield return new WaitForSeconds(Time.fixedDeltaTime);

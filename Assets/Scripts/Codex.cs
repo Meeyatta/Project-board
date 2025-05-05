@@ -29,9 +29,9 @@ public class Codex : MonoBehaviour
             {
                 Open();
 
-                if (GameManager.Instance.CurrentPointedAtUnit != null)
+                if (ClickManager.Instance.CurrentPointedAtUnit != null)
                 {
-                    OpenPage(GameManager.Instance.CurrentPointedAtUnit.CodexPage);
+                    OpenPage(ClickManager.Instance.CurrentPointedAtUnit.CodexPage);
                 }
             }
         }

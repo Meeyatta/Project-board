@@ -113,11 +113,11 @@ public class BoardManager : MonoBehaviour
     public UnityEvent<Vector2Int> ClickEvent;
     void Start()
     {
-        ClickEvent.AddListener(GameManager.Instance.CellClickHandle);
+        ClickEvent.AddListener(ClickManager.Instance.CellClickHandle);
     }
     void OnDisable()
     {
-        ClickEvent.RemoveListener(GameManager.Instance.CellClickHandle);
+        ClickEvent.RemoveListener(ClickManager.Instance.CellClickHandle);
     }
     #endregion Events
 

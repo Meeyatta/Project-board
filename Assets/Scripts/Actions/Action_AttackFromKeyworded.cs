@@ -4,6 +4,8 @@ using UnityEngine;
 
 public static class Action_AttackFromKeyworded 
 {
+    const bool ShouldDebug = false;
+
     const string AttackAnimTrigger = "attack";
 
     //Check if the unit isn't meant to/can't attack
@@ -58,13 +60,13 @@ public static class Action_AttackFromKeyworded
 
         List <Unit> affected = BoardManager.Instance.Get_AllUnitsWithKeywords(Keywords);
 
-        Debug.Log("Units with " + Keywords[0] + " keyword started attacking");
+        if (ShouldDebug) Debug.Log("Units with " + Keywords[0] + " keyword started attacking");
         foreach (var unit in DamageDealing.OrderedUnits(affected))
         {
             yield return Action_Attack.UnitAttack(unit);
             yield return new WaitForSeconds(Time.fixedDeltaTime);
         }
-        Debug.Log("Units with " + Keywords[0] + " keyword stopped");
+        if (ShouldDebug) Debug.Log("Units with " + Keywords[0] + " keyword stopped");
 
 
         yield return new WaitForSeconds(Time.fixedDeltaTime);
