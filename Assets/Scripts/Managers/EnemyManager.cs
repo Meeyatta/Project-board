@@ -6,13 +6,19 @@ using UnityEngine;
 public class EnemyManager : MonoBehaviour
 {
     public int StarterUnitsAmount;
+    public bool DebugBehaviour;
 
     [Header("---Delays---")]
+    public float DeployNewUnit_Before;
+    public float DeployNewUnit_After;
     public float ThinkingDelay;
     public float DelayAfterRaisingAUnit;
     public float DelayAfterMovingAUnit;
 
+    [Header("---Read only variables--")]
+    public bool HasToDeploy;
     public bool IsPlayingTurn;
+    public Unit NextUnit;
 
     public List<Unit> Army = new List<Unit>();
 
@@ -46,31 +52,30 @@ public class EnemyManager : MonoBehaviour
     }
     #endregion
 
-
     void Start()
     {
-        Action_NextTurn.eTurnEvent_Functional.AddListener(EnemyTurn_Handler);
+        Action_NextTurn.E_Turn_Functional.AddListener(EnemyTurn_Handler);
     }
 
     void OnDisable()
     {
-        Action_NextTurn.eTurnEvent_Functional.RemoveListener(EnemyTurn_Handler);
+        Action_NextTurn.E_Turn_Functional.RemoveListener(EnemyTurn_Handler);
     }
 
-    Coroutine cEnemyTurn; float nextEnemyTurnTime = 0.1f; public float cooldown = 5;
+    Coroutine cEnemyTurn; float nextEnemyTurnTime = 0.1f; public float cooldown = 4;
     void EnemyTurn_Handler(Side s)
     {
         if (cEnemyTurn == null && !IsPlayingTurn && Time.time > nextEnemyTurnTime) 
         {
-            nextEnemyTurnTime = Time.time + cooldown * Time.deltaTime * 50;
+            nextEnemyTurnTime = Time.time + cooldown * Time.fixedDeltaTime * 50;
             cEnemyTurn = StartCoroutine(EnemyTurn()); 
         }
 
     }
-    public bool DebugBehaviour;
 
     void EndEnemyTurn()
     {
+        if (ScoreManager.Instance.CurRound > 0) HasToDeploy = true;
         IsPlayingTurn = false;
         if (cEnemyTurn != null) StopCoroutine(cEnemyTurn);
         cEnemyTurn = null;
@@ -94,8 +99,8 @@ public class EnemyManager : MonoBehaviour
 
             if (ScoreManager.Instance.CurTurn == Side.Player) { EndEnemyTurn(); yield break; }
 
-            if (DebugBehaviour) Debug.Log("Deploying new enemy unit");
-            yield return DeployNewEnemy(); //Deploying a new enemy unit
+            //if (DebugBehaviour) Debug.Log("Deploying new enemy unit");  <-- Vestige from when enemy used to place their unit DURING their turn
+            //yield return DeployNewEnemy(); //Deploying a new enemy unit
 
             if (ScoreManager.Instance.CurTurn == Side.Player) { EndEnemyTurn(); yield break; }
 
@@ -109,9 +114,17 @@ public class EnemyManager : MonoBehaviour
 
         EndEnemyTurn();
     }
-    public IEnumerator DeployNewEnemy()
+
+    #region For deploying a new enemy unit next turn
+    public IEnumerator DeployNewEnemyUnit()
     {
         if (ScoreManager.Instance.CurRound <= 1 || Army_NotPlaced.Count <= 0) yield break;
+        HasToDeploy = false;
+        if (DebugBehaviour) Debug.Log("Started DeployNewEnemy");
+
+        CameraManager.Instance.SetCam(CameraManager.Instance.FrontUpper);
+
+        yield return new WaitForSeconds(DeployNewUnit_Before);
 
         List<Unit> newEnemy = new List<Unit> { Army_NotPlaced[0] };
         ActionParameters parameters = new ActionParameters(
@@ -120,8 +133,11 @@ public class EnemyManager : MonoBehaviour
 
         RecordPlacedUnit(Army_NotPlaced[0]);
 
+        yield return new WaitForSeconds(DeployNewUnit_After);
+
         if (DebugBehaviour) Debug.Log("Ended DeployNewEnemy");
     }
+    #endregion
 
     #region Go through each unit on the board and move them towards objectives
     public IEnumerator MovingAllEnemyUnits()

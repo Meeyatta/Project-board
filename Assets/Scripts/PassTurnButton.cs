@@ -42,13 +42,13 @@ public class PassTurnButton : MonoBehaviour
     #region Subscribing/Unsubscribing events
     void SubscribeEvents()
     {
-        Action_NextTurn.eTurnEvent_Functional.AddListener(EnablePass);
-        Action_NextTurn.eTurnEvent_Visuals.AddListener(Shrug_Visuals);
+        Action_NextTurn.E_Turn_Functional.AddListener(EnablePass);
+        Action_NextTurn.E_Turn_Visuals.AddListener(Shrug_Visuals);
     }
     void OnDisable()
     {
-        Action_NextTurn.eTurnEvent_Functional.RemoveListener(EnablePass);
-        Action_NextTurn.eTurnEvent_Visuals.RemoveListener(Shrug_Visuals);
+        Action_NextTurn.E_Turn_Functional.RemoveListener(EnablePass);
+        Action_NextTurn.E_Turn_Visuals.RemoveListener(Shrug_Visuals);
     }
     #endregion
 
@@ -104,7 +104,7 @@ public class PassTurnButton : MonoBehaviour
             return;
         }
 
-        //Debug.Log("Button passed the turn");
+        Debug.Log("Button was pressed");
         if (ScoreManager.Instance.CurTurn == Side.Player && CanPass && Time.time > nextClickTime) 
         {
             nextClickTime = Time.time + ClickReload ;
@@ -112,8 +112,9 @@ public class PassTurnButton : MonoBehaviour
             Shrug_Visuals();
             if (ScoreManager.Instance.CurRound != 0) CanPass = false;
 
+            Debug.Log("Button passed the turn");
             ActionParameters parameters = new ActionParameters(GameManager.ActionType.NextTurn, null, null, null, null, 0);
-            StartCoroutine(GameManager.Instance.Action(parameters));
+            StartCoroutine( GameManager.Instance.Action(parameters));
             E_PassedTurn.Invoke();
         }
         else if ((TutorialManager.Instance != null && !TutorialManager.Instance.Tutorial_CanPass) ||

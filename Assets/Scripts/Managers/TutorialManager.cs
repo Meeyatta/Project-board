@@ -72,8 +72,8 @@ public class TutorialManager : MonoBehaviour
         StopInteracting();
 
         bool iswaiting_1 = true; void stopwaiting_1(Unit u) { iswaiting_1 = false; }
-        yield return ResourceManager.Instance.InstantiatePlayerUnits();
-        ResourceManager.Instance.ResetArmy();
+        yield return PlayerManager.Instance.InstantiatePlayerUnits();
+        PlayerManager.Instance.ResetArmy();
 
         Action_DeployNewPlayerUnit.E_DeployedNewPlayerUnit.AddListener(stopwaiting_1);
 
@@ -309,7 +309,7 @@ public class TutorialManager : MonoBehaviour
         yield return DialogueManager.Instance.SpeakLines(Sixth1Lines);
         ResumeInteracting();
 
-        ResourceManager.Instance.AddUnit(NewUnit);
+        PlayerManager.Instance.AddUnit(NewUnit);
         NewUnit.SetToPlayer();
         yield return new WaitForSeconds(Time.fixedDeltaTime);
 

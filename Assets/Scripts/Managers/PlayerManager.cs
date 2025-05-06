@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ResourceManager : MonoBehaviour
+public class PlayerManager : MonoBehaviour
 {
     public int StarterUnitsAmount;
 
@@ -16,7 +16,7 @@ public class ResourceManager : MonoBehaviour
     public Transform PlayerUitsTr;
 
     #region Singleton
-    public static ResourceManager Instance;
+    public static PlayerManager Instance;
     void Singleton()
     {
         if (Instance != null)
@@ -37,13 +37,30 @@ public class ResourceManager : MonoBehaviour
     #endregion
     void Start()
     {
-        Action_NextTurn.eTurnEvent_Functional.AddListener(DeployNewplayerUnit);
+        Action_NextTurn.E_Turn_Functional.AddListener(InitiatePlayerTurn);
     }
     void OnDisable()
     {
-        Action_NextTurn.eTurnEvent_Functional.RemoveListener(DeployNewplayerUnit);
+        Action_NextTurn.E_Turn_Functional.RemoveListener(InitiatePlayerTurn);
     }
 
+    Coroutine DoingPlayerTurn = null;
+    public void InitiatePlayerTurn(Side s)
+    {
+        if (s == Side.Enemy) return;
+        if (DoingPlayerTurn == null)
+        {
+            DoingPlayerTurn = StartCoroutine(PlayerTurn());
+        }
+    }
+    IEnumerator PlayerTurn()
+    {
+        yield return EnemyManager.Instance.DeployNewEnemyUnit();
+
+        yield return DeployNewplayerUnit();
+
+        DoingPlayerTurn = null;
+    }
     #region Returns a list of shuffled units within a list
     public List<Unit> ShuffleList(List<Unit> list)
     {
@@ -117,16 +134,17 @@ public class ResourceManager : MonoBehaviour
         //foreach (var u in toDeploy) { RecordPlacedUnit(u); }
     }
 
-    public void DeployNewplayerUnit(Side side)
+    public IEnumerator DeployNewplayerUnit()
     {
-        if (side == Side.Enemy || ScoreManager.Instance.CurRound == 0) return;
-        if (Army_NotPlaced.Count <= 0) return;
-        EffectManager.Instance.HideAllPlayerMovement(side); // <- Safeguards just in case
+        if (ScoreManager.Instance.CurTurn == Side.Enemy || ScoreManager.Instance.CurRound == 0) yield break;
+        if (Army_NotPlaced.Count <= 0) yield break;
+        EffectManager.Instance.HideAllPlayerMovement(ScoreManager.Instance.CurTurn); // <- Safeguards just in case
 
         ActionParameters parameters = new ActionParameters(
                     GameManager.ActionType.DeployNew, null, null, null, null, 0);
-        StartCoroutine(GameManager.Instance.Action(parameters));
-        EffectManager.Instance.HideAllPlayerMovement(side); // <- Safeguards just in case
+        yield return Action_DeployNewPlayerUnit.DeployNewUnit(parameters);
+
+        EffectManager.Instance.HideAllPlayerMovement(ScoreManager.Instance.CurTurn); // <- Safeguards just in case
     }
 
     //Adds selected unit into player's total army

@@ -7,7 +7,7 @@ public static class Action_DeployPlayerStarters
     public static IEnumerator DeployPlayerStarters(ActionParameters parameters)
     {
         #region If we have no units to deploy
-        if (ResourceManager.Instance.Army_NotPlaced.Count == 0) 
+        if (PlayerManager.Instance.Army_NotPlaced.Count == 0) 
         {
             yield return new WaitForSeconds(Time.fixedDeltaTime);
             GameManager.Instance.RemoveAction(parameters);

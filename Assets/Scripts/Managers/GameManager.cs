@@ -65,7 +65,9 @@ public class GameManager : MonoBehaviour
             Params = p;
         }
     }
-    
+
+    public bool ShouldDebug;
+
     [HideInInspector] public UnityEvent CancelEvent;
     public enum ActionType 
     { 
@@ -95,11 +97,11 @@ public class GameManager : MonoBehaviour
     public UnityEvent<List<Unit>> E_HidePlacement;
     void Start()
     {
-        Action_NextTurn.eTurnEvent_Functional.AddListener(UnselectCurrentUnit);
+        Action_NextTurn.E_Turn_Functional.AddListener(UnselectCurrentUnit);
     }
     void OnDisable()
     {
-        Action_NextTurn.eTurnEvent_Functional.RemoveListener(UnselectCurrentUnit);
+        Action_NextTurn.E_Turn_Functional.RemoveListener(UnselectCurrentUnit);
 
     }
     #endregion Events
@@ -136,13 +138,14 @@ public class GameManager : MonoBehaviour
     */
     public IEnumerator Action(ActionParameters parameters)
     {
+        if (ShouldDebug) Debug.Log("GameManager Action");
         switch (parameters.Type)
         {
             //Move the unit to the coordinates if it can move there with it's moveset, Requires: (ActionTargetUnit, CellsCoordinates)
             #region Move(ActionTargetUnits, CellsCoordinates)
             case ActionType.Move:
                 ActionSlot move = new ActionSlot(Action_Move.Move(parameters), ActionType.Move, parameters);
-                ActionQueue.Enqueue(move);             
+                ActionQueue.Enqueue(move);
                 break;
             #endregion Move(ActionTargetUnits, CellsCoordinates)
 
@@ -150,7 +153,7 @@ public class GameManager : MonoBehaviour
             //  This one should be called with StartCoroutine instead of yield return, because unit can be selected while other actions are done
             #region Select(CellsCoordinates)
             case ActionType.SelectUnit:
-                C_UnitSelect = StartCoroutine( Action_SelectUnit.Select(parameters));
+                C_UnitSelect = StartCoroutine(Action_SelectUnit.Select(parameters));
                 break;
             #endregion Select(CellCoordinates)
 
@@ -170,7 +173,7 @@ public class GameManager : MonoBehaviour
                 ActionQueue.Enqueue(attack);
                 break;
             #endregion Attack(ActionTargetUnits)
-                
+
             //Make all units with specific keywords initiate an attack on all units in their individual attack zones
             #region KeywordedAttack(Keywords)
             case ActionType.AttackFromKeyworded:
@@ -192,6 +195,7 @@ public class GameManager : MonoBehaviour
             //Makes all units on one side attack, then scores all objectives, then passes the turn/round to the other side
             #region NextTurn()
             case ActionType.NextTurn:
+                if (ShouldDebug) Debug.Log("Next turn action");
                 ActionSlot nextturn = new ActionSlot(Action_NextTurn.NextTurn(parameters), ActionType.NextTurn, parameters);
                 ActionQueue.Enqueue(nextturn);
                 break;
@@ -340,7 +344,7 @@ public class GameManager : MonoBehaviour
     public bool SwitchedToNoAction = false; //This is so "click check" can stop checking cell clicks while we change from an action to none
     IEnumerator GoThroughActions()
     {
-        yield return new WaitForSeconds(Time.fixedDeltaTime);
+        yield return new WaitForSeconds(Time.fixedDeltaTime / 100);
 
         while (ActionQueue.Count > 0)
         {
@@ -381,12 +385,18 @@ public class GameManager : MonoBehaviour
         //    StartCoroutine(Action(parameters));
         //}
 
+        //Debug.Log("-----");
+        //if (CurrentAction != null) Debug.Log(")" + CurrentAction.Type);
+        //if (ActionQueue != null && ActionQueue.Count > 0) Debug.Log(")" + ActionQueue.Peek().Type);
+        //Debug.Log("-----");
+
         //if (Input.GetKeyDown("q"))
         //{
         //    Debug.Log("CURRENT ACTION QUEUE:");
-        //    Debug.Log(")" + CurrentAction); Debug.Log(")" + ActionQueue.Peek().Type);
-
+        //    if (CurrentAction != null) Debug.Log(")" + CurrentAction);
+        //    if (ActionQueue != null && ActionQueue.Count > 0) Debug.Log(")" + ActionQueue.Peek().Type);
         //}
+            //}
             //if (Input.GetKeyDown("a"))
             //{
             //    Debug.Log("PRESSED THE ATTACK BUTTON");
@@ -406,5 +416,5 @@ public class GameManager : MonoBehaviour
             //}
             #endregion
 
-    }
+        }
 }

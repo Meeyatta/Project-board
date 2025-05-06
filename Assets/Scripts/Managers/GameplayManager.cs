@@ -55,9 +55,9 @@ public class GameplayManager : MonoBehaviour
         EnemyManager.Instance.ResetArmy();
         yield return EnemyManager.Instance.DeployEnemies();
 
-        yield return ResourceManager.Instance.InstantiatePlayerUnits();
-        ResourceManager.Instance.ResetArmy();
-        yield return ResourceManager.Instance.DeployPlayerUnits();
+        yield return PlayerManager.Instance.InstantiatePlayerUnits();
+        PlayerManager.Instance.ResetArmy();
+        yield return PlayerManager.Instance.DeployPlayerUnits();
 
         eBattlefieldCreation.Invoke();
 

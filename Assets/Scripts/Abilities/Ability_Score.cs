@@ -7,7 +7,7 @@ using UnityEngine.Events;
 
 public static class Ability_Score
 {
-    const float DelayBetweenScores = 40;
+    const float DelayBetweenScores = 20;
     public static UnityEvent E_ScoredForPlayer= new UnityEvent();
 
     const string JitterAnimTrigger = "jitter";
@@ -67,10 +67,9 @@ public static class Ability_Score
             //TODO:
             #endregion
 
-            yield return new WaitForSeconds(DelayBetweenScores * Time.deltaTime);
+            yield return new WaitForSeconds(DelayBetweenScores * Time.fixedDeltaTime);
         }
 
-        yield return new WaitForSeconds(2 * Time.deltaTime);
         GameManager.Instance.RemoveAction(parameters);
     }
     #region Conditions for either player or enemy scoring

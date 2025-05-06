@@ -64,12 +64,12 @@ public static class Action_AttackFromKeyworded
         foreach (var unit in DamageDealing.OrderedUnits(affected))
         {
             yield return Action_Attack.UnitAttack(unit);
-            yield return new WaitForSeconds(Time.fixedDeltaTime);
+            yield return new WaitForSeconds(Time.fixedDeltaTime * 2);
         }
         if (ShouldDebug) Debug.Log("Units with " + Keywords[0] + " keyword stopped");
 
 
-        yield return new WaitForSeconds(Time.fixedDeltaTime);
+        yield return new WaitForSeconds(Time.fixedDeltaTime / 10);
         //Debug.Log("Sent what ended the attack");
         GameManager.Instance.RemoveAction(parameters);
     }

@@ -57,7 +57,7 @@ public static class Action_DeployNewPlayerUnit
         yield return new WaitForSeconds(Time.fixedDeltaTime);
 
         #region If we have no units to deploy
-        if (ResourceManager.Instance.Army_NotPlaced.Count == 0 || ScoreManager.Instance.CurRound == 1)
+        if (PlayerManager.Instance.Army_NotPlaced.Count == 0 || ScoreManager.Instance.CurRound == 1)
         {
             yield return new WaitForSeconds(Time.fixedDeltaTime);
             E_DeployedNewPlayerUnit.Invoke(null);
@@ -89,7 +89,7 @@ public static class Action_DeployNewPlayerUnit
         UnitPlacementBag.Instance.PullOutUnits();
 
         //3 unit models hover in front of the player up and down 
-        List<Unit> shuffled = ResourceManager.Instance.ShuffleList(ResourceManager.Instance.Army_NotPlaced);
+        List<Unit> shuffled = PlayerManager.Instance.ShuffleList(PlayerManager.Instance.Army_NotPlaced);
         List<Unit> pulledUnits = new List<Unit>();
         for (int i = 0; i < Mathf.Min(PulledNumber, shuffled.Count); i++)
         {
@@ -169,7 +169,7 @@ public static class Action_DeployNewPlayerUnit
         {
             selectedUnit.Anim.SetBool(IsHoveringStr, false);
             selectedUnit.Anim.SetBool(IsRaisedStr, false);
-            ResourceManager.Instance.RecordPlacedUnit(selectedUnit);
+            PlayerManager.Instance.RecordPlacedUnit(selectedUnit);
 
             GameManager.Instance.E_ShowDeployment.Invoke(new List<Unit> { selectedUnit });
             ActionParameters createPar = new ActionParameters(

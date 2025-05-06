@@ -14052,7 +14052,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 2147483647
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &334764590
 Transform:
   m_ObjectHideFlags: 0
@@ -14308,7 +14308,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 11416984, guid: c080686877cf77f42a1a078076d57fe5, type: 3}
       propertyPath: textList.Array.size
-      value: 4
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 11416984, guid: c080686877cf77f42a1a078076d57fe5, type: 3}
       propertyPath: textList.Array.data[0].s
@@ -14323,30 +14323,26 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 11416984, guid: c080686877cf77f42a1a078076d57fe5, type: 3}
       propertyPath: textList.Array.data[2].s
-      value: "Make it so next enemy unit is decided at player's turn and is \nshwocased
-        beforehand"
-      objectReference: {fileID: 0}
-    - target: {fileID: 11416984, guid: c080686877cf77f42a1a078076d57fe5, type: 3}
-      propertyPath: textList.Array.data[3].s
       value: 'Make it so unit selection when deploying new Player unit uses existing
 
         CellManager
         instead of a custom made one'
       objectReference: {fileID: 0}
     - target: {fileID: 11416984, guid: c080686877cf77f42a1a078076d57fe5, type: 3}
+      propertyPath: textList.Array.data[3].s
+      value: Merge Tutorial and Normal scene into one
+      objectReference: {fileID: 0}
+    - target: {fileID: 11416984, guid: c080686877cf77f42a1a078076d57fe5, type: 3}
       propertyPath: textList.Array.data[4].s
-      value: Enemy units move after the deployment phase
+      value: Make a good looking scene
       objectReference: {fileID: 0}
     - target: {fileID: 11416984, guid: c080686877cf77f42a1a078076d57fe5, type: 3}
       propertyPath: textList.Array.data[5].s
-      value: 'After deploying the 2nd unit some of the deployment
-
-        positions
-        overlays remain'
+      value: Weird delay when passing a turn
       objectReference: {fileID: 0}
     - target: {fileID: 11416984, guid: c080686877cf77f42a1a078076d57fe5, type: 3}
       propertyPath: textList.Array.data[6].s
-      value: "You can move units while you select to place a new \none"
+      value: Weird delay when passing a turn
       objectReference: {fileID: 0}
     - target: {fileID: 11416984, guid: c080686877cf77f42a1a078076d57fe5, type: 3}
       propertyPath: textList.Array.data[7].s
@@ -14430,7 +14426,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 11416984, guid: c080686877cf77f42a1a078076d57fe5, type: 3}
       propertyPath: textList.Array.data[4].state
-      value: 1
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 11416984, guid: c080686877cf77f42a1a078076d57fe5, type: 3}
       propertyPath: textList.Array.data[5].state
@@ -22245,6 +22241,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2ef9ef50747000347a2180a1528a93bd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ShouldDebug: 0
   CancelEvent:
     m_PersistentCalls:
       m_Calls: []
@@ -22290,7 +22287,7 @@ MonoBehaviour:
   LayerMask:
     serializedVersion: 2
     m_Bits: 513
-  ShouldDebug: 1
+  ShouldDebug: 0
   ClickBackEvent:
     m_PersistentCalls:
       m_Calls: []
@@ -28257,7 +28254,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 2147483647
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &669039297
 Transform:
   m_ObjectHideFlags: 0
@@ -30480,7 +30477,7 @@ GameObject:
   - component: {fileID: 724058885}
   - component: {fileID: 724058886}
   m_Layer: 0
-  m_Name: ResourceManager
+  m_Name: PlayerManager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -49025,7 +49022,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 2147483647
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1126077719
 Transform:
   m_ObjectHideFlags: 0
@@ -82305,7 +82302,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 2147483647
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1893132121
 Transform:
   m_ObjectHideFlags: 0
@@ -83132,10 +83129,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   StarterUnitsAmount: 5
+  DebugBehaviour: 1
+  DeployNewUnit_Before: 1
+  DeployNewUnit_After: 1.2
   ThinkingDelay: 0.4
   DelayAfterRaisingAUnit: 0.2
   DelayAfterMovingAUnit: 0.08
+  HasToDeploy: 0
   IsPlayingTurn: 0
+  NextUnit: {fileID: 0}
   Army:
   - {fileID: 7414565371915086219, guid: ca00f1841f6954c48bd6541892bdb97b, type: 3}
   - {fileID: 7414565371915086219, guid: ca00f1841f6954c48bd6541892bdb97b, type: 3}
@@ -83150,7 +83152,6 @@ MonoBehaviour:
   Army_Placed: []
   EnemyUitsTr: {fileID: 0}
   cooldown: 2
-  DebugBehaviour: 0
 --- !u!1 &1901150982
 GameObject:
   m_ObjectHideFlags: 0
@@ -94152,12 +94153,12 @@ MonoBehaviour:
     state: 3
     show: 0
     deleteQuestion: 0
-  - s: 'ResourceManager - holds reference to player resources
+  - s: 'PlayerManager - holds reference to player resources
 
       like total/placed
       army units, '
     state: 3
-    show: 0
+    show: 1
     deleteQuestion: 0
   - s: "ScoreManager - Responsible for keeping track of \nplayer/enemy points and
       calls an event if a side won"
