@@ -4,10 +4,17 @@ using UnityEngine;
 
 public static class Action_DeployPlayerStarters
 {
+    public static bool DeployedPlayerStarters = false;
+
+    static void Restart()
+    {
+        DeployedPlayerStarters = false;
+    }
+
     public static IEnumerator DeployPlayerStarters(ActionParameters parameters)
     {
         #region If we have no units to deploy
-        if (PlayerManager.Instance.Army_NotPlaced.Count == 0) 
+        if (PlayerManager.Instance.Army_NotPlaced.Count == 0 || DeployedPlayerStarters) 
         {
             yield return new WaitForSeconds(Time.fixedDeltaTime);
             GameManager.Instance.RemoveAction(parameters);
@@ -16,6 +23,10 @@ public static class Action_DeployPlayerStarters
         #endregion
 
         int number = parameters.IntNumber;
+
+        GameManager.Instance.E_Restart.RemoveListener(Restart);
+        GameManager.Instance.E_Restart.AddListener(Restart);
+        DeployedPlayerStarters = true;
 
         for (int i = 0; i < number; i++)
         {

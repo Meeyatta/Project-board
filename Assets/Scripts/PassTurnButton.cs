@@ -90,6 +90,20 @@ public class PassTurnButton : MonoBehaviour
         return (TutorialManager.Instance != null && TutorialManager.Instance.Tutorial_CanPass);
     }
 
+    bool PassConditions()
+    {
+        if (Action_DeployPlayerStarters.DeployedPlayerStarters || Action_DeployNewPlayerUnit.IsDeploying)
+            { RuleMessageManager.Instance.PlayMessage(RuleMessageInd.PassBeforeDraw); return false; }
+
+        if (ScoreManager.Instance.CurTurn != Side.Player) 
+            { RuleMessageManager.Instance.PlayMessage(RuleMessageInd.PassingOnWrongTurn); return false; }
+
+        if (!CanPass || Time.time <= nextClickTime) 
+            { return false; }
+
+        return true;
+    }
+
     public void Pass()
     {
         if (TutorialManager.Instance != null) //<- This is purely for tutorial
@@ -105,7 +119,7 @@ public class PassTurnButton : MonoBehaviour
         }
 
         Debug.Log("Button was pressed");
-        if (ScoreManager.Instance.CurTurn == Side.Player && CanPass && Time.time > nextClickTime) 
+        if (PassConditions()) 
         {
             nextClickTime = Time.time + ClickReload ;
             GameManager.Instance.CancelEvent.Invoke();

@@ -5,6 +5,7 @@ using UnityEngine.Events;
 
 public static class Action_DeployNewPlayerUnit
 {
+    public static bool IsDeploying;
     public static UnityEvent<Unit> E_DeployedNewPlayerUnit = new UnityEvent<Unit>();
 
     static int PulledNumber = 3;
@@ -79,7 +80,7 @@ public static class Action_DeployNewPlayerUnit
             4Select) The rest of the units are dragged back into the bag with a shuffling sound, player now places a new unit within the deployment zone
             4CheckData) TODO:
          */
-
+        IsDeploying = true;
         GameObject unitsPoint = UnitPlacementBag.Instance.UnitsPos_InFront;
 
         //Camera is drawn in front of the board
@@ -184,6 +185,7 @@ public static class Action_DeployNewPlayerUnit
         E_DeployedNewPlayerUnit.Invoke(selectedUnit);
         GameManager.Instance.CurUnitSelected = null;
 
+        IsDeploying = false;
         yield return new WaitForSeconds(0.1f * Time.fixedDeltaTime);
         GameManager.Instance.RemoveAction(parameters);
 

@@ -412,6 +412,7 @@ public class ClickManager : MonoBehaviour
         }
     }
     #endregion
+
     void Update()
     {
         ContinuousChecking();
