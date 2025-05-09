@@ -110,14 +110,13 @@ public class BoardManager : MonoBehaviour
     
     public static BoardManager Instance;
     #region Events 
-    public UnityEvent<Vector2Int> ClickEvent;
     void Start()
     {
-        ClickEvent.AddListener(ClickManager.Instance.CellClickHandle);
+        
     }
     void OnDisable()
     {
-        ClickEvent.RemoveListener(ClickManager.Instance.CellClickHandle);
+        
     }
     #endregion Events
 

@@ -102,6 +102,14 @@ public static class Action_DeployNewPlayerUnit
         #region Hovering the possible units while player selects one
         Unit selectedUnit = null;
         foreach (var v in pulledUnits) { v.Anim.SetBool(IsHoveringStr, true); } //Making units hover 
+
+        #region Adding an event for selecting a unit player clicked on
+        void stopAwaitingSelection(Unit u) { selectedUnit = u; }
+
+        ClickManager.Instance.E_Click_unit.RemoveListener(stopAwaitingSelection);
+        ClickManager.Instance.E_Click_unit.AddListener(stopAwaitingSelection);
+        #endregion
+
         while (selectedUnit == null)
         {
             yield return new WaitForSeconds(Time.fixedDeltaTime / 1000);
@@ -111,39 +119,20 @@ public static class Action_DeployNewPlayerUnit
             {
                 SetPos(UnitPlacementBag.Instance.UnitsPos_InFront, pulledUnits);
 
-                #region Checking what unit is cursor pointing at
-                RaycastHit hit;
-                Vector3 vect = Input.mousePosition;
-                vect.z = 999999;
-                Vector3 cPos = Camera.main.ScreenToWorldPoint(vect);
-                Physics.Raycast(Camera.main.transform.position, cPos, out hit);
-
-                if (hit.transform != null)
+                if (ClickManager.Instance.CurrentPointedAtUnit != null)
                 {
-
-                    Unit u = GetUnitWithTransform(pulledUnits, hit.transform);
-                    if (u != null)
-                    #region If hovering over a unit - wait until we click on it
-                    {
-                        u.Anim.SetBool(IsRaisedStr, true);
-                        foreach (var v in pulledUnits) { if (v != u) { v.Anim.SetBool(IsRaisedStr, false); } }
-
-                        //Waiting until player clicks mouse button to select a unit
-                        if (Input.GetMouseButtonDown(0)) //TODO: Idk if I should replace it with the new input system, so far this works better
+                    foreach (var v in pulledUnits) 
+                    { 
+                        if (v == ClickManager.Instance.CurrentPointedAtUnit)
                         {
-                            selectedUnit = u;
+                            v.Anim.SetBool(IsRaisedStr, true);
+                        }
+                        else
+                        {
+                            v.Anim.SetBool(IsRaisedStr, false);
                         }
                     }
-                    #endregion
-                    #region If not hovering over a unit
-                    else
-                    {
-                        foreach (var v in pulledUnits) { v.Anim.SetBool(IsRaisedStr, false); }
-                    }
-                    #endregion
                 }
-                #endregion
-
             }
             #endregion
             #region If looking somewhere else
@@ -186,6 +175,8 @@ public static class Action_DeployNewPlayerUnit
         GameManager.Instance.CurUnitSelected = null;
 
         IsDeploying = false;
+        ClickManager.Instance.E_Click_unit.RemoveListener(stopAwaitingSelection);
+
         yield return new WaitForSeconds(0.1f * Time.fixedDeltaTime);
         GameManager.Instance.RemoveAction(parameters);
 

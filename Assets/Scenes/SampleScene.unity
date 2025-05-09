@@ -14363,7 +14363,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 11416984, guid: c080686877cf77f42a1a078076d57fe5, type: 3}
       propertyPath: textList.Array.size
-      value: 5
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 11416984, guid: c080686877cf77f42a1a078076d57fe5, type: 3}
       propertyPath: textList.Array.data[0].s
@@ -14393,7 +14393,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 11416984, guid: c080686877cf77f42a1a078076d57fe5, type: 3}
       propertyPath: textList.Array.data[5].s
-      value: Weird delay when passing a turn
+      value: Deployment doesn't work
       objectReference: {fileID: 0}
     - target: {fileID: 11416984, guid: c080686877cf77f42a1a078076d57fe5, type: 3}
       propertyPath: textList.Array.data[6].s
@@ -14537,7 +14537,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 11416984, guid: c080686877cf77f42a1a078076d57fe5, type: 3}
       propertyPath: textList.Array.data[5].deleteQuestion
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 11416984, guid: c080686877cf77f42a1a078076d57fe5, type: 3}
       propertyPath: textList.Array.data[6].deleteQuestion
@@ -53986,9 +53986,6 @@ MonoBehaviour:
       CurUnit: {fileID: 0}
       CoveredBy: 0
       Tags: 
-  ClickEvent:
-    m_PersistentCalls:
-      m_Calls: []
 --- !u!1 &1230365366
 GameObject:
   m_ObjectHideFlags: 0
@@ -54570,11 +54567,17 @@ MonoBehaviour:
   LayerMask:
     serializedVersion: 2
     m_Bits: 513
-  ShouldDebug: 0
+  ShouldDebug: 1
   ClickBackEvent:
     m_PersistentCalls:
       m_Calls: []
   CurrentPointedAtUnit: {fileID: 0}
+  E_Click_unit:
+    m_PersistentCalls:
+      m_Calls: []
+  E_Click_coords:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1 &1245845481
 GameObject:
   m_ObjectHideFlags: 0
@@ -71112,9 +71115,9 @@ MonoBehaviour:
     m_ActionName: Basic/PreviousPage[/Keyboard/q,/Keyboard/leftArrow]
   - m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 1244220801}
         m_TargetAssemblyTypeName: ClickManager, Assembly-CSharp
-        m_MethodName: CheckUnitUnderCursor
+        m_MethodName: Click
         m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

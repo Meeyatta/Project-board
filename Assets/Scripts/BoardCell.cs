@@ -12,6 +12,6 @@ public class BoardCell : MonoBehaviour
     }
     public void OnClick()
     {
-        BoardManager.Instance.ClickEvent.Invoke(Coordinates);
+        
     }
 }

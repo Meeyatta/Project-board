@@ -4,6 +4,10 @@ using UnityEngine;
 using UnityEngine.Events;
 using static GameManager;
 using UnityEngine.InputSystem;
+using Unity.VisualScripting;
+using UnityEngine.UIElements;
+using System.Runtime.Serialization;
+using System;
 
 public class ClickManager : MonoBehaviour
 {
@@ -34,15 +38,35 @@ public class ClickManager : MonoBehaviour
     {
         Singleton();
     }
-    
+
     void Start()
     {
-        
+
     }
-     
+
     Transform LastPointedAt = null; public Unit CurrentPointedAtUnit = new Unit();
-    Vector2Int CellClickP = Vector2Int.zero; Vector2Int UnitClickP = Vector2Int.zero;
-    Vector2Int NullV2 = new Vector2Int(-1, -1);
+
+    #region CellClick
+    Vector2Int? CellClick = null;
+    #endregion
+
+    #region UnitClick
+    [Serializable]
+    #nullable enable
+    public class UnitP 
+    { 
+        public Vector2Int? Position = null; 
+        public Unit? Unit; 
+
+        public UnitP(Vector2Int p, Unit u) 
+        {
+            Position = p; 
+            Unit = u;
+        } 
+    }
+    UnitP? UnitClick = null;
+    #endregion
+
 
     #region Checking if we can click on things
     bool CanClickOnUnits()
@@ -79,29 +103,37 @@ public class ClickManager : MonoBehaviour
     #endregion
 
     #region Checking if player is hovering over a unit, if they click - this counts as clicking on that unit's cell
-    public void CheckUnitUnderCursor(InputAction.CallbackContext context)
+    public void Click(InputAction.CallbackContext context)
     {
         if (!CanClickOnUnits()) { return; }
         if (ShouldDebug) Debug.Log("Received an input");
 
         #region Check what position did we click on and send the click event
-        if (CellClickP != NullV2)
+        if (CellClick != null)
         {
             nextClickTime = Time.time + (ClickCooldown * Time.fixedDeltaTime * 100);
 
             if (ShouldDebug) Debug.Log("Launching CellClickHandle");
-            CellClickHandle(CellClickP);
-            CellClickP = NullV2;
-            UnitClickP = NullV2;
+            ClickHandle(CellClick.Value);
+
+            CellClick = null;
+            UnitClick = null;
         }
-        else if (UnitClickP != NullV2)
+        else if (UnitClick != null)
         {
             nextClickTime = Time.time + (ClickCooldown * Time.fixedDeltaTime * 100);
 
             if (ShouldDebug) Debug.Log("Launching CellClickHandle");
-            CellClickHandle(UnitClickP);
-            CellClickP = NullV2;
-            UnitClickP = NullV2;
+            if (UnitClick != null && UnitClick.Unit != null) ClickHandle(UnitClick.Unit);
+            CellClick = null;
+            UnitClick = null;
+        }
+        else
+        {
+            //Debug.Log("Both are null " + UnitClick.Unit + " " + UnitClick.Position);
+            //Debug.Log((UnitClick.Unit != NullUnitClick.Unit) + " " + (UnitClick.Position != NullUnitClick.Position));
+            //Debug.Log(NullUnitClick.Unit + " " + NullUnitClick.Position);
+            
         }
 
         #endregion
@@ -109,13 +141,51 @@ public class ClickManager : MonoBehaviour
     }
     #endregion
 
-    public void CellClickHandle(Vector2Int coords)
+    public UnityEvent<Unit> E_Click_unit = new UnityEvent<Unit>();
+    public UnityEvent<Vector2Int> E_Click_coords = new UnityEvent<Vector2Int>();
+
+    Coroutine C_ClickCoroutine = null;
+    #region Handles when we click on either a unit or a cell
+    void ClickHandle(Unit u)
     {
-        if (ShouldDebug) Debug.Log("CellclickHandle on  " + coords);
-        StartCoroutine(CellClickCoroutine(coords));
+        if (ShouldDebug) Debug.Log("ClickHandle on  " + u.gameObject.name);
+
+        List<Vector2Int> uPoss = BoardManager.Instance.Get_UnitPositions(u);
+        #region If unit is on the board
+        if (uPoss != null && uPoss.Count > 0) 
+        {
+            Vector2Int uPos = uPoss[0];
+            StartClickCoroutine(uPos);
+        }
+        #endregion
+
+        E_Click_unit.Invoke(u);
+    }
+    void ClickHandle(Vector2Int coords)
+    {
+        if (ShouldDebug) Debug.Log("ClickHandle on  " + coords);
+
+        StartClickCoroutine(coords);
+
+        //E_Click_unit.Invoke(null); Not sure if it will be important in the future, null check should exist either way
+        E_Click_coords.Invoke(coords);
+    }
+    void StartClickCoroutine(Vector2Int coords)
+    {
+        if (C_ClickCoroutine == null)
+        {
+            C_ClickCoroutine = StartCoroutine(CellClickCoroutine(coords));
+        }
+        else
+        {
+            StopCoroutine(C_ClickCoroutine);
+            C_ClickCoroutine = StartCoroutine(CellClickCoroutine(coords));
+        }
     }
 
-    public IEnumerator TutorialClickCoroutine(Vector2Int coords)
+    #endregion
+
+    IEnumerator TutorialClickCoroutine(Vector2Int coords)
     {
         yield return new WaitForSeconds(Time.fixedDeltaTime); //For some reason this is vital, otherwise Unity shits itself
 
@@ -213,7 +283,6 @@ public class ClickManager : MonoBehaviour
     IEnumerator CellClickCoroutine(Vector2Int coords)
     {
         yield return new WaitForSeconds(Time.fixedDeltaTime); //For some reason this is vital, otherwise Unity shits itself
-        //Debug.Log("Clicked on a cell " + coords);
 
         if (TutorialManager.Instance != null) { yield return TutorialClickCoroutine(coords); yield break; }
 
@@ -344,25 +413,34 @@ public class ClickManager : MonoBehaviour
                 #region If keep pointing at the same unit
                 if (hit.transform == LastPointedAt)
                 {
+                    if (ShouldDebug) Debug.Log(hit.transform.gameObject.name + " is the same unit, changing nothing");
+                    if (ShouldDebug && UnitClick != null) Debug.Log(UnitClick.Unit + " " + UnitClick.Position);
+
                     IsPointingAtTurnClock = false;
                 }
                 #endregion
                 #region If hover over a new unit
                 else
                 {
-                    //Debug.Log(hit.transform.gameObject.name + " is new, making current");
+                    Debug.Log(hit.transform.gameObject.name + " is new, making current");
                     LastPointedAt = hit.transform;
                     Unit u = LastPointedAt.GetComponent<Unit>();
                     CurrentPointedAtUnit = u;
-                    if (u != null)
+                    if (CurrentPointedAtUnit != null)
                     {
+                        if (ShouldDebug) Debug.Log("Found a new unit: " + CurrentPointedAtUnit.gameObject.name);
+
                         List<Vector2Int> p = BoardManager.Instance.Get_UnitPositions(u);
-                        if (p != null && p.Count > 0) 
-                        {
-                            CellClickP = NullV2; 
-                            UnitClickP = p[0]; 
-                            IsPointingAtTurnClock = false; 
-                        }
+                        CellClick = null;
+
+                        UnitP uP = new UnitP(new Vector2Int(0, 0), CurrentPointedAtUnit);
+                        if (p != null && p.Count > 0) { uP.Position = p[0]; }
+                        else { uP.Position = null; }
+                        UnitClick = uP;
+
+                        IsPointingAtTurnClock = false;
+
+
                     }
                 }
                 #endregion
@@ -384,11 +462,12 @@ public class ClickManager : MonoBehaviour
                 {
                     LastPointedAt = hit.transform;
                     BoardCell b = LastPointedAt.GetComponent<BoardCell>();
-                    if (b != null) 
-                    { 
-                        UnitClickP = NullV2; //This Might break
-                        CellClickP = b.Coordinates; 
-                        IsPointingAtTurnClock = false; 
+                    if (b != null)
+                    {
+                        UnitClick = null; //This Might break
+                        CellClick = b.Coordinates;
+                        if (ShouldDebug) Debug.Log("Found a new unit: " + CellClick);
+                        IsPointingAtTurnClock = false;
                     }
                 }
                 #endregion
@@ -404,6 +483,7 @@ public class ClickManager : MonoBehaviour
                 PassTurnButton.Instance.Pass();
             }
             #endregion
+
         }
         #endregion
         else
