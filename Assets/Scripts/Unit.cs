@@ -45,10 +45,12 @@ public class Unit : MonoBehaviour
     public Material EnemyBaseMat;
 
     [Header("----Read only information----")]
+    public GameObject FrontSprite;
+    public GameObject TopSprite;
+
     public int CurrentHealth;
     public bool IsPrefab = true;
     GameObject Base;
-    public GameObject Model;
     public bool Moved = false;
     [Header("---------")]
     public Outline BaseOutline;
@@ -66,9 +68,6 @@ public class Unit : MonoBehaviour
         Transform t = transform.Find("base");
         if (t != null) Base = t.gameObject;
 
-        Transform tt = transform.Find("model");
-        if (tt != null) Model = tt.gameObject;
-
         if (Base != null ) BaseOutline = Base.GetComponent<Outline>();
         if (Base != null) BaseRend = Base.GetComponent<Renderer>();
     }
@@ -80,9 +79,6 @@ public class Unit : MonoBehaviour
 
         Transform t = transform.Find("base");
         if (t != null) Base = t.gameObject;
-
-        Transform tt = transform.Find("model");
-        if (tt != null) Model = tt.gameObject;
 
         if (Base != null) BaseOutline = Base.GetComponent<Outline>();
         if (Base != null) BaseRend = Base.GetComponent<Renderer>();
@@ -129,6 +125,48 @@ public class Unit : MonoBehaviour
     }
     #endregion
 
+    void UpdateSprite()
+    {
+        if (TopSprite == null || FrontSprite == null) { Debug.Log(gameObject.name + " doesn't have one of their sprites"); return; }
+
+        if (CameraManager.Instance.CurPos == CameraManager.Instance.TopDown)
+        {
+            TopSpriteRot();
+        }
+        else
+        {
+            FrontSpriteRot();
+        }
+    }
+    #region Rotating the unit's sprite when looking from on top
+    void FrontSpriteRot()
+    {
+        TopSprite.SetActive(false);
+        FrontSprite.SetActive(true);
+
+        Vector3 targetPos = Vector3.zero;
+
+        if (CameraManager.Instance.CurPos == CameraManager.Instance.InFrontOfBoad)
+        {
+            targetPos = new Vector3(transform.position.x, transform.position.y, transform.position.z + 5);
+        }
+        else
+        {
+            targetPos = new Vector3(Camera.main.transform.position.x, transform.position.y, Camera.main.transform.position.z);
+        }
+
+        FrontSprite.transform.LookAt(targetPos, transform.up);
+    }
+    #endregion
+
+    #region Rotating the unit's sprite when looking from anywhere else
+    void TopSpriteRot()
+    {
+        TopSprite.SetActive(true);
+        FrontSprite.SetActive(false);
+    }
+    #endregion
+
     public void PlaySound(SoundName name)
     {
         AudioManager.Instance.Play(name, transform);
@@ -149,12 +187,12 @@ public class Unit : MonoBehaviour
 
         if (BaseOutline != null) BaseOutline.OutlineColor = CurColor;
         if (BaseOutline != null) BaseOutline.enabled = !Moved;
-        if (BaseKeywords.Contains(Keyword.Player) && Model != null) { Model.transform.rotation = Quaternion.LookRotation(new Vector3(0,0,1)); }
-        if (BaseKeywords.Contains(Keyword.Enemy) && Model != null) { Model.transform.rotation = Quaternion.LookRotation(new Vector3(0, 0, -1));  }
 
     }
     void FixedUpdate()
     {
+        UpdateSprite();
+
         UpdateInfo();
     }
 }
