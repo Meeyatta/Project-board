@@ -58,7 +58,7 @@ public static class Action_DeployNewPlayerUnit
         yield return new WaitForSeconds(Time.fixedDeltaTime);
 
         #region If we have no units to deploy
-        if (PlayerManager.Instance.Army_NotPlaced.Count == 0 || ScoreManager.Instance.CurRound == 1)
+        if (PlayerManager.Instance.Army_NotPlaced.Count == 0 || BattleStatsManager.Instance.CurRound == 1)
         {
             yield return new WaitForSeconds(Time.fixedDeltaTime);
             E_DeployedNewPlayerUnit.Invoke(null);
@@ -99,7 +99,7 @@ public static class Action_DeployNewPlayerUnit
             //Debug.Log("Pulled out a " + shuffled[i]);
         }
 
-        #region Hovering the possible units while player selects one
+        #region Hovering the possible units until player selects one
         Unit selectedUnit = null;
         foreach (var v in pulledUnits) { v.Anim.SetBool(IsHoveringStr, true); } //Making units hover 
 

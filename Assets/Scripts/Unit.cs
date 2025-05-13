@@ -125,9 +125,14 @@ public class Unit : MonoBehaviour
     }
     #endregion
 
+    bool DeBuggedSprite = false;
     void UpdateSprite()
     {
-        if (TopSprite == null || FrontSprite == null) { Debug.Log(gameObject.name + " doesn't have one of their sprites"); return; }
+        #region Show a message if unit doesn't have a sprite ONCE
+        if (TopSprite == null || FrontSprite == null) {
+            if (!DeBuggedSprite) { Debug.Log(gameObject.name + " doesn't have one of their sprites"); DeBuggedSprite = true; }
+                return; }
+        #endregion
 
         if (CameraManager.Instance.CurPos == CameraManager.Instance.TopDown)
         {

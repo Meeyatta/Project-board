@@ -46,21 +46,21 @@ public static class Ability_Score
             if (ShouldDebug) Debug.Log("result for " + a.gameObject.name + " is " + Check(a));
 
             #region Player scores
-            if (res > 0 && ScoreManager.Instance.CurTurn == Side.Player)
+            if (res > 0 && BattleStatsManager.Instance.CurTurn == Side.Player)
             {
                 a.Anim.SetTrigger(JitterAnimTrigger);
                 ScoreClock.Instance.Shrug_Visuals();
                 E_ScoredForPlayer.Invoke();
-                ScoreManager.Instance.AddPointPlayer();
+                BattleStatsManager.Instance.AddPointPlayer();
             }
             #endregion
             #region Enemy scores
-            if (res < 0 && ScoreManager.Instance.CurTurn == Side.Enemy)
+            if (res < 0 && BattleStatsManager.Instance.CurTurn == Side.Enemy)
             {
                 a.Anim.SetTrigger(JitterAnimTrigger);
                 ScoreClock.Instance.Shrug_Visuals();
 
-                ScoreManager.Instance.AddPointEnemy();
+                BattleStatsManager.Instance.AddPointEnemy();
             }
             #endregion
             #region Neither scores

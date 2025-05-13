@@ -9,7 +9,7 @@ using UnityEngine.Events;
 
 */
 public enum Side { Player, Enemy };
-public class ScoreManager : MonoBehaviour
+public class BattleStatsManager : MonoBehaviour
 {
     //Event for the conclusion of the battle 
     public UnityEvent<Side> E_WinOrLoss; //Since i have little object what use it, events will only make code more confusing, so right now
@@ -20,7 +20,7 @@ public class ScoreManager : MonoBehaviour
     public Side CurTurn;
 
     #region Singleton
-    public static ScoreManager Instance;
+    public static BattleStatsManager Instance;
     void Singleton()
     {
         if (Instance != null)

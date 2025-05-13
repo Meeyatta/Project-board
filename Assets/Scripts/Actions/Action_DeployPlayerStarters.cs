@@ -31,7 +31,7 @@ public static class Action_DeployPlayerStarters
         for (int i = 0; i < number; i++)
         {
             ActionParameters p = new ActionParameters(GameManager.ActionType.DeployNew, null, null, null, null, 0);
-            EffectManager.Instance.HideAllPlayerMovement(ScoreManager.Instance.CurTurn); // <- Safeguards just in case
+            EffectManager.Instance.HideAllPlayerMovement(BattleStatsManager.Instance.CurTurn); // <- Safeguards just in case
             yield return Action_DeployNewPlayerUnit.DeployNewUnit(p);
             yield return new WaitForSeconds(Time.deltaTime);
 

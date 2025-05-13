@@ -62,11 +62,11 @@ public class ScoreClock : MonoBehaviour
     }
     public void UpdateText()
     {
-        PlayerPointsText.text = ScoreManager.Instance.Score_Player.ToString();
-        EnemyPointsText.text = ScoreManager.Instance.Score_Enemy.ToString();
+        PlayerPointsText.text = BattleStatsManager.Instance.Score_Player.ToString();
+        EnemyPointsText.text = BattleStatsManager.Instance.Score_Enemy.ToString();
 
         #region Changing the color if player is close to losing
-        if (ScoreManager.Instance.Score_Enemy - ScoreManager.Instance.Score_Player  == ScoreManager.Instance.NScoreDiff - 1 )
+        if (BattleStatsManager.Instance.Score_Enemy - BattleStatsManager.Instance.Score_Player  == BattleStatsManager.Instance.NScoreDiff - 1 )
         {
             EnemyPointsText.color = AttentionColor;
             SymbolText.color = AttentionColor;
@@ -79,14 +79,14 @@ public class ScoreClock : MonoBehaviour
         #endregion
 
         #region Displaying the differenc symbol
-        if (ScoreManager.Instance.Score_Player == ScoreManager.Instance.Score_Enemy) 
+        if (BattleStatsManager.Instance.Score_Player == BattleStatsManager.Instance.Score_Enemy) 
         {
             SymbolText.text = "="; 
         }
         else
         {
-            string res = (ScoreManager.Instance.Score_Player - ScoreManager.Instance.Score_Enemy).ToString(); 
-            if (ScoreManager.Instance.Score_Player > ScoreManager.Instance.Score_Enemy) { res = "+" + res; }
+            string res = (BattleStatsManager.Instance.Score_Player - BattleStatsManager.Instance.Score_Enemy).ToString(); 
+            if (BattleStatsManager.Instance.Score_Player > BattleStatsManager.Instance.Score_Enemy) { res = "+" + res; }
             SymbolText.text = res;
         }
         #endregion

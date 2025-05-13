@@ -295,13 +295,13 @@ public class TutorialManager : MonoBehaviour
         Debug.Log("Started sixth");
         bool isWaitingForgameEnd = true; Side s = Side.Enemy;
         void GameEnd(Side side) { s = side; isWaitingForgameEnd = false; }
-        ScoreManager.Instance.E_WinOrLoss.AddListener(GameEnd);
+        BattleStatsManager.Instance.E_WinOrLoss.AddListener(GameEnd);
 
         void NormalPass() 
         {
             GameManager.Instance.CancelEvent.Invoke();
 
-            StartCoroutine( Action_NextTurn.SetRoundNTurn(ScoreManager.Instance.CurRound+1, Side.Player, true, true));
+            StartCoroutine( Action_NextTurn.SetRoundNTurn(BattleStatsManager.Instance.CurRound+1, Side.Player, true, true));
         }
         PassTurnButton.Instance.E_PassedTurn.AddListener(NormalPass);
 
@@ -338,7 +338,7 @@ public class TutorialManager : MonoBehaviour
         while (scene.progress < 0.9f);
         scene.allowSceneActivation = true;
 
-        ScoreManager.Instance.E_WinOrLoss.RemoveListener(GameEnd);
+        BattleStatsManager.Instance.E_WinOrLoss.RemoveListener(GameEnd);
         PassTurnButton.Instance.E_PassedTurn.RemoveListener(NormalPass);
     }
     #endregion

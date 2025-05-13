@@ -95,7 +95,7 @@ public class PassTurnButton : MonoBehaviour
         if (Action_DeployPlayerStarters.DeployedPlayerStarters || Action_DeployNewPlayerUnit.IsDeploying)
             { RuleMessageManager.Instance.PlayMessage(RuleMessageInd.PassBeforeDraw); return false; }
 
-        if (ScoreManager.Instance.CurTurn != Side.Player) 
+        if (BattleStatsManager.Instance.CurTurn != Side.Player) 
             { RuleMessageManager.Instance.PlayMessage(RuleMessageInd.PassingOnWrongTurn); return false; }
 
         if (!CanPass || Time.time <= nextClickTime) 
@@ -124,7 +124,7 @@ public class PassTurnButton : MonoBehaviour
             nextClickTime = Time.time + ClickReload ;
             GameManager.Instance.CancelEvent.Invoke();
             Shrug_Visuals();
-            if (ScoreManager.Instance.CurRound != 0) CanPass = false;
+            if (BattleStatsManager.Instance.CurRound != 0) CanPass = false;
 
             Debug.Log("Button passed the turn");
             ActionParameters parameters = new ActionParameters(GameManager.ActionType.NextTurn, null, null, null, null, 0);
@@ -132,22 +132,22 @@ public class PassTurnButton : MonoBehaviour
             E_PassedTurn.Invoke();
         }
         else if ((TutorialManager.Instance != null && !TutorialManager.Instance.Tutorial_CanPass) ||
-            (ScoreManager.Instance.CurTurn != Side.Player || !CanPass))
+            (BattleStatsManager.Instance.CurTurn != Side.Player || !CanPass))
         {
             nextClickTime = Time.time + ClickReload;
         }
     }
     void FixedUpdate()
     {
-        if (ScoreManager.Instance.CurRound == 0)
+        if (BattleStatsManager.Instance.CurRound == 0)
         {
             RoundText.text = "Deployment";
             TurnText.text = "Player";
         }
         else
         {
-            RoundText.text = ScoreManager.Instance.CurRound.ToString();
-            TurnText.text = ScoreManager.Instance.CurTurn.ToString();
+            RoundText.text = BattleStatsManager.Instance.CurRound.ToString();
+            TurnText.text = BattleStatsManager.Instance.CurTurn.ToString();
         }
 
 

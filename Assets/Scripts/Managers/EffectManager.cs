@@ -81,7 +81,7 @@ public class EffectManager : MonoBehaviour
         GameManager.Instance.E_ShowDeployment.AddListener(ShowDeployment);
         GameManager.Instance.E_HideDeployment.AddListener(HideDeployment);
 
-        if (GameplayManager.Instance != null) GameplayManager.Instance.eBattlefieldCreation.AddListener(StartUpdatingObjectiveControl);
+        if (BattlefieldManager.Instance != null) BattlefieldManager.Instance.eBattlefieldCreation.AddListener(StartUpdatingObjectiveControl);
 
         Action_NextTurn.E_Turn_Functional.AddListener(HideAllPlayerMovement);
 
@@ -99,7 +99,7 @@ public class EffectManager : MonoBehaviour
         GameManager.Instance.E_ShowDeployment.RemoveListener(ShowDeployment);
         GameManager.Instance.E_HideDeployment.RemoveListener(HideDeployment);
 
-        if (GameplayManager.Instance != null) GameplayManager.Instance.eBattlefieldCreation.RemoveListener(StartUpdatingObjectiveControl);
+        if (BattlefieldManager.Instance != null) BattlefieldManager.Instance.eBattlefieldCreation.RemoveListener(StartUpdatingObjectiveControl);
 
         Action_NextTurn.E_Turn_Functional.RemoveListener(HideAllPlayerMovement);
 
@@ -243,7 +243,7 @@ public class EffectManager : MonoBehaviour
 
     bool ShowingPlacementConditions()
     {
-        if (ScoreManager.Instance.CurTurn != Side.Player) return false;
+        if (BattleStatsManager.Instance.CurTurn != Side.Player) return false;
 
         return true;
     }
@@ -282,7 +282,7 @@ public class EffectManager : MonoBehaviour
 
         RaiseModel(unit);
 
-        while (CurUnitMovePosShowcase != null && ScoreManager.Instance.PlayerTurnActionCondition())
+        while (CurUnitMovePosShowcase != null && BattleStatsManager.Instance.PlayerTurnActionCondition())
         {
             yield return new WaitForSeconds(Time.fixedDeltaTime * 0.1f);
             //Debug.Log("ShowingPossibleUnitPosition");

@@ -29,10 +29,10 @@ public static class Action_SelectUnit
         us.Add(GameManager.Instance.CurUnitSelected);
 
         #region If current turn is player turn
-        if (ScoreManager.Instance.PlayerTurnActionCondition())
+        if (BattleStatsManager.Instance.PlayerTurnActionCondition())
         {
             #region If round is not deployment - show unit's movement
-            if (ScoreManager.Instance.CurRound > 0)
+            if (BattleStatsManager.Instance.CurRound > 0)
             {
                 #region Create a list of all units whose movement needs to be shown and call an event to start doing so
                 List<Unit> movable = new List<Unit>();

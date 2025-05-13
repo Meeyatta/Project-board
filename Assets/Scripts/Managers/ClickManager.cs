@@ -65,6 +65,7 @@ public class ClickManager : MonoBehaviour
         } 
     }
     UnitP? UnitClick = null;
+    Item? ItemClick = null;
     #endregion
 
 
@@ -141,11 +142,23 @@ public class ClickManager : MonoBehaviour
     }
     #endregion
 
-    public UnityEvent<Unit> E_Click_unit = new UnityEvent<Unit>();
-    public UnityEvent<Vector2Int> E_Click_coords = new UnityEvent<Vector2Int>();
 
     Coroutine C_ClickCoroutine = null;
-    #region Handles when we click on either a unit or a cell
+    #region Handles when we click on either a unit, cell or an item
+
+    #region Clicking on an item
+    public UnityEvent<Item> E_Click_item = new UnityEvent<Item>();
+    void ClickHandle(Item i)
+    {
+        if (ShouldDebug) Debug.Log("ClickHandle on  " + i.Name);
+
+
+        E_Click_item.Invoke(i);
+    }
+    #endregion
+
+    #region Clicking on a unit
+    public UnityEvent<Unit> E_Click_unit = new UnityEvent<Unit>();
     void ClickHandle(Unit u)
     {
         if (ShouldDebug) Debug.Log("ClickHandle on  " + u.gameObject.name);
@@ -161,6 +174,10 @@ public class ClickManager : MonoBehaviour
 
         E_Click_unit.Invoke(u);
     }
+    #endregion
+
+    #region Clicking on a cell
+    public UnityEvent<Vector2Int> E_Click_coords = new UnityEvent<Vector2Int>();
     void ClickHandle(Vector2Int coords)
     {
         if (ShouldDebug) Debug.Log("ClickHandle on  " + coords);
@@ -170,6 +187,9 @@ public class ClickManager : MonoBehaviour
         //E_Click_unit.Invoke(null); Not sure if it will be important in the future, null check should exist either way
         E_Click_coords.Invoke(coords);
     }
+    #endregion
+
+    #region Coroutine for when we click on a cell/Item
     void StartClickCoroutine(Vector2Int coords)
     {
         if (C_ClickCoroutine == null)
@@ -182,8 +202,6 @@ public class ClickManager : MonoBehaviour
             C_ClickCoroutine = StartCoroutine(CellClickCoroutine(coords));
         }
     }
-
-    #endregion
 
     IEnumerator TutorialClickCoroutine(Vector2Int coords)
     {
@@ -206,7 +224,7 @@ public class ClickManager : MonoBehaviour
             {
                 #region Do we have a unit and cell is unoccupied?
                 if (GameManager.Instance.CurUnitSelected != null && BoardManager.Instance.Board[coords.x].Cells[coords.y].CurUnit == null &&
-                    ScoreManager.Instance.PlayerTurnActionCondition())
+                    BattleStatsManager.Instance.PlayerTurnActionCondition())
                 #region Yes - Move the unit
                 {
                     List<Vector2Int> nCoords = new List<Vector2Int>(); nCoords.Add(coords);
@@ -303,12 +321,12 @@ public class ClickManager : MonoBehaviour
             if (ShouldDebug) Debug.Log("Not Creating a unit");
             #region Do we have a unit and cell is unoccupied?
             if (GameManager.Instance.CurUnitSelected != null && BoardManager.Instance.Board[coords.x].Cells[coords.y].CurUnit == null &&
-                ScoreManager.Instance.PlayerTurnActionCondition())
+                BattleStatsManager.Instance.PlayerTurnActionCondition())
             #region Yes - Are we in the deployment phase?
             {
                 if (ShouldDebug) Debug.Log("Have a unit, cell is unoccupied");
                 #region Yes - Redeploy unit to the coordinates
-                if (ScoreManager.Instance.CurRound <= 0)
+                if (BattleStatsManager.Instance.CurRound <= 0)
                 {
                     if (ShouldDebug) Debug.Log("Supposed to redeploy");
                     List<Vector2Int> nCoords = new List<Vector2Int>(); nCoords.Add(coords);
@@ -390,6 +408,9 @@ public class ClickManager : MonoBehaviour
 
         yield return null;
     }
+    #endregion
+
+    #endregion
 
     #region Continuosly recording what things we are aiming at
     bool IsPointingAtTurnClock;
@@ -406,7 +427,7 @@ public class ClickManager : MonoBehaviour
         #region If hit something
         if (hit.transform != null)
         {
-            #region If hit unit
+            #region If hit a unit
             if (hit.transform.tag.ToLower() == "unit")
             {
                 if (ShouldDebug) Debug.Log(hit.transform.gameObject.name + " unit was hit with raycast");
@@ -416,6 +437,7 @@ public class ClickManager : MonoBehaviour
                     if (ShouldDebug) Debug.Log(hit.transform.gameObject.name + " is the same unit, changing nothing");
                     if (ShouldDebug && UnitClick != null) Debug.Log(UnitClick.Unit + " " + UnitClick.Position);
 
+                    ItemClick = null;
                     IsPointingAtTurnClock = false;
                 }
                 #endregion
@@ -436,9 +458,10 @@ public class ClickManager : MonoBehaviour
                         UnitP uP = new UnitP(new Vector2Int(0, 0), CurrentPointedAtUnit);
                         if (p != null && p.Count > 0) { uP.Position = p[0]; }
                         else { uP.Position = null; }
-                        UnitClick = uP;
 
+                        UnitClick = uP;
                         IsPointingAtTurnClock = false;
+                        ItemClick = null;
 
 
                     }
@@ -466,8 +489,39 @@ public class ClickManager : MonoBehaviour
                     {
                         UnitClick = null; //This Might break
                         CellClick = b.Coordinates;
+                        ItemClick = null;
+
                         if (ShouldDebug) Debug.Log("Found a new unit: " + CellClick);
                         IsPointingAtTurnClock = false;
+                    }
+                }
+                #endregion
+            }
+            #endregion
+            #region If hit an item
+            else if (hit.transform.tag.ToLower() == "item")
+            {
+                if (ShouldDebug) Debug.Log(hit.transform.gameObject.name + " item was hit with raycast");
+
+                #region If hover and click on an old cell
+                if (hit.transform == LastPointedAt)
+                {
+                    IsPointingAtTurnClock = false;
+                }
+                #endregion
+                #region If hover over a new cell
+                else
+                {
+                    LastPointedAt = hit.transform;
+                    Item i = LastPointedAt.GetComponent<Item>();
+                    if (i != null)
+                    {
+                        UnitClick = null; //This Might break
+                        CellClick = null;
+                        ItemClick = i;
+                        IsPointingAtTurnClock = false;
+
+                        if (ShouldDebug) Debug.Log("Found a new item: " + i.Name);
                     }
                 }
                 #endregion

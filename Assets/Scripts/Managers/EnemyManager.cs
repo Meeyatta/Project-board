@@ -75,7 +75,7 @@ public class EnemyManager : MonoBehaviour
 
     void EndEnemyTurn()
     {
-        if (ScoreManager.Instance.CurRound > 0) HasToDeploy = true;
+        if (BattleStatsManager.Instance.CurRound > 0) HasToDeploy = true;
         IsPlayingTurn = false;
         if (cEnemyTurn != null) StopCoroutine(cEnemyTurn);
         cEnemyTurn = null;
@@ -84,25 +84,25 @@ public class EnemyManager : MonoBehaviour
 
     IEnumerator EnemyTurn()
     {
-        if (ScoreManager.Instance.CurTurn == Side.Player) { EndEnemyTurn(); yield break; }
+        if (BattleStatsManager.Instance.CurTurn == Side.Player) { EndEnemyTurn(); yield break; }
         yield return new WaitForSeconds(Time.fixedDeltaTime);
-        if (ScoreManager.Instance.CurTurn == Side.Player) { EndEnemyTurn(); yield break; }
+        if (BattleStatsManager.Instance.CurTurn == Side.Player) { EndEnemyTurn(); yield break; }
 
         IsPlayingTurn = true;
         if (DebugBehaviour) Debug.Log("Started enemy turn");
 
-        if (ScoreManager.Instance.CurRound > 0)
+        if (BattleStatsManager.Instance.CurRound > 0)
         {
-            if (ScoreManager.Instance.CurTurn == Side.Player) { EndEnemyTurn(); yield break; }
+            if (BattleStatsManager.Instance.CurTurn == Side.Player) { EndEnemyTurn(); yield break; }
             if (DebugBehaviour) Debug.Log("Thinking");
             yield return new WaitForSeconds(ThinkingDelay);
 
-            if (ScoreManager.Instance.CurTurn == Side.Player) { EndEnemyTurn(); yield break; }
+            if (BattleStatsManager.Instance.CurTurn == Side.Player) { EndEnemyTurn(); yield break; }
 
             //if (DebugBehaviour) Debug.Log("Deploying new enemy unit");  <-- Vestige from when enemy used to place their unit DURING their turn
             //yield return DeployNewEnemy(); //Deploying a new enemy unit
 
-            if (ScoreManager.Instance.CurTurn == Side.Player) { EndEnemyTurn(); yield break; }
+            if (BattleStatsManager.Instance.CurTurn == Side.Player) { EndEnemyTurn(); yield break; }
 
             if (DebugBehaviour) Debug.Log("Moving all enemy units");
             yield return MovingAllEnemyUnits(); //Moving all units on the board
@@ -118,7 +118,7 @@ public class EnemyManager : MonoBehaviour
     #region For deploying a new enemy unit next turn
     public IEnumerator DeployNewEnemyUnit()
     {
-        if (ScoreManager.Instance.CurRound <= 1 || Army_NotPlaced.Count <= 0) yield break;
+        if (BattleStatsManager.Instance.CurRound <= 1 || Army_NotPlaced.Count <= 0) yield break;
         HasToDeploy = false;
         if (DebugBehaviour) Debug.Log("Started DeployNewEnemy");
 
@@ -142,7 +142,7 @@ public class EnemyManager : MonoBehaviour
     #region Go through each unit on the board and move them towards objectives
     public IEnumerator MovingAllEnemyUnits()
     {
-        if (ScoreManager.Instance.CurRound < 1 || Army_Placed.Count <= 0) yield break;
+        if (BattleStatsManager.Instance.CurRound < 1 || Army_Placed.Count <= 0) yield break;
 
         List<Unit> units = BoardManager.Instance.Get_AllUnitsWithKeywords(new List<Keyword> { Keyword.Enemy });
 

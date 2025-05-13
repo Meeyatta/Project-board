@@ -57,6 +57,8 @@ public class PlayerManager : MonoBehaviour
     {
         yield return EnemyManager.Instance.DeployNewEnemyUnit();
 
+        yield return new WaitForSeconds(Time.fixedDeltaTime);
+
         yield return DeployNewplayerUnit();
 
         DoingPlayerTurn = null;
@@ -119,32 +121,19 @@ public class PlayerManager : MonoBehaviour
 
         yield return new WaitForSeconds(Time.fixedDeltaTime);
 
-        //List<Unit> toDeploy = new List<Unit>();
-        //int totalAm = 0;
-        //for (int i = 0; i < StarterUnitsAmount && i < Army_NotPlaced.Count; i++)
-        //{
-        //    toDeploy.Add(Army_NotPlaced[i]);
-        //    totalAm++;
-        //}
-
-        //ActionParameters parameters = new ActionParameters(
-        //            GameManager.ActionType.Deploy, toDeploy, null, BoardManager.Instance.PlayerDeploymentZone, null, totalAm);
-        //yield return StartCoroutine(GameManager.Instance.Action(parameters));
-
-        //foreach (var u in toDeploy) { RecordPlacedUnit(u); }
     }
 
     public IEnumerator DeployNewplayerUnit()
     {
-        if (ScoreManager.Instance.CurTurn == Side.Enemy || ScoreManager.Instance.CurRound == 0) yield break;
+        if (BattleStatsManager.Instance.CurTurn == Side.Enemy || BattleStatsManager.Instance.CurRound == 0) yield break;
         if (Army_NotPlaced.Count <= 0) yield break;
-        EffectManager.Instance.HideAllPlayerMovement(ScoreManager.Instance.CurTurn); // <- Safeguards just in case
+        EffectManager.Instance.HideAllPlayerMovement(BattleStatsManager.Instance.CurTurn); // <- Safeguards just in case
 
         ActionParameters parameters = new ActionParameters(
                     GameManager.ActionType.DeployNew, null, null, null, null, 0);
         yield return Action_DeployNewPlayerUnit.DeployNewUnit(parameters);
 
-        EffectManager.Instance.HideAllPlayerMovement(ScoreManager.Instance.CurTurn); // <- Safeguards just in case
+        EffectManager.Instance.HideAllPlayerMovement(BattleStatsManager.Instance.CurTurn); // <- Safeguards just in case
     }
 
     //Adds selected unit into player's total army
@@ -159,8 +148,6 @@ public class PlayerManager : MonoBehaviour
     {
         if (FullArmy.Count > 0 && FullArmy.Contains(unit)) { FullArmy.Remove(unit); } 
     }
-
-
 
     // Update is called once per frame
     void Update()

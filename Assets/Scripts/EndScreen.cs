@@ -45,21 +45,21 @@ public class EndScreen : MonoBehaviour
 
     void AssignStats()
     {
-        pScore.text = ScoreManager.Instance.Score_Player.ToString();
-        eScore.text = ScoreManager.Instance.Score_Enemy.ToString();
-        Round.text = ScoreManager.Instance.CurRound.ToString();
+        pScore.text = BattleStatsManager.Instance.Score_Player.ToString();
+        eScore.text = BattleStatsManager.Instance.Score_Enemy.ToString();
+        Round.text = BattleStatsManager.Instance.CurRound.ToString();
     }
 
     public void Win()
     {
-        ScoreManager.Instance.IsEnding = true;
+        BattleStatsManager.Instance.IsEnding = true;
         AssignStats();
         Anim.SetTrigger(win);
     }
 
     public void Loss()
     {
-        ScoreManager.Instance.IsEnding = true;
+        BattleStatsManager.Instance.IsEnding = true;
         AssignStats();
         Anim.SetTrigger(loss);
     }
@@ -75,7 +75,7 @@ public class EndScreen : MonoBehaviour
         }
         while (scene.progress < 0.9f);
 
-        ScoreManager.Instance.IsEnding = false;
+        BattleStatsManager.Instance.IsEnding = false;
 
         Anim.ResetTrigger(win);
         Anim.ResetTrigger(loss);

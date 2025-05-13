@@ -22,13 +22,13 @@ public static class Action_NextTurn
 
     static bool CanTheyAttack()
     {
-        if (ScoreManager.Instance.CurRound == 0) return false;
+        if (BattleStatsManager.Instance.CurRound == 0) return false;
 
         return true;
     }
     static bool CanTheyScore()
     {
-        if (ScoreManager.Instance.CurRound == 0) return false;
+        if (BattleStatsManager.Instance.CurRound == 0) return false;
 
         return true;
     }
@@ -39,8 +39,8 @@ public static class Action_NextTurn
         if (IsChangingTurn) yield break;
         IsChangingTurn = true;
 
-        int curRound = ScoreManager.Instance.CurRound;
-        Side CurTurn = ScoreManager.Instance.CurTurn;
+        int curRound = BattleStatsManager.Instance.CurRound;
+        Side CurTurn = BattleStatsManager.Instance.CurTurn;
 
         //Debug.Log("ScoreManager.Instance.CurRound " + ScoreManager.Instance.CurRound);
 
@@ -76,11 +76,11 @@ public static class Action_NextTurn
 
         #region handling turn/round change and events for them
         
-        ScoreManager.Instance.CurTurn = turn;
-        ScoreManager.Instance.CurRound = round;
+        BattleStatsManager.Instance.CurTurn = turn;
+        BattleStatsManager.Instance.CurRound = round;
 
-        E_Turn_Functional.Invoke(ScoreManager.Instance.CurTurn);
-        E_Turn_Visuals.Invoke(ScoreManager.Instance.CurTurn);
+        E_Turn_Functional.Invoke(BattleStatsManager.Instance.CurTurn);
+        E_Turn_Visuals.Invoke(BattleStatsManager.Instance.CurTurn);
         if (ShouldDebug) Debug.Log("E_Turn");
 
         if (curRound != round) 
@@ -102,9 +102,9 @@ public static class Action_NextTurn
         if (IsChangingToNextTurn) yield break;
         IsChangingToNextTurn = true;
 
-        while (ScoreManager.Instance.IsEnding) { yield return new WaitForSeconds(Time.fixedDeltaTime); }
+        while (BattleStatsManager.Instance.IsEnding) { yield return new WaitForSeconds(Time.fixedDeltaTime); }
 
-        Side nT = ScoreManager.Instance.CurTurn; int nR = ScoreManager.Instance.CurRound;
+        Side nT = BattleStatsManager.Instance.CurTurn; int nR = BattleStatsManager.Instance.CurRound;
         if (nT == Side.Player) { nT = Side.Enemy; } else { nT = Side.Player; nR++; }
 
         yield return SetRoundNTurn(nR, nT, true, true);

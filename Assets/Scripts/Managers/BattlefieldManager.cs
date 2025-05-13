@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
-public class GameplayManager : MonoBehaviour
+public class BattlefieldManager : MonoBehaviour
 {
     #region Singleton
-    public static GameplayManager Instance;
+    public static BattlefieldManager Instance;
     void Singleton()
     {
         if (Instance != null)
@@ -55,9 +55,13 @@ public class GameplayManager : MonoBehaviour
         EnemyManager.Instance.ResetArmy();
         yield return EnemyManager.Instance.DeployEnemies();
 
+        yield return Action_DrawNewItem.DrawNewItem();
+
         yield return PlayerManager.Instance.InstantiatePlayerUnits();
         PlayerManager.Instance.ResetArmy();
         yield return PlayerManager.Instance.DeployPlayerUnits();
+
+        
 
         eBattlefieldCreation.Invoke();
 
