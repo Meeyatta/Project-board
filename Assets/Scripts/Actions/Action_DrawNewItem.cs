@@ -25,17 +25,17 @@ public static class Action_DrawNewItem
 
         if (ShouldDebug) Debug.Log("Initiated DrawPossibleItems of " + AmountOfPossibleItems);
         
-        yield return ItemManager.Instance.DrawPossibleItems(AmountOfPossibleItems);
+        yield return ItemManagement.Instance.DrawPossibleItems(AmountOfPossibleItems);
         yield return new WaitForSeconds(Time.fixedDeltaTime);
 
         if (ShouldDebug) 
-            Debug.Log("Finished DrawPossibleItems, got: " + ItemManager.Instance.PossibleItems[0] + " " + ItemManager.Instance.PossibleItems[1]);
+            Debug.Log("Finished DrawPossibleItems, got: " + ItemManagement.Instance.PossibleItems[0] + " " + ItemManagement.Instance.PossibleItems[1]);
 
         //Camera is drawn in front of the board
         CameraManager.Instance.SetCam(CameraManager.Instance.InFrontOfBoad);
 
         #region Hovering the possible items until player selects one
-        Item selectedItem = null; List<Item> pulledItemsCopy = new List<Item>(); pulledItemsCopy.AddRange(ItemManager.Instance.PossibleItems);
+        Item selectedItem = null; List<Item> pulledItemsCopy = new List<Item>(); pulledItemsCopy.AddRange(ItemManagement.Instance.PossibleItems);
 
         foreach (var v in pulledItemsCopy) { v.Anim.SetBool(IsHoveringStr, true); } //Making items hover 
 

@@ -128,8 +128,8 @@ public class ClickManager : MonoBehaviour
         {
             nextClickTime = Time.time + (ClickCooldown * Time.fixedDeltaTime * 100);
 
-            if (ShouldDebug) Debug.Log("Launching CellClickHandle");
-            if (UnitClick != null && UnitClick.Unit != null) ClickHandle(UnitClick.Unit);
+            if (ShouldDebug) Debug.Log("Launching UnitClickHandle");
+            if (UnitClick.Unit != null) ClickHandle(UnitClick.Unit);
 
             ItemClick = null;
             CellClick = null;
@@ -140,7 +140,7 @@ public class ClickManager : MonoBehaviour
             nextClickTime = Time.time + (ClickCooldown * Time.fixedDeltaTime * 100);
 
             if (ShouldDebug) Debug.Log("Launching ItemClickHandle");
-            if (UnitClick != null && UnitClick.Unit != null) ClickHandle(ItemClick);
+            ClickHandle(ItemClick);
 
             ItemClick = null;
             CellClick = null;

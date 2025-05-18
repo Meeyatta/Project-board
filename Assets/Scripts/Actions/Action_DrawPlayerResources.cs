@@ -52,6 +52,8 @@ public static class Action_DrawPlayerResources
     #region SetPos - Sets the pulled units/items beside the listed point
     static void SetPos(GameObject center, List<Unit> units)
     {
+        if (ShouldDebug) Debug.Log("SetPos - units " + units.Count);
+
         for (int i = 0; i < units.Count; i++)
         {
             float half = (float)((units.Count - 1f) / 2f);
@@ -66,6 +68,8 @@ public static class Action_DrawPlayerResources
     }
     static void SetPos(GameObject center, List<Item> items)
     {
+        if (ShouldDebug) Debug.Log("SetPos - items " + items.Count);
+
         for (int i = 0; i < items.Count; i++)
         {
             float half = (float)((items.Count - 1f) / 2f);
@@ -73,8 +77,9 @@ public static class Action_DrawPlayerResources
 
             Vector3 offset = new Vector3(SpaceBetweenItems, 0, 0) * offsetMod;
 
-            //Debug.Log(i + " " + offset);
-            if (items[i] != selectedItem) items[i].transform.position = center.transform.position + offset;
+            if (ShouldDebug) Debug.Log(center.transform.position + offset);
+            if (items[i] != selectedItem) items[i].gameObject.transform.position = center.transform.position + offset;
+            if (ShouldDebug) Debug.Log("item pos " + items[i].gameObject.transform.position);
 
         }
     }
@@ -104,8 +109,10 @@ public static class Action_DrawPlayerResources
 
         #region Pulling and hiding new units
         List<Unit> pulledUnits = new List<Unit>();
-        void PullNewPossibleUnits()
+        IEnumerator PullNewPossibleUnits()
         {
+            yield return new WaitForSeconds(Time.fixedDeltaTime);
+
             if (canDeployNewUnit)
             {
                 CameraManager.Instance.SetCam(CameraManager.Instance.InFrontOfBoad);
@@ -113,10 +120,10 @@ public static class Action_DrawPlayerResources
                 pulledUnits.AddRange(Pull3RandomUnits());
                 foreach (var v in pulledUnits) { v.Anim.SetBool(IsHoveringStr, true); } //Making units hover 
 
-                void stopAwaitingSelection_U(Unit u) { selectedUnit = u; }
+                void selectAUnit(Unit u) { selectedUnit = u; }
 
-                ClickManager.Instance.E_Click_unit.RemoveListener(stopAwaitingSelection_U);
-                ClickManager.Instance.E_Click_unit.AddListener(stopAwaitingSelection_U);
+                ClickManager.Instance.E_Click_unit.RemoveListener(selectAUnit);
+                ClickManager.Instance.E_Click_unit.AddListener(selectAUnit);
             }
             else
             {
@@ -124,8 +131,10 @@ public static class Action_DrawPlayerResources
                 unitsAmount = 0;
             }
         }
-        void HidesPossibleUnits()
+        IEnumerator HidesPossibleUnits()
         {
+            yield return ItemManagement.Instance.DrawPossibleItems(PulledItemsAmount);
+
             foreach (var v in pulledUnits) 
             { 
                 v.Anim.SetBool(IsHoveringStr, false); //Stopping units hover 
@@ -137,20 +146,22 @@ public static class Action_DrawPlayerResources
 
         #region Pulling and hiding new items
         List<Item> pulledItemsCopy = new List<Item>();
-        void PullNewPossibleItems()
+        IEnumerator PullNewPossibleItems()
         {
+            yield return ItemManagement.Instance.DrawPossibleItems(PulledItemsAmount);
+
             if (canDeployNewItem)
             {
                 CameraManager.Instance.SetCam(CameraManager.Instance.InFrontOfBoad);
 
                 pulledItemsCopy.Clear();
-                pulledItemsCopy.AddRange(ItemManager.Instance.PossibleItems);
+                pulledItemsCopy.AddRange(ItemManagement.Instance.PossibleItems);
                 foreach (var v in pulledItemsCopy) { v.Anim.SetBool(IsHoveringStr, true); } //Making items hover 
 
-                void stopAwaitingSelection_I(Item i) { Debug.Log("Selected an item"); selectedItem = i; }
+                void selectAnItem(Item i) { Debug.Log("Selected an item"); selectedItem = i; }
 
-                ClickManager.Instance.E_Click_item.RemoveListener(stopAwaitingSelection_I);
-                ClickManager.Instance.E_Click_item.AddListener(stopAwaitingSelection_I);
+                ClickManager.Instance.E_Click_item.RemoveListener(selectAnItem);
+                ClickManager.Instance.E_Click_item.AddListener(selectAnItem);
             }
             else
             {
@@ -158,8 +169,10 @@ public static class Action_DrawPlayerResources
                 itemsAmount = 0;
             }
         }
-        void HidesPossibleItems()
+        IEnumerator HidesPossibleItems()
         {
+            yield return new WaitForSeconds(Time.fixedDeltaTime);
+
             foreach (var v in pulledItemsCopy)
             {
                 v.Anim.SetBool(IsHoveringStr, false); //Stopping units hover 
@@ -171,17 +184,18 @@ public static class Action_DrawPlayerResources
 
         bool placedUnit = !canDeployNewUnit; bool placedItem = !canDeployNewItem;
 
-        PullNewPossibleUnits();
-        PullNewPossibleItems();
+        yield return PullNewPossibleUnits();
+        yield return PullNewPossibleItems();
         while (unitsAmount > 0 || itemsAmount > 0)
         {
             yield return new WaitForSeconds(Time.fixedDeltaTime / 1000);
+            if (ShouldDebug) Debug.Log("Continuing " + unitsAmount + " " + itemsAmount);
 
             #region If player focuses on new resources
             if (IsFocused())
             {
                 SetPos(UnitPlacementBag.Instance.UnitsPos_InFront, pulledUnits);
-                SetPos(ItemManager.Instance.ItemsSelect_Higher, pulledItemsCopy);
+                SetPos(ItemManagement.Instance.ItemsSelect_Higher, pulledItemsCopy);
 
                 #region Raising a unit we hover over
                 if (ClickManager.Instance.CurrentPointedAtUnit != null)
@@ -222,6 +236,7 @@ public static class Action_DrawPlayerResources
             else
             {
                 SetPos(UnitPlacementBag.Instance.UnitsPos_Below, pulledUnits);
+                SetPos(ItemManagement.Instance.ItemsSelect_Lower, pulledItemsCopy);
             }
             #endregion
 
@@ -241,28 +256,31 @@ public static class Action_DrawPlayerResources
                 if (pulledUnits.Contains(selectedUnit)) pulledUnits.Remove(selectedUnit);
                 selectedUnit = null;
                 unitsAmount--;
-                HidesPossibleUnits();
-                if (unitsAmount > 0) PullNewPossibleUnits();
-
+                yield return HidesPossibleUnits();
                 yield return new WaitForSeconds(Time.fixedDeltaTime);
                 GameManager.Instance.E_HideDeployment.Invoke();
+
+                if (unitsAmount > 0) yield return PullNewPossibleUnits();
+                yield return new WaitForSeconds(Time.fixedDeltaTime);
             }
             #endregion
 
             #region Selecting an item
             if (selectedItem != null && itemsAmount > 0)
             {
-                yield return ItemManager.Instance.SelectNewItem(selectedItem);
+                yield return ItemManagement.Instance.SelectNewItem(selectedItem);
 
                 if (ShouldDebug) Debug.Log("left with " + unitsAmount + " units and " + itemsAmount + " items");
                 itemsAmount--;
-                HidesPossibleItems();
+                yield return HidesPossibleItems();
+
                 if (itemsAmount > 0) PullNewPossibleItems();
                 yield return new WaitForSeconds(Time.fixedDeltaTime);
             }
                 #endregion
         }
 
+        if (ShouldDebug) Debug.Log("Ended DeployNewResources");
         IsDeployingNewResources = false;
         yield return new WaitForSeconds(Time.fixedDeltaTime);
         GameManager.Instance.RemoveAction(parameters);

@@ -2,10 +2,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ItemManager : MonoBehaviour
+public class ItemManagement : MonoBehaviour
 {
     #region Singleton
-    public static ItemManager Instance;
+    public static ItemManagement Instance;
     void Singleton()
     {
         if (Instance != null)
@@ -63,9 +63,7 @@ public class ItemManager : MonoBehaviour
             yield return new WaitForSeconds(Time.fixedDeltaTime);
             pItems.Remove(pItems[r]);
             yield return new WaitForSeconds(Time.fixedDeltaTime);
-        }
-
-        
+        }    
     }
 
     public IEnumerator SelectNewItem(Item i)
@@ -73,7 +71,14 @@ public class ItemManager : MonoBehaviour
         CurItem = i;
         PossibleItems.Clear();
 
-        CurItem.transform.position = CurItem_PosObj.transform.position;
         yield return new WaitForSeconds(Time.deltaTime);
+    }
+
+    private void Update()
+    {
+        if (CurItem != null)
+        {
+            CurItem.transform.position = CurItem_PosObj.transform.position;
+        }
     }
 }
