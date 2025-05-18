@@ -15,6 +15,7 @@ public class ClickManager : MonoBehaviour
     public float ActionToActionSwapCooldown; public float ActionToNoneSwapCooldown;
     public LayerMask LayerMask;
     public bool ShouldDebug;
+    public bool ShouldDebugCellClicks;
 
     float nextClickTime = 1;
     bool SwitchedToAnotherAction;
@@ -44,7 +45,9 @@ public class ClickManager : MonoBehaviour
 
     }
 
-    Transform LastPointedAt = null; public Unit CurrentPointedAtUnit = new Unit();
+    Transform LastPointedAt = null; 
+    public Unit CurrentPointedAtUnit = new Unit();
+    public Item CurrentPointedAtItem = new Item();
 
     #region CellClick
     Vector2Int? CellClick = null;
@@ -117,6 +120,7 @@ public class ClickManager : MonoBehaviour
             if (ShouldDebug) Debug.Log("Launching CellClickHandle");
             ClickHandle(CellClick.Value);
 
+            ItemClick = null;
             CellClick = null;
             UnitClick = null;
         }
@@ -126,15 +130,22 @@ public class ClickManager : MonoBehaviour
 
             if (ShouldDebug) Debug.Log("Launching CellClickHandle");
             if (UnitClick != null && UnitClick.Unit != null) ClickHandle(UnitClick.Unit);
+
+            ItemClick = null;
             CellClick = null;
             UnitClick = null;
         }
-        else
+        else if (ItemClick != null)
         {
-            //Debug.Log("Both are null " + UnitClick.Unit + " " + UnitClick.Position);
-            //Debug.Log((UnitClick.Unit != NullUnitClick.Unit) + " " + (UnitClick.Position != NullUnitClick.Position));
-            //Debug.Log(NullUnitClick.Unit + " " + NullUnitClick.Position);
-            
+            nextClickTime = Time.time + (ClickCooldown * Time.fixedDeltaTime * 100);
+
+            if (ShouldDebug) Debug.Log("Launching ItemClickHandle");
+            if (UnitClick != null && UnitClick.Unit != null) ClickHandle(ItemClick);
+
+            ItemClick = null;
+            CellClick = null;
+            UnitClick = null;
+
         }
 
         #endregion
@@ -151,7 +162,6 @@ public class ClickManager : MonoBehaviour
     void ClickHandle(Item i)
     {
         if (ShouldDebug) Debug.Log("ClickHandle on  " + i.Name);
-
 
         E_Click_item.Invoke(i);
     }
@@ -189,7 +199,7 @@ public class ClickManager : MonoBehaviour
     }
     #endregion
 
-    #region Coroutine for when we click on a cell/Item
+    #region Coroutine for when we click on a cell
     void StartClickCoroutine(Vector2Int coords)
     {
         if (C_ClickCoroutine == null)
@@ -304,13 +314,13 @@ public class ClickManager : MonoBehaviour
 
         if (TutorialManager.Instance != null) { yield return TutorialClickCoroutine(coords); yield break; }
 
-        if (ShouldDebug) Debug.Log("Cell click detected");
+        if (ShouldDebugCellClicks) Debug.Log("Cell click detected");
 
         #region Are we selecting a position for creating a unit?
         if (Action_PlayerCreate.IsWaitingForData && Action_PlayerCreate.CanCreateThere(Action_PlayerCreate.Unit, coords))
         #region Yes - Invoke an event to send coordinates where the unit is going to be created (If can be created)
         { //a1
-            if (ShouldDebug) Debug.Log("Creating a unit");
+            if (ShouldDebugCellClicks) Debug.Log("Creating a unit");
             ClickBackEvent.Invoke(coords);
         }
         #endregion
@@ -318,87 +328,108 @@ public class ClickManager : MonoBehaviour
         #region No - Check if there is a unit to move to these coordinates
         else
         {
-            if (ShouldDebug) Debug.Log("Not Creating a unit");
+            if (ShouldDebugCellClicks) Debug.Log("Not Creating a unit");
             #region Do we have a unit and cell is unoccupied?
-            if (GameManager.Instance.CurUnitSelected != null && BoardManager.Instance.Board[coords.x].Cells[coords.y].CurUnit == null &&
-                BattleStatsManager.Instance.PlayerTurnActionCondition())
-            #region Yes - Are we in the deployment phase?
-            {
-                if (ShouldDebug) Debug.Log("Have a unit, cell is unoccupied");
-                #region Yes - Redeploy unit to the coordinates
-                if (BattleStatsManager.Instance.CurRound <= 0)
+                if (GameManager.Instance.CurUnitSelected != null && BoardManager.Instance.Board[coords.x].Cells[coords.y].CurUnit == null &&
+                    BattleStatsManager.Instance.PlayerTurnActionCondition())  
                 {
-                    if (ShouldDebug) Debug.Log("Supposed to redeploy");
-                    List<Vector2Int> nCoords = new List<Vector2Int>(); nCoords.Add(coords);
-                    List<Unit> unitToList = new List<Unit>();
-                    unitToList.Add(GameManager.Instance.CurUnitSelected);
+                    #region Yes - Are we in the deployment phase?
+                    if (ShouldDebugCellClicks) Debug.Log("Have a unit, cell is unoccupied");
+                    if (BattleStatsManager.Instance.CurRound <= 0)
+                    {
+                        #region Yes - Are we currently deploying any units? 
+                        if (Action_DrawPlayerResources.IsDeployingNewResources)
+                        {
+                            #region Yes - do nothing
+                            if (ShouldDebugCellClicks) Debug.Log("Tried to redeploy, but currently deploying resources");
+                            #endregion
+                        }
+                        else
+                        {
+                            #region No - Redeploy unit to the coordinates
+                            if (ShouldDebugCellClicks) Debug.Log("Supposed to redeploy");
+                            List<Vector2Int> nCoords = new List<Vector2Int>(); nCoords.Add(coords);
+                            List<Unit> unitToList = new List<Unit>();
+                            unitToList.Add(GameManager.Instance.CurUnitSelected);
 
-                    ActionParameters parameters = new ActionParameters(ActionType.Redeploy, unitToList, null, nCoords, null, 0);
-                    yield return GameManager.Instance.Action(parameters);
-                    GameManager.Instance.CurUnitSelected = null;
+                            ActionParameters parameters = new ActionParameters(ActionType.Redeploy, unitToList, null, nCoords, null, 0);
+                            yield return GameManager.Instance.Action(parameters);
+                            GameManager.Instance.CurUnitSelected = null;
+                            #endregion
+                        }         
+                        #endregion
+                    }
+
+                    else
+                    {
+                        #region No - Move unit to the position
+                        if (ShouldDebugCellClicks) Debug.Log("Moving the unit to position");
+                        List<Vector2Int> nCoords = new List<Vector2Int>(); nCoords.Add(coords);
+                        List<Unit> unitToList = new List<Unit>();
+                        unitToList.Add(GameManager.Instance.CurUnitSelected);
+
+                        ActionParameters parameters = new ActionParameters(ActionType.Move, unitToList, null, nCoords, null, 0);
+                        yield return GameManager.Instance.Action(parameters);
+                        GameManager.Instance.CurUnitSelected = null;
+                    #endregion
                 }
                 #endregion
-                #region No - Move unit to the position
-                else
-                {
-                    List<Vector2Int> nCoords = new List<Vector2Int>(); nCoords.Add(coords);
-                    List<Unit> unitToList = new List<Unit>();
-                    unitToList.Add(GameManager.Instance.CurUnitSelected);
-
-                    ActionParameters parameters = new ActionParameters(ActionType.Move, unitToList, null, nCoords, null, 0);
-                    yield return GameManager.Instance.Action(parameters);
-                    GameManager.Instance.CurUnitSelected = null;
                 }
-                #endregion
-            }
-            #endregion
 
             #region No - check the cell to try to interact with a unit on it
             else
-            {
-                if (ShouldDebug) Debug.Log("Don't have a unit, interacting with the unit");
-                #region Does this cell have a unit?
-                if (BoardManager.Instance.Board[coords.x].Cells[coords.y].CurUnit != null)
-                #region Yes - Check what kind of unit this is
                 {
-                    if (ShouldDebug) Debug.Log("Cell has a unit");
-                    #region Is selected unit a PLAYER unit we are currently NOT selecting?
-                    List<Vector2Int> nCoords = new List<Vector2Int>(); nCoords.Add(coords);
-                    if (BoardManager.Instance.Board[coords.x].Cells[coords.y].CurUnit.CurKeywords.Contains(Keyword.Player)
-                        && GameManager.Instance.CurUnitSelected != BoardManager.Instance.Board[coords.x].Cells[coords.y].CurUnit)
-                    #region Yes - select it if we can
+                    if (ShouldDebugCellClicks) Debug.Log("Don't have a unit, interacting with the unit");
+                    #region Does this cell have a unit?
+                    if (BoardManager.Instance.Board[coords.x].Cells[coords.y].CurUnit != null)
+                    #region Yes - Check what kind of unit this is
                     {
-                        if (ShouldDebug) Debug.Log("Initiating the selectUnit action");
-                        ; ActionParameters parameters = new ActionParameters(ActionType.SelectUnit, null, null, nCoords, null, 0);
-                        yield return GameManager.Instance.Action(parameters);
-                        //else { Debug.Log(ScoreManager.Instance.CurTurn); }
+                        if (ShouldDebugCellClicks) Debug.Log("Cell has a unit");
+                        #region Is selected unit a PLAYER unit we are currently NOT selecting?
+                        List<Vector2Int> nCoords = new List<Vector2Int>(); nCoords.Add(coords);
+                        if (BoardManager.Instance.Board[coords.x].Cells[coords.y].CurUnit.CurKeywords.Contains(Keyword.Player)
+                            && GameManager.Instance.CurUnitSelected != BoardManager.Instance.Board[coords.x].Cells[coords.y].CurUnit)
+                        #region Yes - can we select it?
+                        {
+                            if (!Action_DrawPlayerResources.IsDeployingNewResources)
+                            #region Yes
+                            {
+                                if (ShouldDebugCellClicks) Debug.Log("Initiating the selectUnit action");
+                                ActionParameters parameters = new ActionParameters(ActionType.SelectUnit, null, null, nCoords, null, 0);
+                                yield return GameManager.Instance.Action(parameters);
+                            }
+                            #endregion
+                            #region No
+
+                            #endregion
+                        
+                        }
+                        #endregion
+
+                        #region No - TODO:
+                        else
+                        { //b4)
+                            if (ShouldDebugCellClicks) Debug.Log("Clicking on a non-player unit or unit is already selected");
+                            GameManager.Instance.CurUnitSelected = null;
+                            ActionParameters parameters = new ActionParameters(ActionType.SelectUnit, null, null, nCoords, null, 0);
+                            yield return GameManager.Instance.Action(parameters);
+                        }
+                        #endregion
+
+                        #endregion
                     }
                     #endregion
 
-                    #region No - TODO:
+                    #region No - Do nothing, clicked on an empty cell
                     else
-                    { //b4)
-                        if (ShouldDebug) Debug.Log("Clicking on a non-player unit or unit is already selected");
-                        GameManager.Instance.CurUnitSelected = null;
-                        ActionParameters parameters = new ActionParameters(ActionType.SelectUnit, null, null, nCoords, null, 0);
-                        yield return GameManager.Instance.Action(parameters);
+                    { //b3)
+                        if (ShouldDebugCellClicks) Debug.Log("HAVE NOTHING SELECTED, " + coords + " HAS NO UNITS ");
+                        //No unit on that cell, do nothing
                     }
                     #endregion
-
                     #endregion
                 }
                 #endregion
-
-                #region No - Do nothing, clicked on an empty cell
-                else
-                { //b3)
-                    if (ShouldDebug) Debug.Log("HAVE NOTHING SELECTED, " + coords + " HAS NO UNITS ");
-                    //No unit on that cell, do nothing
-                }
-                #endregion
-                #endregion
-            }
-            #endregion
 
             #endregion
         }
@@ -431,6 +462,8 @@ public class ClickManager : MonoBehaviour
             if (hit.transform.tag.ToLower() == "unit")
             {
                 if (ShouldDebug) Debug.Log(hit.transform.gameObject.name + " unit was hit with raycast");
+
+                CurrentPointedAtItem = null;
                 #region If keep pointing at the same unit
                 if (hit.transform == LastPointedAt)
                 {
@@ -444,7 +477,7 @@ public class ClickManager : MonoBehaviour
                 #region If hover over a new unit
                 else
                 {
-                    Debug.Log(hit.transform.gameObject.name + " is new, making current");
+                    if (ShouldDebug) Debug.Log(hit.transform.gameObject.name + " is new, making current");
                     LastPointedAt = hit.transform;
                     Unit u = LastPointedAt.GetComponent<Unit>();
                     CurrentPointedAtUnit = u;
@@ -503,17 +536,19 @@ public class ClickManager : MonoBehaviour
             {
                 if (ShouldDebug) Debug.Log(hit.transform.gameObject.name + " item was hit with raycast");
 
-                #region If hover and click on an old cell
+                CurrentPointedAtUnit = null;
+                #region If hover and click on an old item
                 if (hit.transform == LastPointedAt)
                 {
                     IsPointingAtTurnClock = false;
                 }
                 #endregion
-                #region If hover over a new cell
+                #region If hover over a new item
                 else
                 {
                     LastPointedAt = hit.transform;
                     Item i = LastPointedAt.GetComponent<Item>();
+                    CurrentPointedAtItem = i;
                     if (i != null)
                     {
                         UnitClick = null; //This Might break
@@ -533,10 +568,17 @@ public class ClickManager : MonoBehaviour
             {
                 IsPointingAtTurnClock = true;
 
+                CurrentPointedAtUnit = null;
+                CurrentPointedAtItem = null;
                 if (ShouldDebug) Debug.Log(hit.transform.gameObject.name + " turn clock was hit with raycast");
                 PassTurnButton.Instance.Pass();
             }
             #endregion
+
+            else
+            {
+                //if (ShouldDebug) Debug.Log("Hit something else: " + hit.transform.gameObject.name + " with tag " + hit.transform.tag);
+            }
 
         }
         #endregion

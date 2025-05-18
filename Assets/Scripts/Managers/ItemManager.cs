@@ -34,15 +34,16 @@ public class ItemManager : MonoBehaviour
     public bool ShouldDebug;
 
     [Header("---------")]
-    public GameObject ItemPos_Higher;
-    public GameObject ItemPos_Lower;
+    public GameObject CurItem_PosObj;
+    public GameObject ItemsSelect_Higher;
+    public GameObject ItemsSelect_Lower;
 
     void Start()
     {
         AvailableItems.AddRange(Items); //This is temporary and gives player access to all possible items
 
-        if (ItemPos_Higher == null) { ItemPos_Higher = GameObject.Find("ItemsPlace_Higher"); }
-        if (ItemPos_Lower == null) { ItemPos_Lower = GameObject.Find("ItemsPlace_Lower"); }
+        if (ItemsSelect_Higher == null) { ItemsSelect_Higher = GameObject.Find("ItemsPlace_Higher"); }
+        if (ItemsSelect_Lower == null) { ItemsSelect_Lower = GameObject.Find("ItemsPlace_Lower"); }
     }
 
     public IEnumerator DrawPossibleItems(int n)
@@ -65,5 +66,14 @@ public class ItemManager : MonoBehaviour
         }
 
         
+    }
+
+    public IEnumerator SelectNewItem(Item i)
+    {
+        CurItem = i;
+        PossibleItems.Clear();
+
+        CurItem.transform.position = CurItem_PosObj.transform.position;
+        yield return new WaitForSeconds(Time.deltaTime);
     }
 }

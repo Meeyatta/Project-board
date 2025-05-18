@@ -115,9 +115,10 @@ public class PlayerManager : MonoBehaviour
 
     public IEnumerator DeployPlayerUnits()
     {
+        List<Vector2Int> amount =new List<Vector2Int> { new Vector2Int(StarterUnitsAmount, 1) };
         ActionParameters parameters = new ActionParameters(
-            GameManager.ActionType.DeployPlayerStarters, null, null, null, null, StarterUnitsAmount);
-        yield return StartCoroutine(GameManager.Instance.Action(parameters));
+            GameManager.ActionType.DeployPlayerStarters, null, null, amount, null, 0);
+        yield return Action_DrawPlayerResources.DeployNewResources(parameters);
 
         yield return new WaitForSeconds(Time.fixedDeltaTime);
 
@@ -130,8 +131,8 @@ public class PlayerManager : MonoBehaviour
         EffectManager.Instance.HideAllPlayerMovement(BattleStatsManager.Instance.CurTurn); // <- Safeguards just in case
 
         ActionParameters parameters = new ActionParameters(
-                    GameManager.ActionType.DeployNew, null, null, null, null, 0);
-        yield return Action_DeployNewPlayerUnit.DeployNewUnit(parameters);
+            GameManager.ActionType.DeployPlayerStarters, null, null, null, null, 0);
+        yield return Action_DrawPlayerResources.DeployNewResources(parameters);
 
         EffectManager.Instance.HideAllPlayerMovement(BattleStatsManager.Instance.CurTurn); // <- Safeguards just in case
     }

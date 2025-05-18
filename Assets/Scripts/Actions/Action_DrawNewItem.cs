@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+//This is deprecated, functions as a part of Action_DrawPlayerResources
 public static class Action_DrawNewItem
 {
     static int AmountOfPossibleItems = 2;
@@ -38,17 +39,18 @@ public static class Action_DrawNewItem
 
         foreach (var v in pulledItemsCopy) { v.Anim.SetBool(IsHoveringStr, true); } //Making items hover 
 
-        #region Adding an event for selecting a unit player clicked on
+        #region Adding an event for selecting an item player clicked on
         void stopAwaitingSelection(Item i) { Debug.Log("Selected an item"); ; selectedItem = i; }
 
+        if (ShouldDebug) Debug.Log("AddListener ");
         ClickManager.Instance.E_Click_item.RemoveListener(stopAwaitingSelection);
         ClickManager.Instance.E_Click_item.AddListener(stopAwaitingSelection);
         #endregion
 
-        //while (selectedItem == null)
-        //{
-        //    yield return new WaitForSeconds(Time.fixedDeltaTime / 1000);
-
+        while (selectedItem == null)
+        {
+            yield return new WaitForSeconds(Time.fixedDeltaTime / 1000);
+        }
         //    #region If player foces on new units
         //    if (IsFocused())
         //    {

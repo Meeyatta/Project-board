@@ -17,6 +17,7 @@ public class Item : MonoBehaviour
     public ItemId Id;
 
     public Animator Anim;
+    public Animator Animator_2D;
 
     [HideInInspector]
     public bool IsPrefab = true;

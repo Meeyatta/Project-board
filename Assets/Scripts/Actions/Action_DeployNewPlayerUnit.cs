@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
+//This is deprecated, functions as a part of Action_DrawPlayerResources
 public static class Action_DeployNewPlayerUnit
 {
     public static bool IsDeploying;
@@ -81,7 +82,6 @@ public static class Action_DeployNewPlayerUnit
             4CheckData) TODO:
          */
         IsDeploying = true;
-        GameObject unitsPoint = UnitPlacementBag.Instance.UnitsPos_InFront;
 
         //Camera is drawn in front of the board
         CameraManager.Instance.SetCam(CameraManager.Instance.InFrontOfBoad);
@@ -177,7 +177,7 @@ public static class Action_DeployNewPlayerUnit
         IsDeploying = false;
         ClickManager.Instance.E_Click_unit.RemoveListener(stopAwaitingSelection);
 
-        yield return new WaitForSeconds(0.1f * Time.fixedDeltaTime);
+        yield return new WaitForSeconds(Time.fixedDeltaTime);
         GameManager.Instance.RemoveAction(parameters);
 
     }

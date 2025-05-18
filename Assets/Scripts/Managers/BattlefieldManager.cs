@@ -55,8 +55,6 @@ public class BattlefieldManager : MonoBehaviour
         EnemyManager.Instance.ResetArmy();
         yield return EnemyManager.Instance.DeployEnemies();
 
-        yield return Action_DrawNewItem.DrawNewItem();
-
         yield return PlayerManager.Instance.InstantiatePlayerUnits();
         PlayerManager.Instance.ResetArmy();
         yield return PlayerManager.Instance.DeployPlayerUnits();
