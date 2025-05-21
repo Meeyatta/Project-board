@@ -400,9 +400,13 @@ public class ClickManager : MonoBehaviour
                             }
                             #endregion
                             #region No
-
-                            #endregion
-                        
+                            else
+                            {
+                            if (ShouldDebugCellClicks) Debug.Log("Action_DrawPlayerResources.IsDeployingNewResources is " 
+                                + Action_DrawPlayerResources.IsDeployingNewResources);
+                            }
+                            #endregion  
+                            
                         }
                         #endregion
 
@@ -410,9 +414,9 @@ public class ClickManager : MonoBehaviour
                         else
                         { //b4)
                             if (ShouldDebugCellClicks) Debug.Log("Clicking on a non-player unit or unit is already selected");
-                            GameManager.Instance.CurUnitSelected = null;
-                            ActionParameters parameters = new ActionParameters(ActionType.SelectUnit, null, null, nCoords, null, 0);
-                            yield return GameManager.Instance.Action(parameters);
+                            //GameManager.Instance.CurUnitSelected = null;
+                            //ActionParameters parameters = new ActionParameters(ActionType.SelectUnit, null, null, nCoords, null, 0);
+                            //yield return GameManager.Instance.Action(parameters);
                         }
                         #endregion
 

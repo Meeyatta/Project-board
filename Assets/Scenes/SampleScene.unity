@@ -14397,7 +14397,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 11416984, guid: c080686877cf77f42a1a078076d57fe5, type: 3}
       propertyPath: textList.Array.size
-      value: 8
+      value: 7
       objectReference: {fileID: 0}
     - target: {fileID: 11416984, guid: c080686877cf77f42a1a078076d57fe5, type: 3}
       propertyPath: textList.Array.data[0].s
@@ -14425,7 +14425,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 11416984, guid: c080686877cf77f42a1a078076d57fe5, type: 3}
       propertyPath: textList.Array.data[4].s
-      value: Units lower too slowly after selecting them
+      value: Make it so items is redrawn if one remains
       objectReference: {fileID: 0}
     - target: {fileID: 11416984, guid: c080686877cf77f42a1a078076d57fe5, type: 3}
       propertyPath: textList.Array.data[5].s
@@ -14433,7 +14433,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 11416984, guid: c080686877cf77f42a1a078076d57fe5, type: 3}
       propertyPath: textList.Array.data[6].s
-      value: Camera focuses in front of board on 1st round
+      value: Make items functional
       objectReference: {fileID: 0}
     - target: {fileID: 11416984, guid: c080686877cf77f42a1a078076d57fe5, type: 3}
       propertyPath: textList.Array.data[7].s
@@ -14521,7 +14521,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 11416984, guid: c080686877cf77f42a1a078076d57fe5, type: 3}
       propertyPath: textList.Array.data[4].state
-      value: 1
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 11416984, guid: c080686877cf77f42a1a078076d57fe5, type: 3}
       propertyPath: textList.Array.data[5].state
@@ -14529,7 +14529,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 11416984, guid: c080686877cf77f42a1a078076d57fe5, type: 3}
       propertyPath: textList.Array.data[6].state
-      value: 1
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 11416984, guid: c080686877cf77f42a1a078076d57fe5, type: 3}
       propertyPath: textList.Array.data[7].state
@@ -52970,7 +52970,7 @@ MonoBehaviour:
   CurItem: {fileID: 0}
   PossibleItems: []
   AvailableItems: []
-  ShouldDebug: 1
+  ShouldDebug: 0
   CurItem_PosObj: {fileID: 1876699632}
   ItemsSelect_Higher: {fileID: 1832663732}
   ItemsSelect_Lower: {fileID: 1023656101}
@@ -54916,8 +54916,8 @@ MonoBehaviour:
   LayerMask:
     serializedVersion: 2
     m_Bits: 513
-  ShouldDebug: 1
-  ShouldDebugCellClicks: 0
+  ShouldDebug: 0
+  ShouldDebugCellClicks: 1
   ClickBackEvent:
     m_PersistentCalls:
       m_Calls: []
@@ -84294,7 +84294,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   StarterUnitsAmount: 5
-  DebugBehaviour: 1
+  DebugBehaviour: 0
   DeployNewUnit_Before: 1
   DeployNewUnit_After: 1.2
   ThinkingDelay: 1

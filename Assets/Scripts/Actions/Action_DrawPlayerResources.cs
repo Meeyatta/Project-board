@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Security.Cryptography;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -77,7 +78,7 @@ public static class Action_DrawPlayerResources
 
             Vector3 offset = new Vector3(SpaceBetweenItems, 0, 0) * offsetMod;
 
-            if (ShouldDebug) Debug.Log(center.transform.position + offset);
+            if (ShouldDebug) { Debug.Log(center.transform.position + offset); }
             if (items[i] != selectedItem) items[i].gameObject.transform.position = center.transform.position + offset;
             if (ShouldDebug) Debug.Log("item pos " + items[i].gameObject.transform.position);
 
@@ -85,6 +86,8 @@ public static class Action_DrawPlayerResources
     }
     #endregion
 
+    static void selectAUnit(Unit u) { if (!BoardManager.Instance.IsOnBoard(u)) selectedUnit = u; }
+    static void selectAnItem(Item i) { Debug.Log("Selected an item"); selectedItem = i; }
 
     //Deploys resources for the new round
     //If we need to deploy more than 1 unit or items, should pass a vector with (unitsAmount, itemsAmount)
@@ -94,6 +97,15 @@ public static class Action_DrawPlayerResources
     public static IEnumerator DeployNewResources(ActionParameters parameters)
     {
         IsDeployingNewResources = true;
+
+        #region Exit in case it gets called during the first round after deployment
+        if (BattleStatsManager.Instance.CurRound == 1)
+        {
+            yield return EndResourceDeloyment(parameters);
+            yield break;
+        }
+        #endregion
+
         yield return new WaitForSeconds(Time.fixedDeltaTime);
 
         int unitsAmount = 1; int itemsAmount = 1;
@@ -120,8 +132,6 @@ public static class Action_DrawPlayerResources
                 pulledUnits.AddRange(Pull3RandomUnits());
                 foreach (var v in pulledUnits) { v.Anim.SetBool(IsHoveringStr, true); } //Making units hover 
 
-                void selectAUnit(Unit u) { selectedUnit = u; }
-
                 ClickManager.Instance.E_Click_unit.RemoveListener(selectAUnit);
                 ClickManager.Instance.E_Click_unit.AddListener(selectAUnit);
             }
@@ -145,6 +155,7 @@ public static class Action_DrawPlayerResources
         #endregion
 
         #region Pulling and hiding new items
+        ItemManagement.Instance.CurItem = null;
         List<Item> pulledItemsCopy = new List<Item>();
         IEnumerator PullNewPossibleItems()
         {
@@ -158,7 +169,6 @@ public static class Action_DrawPlayerResources
                 pulledItemsCopy.AddRange(ItemManagement.Instance.PossibleItems);
                 foreach (var v in pulledItemsCopy) { v.Anim.SetBool(IsHoveringStr, true); } //Making items hover 
 
-                void selectAnItem(Item i) { Debug.Log("Selected an item"); selectedItem = i; }
 
                 ClickManager.Instance.E_Click_item.RemoveListener(selectAnItem);
                 ClickManager.Instance.E_Click_item.AddListener(selectAnItem);
@@ -280,10 +290,19 @@ public static class Action_DrawPlayerResources
                 #endregion
         }
 
-        if (ShouldDebug) Debug.Log("Ended DeployNewResources");
-        IsDeployingNewResources = false;
-        yield return new WaitForSeconds(Time.fixedDeltaTime);
-        GameManager.Instance.RemoveAction(parameters);
+        yield return EndResourceDeloyment(parameters);
     }
 
+    static IEnumerator EndResourceDeloyment(ActionParameters parameters)
+    {
+        if (ShouldDebug) Debug.Log("Ended DeployNewResources");
+        ItemManagement.Instance.PossibleItems.Clear();
+        IsDeployingNewResources = false;
+        ClickManager.Instance.E_Click_unit.RemoveListener(selectAUnit);
+        ClickManager.Instance.E_Click_item.RemoveListener(selectAnItem);
+
+        yield return new WaitForSeconds(Time.fixedDeltaTime);
+        GameManager.Instance.RemoveAction(parameters);
+
+    }
 }
