@@ -21,7 +21,7 @@ public static class Action_DrawPlayerResources
     public static UnityEvent<Unit> E_SelectedNewItem = new UnityEvent<Unit>();
     #endregion
 
-    static bool ShouldDebug = true;
+    static bool ShouldDebug = false;
     const string IsHoveringStr = "isHovering";
     const string IsRaisedStr = "isRaised";
 
@@ -162,19 +162,19 @@ public static class Action_DrawPlayerResources
 
             if (canDeployNewItem)
             {
+                selectedItem = null;
                 CameraManager.Instance.SetCam(CameraManager.Instance.InFrontOfBoad);
 
                 pulledItemsCopy.Clear();
+                if (ShouldDebug)  { Debug.Log("Adding " + ItemManagement.Instance.PossibleItems.Count + " to pulledItemsCopy"); }
                 pulledItemsCopy.AddRange(ItemManagement.Instance.PossibleItems);
                 foreach (var v in pulledItemsCopy) { v.Anim.SetBool(IsHoveringStr, true); } //Making items hover 
-
 
                 ClickManager.Instance.E_Click_item.RemoveListener(selectAnItem);
                 ClickManager.Instance.E_Click_item.AddListener(selectAnItem);
             }
             else
             {
-                pulledItemsCopy.Clear();
                 itemsAmount = 0;
             }
         }
@@ -194,7 +194,10 @@ public static class Action_DrawPlayerResources
         bool placedUnit = !canDeployNewUnit; bool placedItem = !canDeployNewItem;
 
         yield return PullNewPossibleUnits();
+        yield return new WaitForSeconds(Time.fixedDeltaTime);
         yield return PullNewPossibleItems();
+        yield return new WaitForSeconds(Time.fixedDeltaTime);
+
         while (unitsAmount > 0 || itemsAmount > 0)
         {
             yield return new WaitForSeconds(Time.fixedDeltaTime / 1000);

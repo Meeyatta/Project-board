@@ -5,9 +5,9 @@ using UnityEngine;
 public enum Covering 
 {
     None,
-    Water, //Applies "Fireproof"
-    Oil,   //Applies "Flammable" and "Slippery"
-    
+    Water, //Applies "Resistance: Fire" and "Vulnerable:Frost, Lightning"
+    Oil,   //Applies "Vulnerable: Fire" and "Slippery"
+
 };
 
 public class CellCoverManager : MonoBehaviour
@@ -27,6 +27,14 @@ public class CellCoverManager : MonoBehaviour
         DontDestroyOnLoad(this);
     }
     #endregion
+
+    public void CoverCells(Covering cover, List<Vector2Int> cells)
+    {
+        foreach (var coords in cells)
+        {
+            BoardManager.Instance.Board[coords.x].Cells[coords.y].CoveredBy = cover;
+        }
+    }
 
     void FixedUpdate()
     {

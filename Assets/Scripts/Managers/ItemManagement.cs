@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class ItemManagement : MonoBehaviour
@@ -44,11 +45,17 @@ public class ItemManagement : MonoBehaviour
 
         if (ItemsSelect_Higher == null) { ItemsSelect_Higher = GameObject.Find("ItemsPlace_Higher"); }
         if (ItemsSelect_Lower == null) { ItemsSelect_Lower = GameObject.Find("ItemsPlace_Lower"); }
-    }
 
+        ClickManager.Instance.E_Click_item.AddListener(UseItem);
+    }
+    void OnDisable()
+    {
+        ClickManager.Instance.E_Click_item.RemoveListener(UseItem);
+    }
     public IEnumerator DrawPossibleItems(int n)
     {
-        if (ShouldDebug) { Debug.Log("Drawing " + n + " possible units"); }
+        if (ShouldDebug) { Debug.Log("Drawing " + n + " possible items"); }
+        CurItem = null;
         PossibleItems.Clear();
 
         List<Item> pItems = new List<Item>(); pItems.AddRange(AvailableItems);
@@ -73,6 +80,27 @@ public class ItemManagement : MonoBehaviour
         PossibleItems.Clear();
 
         yield return new WaitForSeconds(Time.deltaTime);
+    }
+
+    //Using an item
+    public void UseItem(Item i)
+    {
+        if (i != CurItem) { return; } //Use only an item if it is a current item
+
+        switch(i.Id)
+        {
+            case ItemId.water:
+                ActionParameters w = new ActionParameters(GameManager.ActionType.WaterBucket, null, null, null, null, 0);
+                GameManager.Instance.ActionWrapper(w);
+                break;
+            case ItemId.oil:
+                ActionParameters o = new ActionParameters(GameManager.ActionType.OilBucket, null, null, null, null, 0);
+                GameManager.Instance.ActionWrapper(o);
+                break;
+            default:
+                Debug.LogError("Item ID type " + i.Id + " behaviour not set up");
+                break;
+        }
     }
 
     private void Update()

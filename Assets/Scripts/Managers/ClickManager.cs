@@ -139,7 +139,7 @@ public class ClickManager : MonoBehaviour
         {
             nextClickTime = Time.time + (ClickCooldown * Time.fixedDeltaTime * 100);
 
-            if (ShouldDebug) Debug.Log("Launching ItemClickHandle");
+            if (ShouldDebug) Debug.Log("Launching Item ClickHandle");
             ClickHandle(ItemClick);
 
             ItemClick = null;
@@ -162,7 +162,6 @@ public class ClickManager : MonoBehaviour
     void ClickHandle(Item i)
     {
         if (ShouldDebug) Debug.Log("ClickHandle on  " + i.Name);
-
         E_Click_item.Invoke(i);
     }
     #endregion

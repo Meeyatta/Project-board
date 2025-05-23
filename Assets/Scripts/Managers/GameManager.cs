@@ -35,6 +35,11 @@ using UnityEngine.InputSystem;
         Score(ActionTargetUnits) - Ability: Ability_Score, checks for units nearby, adds points to player if more player units, 
             adds points to enemy if more enemy units
         Slip(ActionTargetUnits) - Ability: Ability_Slippery, Moves unit into a random direction
+
+        --ITEMS--
+
+        Item_WaterBucket - Covers a 3x3 square in Water
+        Item_OilBucket - Covers a 3x3 square in Oil
 */
 
 /*
@@ -75,6 +80,8 @@ public class GameManager : MonoBehaviour
     DeployNew, DeployPlayerStarters,
 
     Score, Slip,
+
+    WaterBucket, OilBucket,
     };
     [HideInInspector] public Unit CurUnitSelected = null; //What unit is currently selected, if no unit - should be null
     public static GameManager Instance;
@@ -277,7 +284,17 @@ public class GameManager : MonoBehaviour
                 break;
             #endregion Slip(ActionTargetUnits)
 
+            //Items
 
+            //Water Bucket - covers a selected 3x3 square in Water
+            #region WaterBucket()
+            case ActionType.WaterBucket:
+
+                //ActionSlot water = new ActionSlot(Ability_Slippery.Try(parameters), ActionType.WaterBucket, parameters);
+                //ActionQueue.Enqueue(water);
+
+                break;
+            #endregion
 
             //Means I forgot to make an action for this type
             #region Default(...)
