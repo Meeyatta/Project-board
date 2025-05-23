@@ -48,6 +48,7 @@ public class ItemManagement : MonoBehaviour
 
     public IEnumerator DrawPossibleItems(int n)
     {
+        if (ShouldDebug) { Debug.Log("Drawing " + n + " possible units"); }
         PossibleItems.Clear();
 
         List<Item> pItems = new List<Item>(); pItems.AddRange(AvailableItems);
@@ -58,8 +59,8 @@ public class ItemManagement : MonoBehaviour
             int r = Random.Range(0, pItems.Count);
             if (ShouldDebug) Debug.Log(pItems.Count + " " + r);
 
+            yield return new WaitForSeconds(Time.fixedDeltaTime);
             PossibleItems.Add(pItems[r]);
-
             yield return new WaitForSeconds(Time.fixedDeltaTime);
             pItems.Remove(pItems[r]);
             yield return new WaitForSeconds(Time.fixedDeltaTime);

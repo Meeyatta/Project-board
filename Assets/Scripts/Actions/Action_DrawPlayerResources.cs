@@ -25,6 +25,9 @@ public static class Action_DrawPlayerResources
     const string IsHoveringStr = "isHovering";
     const string IsRaisedStr = "isRaised";
 
+    static List<Unit> pulledUnits = new List<Unit>();
+    static List<Item> pulledItemsCopy = new List<Item>();
+
     #region IsFocused() - Checks if player is focused on things in front of camera or is looking somewhere else
     static bool IsFocused()
     {
@@ -35,10 +38,9 @@ public static class Action_DrawPlayerResources
     #endregion
 
     #region Draw3RandomUnits() - returns a list of 3 random untis we can deploy
-    static List<Unit> Pull3RandomUnits()
+    static void Pull3RandomUnits()
     {
         List<Unit> shuffled = PlayerManager.Instance.ShuffleList(PlayerManager.Instance.Army_NotPlaced);
-        List<Unit> pulledUnits = new List<Unit>();
         for (int i = 0; i < Mathf.Min(PulledUnitsAmount, shuffled.Count); i++)
         {
             shuffled[i].gameObject.SetActive(true);
@@ -46,7 +48,6 @@ public static class Action_DrawPlayerResources
             //Debug.Log("Pulled out a " + shuffled[i]);
         }
 
-        return pulledUnits;
     }
     #endregion
 
@@ -120,7 +121,6 @@ public static class Action_DrawPlayerResources
         CameraManager.Instance.SetCam(CameraManager.Instance.InFrontOfBoad);
 
         #region Pulling and hiding new units
-        List<Unit> pulledUnits = new List<Unit>();
         IEnumerator PullNewPossibleUnits()
         {
             yield return new WaitForSeconds(Time.fixedDeltaTime);
@@ -129,7 +129,7 @@ public static class Action_DrawPlayerResources
             {
                 CameraManager.Instance.SetCam(CameraManager.Instance.InFrontOfBoad);
 
-                pulledUnits.AddRange(Pull3RandomUnits());
+                Pull3RandomUnits();
                 foreach (var v in pulledUnits) { v.Anim.SetBool(IsHoveringStr, true); } //Making units hover 
 
                 ClickManager.Instance.E_Click_unit.RemoveListener(selectAUnit);
@@ -156,7 +156,6 @@ public static class Action_DrawPlayerResources
 
         #region Pulling and hiding new items
         ItemManagement.Instance.CurItem = null;
-        List<Item> pulledItemsCopy = new List<Item>();
         IEnumerator PullNewPossibleItems()
         {
             yield return ItemManagement.Instance.DrawPossibleItems(PulledItemsAmount);
@@ -188,7 +187,7 @@ public static class Action_DrawPlayerResources
                 v.Anim.SetBool(IsHoveringStr, false); //Stopping units hover 
                 v.transform.position = Vector3.zero - Vector3.left * 5;
             }
-            pulledUnits.Clear();
+            pulledItemsCopy.Clear();
         }
         #endregion
 
@@ -287,7 +286,7 @@ public static class Action_DrawPlayerResources
                 if (itemsAmount > 0) PullNewPossibleItems();
                 yield return new WaitForSeconds(Time.fixedDeltaTime);
             }
-                #endregion
+            #endregion
         }
 
         yield return EndResourceDeloyment(parameters);
@@ -296,6 +295,26 @@ public static class Action_DrawPlayerResources
     static IEnumerator EndResourceDeloyment(ActionParameters parameters)
     {
         if (ShouldDebug) Debug.Log("Ended DeployNewResources");
+
+        #region Hiding unselected units
+        if (ShouldDebug) Debug.Log("Preparing to hide " + pulledUnits.Count + " units");
+        foreach (var v in pulledUnits)
+        {
+            if (ShouldDebug) Debug.Log("Hid " + v.gameObject.name);
+            if (!BoardManager.Instance.IsOnBoard(v)) { v.transform.position = new Vector3(0, -99, 0); }            
+        }
+        pulledUnits.Clear();
+        #endregion
+        #region Hiding unselected items
+        if (ShouldDebug) Debug.Log("Preparing to hide " + pulledItemsCopy.Count + " items");
+        foreach (var v in pulledItemsCopy)
+        {
+            if (ShouldDebug) Debug.Log("Hid " + v.gameObject.name);
+            if (ItemManagement.Instance.CurItem != v) v.transform.position = new Vector3(0, -99, 0);
+        }
+        pulledItemsCopy.Clear();
+        #endregion
+
         ItemManagement.Instance.PossibleItems.Clear();
         IsDeployingNewResources = false;
         ClickManager.Instance.E_Click_unit.RemoveListener(selectAUnit);
