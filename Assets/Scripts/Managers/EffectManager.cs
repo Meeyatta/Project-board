@@ -128,6 +128,57 @@ public class EffectManager : MonoBehaviour
     }
     #endregion
 
+    #region Everything referring to covering board cells
+
+    #region Referring to drawing effect area placement
+    Coroutine c_DrawingEffectArea = null;
+    public void Start_DrawingEffectAreaPlacement()
+    {
+        if (c_DrawingEffectArea == null)
+        {
+            c_DrawingEffectArea = StartCoroutine(DrawingEffectAreaPlacement());
+        }
+    }
+
+    public IEnumerator DrawingEffectAreaPlacement()
+    {
+        yield return new WaitForSeconds(Time.fixedDeltaTime);
+    }
+    public void Stop_DrawingEffectAreaPlacement()
+    {
+        if (c_DrawingEffectArea != null)
+        {
+            StopCoroutine(c_DrawingEffectArea);
+            c_DrawingEffectArea = null;
+        }
+    }
+    #endregion
+
+    #region Drawing covers on top of board cells
+
+    //These may need to be remade into coroutines in case i will need specific timings instead of it being instant
+    #region Starts drawing new covers of selected type on selected coordinates
+    public void StartDrawingCovers(CoverType type, List<Vector2Int> coords)
+    {
+        StopDrawingCovers(coords);
+    }
+    #endregion
+
+    #region Clears all covers on selected coordinates
+    public void StopDrawingCovers(List<Vector2Int> coords)
+    {
+        foreach (var v in coords)
+        {
+            if (!BoardManager.Instance.IsInBounds(v)) { continue; }
+
+            //Stopped here
+        }
+    }
+    #endregion
+
+    #endregion
+    #endregion
+
     #region Visually updating objectives depending on who controls them
     public void StartUpdatingObjectiveControl()
     {

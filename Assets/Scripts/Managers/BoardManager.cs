@@ -165,7 +165,7 @@ public class BoardManager : MonoBehaviour
                         InBetweenSpace + x * (InBetweenSpace + CellSize), 
                         DefaultY, 
                         -1 * (InBetweenSpace + y * (InBetweenSpace + CellSize)) );
-                cell.CoveredBy = Covering.None;
+                cell.CoveredBy = CoverType.None;
 
                 #region Check if zone is a player deployment zone
                 if (x >= PlayerDeploymentZone[0].x && x<= PlayerDeploymentZone[1].x &&

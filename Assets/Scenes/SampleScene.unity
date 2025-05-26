@@ -14425,10 +14425,8 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 11416984, guid: c080686877cf77f42a1a078076d57fe5, type: 3}
       propertyPath: textList.Array.data[4].s
-      value: 'Make items functional (Stopped in
-
-        gameManager in WaterBucket''s
-        case'
+      value: "Make items functional (Stopped in\neffectManager in StopDrawingCovers).
+        \nGamemanager still needs it's case for the bucket fixed"
       objectReference: {fileID: 0}
     - target: {fileID: 11416984, guid: c080686877cf77f42a1a078076d57fe5, type: 3}
       propertyPath: textList.Array.data[5].s
