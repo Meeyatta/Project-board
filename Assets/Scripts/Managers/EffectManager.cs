@@ -7,6 +7,7 @@ using UnityEngine.Events;
 using UnityEngine.VFX;
 using System.Linq;
 using Unity.VisualScripting;
+using UnityEngine.UIElements;
 
 
 
@@ -31,6 +32,8 @@ public class EffectManager : MonoBehaviour
     public float ModelOffset;
 
     public GameObject EffectsObj; //Parent of all effect objects
+
+    public bool ShouldDebug;
 
     #region Storing current effects
     public Dictionary<Unit, List<GameObject>> MovementEffectsToHide = new Dictionary<Unit, List<GameObject>>();
@@ -156,27 +159,86 @@ public class EffectManager : MonoBehaviour
 
     #region Drawing covers on top of board cells
 
-    //These may need to be remade into coroutines in case i will need specific timings instead of it being instant
-    #region Starts drawing new covers of selected type on selected coordinates
-    public void StartDrawingCovers(CoverType type, List<Vector2Int> coords)
+    List<Vector2Int> OnlyCoveredCells()
     {
-        StopDrawingCovers(coords);
-    }
-    #endregion
-
-    #region Clears all covers on selected coordinates
-    public void StopDrawingCovers(List<Vector2Int> coords)
-    {
-        foreach (var v in coords)
+        List<Vector2Int> l = new List<Vector2Int>();
+        for (int x = 0; x < BoardManager.Instance.Width; x++)
         {
-            if (!BoardManager.Instance.IsInBounds(v)) { continue; }
-
-            //Stopped here
+            for (int y = BoardManager.Instance.Height - 1; y >= 0; y--)
+            {
+                if (BoardManager.Instance.Board[x].Cells[y].CoveredBy != CoverType.None)
+                {
+                    l.Add(new Vector2Int(x, y));
+                }
+            }
         }
+
+        return l;
     }
-    #endregion
+    public bool ShouldDrawCovers = true;
+    Coroutine c_DrawingCovers = null;
+    public Dictionary<Vector2Int, GameObject> CoverEffectsToHide = new Dictionary<Vector2Int, GameObject>();
+    IEnumerator DrawingCovers()
+    {
+        if (ShouldDebug) Debug.Log("Starting to draw covers");
+        yield return new WaitForSeconds(Time.fixedDeltaTime);
+
+        while (ShouldDrawCovers && c_DrawingCovers != null)
+        {
+            yield return new WaitForSeconds(Time.fixedDeltaTime);
+
+            #region Cleaning cells without covers
+            if (ShouldDebug) Debug.Log("Handling " + CoverEffectsToHide.Count + " cover effects");
+            List<Vector2Int> toRemove = new List<Vector2Int>();
+            foreach (var v in CoverEffectsToHide)
+            {
+                CoverType vCover = BoardManager.Instance.Board[v.Key.x].Cells[v.Key.y].CoveredBy;
+                if (vCover == CoverType.None)
+                {
+                    if (ShouldDebug) Debug.Log("Hiding on" + v + " the " + v.Value.name);
+                    DestroyToPool(v.Value);
+                    toRemove.Add(v.Key);
+                }
+            }
+            while (toRemove.Count > 0)
+            {
+                CoverEffectsToHide.Remove(toRemove[toRemove.Count - 1]);
+                toRemove.Remove(toRemove[toRemove.Count - 1]);
+            }
+            #endregion
+
+            #region Adding effects to covered cells
+            List<Vector2Int> lOnlyCovered = OnlyCoveredCells();
+            if (ShouldDebug) Debug.Log("Covering " + lOnlyCovered.Count + " cells");
+            if (lOnlyCovered.Count <= 0 || lOnlyCovered == null) { continue; }
+            foreach (var v in lOnlyCovered)
+            {
+                CoverType ct = BoardManager.Instance.Board[v.x].Cells[v.y].CoveredBy;
+
+                Cover c = CellCoverManager.Instance.GetCover(ct);
+                if (c != null)
+                {
+                    if (CoverEffectsToHide.ContainsKey(v)) { DestroyToPool(CoverEffectsToHide[v]); CoverEffectsToHide.Remove(v); }
+
+                    List<Vector2Int> lv = new List<Vector2Int> { v };
+
+                    if (ShouldDebug) Debug.Log("Overlaying" + v + " with " + c.Name);
+                    GameObject coverOverlay =
+                        InstantiateFromPool(c.EffectManagerTag, BoardManager.Instance.BoardToWorldPosition(lv).Value, Quaternion.identity);
+                    CoverEffectsToHide.Add(v, coverOverlay);
+                }
+            }
+            #endregion
+
+
+        }
+
+
+        if (ShouldDebug) Debug.Log("Stopped to draw covers");
+    }
 
     #endregion
+
     #endregion
 
     #region Visually updating objectives depending on who controls them
@@ -502,7 +564,7 @@ public class EffectManager : MonoBehaviour
     #region Working with object pools
     public GameObject InstantiateFromPool(Tag tag, Vector3 position, Quaternion rotation)
     {
-        if (!CurrentPools.ContainsKey(Tag.Movement)) { Debug.LogWarning("No tag in pools named " + tag); return null; }
+        if (!CurrentPools.ContainsKey(tag)) { Debug.LogWarning("No tag in pools named " + tag); return null; }
 
         GameObject obj = CurrentPools[tag].Dequeue();
 
@@ -519,5 +581,12 @@ public class EffectManager : MonoBehaviour
         obj.SetActive(false);
     }
     #endregion
-
+    
+    void Update()
+    {
+        if (c_DrawingCovers == null)
+        {
+            c_DrawingCovers = StartCoroutine(DrawingCovers());
+        }
+    }
 }

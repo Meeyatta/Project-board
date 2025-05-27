@@ -14397,7 +14397,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 11416984, guid: c080686877cf77f42a1a078076d57fe5, type: 3}
       propertyPath: textList.Array.size
-      value: 6
+      value: 7
       objectReference: {fileID: 0}
     - target: {fileID: 11416984, guid: c080686877cf77f42a1a078076d57fe5, type: 3}
       propertyPath: textList.Array.data[0].s
@@ -14425,8 +14425,9 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 11416984, guid: c080686877cf77f42a1a078076d57fe5, type: 3}
       propertyPath: textList.Array.data[4].s
-      value: "Make items functional (Stopped in\neffectManager in StopDrawingCovers).
-        \nGamemanager still needs it's case for the bucket fixed"
+      value: "Make items functional (Stopped at\nmaking cover effects). \nGamemanager
+        still needs it's case for\n the bucket fixed. Work inside \"WaterBucket\"\ninside
+        \"Item_WaterBucket\""
       objectReference: {fileID: 0}
     - target: {fileID: 11416984, guid: c080686877cf77f42a1a078076d57fe5, type: 3}
       propertyPath: textList.Array.data[5].s
@@ -14436,7 +14437,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 11416984, guid: c080686877cf77f42a1a078076d57fe5, type: 3}
       propertyPath: textList.Array.data[6].s
-      value: Make items functional
+      value: Assign unique cover effects in effectManager
       objectReference: {fileID: 0}
     - target: {fileID: 11416984, guid: c080686877cf77f42a1a078076d57fe5, type: 3}
       propertyPath: textList.Array.data[7].s
@@ -49332,6 +49333,7 @@ MonoBehaviour:
   CellOverlay: {fileID: 123482733}
   ModelOffset: 3
   EffectsObj: {fileID: 0}
+  ShouldDebug: 1
   Pools:
   - Tag: 0
     Prefab: {fileID: 123482733}
@@ -49341,6 +49343,7 @@ MonoBehaviour:
     Prefab: {fileID: 108715483}
     Size: 10
     Parent: {fileID: 932169613}
+  ShouldDrawCovers: 1
 --- !u!1 &1136123900
 GameObject:
   m_ObjectHideFlags: 0
@@ -52750,6 +52753,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5db6d51441e66d34e8a9b5a28a4d7ccc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Covers:
+  - Name: Water
+    Type_: 1
+    EffectManagerTag: 0
+  - Name: Oil
+    Type_: 2
+    EffectManagerTag: 0
 --- !u!1 &1223977742
 GameObject:
   m_ObjectHideFlags: 0
@@ -52973,7 +52983,7 @@ MonoBehaviour:
   CurItem: {fileID: 0}
   PossibleItems: []
   AvailableItems: []
-  ShouldDebug: 1
+  ShouldDebug: 0
   CurItem_PosObj: {fileID: 1876699632}
   ItemsSelect_Higher: {fileID: 1832663732}
   ItemsSelect_Lower: {fileID: 1023656101}
@@ -53046,7 +53056,7 @@ MonoBehaviour:
     - Position: {x: 0.25, y: 0.1, z: -0.25}
       Coordinates: {x: 0, y: 0}
       CurUnit: {fileID: 0}
-      CoveredBy: 0
+      CoveredBy: 2
       Tags: 
     - Position: {x: 0.25, y: 0.1, z: -1.75}
       Coordinates: {x: 0, y: 1}

@@ -15,7 +15,14 @@ public class Cover
 {
     public string Name;
     public CoverType Type_;
-    public GameObject Prefab;
+    public EffectManager.Tag EffectManagerTag;
+
+    public Cover(string n, CoverType type, EffectManager.Tag tag)
+    {
+        Name = n;
+        Type_ = type;
+        EffectManagerTag = tag;
+    }
 }
 
 public class CellCoverManager : MonoBehaviour
@@ -36,12 +43,32 @@ public class CellCoverManager : MonoBehaviour
     }
     #endregion
 
+    public List<Cover> Covers;
+    public Cover GetCover(CoverType type)
+    {
+        foreach (var v in Covers)
+        {
+            if (v.Type_ == type) 
+            {
+                Debug.Log("Found the cover " + v.Name + " type of " + type);
+                return v; 
+            }
+        }
+
+        Debug.LogError("Cover of type " + type + " not found");
+        return null;
+    }
+
     public void CoverCells(CoverType type, List<Vector2Int> cells)
     {
         foreach (var coords in cells)
         {
             BoardManager.Instance.Board[coords.x].Cells[coords.y].CoveredBy = type;
         }
+    }
+    void Awake()
+    {
+        Singleton();
     }
 
     void FixedUpdate()
