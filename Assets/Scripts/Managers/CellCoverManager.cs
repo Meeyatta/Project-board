@@ -43,6 +43,7 @@ public class CellCoverManager : MonoBehaviour
     }
     #endregion
 
+    public bool ShouldDebug;
     public List<Cover> Covers;
     public Cover GetCover(CoverType type)
     {
@@ -50,12 +51,12 @@ public class CellCoverManager : MonoBehaviour
         {
             if (v.Type_ == type) 
             {
-                Debug.Log("Found the cover " + v.Name + " type of " + type);
+                if (ShouldDebug) Debug.Log("Found the cover " + v.Name + " type of " + type);
                 return v; 
             }
         }
 
-        Debug.LogError("Cover of type " + type + " not found");
+        if (ShouldDebug) Debug.LogError("Cover of type " + type + " not found");
         return null;
     }
 

@@ -125,7 +125,7 @@ public class Unit : MonoBehaviour
     }
     #endregion
 
-    bool DeBuggedSprite = false;
+    bool DeBuggedSprite = true;
     void UpdateSprite()
     {
         #region Show a message if unit doesn't have a sprite ONCE

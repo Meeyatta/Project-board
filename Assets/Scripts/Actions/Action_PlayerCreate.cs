@@ -8,7 +8,7 @@ using System.Linq;
 public static class Action_PlayerCreate
 {
     static string UnitPlacementHolderStr = "UnitPlacementHolder";
-    public static Unit Unit;
+    public static Unit CurUnit;
     static GameObject UnitPlacementHolderObj;
 
     public static bool IsWaitingForData;
@@ -43,18 +43,18 @@ public static class Action_PlayerCreate
         Vector3 holdPos = Vector3.zero; if (UnitPlacementHolderObj != null) { holdPos = UnitPlacementHolderObj.transform.position; }
 
         #region Check if an object is already created or needs to be instantiated
-        Unit = null;
+        CurUnit = null;
         if (parameters.ActionTargetUnits != null && !parameters.ActionTargetUnits[0].IsPrefab)
         {
-            Unit = parameters.ActionTargetUnits[0];
+            CurUnit = parameters.ActionTargetUnits[0];
         }
         else
         {
-            Unit = GameManager.Instantiate(Object, holdPos, Quaternion.identity).GetComponent<Unit>();
+            CurUnit = GameManager.Instantiate(Object, holdPos, Quaternion.identity).GetComponent<Unit>();
         }
         #endregion
 
-        List<Unit> unitList = new List<Unit>(); unitList.Add(Unit);
+        List<Unit> unitList = new List<Unit>(); unitList.Add(CurUnit);
 
         //Add a listener what executes after players selects a position and returns it
         List<Vector2Int> positions = new List<Vector2Int>();
@@ -64,17 +64,17 @@ public static class Action_PlayerCreate
             {
                 IsWaitingForData = false;
                 positions = v2;
-                Action_SelectPosition.ESendPositionBack.RemoveListener(Get_ClickedCellCoordinates);
+                Action_SelectUnitPosition.ESendPositionBack.RemoveListener(Get_ClickedCellCoordinates);
             }
         }
 
         UnityEvent<List<Vector2Int>> newEv = new UnityEngine.Events.UnityEvent<List<Vector2Int>>() { };
-        Action_SelectPosition.ESendPositionBack = newEv;
-        Action_SelectPosition.ESendPositionBack.AddListener(Get_ClickedCellCoordinates);
+        Action_SelectUnitPosition.ESendPositionBack = newEv;
+        Action_SelectUnitPosition.ESendPositionBack.AddListener(Get_ClickedCellCoordinates);
         IsWaitingForData = true;
 
         #region Start the action to select a position
-        GameManager.Instance.I_PositionSelect = Action_SelectPosition.Selecting(Unit, false);
+        GameManager.Instance.I_PositionSelect = Action_SelectUnitPosition.Selecting_strict(CurUnit, false);
         yield return GameManager.Instance.StartCoroutine(GameManager.Instance.I_PositionSelect);
         GameManager.Instance.I_PositionSelect = null;
         #endregion
@@ -100,7 +100,7 @@ public static class Action_PlayerCreate
         if (ViablePos)
         {
             //Debug.Log("Viable position, supposed to be creating");
-            yield return GameManager.Instance.StartCoroutine(BoardManager.Instance.PlaceUnit(Unit, positions));
+            yield return GameManager.Instance.StartCoroutine(BoardManager.Instance.PlaceUnit(CurUnit, positions));
         }
         else
         {

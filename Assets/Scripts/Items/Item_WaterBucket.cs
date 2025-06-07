@@ -4,6 +4,7 @@ using UnityEngine;
 
 public static class Item_WaterBucket
 {
+    static List<int> Size = new List<int> { 3, 3 };
     //Activate it
 
     //Start drawing the placement effect
@@ -18,6 +19,8 @@ public static class Item_WaterBucket
     {
         yield return new WaitForSeconds(Time.deltaTime);
         Debug.Log("WATER BUCKET, RELEASE");
+        yield return Bucket.CoverArea(CoverType.Water, Size);
+
         yield return new WaitForSeconds(Time.fixedDeltaTime);
         GameManager.Instance.RemoveAction(parameters);
     }

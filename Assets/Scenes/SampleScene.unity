@@ -14425,9 +14425,8 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 11416984, guid: c080686877cf77f42a1a078076d57fe5, type: 3}
       propertyPath: textList.Array.data[4].s
-      value: "Make items functional (Stopped at\nmaking cover effects). \nGamemanager
-        still needs it's case for\n the bucket fixed. Work inside \"WaterBucket\"\ninside
-        \"Item_WaterBucket\""
+      value: "Make items functional (Stopped at\nBucket and ClickManager, CellClickCoroutine
+        needs \na better way to check between clicks)"
       objectReference: {fileID: 0}
     - target: {fileID: 11416984, guid: c080686877cf77f42a1a078076d57fe5, type: 3}
       propertyPath: textList.Array.data[5].s
@@ -49333,7 +49332,7 @@ MonoBehaviour:
   CellOverlay: {fileID: 123482733}
   ModelOffset: 3
   EffectsObj: {fileID: 0}
-  ShouldDebug: 1
+  ShouldDebug: 0
   Pools:
   - Tag: 0
     Prefab: {fileID: 123482733}
@@ -52753,6 +52752,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5db6d51441e66d34e8a9b5a28a4d7ccc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ShouldDebug: 0
   Covers:
   - Name: Water
     Type_: 1

@@ -4,12 +4,14 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
-public static class Action_SelectPosition 
+public static class Action_SelectUnitPosition 
 {
     public static Unit CurUnit;
     public static UnityEvent<List<Vector2Int>> ESendPositionBack;
     public static bool IsAwaitingAClickBack = true;
     static bool ShouldCancel = false;
+
+    static bool ShouldDebug = true;
 
     static void Cancel()
     {
@@ -17,7 +19,51 @@ public static class Action_SelectPosition
         ShouldCancel = true;
     }
 
-    public static IEnumerator Selecting(Unit unit, bool canCancel)
+    //This selects a position for items, thus ignores positions it is not going to fit into
+    public static IEnumerator Selecting_relaxed(List<Vector2Int> poss, bool canCancel)
+    {
+        if (canCancel) GameManager.Instance.CancelEvent.AddListener(Cancel);
+
+        void StopWaiting(Vector2Int v)
+        {
+            if (ShouldDebug) Debug.Log("Stopped waiting - selecting_relaxed");
+            IsAwaitingAClickBack = false;
+
+            ESendPositionBack.Invoke(new List<Vector2Int> { v });
+
+        }
+
+        if (ShouldDebug) Debug.Log("Added a listener to clickback");
+        ClickManager.Instance.ClickBackEvent.AddListener(StopWaiting);
+
+        IsAwaitingAClickBack = true;
+
+        while (IsAwaitingAClickBack && !canCancel || (IsAwaitingAClickBack && !ShouldCancel && canCancel))
+        { yield return new WaitForSeconds(Time.deltaTime); }
+
+        if (ShouldCancel && canCancel)
+        {
+            Debug.Log("SELECTPOSITION_RELAXED ACTION IS CANCELED");
+            ShouldCancel = false;
+
+            /* TODO: ADD THE EFFECT HIDING FOR THE COVER EFFECTS
+             * 
+            List<Unit> nv = new List<Unit>(); nv.Add(unit);
+            GameManager.Instance.E_HidePlacement.Invoke(nv);
+            */
+
+            if (canCancel) GameManager.Instance.CancelEvent.RemoveListener(Cancel);
+            yield break;
+        }
+
+        ClickManager.Instance.ClickBackEvent.RemoveListener(StopWaiting);
+        ShouldCancel = false;
+        if (canCancel) GameManager.Instance.CancelEvent.RemoveListener(Cancel);
+        yield return new WaitForSeconds(Time.fixedDeltaTime);
+    }
+
+    //THIS selects a position for a unit, thus also considers if unit can fit into said position
+    public static IEnumerator Selecting_strict(Unit unit, bool canCancel)
     {
         if (canCancel) GameManager.Instance.CancelEvent.AddListener(Cancel);
 
@@ -38,11 +84,8 @@ public static class Action_SelectPosition
                     }
                     //Debug.Log("Will send " + (v[i] + CurUnit.Size.Positions[i]) + " back to GameManager");
 
-                    bool areAll = true;
-                    foreach (var pos in nv)
-                    {
-                        if (!BoardManager.Instance.IsInBounds(pos)) { areAll = false; }
-                    }
+                    
+                    bool areAll = BoardManager.Instance.AreInBounds(nv);
 
                     //If all of these coordinates are within a border, return  these positions
                     if (areAll)
