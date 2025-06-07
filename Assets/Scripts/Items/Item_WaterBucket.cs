@@ -17,7 +17,7 @@ public static class Item_WaterBucket
     public static IEnumerator WaterBucket(ActionParameters parameters)
     {
         yield return new WaitForSeconds(Time.deltaTime);
-
+        Debug.Log("WATER BUCKET, RELEASE");
         yield return new WaitForSeconds(Time.fixedDeltaTime);
         GameManager.Instance.RemoveAction(parameters);
     }

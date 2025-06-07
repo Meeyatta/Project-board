@@ -153,7 +153,6 @@ public class ClickManager : MonoBehaviour
     }
     #endregion
 
-
     Coroutine C_ClickCoroutine = null;
     #region Handles when we click on either a unit, cell or an item
 

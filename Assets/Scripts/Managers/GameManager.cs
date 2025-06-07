@@ -290,8 +290,8 @@ public class GameManager : MonoBehaviour
             #region WaterBucket()
             case ActionType.WaterBucket:
 
-                //ActionSlot water = new ActionSlot(Ability_Slippery.Try(parameters), ActionType.WaterBucket, parameters);
-                //ActionQueue.Enqueue(water);
+                ActionSlot water = new ActionSlot(Item_WaterBucket.WaterBucket(parameters), ActionType.WaterBucket, parameters);
+                ActionQueue.Enqueue(water);
 
                 break;
             #endregion

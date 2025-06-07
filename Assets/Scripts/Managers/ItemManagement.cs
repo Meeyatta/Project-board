@@ -28,7 +28,7 @@ public class ItemManagement : MonoBehaviour
   
     public List<Item> Items;
 
-    public Item CurItem;
+    public Item CurItem = new Item();
     public List<Item> PossibleItems = new List<Item>();
     public List<Item> AvailableItems = new List<Item>();
 
@@ -46,11 +46,11 @@ public class ItemManagement : MonoBehaviour
         if (ItemsSelect_Higher == null) { ItemsSelect_Higher = GameObject.Find("ItemsPlace_Higher"); }
         if (ItemsSelect_Lower == null) { ItemsSelect_Lower = GameObject.Find("ItemsPlace_Lower"); }
 
-        ClickManager.Instance.E_Click_item.AddListener(UseItem);
+        ClickManager.Instance.E_Click_item.AddListener(UseCurrentItem);
     }
     void OnDisable()
     {
-        ClickManager.Instance.E_Click_item.RemoveListener(UseItem);
+        ClickManager.Instance.E_Click_item.RemoveListener(UseCurrentItem);
     }
     public IEnumerator DrawPossibleItems(int n)
     {
@@ -82,32 +82,45 @@ public class ItemManagement : MonoBehaviour
         yield return new WaitForSeconds(Time.deltaTime);
     }
 
-    //Using an item
-    public void UseItem(Item i)
+    Coroutine cUsingItem = null;
+    public void UseCurrentItem(Item i)
     {
-        if (i != CurItem) { return; } //Use only an item if it is a current item
 
+        if (cUsingItem == null && CurItem != null)
+        {
+            cUsingItem = StartCoroutine(UseItem(CurItem));
+        }
+    }
+    
+    //Using an item
+    public IEnumerator UseItem(Item i)
+    {
         switch(i.Id)
         {
             case ItemId.water:
                 ActionParameters w = new ActionParameters(GameManager.ActionType.WaterBucket, null, null, null, null, 0);
-                GameManager.Instance.ActionWrapper(w);
+                yield return GameManager.Instance.Action(w);
                 break;
             case ItemId.oil:
                 ActionParameters o = new ActionParameters(GameManager.ActionType.OilBucket, null, null, null, null, 0);
-                GameManager.Instance.ActionWrapper(o);
+                yield return GameManager.Instance.Action(o);
                 break;
             default:
                 Debug.LogError("Item ID type " + i.Id + " behaviour not set up");
                 break;
         }
-    }
 
-    private void Update()
+        cUsingItem = null;
+    }
+    void UpdateItemPos()
     {
         if (CurItem != null)
         {
             CurItem.transform.position = CurItem_PosObj.transform.position;
         }
+    }
+    private void Update()
+    {
+        UpdateItemPos();
     }
 }
