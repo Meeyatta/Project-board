@@ -31,38 +31,30 @@ public class BattlefieldManager : MonoBehaviour
     [Header("---Functionality stuff---")]
     public float Delay;
     public UnityEvent eBattlefieldCreation;
+    public bool ShouldDebug;
 
-
-    IEnumerator MakeBattlefield(List<Vector2Int> objective_Positions)
-    {
-        #region Place objectives
-        foreach (var p in objective_Positions)
-        {
-            List<Vector2Int> pos = new List<Vector2Int> { p };
-            ActionParameters paramets = new ActionParameters(
-                        GameManager.ActionType.Create, null, null, pos, Objective_Obj, 0);
-            yield return StartCoroutine( GameManager.Instance.Action(paramets));
-        }
-
-        #endregion
-    }
     IEnumerator StartBattle()
     {
         yield return new WaitForSeconds(Delay * Time.fixedDeltaTime);
-        yield return MakeBattlefield(Objective_Positions);
 
+        #region Creating the battlefield map
+        ActionParameters pars = new ActionParameters(GameManager.ActionType.Create, null, null, Objective_Positions, null, 0);
+        yield return Action_CreateBattlefield.CreateBattlefield(pars);
+        #endregion
+
+        #region Placing enemy units
         yield return EnemyManager.Instance.InstantiateEnemyUnits();
         EnemyManager.Instance.ResetArmy();
         yield return EnemyManager.Instance.DeployEnemies();
+        #endregion
 
+        #region Placing player units
         yield return PlayerManager.Instance.InstantiatePlayerUnits();
         PlayerManager.Instance.ResetArmy();
         yield return PlayerManager.Instance.DeployPlayerUnits();
-
-        
+        #endregion
 
         eBattlefieldCreation.Invoke();
-
     }
     void Start()
     {

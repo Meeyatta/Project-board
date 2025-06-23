@@ -97,17 +97,19 @@ public class Unit : MonoBehaviour
 
     }
 
-
     #region Turns this into a player unit
-    
+
     public void SetToPlayer()
     {
         CurColor = PlayerColor;
 
         if (BaseRend != null) BaseRend.material = PlayerBaseMat;
 
-        if (BaseKeywords.Contains(Keyword.Enemy)) BaseKeywords.Remove(Keyword.Enemy);
+        BaseKeywords.RemoveAll(word => word == null || word == Keyword.Enemy);
         if (!BaseKeywords.Contains(Keyword.Player)) BaseKeywords.Add(Keyword.Player);
+
+        //if (BaseKeywords.Contains(Keyword.Enemy)) BaseKeywords.Remove(Keyword.Enemy);
+        //if (!BaseKeywords.Contains(Keyword.Player)) BaseKeywords.Add(Keyword.Player);
 
 
     }
@@ -120,8 +122,20 @@ public class Unit : MonoBehaviour
 
         if (BaseRend != null) BaseRend.material = EnemyBaseMat;
 
-        if (BaseKeywords.Contains(Keyword.Player)) BaseKeywords.Remove(Keyword.Player);
+        BaseKeywords.RemoveAll(word => word == null || word == Keyword.Player);
         if (!BaseKeywords.Contains(Keyword.Enemy)) BaseKeywords.Add(Keyword.Enemy);
+
+        //if (BaseKeywords.Contains(Keyword.Player)) BaseKeywords.Remove(Keyword.Player);
+        //if (!BaseKeywords.Contains(Keyword.Enemy)) BaseKeywords.Add(Keyword.Enemy);
+    }
+    #endregion
+
+
+    #region Turn this unit into a neutral unit
+    public void SetToNeutral()
+    {
+        BaseKeywords.RemoveAll(word => word == null || word == Keyword.Player);
+        BaseKeywords.RemoveAll(word => word == null || word == Keyword.Enemy);
     }
     #endregion
 

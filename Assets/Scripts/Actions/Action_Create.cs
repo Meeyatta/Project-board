@@ -5,6 +5,7 @@ using UnityEngine.UIElements;
 
 public static class Action_Create
 {
+    public static bool ShouldDebug = true;
     public static IEnumerator Create(ActionParameters parameters)
     {
         GameObject Object = parameters.Object; List<Vector2Int> poss = parameters.CellsCoordinates;
@@ -22,11 +23,13 @@ public static class Action_Create
         }
         #endregion
 
+        if (ShouldDebug) { Debug.Log("Creating a" + unit.gameObject.name + " as team: " + side); }
+
         #region Setting unit to one of the sides - player, enemy or neither
         switch (side) 
         {
             case -1:
-                
+                unit.SetToNeutral();
                 break;
             case 0:
                 unit.SetToPlayer();

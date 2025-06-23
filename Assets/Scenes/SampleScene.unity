@@ -14397,7 +14397,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 11416984, guid: c080686877cf77f42a1a078076d57fe5, type: 3}
       propertyPath: textList.Array.size
-      value: 8
+      value: 9
       objectReference: {fileID: 0}
     - target: {fileID: 11416984, guid: c080686877cf77f42a1a078076d57fe5, type: 3}
       propertyPath: textList.Array.data[0].s
@@ -14425,8 +14425,9 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 11416984, guid: c080686877cf77f42a1a078076d57fe5, type: 3}
       propertyPath: textList.Array.data[4].s
-      value: "Make items functional (Stopped at\nBucket and ClickManager, CellClickCoroutine
-        needs \na better way to check between clicks)"
+      value: 'Make items functional (Stopped at
+
+        Bucket)'
       objectReference: {fileID: 0}
     - target: {fileID: 11416984, guid: c080686877cf77f42a1a078076d57fe5, type: 3}
       propertyPath: textList.Array.data[5].s
@@ -14444,7 +14445,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 11416984, guid: c080686877cf77f42a1a078076d57fe5, type: 3}
       propertyPath: textList.Array.data[8].s
-      value: Amphibia-man doesn't slide
+      value: Objective creation weirdness
       objectReference: {fileID: 0}
     - target: {fileID: 11416984, guid: c080686877cf77f42a1a078076d57fe5, type: 3}
       propertyPath: textList.Array.data[9].s
@@ -55388,6 +55389,7 @@ MonoBehaviour:
   eBattlefieldCreation:
     m_PersistentCalls:
       m_Calls: []
+  ShouldDebug: 0
 --- !u!1 &1264183810
 GameObject:
   m_ObjectHideFlags: 0
@@ -86442,8 +86444,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   DelayBeforeIntro: 10
   PiecesIntro:
-  - {fileID: 11400000, guid: f859801b176084b45a967a5c572cb302, type: 2}
-  - {fileID: 11400000, guid: cf1a72feebce10c488bf116c9bb94c0a, type: 2}
+  - {fileID: 0}
+  - {fileID: 0}
   TorchBearerIntro: []
   UnitMovementIntro: []
   KnightOfCordIntro: []

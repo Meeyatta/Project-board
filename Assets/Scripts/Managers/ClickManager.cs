@@ -202,12 +202,12 @@ public class ClickManager : MonoBehaviour
     {
         if (C_ClickCoroutine == null)
         {
-            C_ClickCoroutine = StartCoroutine(CellClickCoroutine(coords));
+            C_ClickCoroutine = StartCoroutine(CellClickCoroutine_2(coords));
         }
         else
         {
             StopCoroutine(C_ClickCoroutine);
-            C_ClickCoroutine = StartCoroutine(CellClickCoroutine(coords));
+            C_ClickCoroutine = StartCoroutine(CellClickCoroutine_2(coords));
         }
     }
 
@@ -306,6 +306,70 @@ public class ClickManager : MonoBehaviour
         yield return null;
     }
 
+    //New trial version where each click have individual conditions
+    IEnumerator CellClickCoroutine_2(Vector2Int coords)
+    {
+        yield return new WaitForSeconds(Time.fixedDeltaTime);
+
+        if (ShouldDebugCellClicks) Debug.Log("Cell click detected");
+
+        #region Creating a new unit
+        if (Action_PlayerCreate.IsWaitingForData && Action_PlayerCreate.CanCreateThere(Action_PlayerCreate.CurUnit, coords))
+        {
+            if (ShouldDebugCellClicks) Debug.Log("Creating a unit");
+            ClickBackEvent.Invoke(coords);
+        }
+        #endregion
+
+        #region Redeploying a player unit in the deployemnt zone
+        else if (GameManager.Instance.CurUnitSelected != null && BoardManager.Instance.Board[coords.x].Cells[coords.y].CurUnit == null && BattleStatsManager.Instance.PlayerTurnActionCondition()
+            && BattleStatsManager.Instance.CurRound <= 0 && !Action_DrawPlayerResources.IsDeployingNewResources)
+        {
+            if (ShouldDebugCellClicks) Debug.Log("Supposed to redeploy");
+            List<Vector2Int> nCoords = new List<Vector2Int>(); nCoords.Add(coords);
+            List<Unit> unitToList = new List<Unit>();
+            unitToList.Add(GameManager.Instance.CurUnitSelected);
+
+            ActionParameters parameters = new ActionParameters(ActionType.Redeploy, unitToList, null, nCoords, null, 0);
+            yield return GameManager.Instance.Action(parameters);
+            GameManager.Instance.CurUnitSelected = null;
+        }
+        #endregion
+
+        #region Moving a unit to the position
+        else if (GameManager.Instance.CurUnitSelected != null && BoardManager.Instance.Board[coords.x].Cells[coords.y].CurUnit == null && BattleStatsManager.Instance.PlayerTurnActionCondition()
+            && BattleStatsManager.Instance.CurRound > 0)
+        {
+            if (ShouldDebugCellClicks) Debug.Log("Moving the unit to position");
+            List<Vector2Int> nCoords = new List<Vector2Int>(); nCoords.Add(coords);
+            List<Unit> unitToList = new List<Unit>();
+            unitToList.Add(GameManager.Instance.CurUnitSelected);
+
+            ActionParameters parameters = new ActionParameters(ActionType.Move, unitToList, null, nCoords, null, 0);
+            yield return GameManager.Instance.Action(parameters);
+            GameManager.Instance.CurUnitSelected = null;
+        }
+        #endregion
+
+        #region Selecting a new player unit
+        else if (BoardManager.Instance.Board[coords.x].Cells[coords.y].CurUnit != null && 
+            BoardManager.Instance.Board[coords.x].Cells[coords.y].CurUnit.CurKeywords.Contains(Keyword.Player) && GameManager.Instance.CurUnitSelected != BoardManager.Instance.Board[coords.x].Cells[coords.y].CurUnit)         
+        {
+            if (!Action_DrawPlayerResources.IsDeployingNewResources)
+            {
+                if (ShouldDebugCellClicks) Debug.Log("Initiating the selectUnit action for " + BoardManager.Instance.Board[coords.x].Cells[coords.y].CurUnit.name);
+                ActionParameters parameters = new ActionParameters(ActionType.SelectUnit, null, null, new List<Vector2Int> { coords }, null, 0);
+                yield return GameManager.Instance.Action(parameters);
+            }
+            else
+            {
+                if (ShouldDebugCellClicks) Debug.Log("Action_DrawPlayerResources.IsDeployingNewResources is "
+                    + Action_DrawPlayerResources.IsDeployingNewResources);
+            }
+        }
+        #endregion
+    }
+
     IEnumerator CellClickCoroutine(Vector2Int coords)
     {
         yield return new WaitForSeconds(Time.fixedDeltaTime); //For some reason this is vital, otherwise Unity shits itself
@@ -357,7 +421,6 @@ public class ClickManager : MonoBehaviour
                         }         
                         #endregion
                     }
-
                     else
                     {
                         #region No - Move unit to the position
