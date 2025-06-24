@@ -50,7 +50,7 @@ public class EffectManager : MonoBehaviour
         public int Size;
         public Transform Parent;
     }
-    public enum Tag { Movement, Placement };
+    public enum Tag { Placement, Creation };
     public List<Pool> Pools = new List<Pool>();
     public Dictionary<Tag, Queue<GameObject>> CurrentPools = new Dictionary<Tag, Queue<GameObject>>();
     #endregion
@@ -216,7 +216,7 @@ public class EffectManager : MonoBehaviour
                 CoverType ct = BoardManager.Instance.Board[v.x].Cells[v.y].CoveredBy;
 
                 Cover c = CellCoverManager.Instance.GetCover(ct);
-                if (c != null)
+                if (c != null && !CoverEffectsToHide.ContainsKey(v))
                 {
                     if (CoverEffectsToHide.ContainsKey(v)) { DestroyToPool(CoverEffectsToHide[v]); CoverEffectsToHide.Remove(v); }
 
@@ -230,9 +230,7 @@ public class EffectManager : MonoBehaviour
             }
             #endregion
 
-
         }
-
 
         if (ShouldDebug) Debug.Log("Stopped to draw covers");
     }
@@ -301,6 +299,8 @@ public class EffectManager : MonoBehaviour
     #region Showing unit placement when creating a new unit
     void StartShowingPlacement(List<Unit> units)
     {
+        if (ShouldDebug) Debug.Log("Started showing unit placements");
+
         if (CurPlacement == null)
         {
             foreach (Unit u in units)
@@ -319,7 +319,7 @@ public class EffectManager : MonoBehaviour
                     List<GameObject> list = new List<GameObject>();
                     foreach (var v in v2)
                     {
-                        list.Add(InstantiateFromPool(Tag.Placement, curPos, Quaternion.identity));
+                        list.Add(InstantiateFromPool(Tag.Creation, curPos, Quaternion.identity));
                     }
 
                     if (!PlacementEffectsToHide.ContainsKey(u)) { PlacementEffectsToHide.Add(u, list); }
@@ -330,7 +330,7 @@ public class EffectManager : MonoBehaviour
                     List<GameObject> list = new List<GameObject>();
                     for (int i = 0; i < u.Size.Positions.Count; i++)
                     {
-                        list.Add(InstantiateFromPool(Tag.Placement, new Vector3(-99, -99, -99), Quaternion.identity));
+                        list.Add(InstantiateFromPool(Tag.Creation, new Vector3(-99, -99, -99), Quaternion.identity));
                     }
                     if (!PlacementEffectsToHide.ContainsKey(u)) { PlacementEffectsToHide.Add(u, list); }
                 }
@@ -343,6 +343,7 @@ public class EffectManager : MonoBehaviour
 
     void StopShowingPlacement(List<Unit> units)
     {
+        if (ShouldDebug) Debug.Log("Stopped showing unit placements");
 
         foreach (var v in PlacementEffectsToHide)
         {
@@ -456,6 +457,8 @@ public class EffectManager : MonoBehaviour
     #region Showing possible movement positions of unit
     void ShowMovement(List<Unit> units)
     {
+        if (ShouldDebug) Debug.Log("Showing movement");
+
         foreach (Unit u in units)
         {
             if (MovementEffectsToHide.ContainsKey(u)) continue;
@@ -470,7 +473,7 @@ public class EffectManager : MonoBehaviour
                     foreach (var vvv in vv)
                     {
                         List<Vector2Int> single = new List<Vector2Int>(); single.Add(vvv);
-                        GameObject overlay = InstantiateFromPool(Tag.Movement, BoardManager.Instance.BoardToWorldPosition(single).Value, Quaternion.identity);
+                        GameObject overlay = InstantiateFromPool(Tag.Placement, BoardManager.Instance.BoardToWorldPosition(single).Value, Quaternion.identity);
                         ePu.Add(overlay);
                     }
                 }
@@ -503,6 +506,8 @@ public class EffectManager : MonoBehaviour
     #region Showing possible deployment positions 
     void ShowDeployment(List<Unit> units)
     {
+        if (ShouldDebug) Debug.Log("Showing deployment");
+
         foreach (Unit u in units)
         {
             if (DeploymentEffectsToHide.ContainsKey(u)) continue;
@@ -533,7 +538,7 @@ public class EffectManager : MonoBehaviour
 
                         if (isApplicable)
                         {
-                            GameObject overlay = InstantiateFromPool(Tag.Movement, BoardManager.Instance.BoardToWorldPosition(positions).Value,
+                            GameObject overlay = InstantiateFromPool(Tag.Placement, BoardManager.Instance.BoardToWorldPosition(positions).Value,
                                 Quaternion.identity);
                             ePu.Add(overlay);
                         }
@@ -549,6 +554,8 @@ public class EffectManager : MonoBehaviour
     
     void HideDeployment()
     {
+        if (ShouldDebug) Debug.Log("Hiding deployment");
+
         Dictionary<Unit, List<GameObject>> copy = new Dictionary<Unit, List<GameObject>>();
         copy.AddRange(DeploymentEffectsToHide);
 

@@ -18,7 +18,7 @@ public static class Action_CreateBattlefield
         for (int i = 0; i < parameters.CellsCoordinates.Count; i++) 
         {
             GameObject objective = BattlefieldManager.Instance.Objective_Obj;
-            ActionParameters parametersCreate = new ActionParameters(GameManager.ActionType.Create, null, null, Coords, objective, -1);
+            ActionParameters parametersCreate = new ActionParameters(GameManager.ActionType.Create, null, null, new List<Vector2Int> { Coords[i] }, objective, -1);
 
             yield return Action_Create.Create(parametersCreate);
         }

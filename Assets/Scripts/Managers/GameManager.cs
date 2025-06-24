@@ -299,7 +299,7 @@ public class GameManager : MonoBehaviour
             //Means I forgot to make an action for this type
             #region Default(...)
             default:
-                Debug.LogError("Action not written");
+                Debug.LogError("Action not written: " + parameters.Type);
                 break;
             #endregion Default(...)
         }
