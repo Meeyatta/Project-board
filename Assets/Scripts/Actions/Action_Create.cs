@@ -5,7 +5,7 @@ using UnityEngine.UIElements;
 
 public static class Action_Create
 {
-    public static bool ShouldDebug = true;
+    public static bool ShouldDebug = false;
     public static IEnumerator Create(ActionParameters parameters)
     {
         GameObject Object = parameters.Object; List<Vector2Int> poss = parameters.CellsCoordinates;

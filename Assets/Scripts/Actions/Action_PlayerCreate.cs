@@ -35,7 +35,6 @@ public static class Action_PlayerCreate
 
     public static IEnumerator PlayerCreate(ActionParameters parameters)
     {
-
         GameObject Object = parameters.Object;
         List<Vector2Int> zone = parameters.CellsCoordinates;
 

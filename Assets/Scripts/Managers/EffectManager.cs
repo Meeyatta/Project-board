@@ -50,7 +50,7 @@ public class EffectManager : MonoBehaviour
         public int Size;
         public Transform Parent;
     }
-    public enum Tag { Placement, Creation };
+    public enum Tag { Placement, Creation, Water, Oil };
     public List<Pool> Pools = new List<Pool>();
     public Dictionary<Tag, Queue<GameObject>> CurrentPools = new Dictionary<Tag, Queue<GameObject>>();
     #endregion

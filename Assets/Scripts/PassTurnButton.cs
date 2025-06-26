@@ -118,7 +118,7 @@ public class PassTurnButton : MonoBehaviour
             return;
         }
 
-        Debug.Log("Button was pressed");
+        //Debug.Log("Button was pressed");
         if (PassConditions()) 
         {
             nextClickTime = Time.time + ClickReload ;
@@ -126,7 +126,7 @@ public class PassTurnButton : MonoBehaviour
             Shrug_Visuals();
             if (BattleStatsManager.Instance.CurRound != 0) CanPass = false;
 
-            Debug.Log("Button passed the turn");
+            //Debug.Log("Button passed the turn");
             ActionParameters parameters = new ActionParameters(GameManager.ActionType.NextTurn, null, null, null, null, 0);
             StartCoroutine( GameManager.Instance.Action(parameters));
             E_PassedTurn.Invoke();

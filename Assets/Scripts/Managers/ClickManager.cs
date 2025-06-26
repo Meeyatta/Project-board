@@ -73,7 +73,7 @@ public class ClickManager : MonoBehaviour
 
 
     #region Checking if we can click on things
-    bool CanClickOnUnits()
+    bool CanClickOnThings()
     {
         if (ShouldDebug) Debug.Log("CanClickOnUnits()");
 
@@ -109,7 +109,7 @@ public class ClickManager : MonoBehaviour
     #region Checking if player is hovering over a unit, if they click - this counts as clicking on that unit's cell
     public void Click(InputAction.CallbackContext context)
     {
-        if (!CanClickOnUnits()) { return; }
+        if (!CanClickOnThings()) { return; }
         if (ShouldDebug) Debug.Log("Received an input");
 
         #region Check what position did we click on and send the click event
@@ -147,7 +147,20 @@ public class ClickManager : MonoBehaviour
             UnitClick = null;
 
         }
+        else if (IsPointingAtTurnClock)
+        {
+            PassTurnButton.Instance.Pass();
 
+            ItemClick = null;
+            CellClick = null;
+            UnitClick = null;
+            IsPointingAtTurnClock = false;
+        }
+
+        else
+        {
+            Debug.Log(ItemClick + " " + CellClick + " " + UnitClick + " " + IsPointingAtTurnClock);
+        }
         #endregion
 
     }
@@ -188,7 +201,7 @@ public class ClickManager : MonoBehaviour
     public UnityEvent<Vector2Int> E_Click_coords = new UnityEvent<Vector2Int>();
     void ClickHandle(Vector2Int coords)
     {
-        if (ShouldDebug) Debug.Log("ClickHandle on  " + coords);
+        //if (ShouldDebug) Debug.Log("ClickHandle on  " + coords);
 
         StartClickCoroutine(coords);
 
@@ -368,6 +381,12 @@ public class ClickManager : MonoBehaviour
             }
         }
         #endregion
+
+        else
+        {
+            if (ShouldDebugCellClicks) Debug.Log("Clicked on nothing");
+            ClickBackEvent.Invoke(coords);
+        }
     }
 
     IEnumerator CellClickCoroutine(Vector2Int coords)
@@ -509,7 +528,7 @@ public class ClickManager : MonoBehaviour
     #endregion
 
     #region Continuosly recording what things we are aiming at
-    bool IsPointingAtTurnClock;
+    public bool IsPointingAtTurnClock;
     void ContinuousChecking()
     {
         //if (!CanClickOnUnits()) return;
@@ -526,14 +545,14 @@ public class ClickManager : MonoBehaviour
             #region If hit a unit
             if (hit.transform.tag.ToLower() == "unit")
             {
-                if (ShouldDebug) Debug.Log(hit.transform.gameObject.name + " unit was hit with raycast");
+                //if (ShouldDebug) Debug.Log(hit.transform.gameObject.name + " unit was hit with raycast");
 
                 CurrentPointedAtItem = null;
                 #region If keep pointing at the same unit
                 if (hit.transform == LastPointedAt)
                 {
-                    if (ShouldDebug) Debug.Log(hit.transform.gameObject.name + " is the same unit, changing nothing");
-                    if (ShouldDebug && UnitClick != null) Debug.Log(UnitClick.Unit + " " + UnitClick.Position);
+                    //if (ShouldDebug) Debug.Log(hit.transform.gameObject.name + " is the same unit, changing nothing");
+                    //if (ShouldDebug && UnitClick != null) Debug.Log(UnitClick.Unit + " " + UnitClick.Position);
 
                     ItemClick = null;
                     IsPointingAtTurnClock = false;
@@ -589,7 +608,7 @@ public class ClickManager : MonoBehaviour
                         CellClick = b.Coordinates;
                         ItemClick = null;
 
-                        if (ShouldDebug) Debug.Log("Found a new unit: " + CellClick);
+                        //if (ShouldDebug) Debug.Log("Found a new unit: " + CellClick);
                         IsPointingAtTurnClock = false;
                     }
                 }
@@ -599,7 +618,7 @@ public class ClickManager : MonoBehaviour
             #region If hit an item
             else if (hit.transform.tag.ToLower() == "item")
             {
-                if (ShouldDebug) Debug.Log(hit.transform.gameObject.name + " item was hit with raycast");
+                //if (ShouldDebug) Debug.Log(hit.transform.gameObject.name + " item was hit with raycast");
 
                 CurrentPointedAtUnit = null;
                 #region If hover and click on an old item
@@ -621,7 +640,7 @@ public class ClickManager : MonoBehaviour
                         ItemClick = i;
                         IsPointingAtTurnClock = false;
 
-                        if (ShouldDebug) Debug.Log("Found a new item: " + i.Name);
+                        //if (ShouldDebug) Debug.Log("Found a new item: " + i.Name);
                     }
                 }
                 #endregion
@@ -636,13 +655,14 @@ public class ClickManager : MonoBehaviour
                 CurrentPointedAtUnit = null;
                 CurrentPointedAtItem = null;
                 if (ShouldDebug) Debug.Log(hit.transform.gameObject.name + " turn clock was hit with raycast");
-                PassTurnButton.Instance.Pass();
+                //PassTurnButton.Instance.Pass();
             }
             #endregion
 
             else
             {
-                //if (ShouldDebug) Debug.Log("Hit something else: " + hit.transform.gameObject.name + " with tag " + hit.transform.tag);
+                if (ShouldDebug) Debug.Log("Hit something else: " + hit.transform.gameObject.name + " with tag " + hit.transform.tag);
+                Reset_CanClickOnNothing();
             }
 
         }
@@ -650,9 +670,23 @@ public class ClickManager : MonoBehaviour
         else
         {
             if (ShouldDebug) Debug.Log("Raycast hit nothing");
+            Reset_CanClickOnNothing();
         }
     }
     #endregion
+
+    void Reset_CanClickOnNothing()
+    {
+        LastPointedAt = null;
+        CurrentPointedAtUnit = null;
+        UnitClick = null;
+
+        CellClick = null;
+
+        CurrentPointedAtItem = null;
+        ItemClick = null;
+        IsPointingAtTurnClock = false;
+    }
 
     void Update()
     {

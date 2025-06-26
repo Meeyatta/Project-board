@@ -6,7 +6,8 @@ using UnityEngine.Events;
 //Base class for all items what apply a cell cover over an area
 public static class Bucket 
 {
-    //Pass a 2-count list with a width and height, returns a lsit of relative positions on the board
+    public static bool ShouldDebug = true;
+    #region Pass a 2-count list with a width and height, returns a lsit of relative positions on the board
     static List<Vector2Int> ZoneToCoordinates(List<int> zone)
     {
         List<Vector2Int> res = new List<Vector2Int>();
@@ -23,6 +24,7 @@ public static class Bucket
 
         return res;
     }
+    #endregion
 
     public static IEnumerator CoverArea(CoverType type, List<int> zone)
     {
@@ -31,8 +33,6 @@ public static class Bucket
 
         #region Start the action to select a position
         List<Vector2Int> coverCoords = ZoneToCoordinates(zone);
-        GameManager.Instance.I_PositionSelect = Action_SelectUnitPosition.Selecting_relaxed(coverCoords, false);
-        yield return GameManager.Instance.StartCoroutine(GameManager.Instance.I_PositionSelect);
 
         GameManager.Instance.I_PositionSelect = null;
         #endregion
@@ -43,15 +43,21 @@ public static class Bucket
         void Get_ClickedCellCoordinates(List<Vector2Int> v2)
         {
             clickedPosition = v2[0];
+            IsWaitingForData = false;
             Action_SelectUnitPosition.ESendPositionBack.RemoveListener(Get_ClickedCellCoordinates);
-            
         }
 
-        UnityEvent<List<Vector2Int>> newEv = new UnityEngine.Events.UnityEvent<List<Vector2Int>>() { };
-        Action_SelectUnitPosition.ESendPositionBack = newEv;
+
+        Action_SelectUnitPosition.ESendPositionBack.RemoveListener(Get_ClickedCellCoordinates);
         Action_SelectUnitPosition.ESendPositionBack.AddListener(Get_ClickedCellCoordinates);
 
+        GameManager.Instance.I_PositionSelect = Action_SelectUnitPosition.Selecting_relaxed(coverCoords, false);
+        GameManager.Instance.StartCoroutine(GameManager.Instance.I_PositionSelect);
+
+        if (ShouldDebug) Debug.Log(Action_SelectUnitPosition.ESendPositionBack);
         while (IsWaitingForData) { yield return new WaitForSeconds(Time.fixedDeltaTime * 0.5f); }
+        if (ShouldDebug) Debug.Log("Stopped awaiting for click");
+        
 
         //After player clicks, change the covers of needed cells
     }

@@ -12,7 +12,7 @@ public static class Action_NextTurn
     static bool IsChangingTurn;
     static bool IsChangingToNextTurn;
 
-    static bool ShouldDebug = true;
+    static bool ShouldDebug = false;
 
     //Events are called when the turn BEGINS
     public static UnityEvent<Side> E_Turn_Functional = new UnityEvent<Side>();

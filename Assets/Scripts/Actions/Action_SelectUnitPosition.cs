@@ -7,7 +7,7 @@ using UnityEngine.Events;
 public static class Action_SelectUnitPosition 
 {
     public static Unit CurUnit;
-    public static UnityEvent<List<Vector2Int>> ESendPositionBack;
+    public static UnityEvent<List<Vector2Int>> ESendPositionBack = new UnityEvent<List<Vector2Int>>();
     public static bool IsAwaitingAClickBack = true;
     static bool ShouldCancel = false;
 
@@ -26,7 +26,7 @@ public static class Action_SelectUnitPosition
 
         void StopWaiting(Vector2Int v)
         {
-            if (ShouldDebug) Debug.Log("Stopped waiting - selecting_relaxed");
+            if (ShouldDebug) Debug.Log("Stopped waiting - selecting_relaxed sent coordinates of " + v);
             IsAwaitingAClickBack = false;
 
             ESendPositionBack.Invoke(new List<Vector2Int> { v });
