@@ -62,37 +62,39 @@ public static class Action_PlayerCreate
             if (CanCreateThere(unitList[0], v2[0]))
             {
                 IsWaitingForData = false;
+                Debug.Log("Action_PlayerCreate - " + IsWaitingForData);
                 positions = v2;
                 Action_SelectUnitPosition.ESendPositionBack.RemoveListener(Get_ClickedCellCoordinates);
             }
         }
 
-        UnityEvent<List<Vector2Int>> newEv = new UnityEngine.Events.UnityEvent<List<Vector2Int>>() { };
-        Action_SelectUnitPosition.ESendPositionBack = newEv;
+        Action_SelectUnitPosition.ESendPositionBack.RemoveListener(Get_ClickedCellCoordinates);
         Action_SelectUnitPosition.ESendPositionBack.AddListener(Get_ClickedCellCoordinates);
         IsWaitingForData = true;
+        bool ViablePos = false;
 
-        #region Start the action to select a position
-        GameManager.Instance.I_PositionSelect = Action_SelectUnitPosition.Selecting_strict(CurUnit, false);
-        yield return GameManager.Instance.StartCoroutine(GameManager.Instance.I_PositionSelect);
-        GameManager.Instance.I_PositionSelect = null;
-        #endregion
-
-        //Waiting until we have the data
-
-        while (IsWaitingForData) { yield return new WaitForSeconds(Time.fixedDeltaTime * 0.5f); }
-
-        //Debug.Log("Got past waiting for data");
-
-        #region Check if can place a unit there
-        bool ViablePos = true;
-        foreach (var v in positions)
+        while (!ViablePos)
         {
-            if (!BoardManager.Instance.IsInBounds(v)) { ViablePos = false; break; }
+            yield return new WaitForSeconds(Time.fixedDeltaTime);
+            #region Start the action to select a position
+            Debug.Log("Cycling player create");
+            yield return Action_SelectUnitPosition.Selecting_strict(CurUnit, false);
 
-            if (BoardManager.Instance.Board[v.x].Cells[v.y].CurUnit != null) { ViablePos = false; break; }
+            #endregion
+
+            while (IsWaitingForData) { yield return new WaitForSeconds(Time.fixedDeltaTime * 0.5f); }
+
+            #region Check if can place a unit there
+            foreach (var v in positions)
+            {
+                if (!BoardManager.Instance.IsInBounds(v)) { ViablePos = false; break; }
+
+                if (BoardManager.Instance.Board[v.x].Cells[v.y].CurUnit != null) { ViablePos = false; break; }
+
+                ViablePos = true;
+            }
+            #endregion
         }
-        #endregion
 
         #region Place a unit on said selected positions if they are viable
         GameManager.Instance.E_HidePlacement.Invoke(unitList);

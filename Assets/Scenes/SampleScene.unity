@@ -14441,10 +14441,8 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 11416984, guid: c080686877cf77f42a1a078076d57fe5, type: 3}
       propertyPath: textList.Array.data[7].s
-      value: 'When placing a new player unit, clicking on a cell
-
-        outside
-        the deployment zone softlocks the game'
+      value: "When placing a new player unit, clicking on a cell\noutside the deployment
+        zone softlocks the game\n(Stopped in Action_PlayerCreate and \nAction_SelectUnitPosition)"
       objectReference: {fileID: 0}
     - target: {fileID: 11416984, guid: c080686877cf77f42a1a078076d57fe5, type: 3}
       propertyPath: textList.Array.data[8].s

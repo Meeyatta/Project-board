@@ -327,7 +327,7 @@ public class ClickManager : MonoBehaviour
         if (ShouldDebugCellClicks) Debug.Log("Cell click detected");
 
         #region Creating a new unit
-        if (Action_PlayerCreate.IsWaitingForData && Action_PlayerCreate.CanCreateThere(Action_PlayerCreate.CurUnit, coords))
+        if (Action_PlayerCreate.IsWaitingForData /*&& Action_PlayerCreate.CanCreateThere(Action_PlayerCreate.CurUnit, coords)*/)
         {
             if (ShouldDebugCellClicks) Debug.Log("Creating a unit");
             ClickBackEvent.Invoke(coords);

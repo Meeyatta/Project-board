@@ -65,11 +65,15 @@ public static class Action_SelectUnitPosition
     //THIS selects a position for a unit, thus also considers if unit can fit into said position
     public static IEnumerator Selecting_strict(Unit unit, bool canCancel)
     {
-        if (canCancel) GameManager.Instance.CancelEvent.AddListener(Cancel);
+        if (canCancel)
+        {
+            GameManager.Instance.CancelEvent.RemoveListener(Cancel);
+            GameManager.Instance.CancelEvent.AddListener(Cancel);
+        }
 
         void StopWaiting(Vector2Int v)
         {
-            //Debug.Log("Stopped waiting");
+            Debug.Log("Selecting_strict - Stopped waiting");
             IsAwaitingAClickBack = false;
 
             if (CurUnit != null)
@@ -98,6 +102,7 @@ public static class Action_SelectUnitPosition
             }
 
         }
+        ClickManager.Instance.ClickBackEvent.RemoveListener(StopWaiting);
         ClickManager.Instance.ClickBackEvent.AddListener(StopWaiting);
         //Debug.Log("Added a listener to clickback");
 
