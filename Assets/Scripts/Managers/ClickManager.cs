@@ -159,7 +159,7 @@ public class ClickManager : MonoBehaviour
 
         else
         {
-            Debug.Log(ItemClick + " " + CellClick + " " + UnitClick + " " + IsPointingAtTurnClock);
+            Debug.Log("ItemClick:" + ItemClick + " CellClick:" + CellClick + " UnitClick:" + UnitClick + " IsPointingAtTurnClock:" + IsPointingAtTurnClock);
         }
         #endregion
 

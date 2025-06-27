@@ -56,44 +56,35 @@ public static class Action_PlayerCreate
         List<Unit> unitList = new List<Unit>(); unitList.Add(CurUnit);
 
         //Add a listener what executes after players selects a position and returns it
+
+        bool ViablePos = false;
         List<Vector2Int> positions = new List<Vector2Int>();
         void Get_ClickedCellCoordinates(List<Vector2Int> v2)
         {
             if (CanCreateThere(unitList[0], v2[0]))
             {
+                ViablePos = true;
                 IsWaitingForData = false;
                 Debug.Log("Action_PlayerCreate - " + IsWaitingForData);
                 positions = v2;
                 Action_SelectUnitPosition.ESendPositionBack.RemoveListener(Get_ClickedCellCoordinates);
+            }
+            else
+            {
+                IsWaitingForData = true;
+                Debug.Log("Action_PlayerCreate got data, but can't create in - " + v2[0]);
+                GameManager.Instance.StartCoroutine(Action_SelectUnitPosition.Selecting_strict(CurUnit, false));
             }
         }
 
         Action_SelectUnitPosition.ESendPositionBack.RemoveListener(Get_ClickedCellCoordinates);
         Action_SelectUnitPosition.ESendPositionBack.AddListener(Get_ClickedCellCoordinates);
         IsWaitingForData = true;
-        bool ViablePos = false;
 
+        GameManager.Instance.StartCoroutine(Action_SelectUnitPosition.Selecting_strict(CurUnit, false));
         while (!ViablePos)
         {
             yield return new WaitForSeconds(Time.fixedDeltaTime);
-            #region Start the action to select a position
-            Debug.Log("Cycling player create");
-            yield return Action_SelectUnitPosition.Selecting_strict(CurUnit, false);
-
-            #endregion
-
-            while (IsWaitingForData) { yield return new WaitForSeconds(Time.fixedDeltaTime * 0.5f); }
-
-            #region Check if can place a unit there
-            foreach (var v in positions)
-            {
-                if (!BoardManager.Instance.IsInBounds(v)) { ViablePos = false; break; }
-
-                if (BoardManager.Instance.Board[v.x].Cells[v.y].CurUnit != null) { ViablePos = false; break; }
-
-                ViablePos = true;
-            }
-            #endregion
         }
 
         #region Place a unit on said selected positions if they are viable
