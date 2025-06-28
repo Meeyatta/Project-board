@@ -102,6 +102,7 @@ public static class Action_SelectUnitPosition
             }
 
         }
+
         ClickManager.Instance.ClickBackEvent.RemoveListener(StopWaiting);
         ClickManager.Instance.ClickBackEvent.AddListener(StopWaiting);
         //Debug.Log("Added a listener to clickback");

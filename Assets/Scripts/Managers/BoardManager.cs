@@ -36,6 +36,7 @@ using System;
     List<Unit> Get_UnitsInRange(Unit u, int r) - returns list of units within "r" cells of the "u" unit
     List<Unit> Get_UnitsWithKeywordsInRange - Returns list of units within "r" cells of the "u" unit what have all "keywords" keywords
     
+    Vector2Int Get_CenterOfZone(List<Vector2Int> zone) - Finds the coordinate closest to the center
  */
 #endregion
 
@@ -527,6 +528,21 @@ public class BoardManager : MonoBehaviour
         }
 
         return res;
+    }
+
+    //Finds the coordinate closest to the center
+    public Vector2Int Get_CenterOfZone(List<Vector2Int> zone)
+    {
+        if (zone == null || zone.Count == 0) { Debug.LogError("Get_CenterOfZone received an empty zone"); return Vector2Int.zero; }
+        if (zone.Count == 1) return zone[0];
+
+        Vector2 total = Vector2.zero; foreach (var v in zone) { total.x += v.x; total.y += v.y; }
+        Vector2 avg = new Vector2(total.x / zone.Count, total.y / zone.Count);
+
+        float minDist = Mathf.Infinity; Vector2Int closest = zone[0];
+        foreach (var v in zone) { if (Vector2.Distance(v, avg) <= minDist) {closest = v; minDist = Vector2.Distance(v, avg); } }
+
+        return closest;
     }
     private void Update()
     {

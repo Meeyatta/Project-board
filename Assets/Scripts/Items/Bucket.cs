@@ -8,15 +8,15 @@ public static class Bucket
 {
     public static bool ShouldDebug = true;
     #region Pass a 2-count list with a width and height, returns a lsit of relative positions on the board
-    static List<Vector2Int> ZoneToCoordinates(List<int> zone)
+    static List<Vector2Int> SizeToZone(List<int> zone)
     {
         List<Vector2Int> res = new List<Vector2Int>();
         int[] xy = new int[2];
         if (zone.Count != 2) { Debug.LogError("ERROR: ZoneToCoordinates must receive 2 elements, got " + zone.Count); return res; }
 
-        for (int x = 0; x < xy[0]; x++)
+        for (int x = 0; x < zone[0]; x++)
         {
-            for (int y = xy[1]; y>0; y++)
+            for (int y = zone[1]; y>0; y--)
             {
                 res.Add(new Vector2Int(x, y));
             }
@@ -26,13 +26,14 @@ public static class Bucket
     }
     #endregion
 
-    public static IEnumerator CoverArea(CoverType type, List<int> zone)
+    public static IEnumerator CoverArea(EffectManager.Tag showcaseTag, CoverType type, List<int> size)
     {
         //Await Until player clicks on an area
         //While waiting, draw the possible covers under the cursos
 
         #region Start the action to select a position
-        List<Vector2Int> coverCoords = ZoneToCoordinates(zone);
+        List<Vector2Int> coverCoords = SizeToZone(size);
+        //foreach (var v in coverCoords) { Debug.Log("Size coords: " + v); }
 
         GameManager.Instance.I_PositionSelect = null;
         #endregion
@@ -53,11 +54,13 @@ public static class Bucket
 
         GameManager.Instance.I_PositionSelect = Action_SelectUnitPosition.Selecting_relaxed(coverCoords, false);
         GameManager.Instance.StartCoroutine(GameManager.Instance.I_PositionSelect);
+        EffectManager.Instance.StartShowingPossibleZone(coverCoords, showcaseTag);
 
         if (ShouldDebug) Debug.Log(Action_SelectUnitPosition.ESendPositionBack);
         while (IsWaitingForData) { yield return new WaitForSeconds(Time.fixedDeltaTime * 0.5f); }
         if (ShouldDebug) Debug.Log("Stopped awaiting for click");
-        
+        EffectManager.Instance.StopShowingPossibleZone();
+
 
         //After player clicks, change the covers of needed cells
     }

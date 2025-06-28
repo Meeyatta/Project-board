@@ -57,7 +57,6 @@ public class EffectManager : MonoBehaviour
 
     //Placement specific
     Coroutine CurPlacement;
-    Coroutine CurUnitMovePosShowcase;
 
     const string isRaisedStr = "isRaised";
 
@@ -390,32 +389,83 @@ public class EffectManager : MonoBehaviour
     }
     #endregion
 
-    IEnumerator ShowingPossibleUnitPosition(Unit unit, List<Vector2Int> availableZone)
+
+    #region Showing positions of zones (Like bucket's water coverage)
+    Coroutine CurZoneShowcase = null;
+    public void StartShowingPossibleZone(List<Vector2Int> zoneCoords, Tag coverTag)
+    {
+        if (CurZoneShowcase == null)
+        {
+            CurZoneShowcase = StartCoroutine(ShowingPossibleZone(zoneCoords, coverTag));
+        }
+    }
+    public void StopShowingPossibleZone()
+    {
+        if (CurZoneShowcase != null)
+        {
+            StopCoroutine(CurZoneShowcase);
+            CurZoneShowcase = null;
+        }
+    }
+
+    //Dynamically showing the zone position under player's cursor 
+    IEnumerator ShowingPossibleZone(List<Vector2Int> zoneCoords, Tag coverTag)
     {
         yield return new WaitForSeconds(Time.fixedDeltaTime * 0.01f);
 
-        RaiseModel(unit);
+        Vector2Int center = BoardManager.Instance.Get_CenterOfZone(zoneCoords);
+        Dictionary<Vector2Int, GameObject> CurZonePlacements = new Dictionary<Vector2Int, GameObject>();
+
+        foreach (var v in zoneCoords)
+        {
+            Vector2Int coord = BoardManager.Instance.CursorToCellPosition() + (v - center);
+
+            CurZonePlacements.Add
+                (coord, 
+                InstantiateFromPool(coverTag, BoardManager.Instance.BoardToWorldPosition(new List<Vector2Int> {coord}).Value, Quaternion.identity));
+        }
 
         while (CurUnitMovePosShowcase != null && BattleStatsManager.Instance.PlayerTurnActionCondition())
         {
             yield return new WaitForSeconds(Time.fixedDeltaTime * 0.1f);
-            //Debug.Log("ShowingPossibleUnitPosition");
 
-            List<Vector2Int> pos = BoardManager.Instance.ClosestUnitPosToCursor(unit);
-            if (availableZone != null && availableZone.Count > 0 && pos != null && pos.Count > 0 && 
-                availableZone.Intersect<Vector2Int>(pos).Any())
+            #region Going through all positions and adding an effect to them
+            foreach (var p in zoneCoords)
             {
-                unit.UnitModelShowcase.SetActive(true);
-                unit.UnitModelShowcase.transform.position = BoardManager.Instance.BoardToWorldPosition(pos).Value + unit.ModelOffset;
-            }
-        }
+                Vector2Int coord = BoardManager.Instance.CursorToCellPosition() + (p - center);
 
-        LowerModel(unit);
-        CurUnitMovePosShowcase = null;
-        unit.UnitModelShowcase.SetActive(false);
+                if (!CurZonePlacements.ContainsKey(coord))
+                {
+                    CurZonePlacements.Add
+                        (coord,
+                        InstantiateFromPool(coverTag, BoardManager.Instance.BoardToWorldPosition(new List<Vector2Int> { coord }).Value, Quaternion.identity));
+                }  
+            }
+            #endregion
+
+            #region Going through effects and cleaning up ones without positions
+            List<Vector2Int> possibPoss = new List<Vector2Int>();
+            foreach (var v in zoneCoords)
+            {
+                possibPoss.Add(BoardManager.Instance.CursorToCellPosition() + (v - center));
+            }
+            List<Vector2Int> KeysToDestroy = new List<Vector2Int>();
+            foreach (var k in CurZonePlacements.Keys)
+            {
+                if (!possibPoss.Contains(k))
+                {
+                    DestroyToPool(CurZonePlacements[k]);
+                    KeysToDestroy.Add(k);
+                }
+            }
+            while (KeysToDestroy.Count > 0) { CurZonePlacements.Remove(KeysToDestroy[0]); KeysToDestroy.RemoveAt(0); }
+            #endregion
+        }
     }
+    #endregion
 
     #region Showing position of unit under the cursor when moving
+    Coroutine CurUnitMovePosShowcase;
     void StartShowingPossibleUnitMovement(Unit unit)
     {
         if (CurUnitMovePosShowcase == null)
@@ -430,12 +480,39 @@ public class EffectManager : MonoBehaviour
     {
         LowerModel(unit);
 
-        if (CurUnitMovePosShowcase != null) StopCoroutine(CurUnitMovePosShowcase);
-        CurUnitMovePosShowcase = null;
+        if (CurUnitMovePosShowcase != null) 
+        { 
+            StopCoroutine(CurUnitMovePosShowcase);
+            CurUnitMovePosShowcase = null;
+        }
 
         unit.UnitModelShowcase.SetActive(false);
     }
 
+    IEnumerator ShowingPossibleUnitPosition(Unit unit, List<Vector2Int> availableZone)
+    {
+        yield return new WaitForSeconds(Time.fixedDeltaTime * 0.01f);
+
+        RaiseModel(unit);
+
+        while (CurUnitMovePosShowcase != null && BattleStatsManager.Instance.PlayerTurnActionCondition())
+        {
+            yield return new WaitForSeconds(Time.fixedDeltaTime * 0.1f);
+            //Debug.Log("ShowingPossibleUnitPosition");
+
+            List<Vector2Int> pos = BoardManager.Instance.ClosestUnitPosToCursor(unit);
+            if (availableZone != null && availableZone.Count > 0 && pos != null && pos.Count > 0 &&
+                availableZone.Intersect<Vector2Int>(pos).Any())
+            {
+                unit.UnitModelShowcase.SetActive(true);
+                unit.UnitModelShowcase.transform.position = BoardManager.Instance.BoardToWorldPosition(pos).Value + unit.ModelOffset;
+            }
+        }
+
+        LowerModel(unit);
+        CurUnitMovePosShowcase = null;
+        unit.UnitModelShowcase.SetActive(false);
+    }
     #endregion
 
     #region Showing position of unit under the cursor when redeploying

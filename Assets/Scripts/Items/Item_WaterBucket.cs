@@ -19,7 +19,7 @@ public static class Item_WaterBucket
     {
         yield return new WaitForSeconds(Time.deltaTime);
         Debug.Log("WATER BUCKET, RELEASE");
-        yield return Bucket.CoverArea(CoverType.Water, Size);
+        yield return Bucket.CoverArea(EffectManager.Tag.Creation, CoverType.Water, Size);
 
         yield return new WaitForSeconds(Time.fixedDeltaTime);
         GameManager.Instance.RemoveAction(parameters);
