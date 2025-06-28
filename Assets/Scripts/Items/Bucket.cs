@@ -58,6 +58,7 @@ public static class Bucket
 
         if (ShouldDebug) Debug.Log(Action_SelectUnitPosition.ESendPositionBack);
         while (IsWaitingForData) { yield return new WaitForSeconds(Time.fixedDeltaTime * 0.5f); }
+
         if (ShouldDebug) Debug.Log("Stopped awaiting for click");
         EffectManager.Instance.StopShowingPossibleZone();
 

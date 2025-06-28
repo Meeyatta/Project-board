@@ -88,7 +88,12 @@ public static class Action_DrawPlayerResources
     #endregion
 
     static void selectAUnit(Unit u) { if (!BoardManager.Instance.IsOnBoard(u)) selectedUnit = u; }
-    static void selectAnItem(Item i) { Debug.Log("Selected an item"); selectedItem = i; }
+    static void selectAnItem(Item i) 
+    { 
+        if (ShouldDebug) Debug.Log("Selected an item"); 
+        
+        selectedItem = i; 
+    }
 
     //Deploys resources for the new round
     //If we need to deploy more than 1 unit or items, should pass a vector with (unitsAmount, itemsAmount)
