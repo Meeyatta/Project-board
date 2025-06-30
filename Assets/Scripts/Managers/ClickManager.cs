@@ -389,7 +389,7 @@ public class ClickManager : MonoBehaviour
         }
     }
 
-    IEnumerator CellClickCoroutine(Vector2Int coords)
+    IEnumerator CellClickCoroutine_deprecated(Vector2Int coords)
     {
         yield return new WaitForSeconds(Time.fixedDeltaTime); //For some reason this is vital, otherwise Unity shits itself
 

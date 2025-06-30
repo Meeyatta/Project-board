@@ -161,9 +161,9 @@ public class EffectManager : MonoBehaviour
     List<Vector2Int> OnlyCoveredCells()
     {
         List<Vector2Int> l = new List<Vector2Int>();
-        for (int x = 0; x < BoardManager.Instance.Width; x++)
+        for (int x = 0; x < BoardManager.Instance.Board.Count; x++)
         {
-            for (int y = BoardManager.Instance.Height - 1; y >= 0; y--)
+            for (int y = BoardManager.Instance.Board[x].Cells.Count - 1; y >= 0; y--)
             {
                 if (BoardManager.Instance.Board[x].Cells[y].CoveredBy != CoverType.None)
                 {
@@ -406,26 +406,28 @@ public class EffectManager : MonoBehaviour
             StopCoroutine(CurZoneShowcase);
             CurZoneShowcase = null;
         }
+
+        #region Removing all remaining effects of possible placements
+        List<Vector2Int> KeysToDestroy = new List<Vector2Int>();
+        foreach (var k in CurZonePlacements.Keys) { KeysToDestroy.Add(k); }
+        while (KeysToDestroy.Count > 0)
+        {
+            DestroyToPool(CurZonePlacements[KeysToDestroy[0]]);
+            CurZonePlacements.Remove(KeysToDestroy[0]);
+            KeysToDestroy.RemoveAt(0);
+        }
+        #endregion
     }
 
     //Dynamically showing the zone position under player's cursor 
+    Dictionary<Vector2Int, GameObject> CurZonePlacements = new Dictionary<Vector2Int, GameObject>();
     IEnumerator ShowingPossibleZone(List<Vector2Int> zoneCoords, Tag coverTag)
     {
         yield return new WaitForSeconds(Time.fixedDeltaTime * 0.01f);
         Debug.Log("Started ShowingPossibleZone");
 
         Vector2Int center = BoardManager.Instance.Get_CenterOfZone(zoneCoords);
-        Dictionary<Vector2Int, GameObject> CurZonePlacements = new Dictionary<Vector2Int, GameObject>();
-
-        foreach (var v in zoneCoords)
-        {
-            Vector2Int coord = BoardManager.Instance.CursorToCellPosition() + (v - center);
-
-            CurZonePlacements.Add
-                (coord, 
-                InstantiateFromPool(coverTag, BoardManager.Instance.BoardToWorldPosition(new List<Vector2Int> {coord}).Value, Quaternion.identity));
-        }
-
+ 
         while (CurZoneShowcase != null && BattleStatsManager.Instance.PlayerTurnActionCondition())
         {
             yield return new WaitForSeconds(Time.fixedDeltaTime * 0.1f);
@@ -437,16 +439,20 @@ public class EffectManager : MonoBehaviour
             {
                 Vector2Int coord = BoardManager.Instance.CursorToCellPosition() + (p - center);
 
-                if (!CurZonePlacements.ContainsKey(coord) && BoardManager.Instance.IsInBounds(coord))
+                if (BoardManager.Instance.IsInBounds(coord))
                 {
-                    CurZonePlacements.Add
-                        (coord,
-                        InstantiateFromPool(coverTag, BoardManager.Instance.BoardToWorldPosition(new List<Vector2Int> { coord }).Value, Quaternion.identity)
-                        );
-                }
-                else if (BoardManager.Instance.IsInBounds(coord))
-                {
-                    //Debug.Log("Tried to cover " + coord + "but already covered by " + CurZonePlacements[coord].gameObject.name);
+                    if (!CurZonePlacements.TryGetValue(coord, out GameObject existingEffect) || existingEffect == null || !existingEffect.activeInHierarchy)
+                    {
+                        GameObject g = InstantiateFromPool(coverTag, BoardManager.Instance.BoardToWorldPosition(new List<Vector2Int> { coord }).Value, Quaternion.identity);
+
+                        if (existingEffect != null)
+                        {
+                            DestroyToPool(existingEffect); // Prevent duplicates if previous one wasn't fully cleaned
+                            CurZonePlacements.Remove(coord);
+                        }
+
+                        CurZonePlacements[coord] = g;
+                    }
                 }
             }
             #endregion
@@ -456,13 +462,14 @@ public class EffectManager : MonoBehaviour
             foreach (var p in zoneCoords )
             {
                 Vector2Int newCoord = BoardManager.Instance.CursorToCellPosition() + (p - center);
-                if (BoardManager.Instance.IsInBounds(newCoord)) { possibPoss.Add(newCoord); }
+                if (BoardManager.Instance.IsInBounds(newCoord)) { possibPoss.Add(newCoord); Debug.Log("Possible pos: " + newCoord); ; }
                 
             }
+         
             List<Vector2Int> KeysToDestroy = new List<Vector2Int>();
             foreach (var k in CurZonePlacements.Keys)
             {
-                if (!possibPoss.Contains(k))
+                if (!possibPoss.Contains(k) || !BoardManager.Instance.IsInBounds(k))
                 {
                     //Debug.Log("Possible positions: "); string s = "";
                     //foreach (var v in possibPoss) { s += v.ToString(); }
@@ -470,7 +477,12 @@ public class EffectManager : MonoBehaviour
                     KeysToDestroy.Add(k);
                 }
             }
-            while (KeysToDestroy.Count > 0) { DestroyToPool(CurZonePlacements[KeysToDestroy[0]]); CurZonePlacements.Remove(KeysToDestroy[0]); KeysToDestroy.RemoveAt(0); }
+            while (KeysToDestroy.Count > 0) 
+            { 
+                DestroyToPool(CurZonePlacements[KeysToDestroy[0]]); 
+                CurZonePlacements.Remove(KeysToDestroy[0]); 
+                KeysToDestroy.RemoveAt(0); 
+            }
             #endregion
         }
 

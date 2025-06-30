@@ -52,6 +52,19 @@ public class ItemManagement : MonoBehaviour
     {
         ClickManager.Instance.E_Click_item.RemoveListener(UseCurrentItem);
     }
+
+    bool ItemCondition()
+    {
+        Debug.Log("BattleStatsManager.Instance.PlayerTurnActionCondition() " + BattleStatsManager.Instance.PlayerTurnActionCondition());
+        Debug.Log("!Action_DrawPlayerResources.IsDeployingNewResources " + !Action_DrawPlayerResources.IsDeployingNewResources);
+        Debug.Log("BattleStatsManager.Instance.CurRound " + BattleStatsManager.Instance.CurRound);
+
+        return BattleStatsManager.Instance.PlayerTurnActionCondition() &&   //Only on player's turn
+            !Action_DrawPlayerResources.IsDeployingNewResources &&          //Only when not deploying resources
+            BattleStatsManager.Instance.CurRound > 0;                      //Not in the deployment round
+        
+    }
+
     public IEnumerator DrawPossibleItems(int n)
     {
         if (ShouldDebug) { Debug.Log("Drawing " + n + " possible items"); }
@@ -64,7 +77,7 @@ public class ItemManagement : MonoBehaviour
         {
             safeguard--;
             int r = Random.Range(0, pItems.Count);
-            if (ShouldDebug) Debug.Log(pItems.Count + " " + r);
+            //if (ShouldDebug) Debug.Log(pItems.Count + " " + r);
 
             yield return new WaitForSeconds(Time.fixedDeltaTime);
             PossibleItems.Add(pItems[r]);
@@ -85,7 +98,7 @@ public class ItemManagement : MonoBehaviour
     Coroutine cUsingItem = null;
     public void UseCurrentItem(Item i)
     {
-
+        if (ShouldDebug) Debug.Log("Using current item");
         if (cUsingItem == null && CurItem != null)
         {
             cUsingItem = StartCoroutine(UseItem(CurItem));
@@ -95,28 +108,44 @@ public class ItemManagement : MonoBehaviour
     //Using an item
     public IEnumerator UseItem(Item i)
     {
-        switch(i.Id)
+        if (!ItemCondition()) { yield return null; }
+        else
         {
-            case ItemId.water:
-                ActionParameters w = new ActionParameters(GameManager.ActionType.WaterBucket, null, null, null, null, 0);
-                yield return GameManager.Instance.Action(w);
-                break;
-            case ItemId.oil:
-                ActionParameters o = new ActionParameters(GameManager.ActionType.OilBucket, null, null, null, null, 0);
-                yield return GameManager.Instance.Action(o);
-                break;
-            default:
-                Debug.LogError("Item ID type " + i.Id + " behaviour not set up");
-                break;
-        }
+            Debug.Log("Using an item");
+            CurItem.gameObject.SetActive(false);
 
-        cUsingItem = null;
+            switch (i.Id)
+            {
+                case ItemId.water:
+                    ActionParameters w = new ActionParameters(GameManager.ActionType.WaterBucket, null, null, null, null, 0);
+                    yield return GameManager.Instance.Action(w);
+                    break;
+                case ItemId.oil:
+                    ActionParameters o = new ActionParameters(GameManager.ActionType.OilBucket, null, null, null, null, 0);
+                    yield return GameManager.Instance.Action(o);
+                    break;
+                default:
+                    Debug.LogError("Item ID type " + i.Id + " behaviour not set up");
+                    break;
+            }
+
+            cUsingItem = null;
+        }
+    
     }
     void UpdateItemPos()
     {
         if (CurItem != null)
         {
             CurItem.transform.position = CurItem_PosObj.transform.position;
+        }
+    }
+    public void SpendCurItem(Item i)
+    {
+        Debug.Log("Spent current item");
+        if (CurItem == i)
+        {
+            CurItem = null;
         }
     }
     private void Update()

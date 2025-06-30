@@ -191,10 +191,21 @@ MonoBehaviour:
   CurMoveset: {fileID: 11400000, guid: 66af751efad64a5479b568eccd140825, type: 2}
   CurAttackZone: {fileID: 0}
   MaxHealth: 9999
-  CurrentHealth: 0
+  CodexPage: 0
   BaseAbilities: 0100000000000000
   BaseKeywords: 0300000002000000
+  CurColor: {r: 255, g: 255, b: 255, a: 1}
+  PlayerColor: {r: 0, g: 255, b: 255, a: 1}
+  PlayerBaseMat: {fileID: 0}
+  EnemyColor: {r: 255, g: 0, b: 0, a: 1}
+  EnemyBaseMat: {fileID: 0}
+  FrontSprite: {fileID: 0}
+  TopSprite: {fileID: 0}
+  CurrentHealth: 0
+  IsPrefab: 1
   Moved: 0
+  BaseOutline: {fileID: 0}
+  BaseRend: {fileID: 0}
   UnitModelShowcase: {fileID: 817121437756259793}
   ModelOffset: {x: 0, y: 0.4, z: 0}
   Anim: {fileID: 0}

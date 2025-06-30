@@ -148,7 +148,8 @@ public static class Action_DrawPlayerResources
         }
         IEnumerator HidesPossibleUnits()
         {
-            yield return ItemManagement.Instance.DrawPossibleItems(PulledItemsAmount);
+            //yield return ItemManagement.Instance.DrawPossibleItems(PulledItemsAmount);
+            yield return new WaitForSeconds(0.1f);
 
             foreach (var v in pulledUnits) 
             { 
