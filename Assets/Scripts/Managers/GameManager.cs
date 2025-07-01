@@ -289,9 +289,17 @@ public class GameManager : MonoBehaviour
             //Water Bucket - covers a selected 3x3 square in Water
             #region WaterBucket()
             case ActionType.WaterBucket:
-
                 ActionSlot water = new ActionSlot(Item_WaterBucket.WaterBucket(parameters), ActionType.WaterBucket, parameters);
                 ActionQueue.Enqueue(water);
+
+                break;
+            #endregion
+
+            //Oil Bucket - covers a selected 3x3 square in Oil
+            #region OilBucket()
+            case ActionType.OilBucket:
+                ActionSlot oil = new ActionSlot(Item_OilBucket.OilBucket(parameters), ActionType.OilBucket, parameters);
+                ActionQueue.Enqueue(oil);
 
                 break;
             #endregion

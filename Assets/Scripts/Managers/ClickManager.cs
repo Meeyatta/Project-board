@@ -16,6 +16,7 @@ public class ClickManager : MonoBehaviour
     public LayerMask LayerMask;
     public bool ShouldDebug;
     public bool ShouldDebugCellClicks;
+    public bool ShouldDebugRaycast;
 
     float nextClickTime = 1;
     bool SwitchedToAnotherAction;
@@ -173,7 +174,7 @@ public class ClickManager : MonoBehaviour
     public UnityEvent<Item> E_Click_item = new UnityEvent<Item>();
     void ClickHandle(Item i)
     {
-        if (ShouldDebug) Debug.Log("ClickHandle on  " + i.Name);
+        if (ShouldDebug) Debug.Log("Item ClickHandle on " + i.Name);
         E_Click_item.Invoke(i);
     }
     #endregion
@@ -182,7 +183,7 @@ public class ClickManager : MonoBehaviour
     public UnityEvent<Unit> E_Click_unit = new UnityEvent<Unit>();
     void ClickHandle(Unit u)
     {
-        if (ShouldDebug) Debug.Log("ClickHandle on  " + u.gameObject.name);
+        if (ShouldDebug) Debug.Log("Unit ClickHandle on " + u.gameObject.name);
 
         List<Vector2Int> uPoss = BoardManager.Instance.Get_UnitPositions(u);
         #region If unit is on the board
@@ -561,13 +562,13 @@ public class ClickManager : MonoBehaviour
                 #region If hover over a new unit
                 else
                 {
-                    if (ShouldDebug) Debug.Log(hit.transform.gameObject.name + " is new, making current");
+                    if (ShouldDebugRaycast) Debug.Log(hit.transform.gameObject.name + " is new, making current");
                     LastPointedAt = hit.transform;
                     Unit u = LastPointedAt.GetComponent<Unit>();
                     CurrentPointedAtUnit = u;
                     if (CurrentPointedAtUnit != null)
                     {
-                        if (ShouldDebug) Debug.Log("Found a new unit: " + CurrentPointedAtUnit.gameObject.name);
+                        if (ShouldDebugRaycast) Debug.Log("Found a new unit: " + CurrentPointedAtUnit.gameObject.name);
 
                         List<Vector2Int> p = BoardManager.Instance.Get_UnitPositions(u);
                         CellClick = null;
@@ -589,7 +590,7 @@ public class ClickManager : MonoBehaviour
             #region If hit a cell
             else if (hit.transform.tag.ToLower() == "cell")
             {
-                //if (ShouldDebug) Debug.Log(hit.transform.gameObject.name + " cell was hit with raycast");
+                if (ShouldDebugRaycast) Debug.Log(hit.transform.gameObject.name + " cell was hit with raycast");
 
                 #region If hover and click on an old cell
                 if (hit.transform == LastPointedAt)
@@ -618,7 +619,7 @@ public class ClickManager : MonoBehaviour
             #region If hit an item
             else if (hit.transform.tag.ToLower() == "item")
             {
-                //if (ShouldDebug) Debug.Log(hit.transform.gameObject.name + " item was hit with raycast");
+                if (ShouldDebugRaycast) Debug.Log(hit.transform.gameObject.name + " item was hit with raycast");
 
                 CurrentPointedAtUnit = null;
                 #region If hover and click on an old item
@@ -654,14 +655,14 @@ public class ClickManager : MonoBehaviour
 
                 CurrentPointedAtUnit = null;
                 CurrentPointedAtItem = null;
-                if (ShouldDebug) Debug.Log(hit.transform.gameObject.name + " turn clock was hit with raycast");
+                if (ShouldDebugRaycast) Debug.Log(hit.transform.gameObject.name + " turn clock was hit with raycast");
                 //PassTurnButton.Instance.Pass();
             }
             #endregion
 
             else
             {
-                if (ShouldDebug) Debug.Log("Hit something else: " + hit.transform.gameObject.name + " with tag " + hit.transform.tag);
+                if (ShouldDebugRaycast) Debug.Log("Hit something else: " + hit.transform.gameObject.name + " with tag " + hit.transform.tag);
                 Reset_CanClickOnNothing();
             }
 

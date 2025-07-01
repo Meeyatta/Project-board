@@ -99,20 +99,29 @@ public class ItemManagement : MonoBehaviour
     public void UseCurrentItem(Item i)
     {
         if (ShouldDebug) Debug.Log("Using current item");
-        if (cUsingItem == null && CurItem != null)
+        if (cUsingItem == null && CurItem != null && ItemCondition())
         {
             cUsingItem = StartCoroutine(UseItem(CurItem));
+        }
+        else
+        {
+            //if (ShouldDebug) Debug.Log("Can't launch the item usage coroutine: " + cUsingItem + " " + CurItem);
         }
     }
     
     //Using an item
     public IEnumerator UseItem(Item i)
     {
-        if (!ItemCondition()) { yield return null; }
+        Debug.Log("Tried using an item");
+        if (!ItemCondition())
+        {
+            Debug.Log("Failed Using an item");
+            yield return null; 
+        }
         else
         {
-            Debug.Log("Using an item");
             CurItem.gameObject.SetActive(false);
+            Debug.Log("Using an item");
 
             switch (i.Id)
             {

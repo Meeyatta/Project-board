@@ -15207,19 +15207,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 11416984, guid: c080686877cf77f42a1a078076d57fe5, type: 3}
       propertyPath: textList.Array.data[4].s
-      value: Trying to use an item when you can't make it inaccessable
-      objectReference: {fileID: 0}
-    - target: {fileID: 11416984, guid: c080686877cf77f42a1a078076d57fe5, type: 3}
-      propertyPath: textList.Array.data[5].s
       value: 'Rework ability holders to be lists
 
         with individual sources '
       objectReference: {fileID: 0}
     - target: {fileID: 11416984, guid: c080686877cf77f42a1a078076d57fe5, type: 3}
-      propertyPath: textList.Array.data[6].s
+      propertyPath: textList.Array.data[5].s
       value: 'Make the item selection zone follow the cursor
 
         (EffectManager)'
+      objectReference: {fileID: 0}
+    - target: {fileID: 11416984, guid: c080686877cf77f42a1a078076d57fe5, type: 3}
+      propertyPath: textList.Array.data[6].s
+      value: Change how the effect manager tracks the item coverage position
       objectReference: {fileID: 0}
     - target: {fileID: 11416984, guid: c080686877cf77f42a1a078076d57fe5, type: 3}
       propertyPath: textList.Array.data[7].s
@@ -15309,7 +15309,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 11416984, guid: c080686877cf77f42a1a078076d57fe5, type: 3}
       propertyPath: textList.Array.data[4].state
-      value: 1
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 11416984, guid: c080686877cf77f42a1a078076d57fe5, type: 3}
       propertyPath: textList.Array.data[5].state
@@ -15317,7 +15317,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 11416984, guid: c080686877cf77f42a1a078076d57fe5, type: 3}
       propertyPath: textList.Array.data[6].state
-      value: 2
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 11416984, guid: c080686877cf77f42a1a078076d57fe5, type: 3}
       propertyPath: textList.Array.data[7].state
@@ -55775,6 +55775,7 @@ MonoBehaviour:
     m_Bits: 513
   ShouldDebug: 0
   ShouldDebugCellClicks: 0
+  ShouldDebugRaycast: 0
   ClickBackEvent:
     m_PersistentCalls:
       m_Calls: []
