@@ -4,7 +4,7 @@ using UnityEngine;
 
 public static class Item_WaterBucket
 {
-    static List<int> Size = new List<int> { 4, 4 };
+    static List<int> Size = new List<int> { 3, 3 };
 
     public static IEnumerator WaterBucket(ActionParameters parameters)
     {

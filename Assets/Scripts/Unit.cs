@@ -4,12 +4,14 @@ using Unity.VisualScripting;
 using UnityEngine;
 
 //CellGuide - list of lines which hold coordinats relative to the unit, used for moveset and attack zones
-public enum Keyword { 
+public enum Keyword 
+{ 
     Enemy,              //Units not belonging to the player
     Player,              //Units belonging to the player         
     Objective,          //Objectives used for scoring points
     Neutral             //Something controlled by neither the enemy nor the player
 };
+
 [System.Serializable]
 public class Unit : MonoBehaviour
 {

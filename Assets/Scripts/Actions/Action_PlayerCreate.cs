@@ -7,6 +7,7 @@ using System.Linq;
 
 public static class Action_PlayerCreate
 {
+    static bool ShouldDebug = false;
     static string UnitPlacementHolderStr = "UnitPlacementHolder";
     public static Unit CurUnit;
     static GameObject UnitPlacementHolderObj;
@@ -65,14 +66,14 @@ public static class Action_PlayerCreate
             {
                 ViablePos = true;
                 IsWaitingForData = false;
-                Debug.Log("Action_PlayerCreate - " + IsWaitingForData);
+                if (ShouldDebug) Debug.Log("Action_PlayerCreate - " + IsWaitingForData);
                 positions = v2;
                 Action_SelectUnitPosition.ESendPositionBack.RemoveListener(Get_ClickedCellCoordinates);
             }
             else
             {
                 IsWaitingForData = true;
-                Debug.Log("Action_PlayerCreate got data, but can't create in - " + v2[0]);
+                if (ShouldDebug) Debug.Log("Action_PlayerCreate got data, but can't create in - " + v2[0]);
                 GameManager.Instance.StartCoroutine(Action_SelectUnitPosition.Selecting_strict(CurUnit, false));
             }
         }
@@ -96,7 +97,7 @@ public static class Action_PlayerCreate
         }
         else
         {
-            Debug.Log("Non viable position");
+            if (ShouldDebug) Debug.Log("Non viable position");
         }
         #endregion
 

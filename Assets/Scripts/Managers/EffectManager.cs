@@ -396,7 +396,7 @@ public class EffectManager : MonoBehaviour
     {
         if (CurZoneShowcase == null)
         {
-            CurZoneShowcase = StartCoroutine(ShowingPossibleZone(zoneCoords, coverTag));
+            CurZoneShowcase = StartCoroutine(ShowingPossibleZone_2(zoneCoords, coverTag));
         }
     }
     public void StopShowingPossibleZone()
@@ -409,85 +409,52 @@ public class EffectManager : MonoBehaviour
 
         #region Removing all remaining effects of possible placements
         List<Vector2Int> KeysToDestroy = new List<Vector2Int>();
-        foreach (var k in CurZonePlacements.Keys) { KeysToDestroy.Add(k); }
+        foreach (var k in Covers.Keys) { KeysToDestroy.Add(k); }
         while (KeysToDestroy.Count > 0)
         {
-            DestroyToPool(CurZonePlacements[KeysToDestroy[0]]);
-            CurZonePlacements.Remove(KeysToDestroy[0]);
+            DestroyToPool(Covers[KeysToDestroy[0]]);
+            Covers.Remove(KeysToDestroy[0]);
             KeysToDestroy.RemoveAt(0);
         }
         #endregion
     }
 
-    //Dynamically showing the zone position under player's cursor 
-    Dictionary<Vector2Int, GameObject> CurZonePlacements = new Dictionary<Vector2Int, GameObject>();
-    IEnumerator ShowingPossibleZone(List<Vector2Int> zoneCoords, Tag coverTag)
+    Dictionary<Vector2Int, GameObject> Covers = new Dictionary<Vector2Int, GameObject>();
+    IEnumerator ShowingPossibleZone_2(List<Vector2Int> zoneCoords, Tag coverTag)
     {
         yield return new WaitForSeconds(Time.fixedDeltaTime * 0.01f);
-        Debug.Log("Started ShowingPossibleZone");
 
         Vector2Int center = BoardManager.Instance.Get_CenterOfZone(zoneCoords);
- 
+        foreach (var c in zoneCoords)
+        {
+            Vector2Int coord = (c - center);
+            GameObject g = InstantiateFromPool(coverTag, new Vector3(0, 0, 0), Quaternion.identity);
+
+            Debug.Log(coord + " " + g.name);
+
+            Covers.Add(coord, g);
+        }
         while (CurZoneShowcase != null && BattleStatsManager.Instance.PlayerTurnActionCondition())
         {
             yield return new WaitForSeconds(Time.fixedDeltaTime * 0.1f);
 
-            //Debug.Log("ShowingPossibleZone, cursor pos: " + BoardManager.Instance.CursorToCellPosition());
-
-            #region Going through all positions and adding an effect to them
-            foreach (var p in zoneCoords)
+            foreach (var v in Covers)
             {
-                Vector2Int coord = BoardManager.Instance.CursorToCellPosition() + (p - center);
-
+                Vector2Int coord = BoardManager.Instance.CursorToCellPosition() + v.Key;
                 if (BoardManager.Instance.IsInBounds(coord))
                 {
-                    if (!CurZonePlacements.TryGetValue(coord, out GameObject existingEffect) || existingEffect == null || !existingEffect.activeInHierarchy)
-                    {
-                        GameObject g = InstantiateFromPool(coverTag, BoardManager.Instance.BoardToWorldPosition(new List<Vector2Int> { coord }).Value, Quaternion.identity);
-
-                        if (existingEffect != null)
-                        {
-                            DestroyToPool(existingEffect); // Prevent duplicates if previous one wasn't fully cleaned
-                            CurZonePlacements.Remove(coord);
-                        }
-
-                        CurZonePlacements[coord] = g;
-                    }
+                    Covers[v.Key].SetActive(true);
+                    Covers[v.Key].transform.position = BoardManager.Instance.BoardToWorldPosition(new List<Vector2Int> { coord }).Value;
                 }
-            }
-            #endregion
-
-            #region Going through effects and cleaning up ones without positions
-            List<Vector2Int> possibPoss = new List<Vector2Int>();
-            foreach (var p in zoneCoords )
-            {
-                Vector2Int newCoord = BoardManager.Instance.CursorToCellPosition() + (p - center);
-                if (BoardManager.Instance.IsInBounds(newCoord)) { possibPoss.Add(newCoord); Debug.Log("Possible pos: " + newCoord); ; }
-                
-            }
-         
-            List<Vector2Int> KeysToDestroy = new List<Vector2Int>();
-            foreach (var k in CurZonePlacements.Keys)
-            {
-                if (!possibPoss.Contains(k) || !BoardManager.Instance.IsInBounds(k))
+                else
                 {
-                    //Debug.Log("Possible positions: "); string s = "";
-                    //foreach (var v in possibPoss) { s += v.ToString(); }
-                    //Debug.Log(s + ", |" + k + "| doesn't fit - samples cursor position: " + BoardManager.Instance.CursorToCellPosition());
-                    KeysToDestroy.Add(k);
+                    Covers[v.Key].SetActive(false);
                 }
             }
-            while (KeysToDestroy.Count > 0) 
-            { 
-                DestroyToPool(CurZonePlacements[KeysToDestroy[0]]); 
-                CurZonePlacements.Remove(KeysToDestroy[0]); 
-                KeysToDestroy.RemoveAt(0); 
-            }
-            #endregion
         }
-
-        Debug.Log("Ended ShowingPossibleZone");
+            
     }
+
     #endregion
 
     #region Showing position of unit under the cursor when moving
