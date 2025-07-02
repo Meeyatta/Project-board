@@ -5,7 +5,8 @@ using static UnityEngine.GraphicsBuffer;
 
 //Continuously checks if conditions for specific unit ablities are satisfied, if so, triggers them
 
-public enum Ability { 
+public enum Ability 
+{ 
     Invincible,       //All incoming damage is set to 0
     Resistant_Fire,        //-1 incoming fire damage
     Vulnerable_Fire,        //+1 incoming fire damage
@@ -22,6 +23,8 @@ public enum Ability {
     Slippery,         //After ending their move, unit moves 1 cell in a random direction
 
 }
+
+
 
 public class AbilityManager : MonoBehaviour
 {

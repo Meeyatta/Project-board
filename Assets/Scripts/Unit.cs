@@ -23,6 +23,9 @@ public class Unit : MonoBehaviour
     public int CodexPage;
     [Header("Abilities:")]
     #region Abilities
+    public List<Ability> Abilities_Base = new List<Ability>();
+    public Dictionary<Ability, AbilitySource> Abilities = new Dictionary<Ability, AbilitySource>();
+
     public List<Ability> BaseAbilities = new List<Ability>(); //Abilities unit has as a base, these are rarely changed
     public HashSet<Ability> CondAbilities = new HashSet<Ability>(); //Abilities conditionally applied to unit during the game, these change often 
     public HashSet<Ability> CellCoverAbilities = new HashSet<Ability>(); //Abilities applied depending on what thing the cells are covered with
@@ -97,6 +100,13 @@ public class Unit : MonoBehaviour
         }
         else { Debug.Log(UnitName + " " + gameObject.name + " HAS NO UnitModelShowcase"); }
 
+        #region Setting up innate abilities
+        foreach (var a in Abilities_Base) 
+        {
+            AbilitySource aS = new AbilitySource(OriginType.Innate, new Origin_Innate());
+            Abilities.Add(a, aS); 
+        }
+        #endregion
     }
 
     #region Turns this into a player unit

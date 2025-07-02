@@ -15207,9 +15207,9 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 11416984, guid: c080686877cf77f42a1a078076d57fe5, type: 3}
       propertyPath: textList.Array.data[4].s
-      value: 'Rework ability holders to be lists
-
-        with individual sources '
+      value: "Rework ability holders to be lists\nwith individual sources \n(Stopped
+        at AbiltiySource and Origin_ scripts. In \"Unit\"\nshould remove previous
+        ability lists and use the new one instead)"
       objectReference: {fileID: 0}
     - target: {fileID: 11416984, guid: c080686877cf77f42a1a078076d57fe5, type: 3}
       propertyPath: textList.Array.data[5].s
