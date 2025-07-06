@@ -15207,15 +15207,16 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 11416984, guid: c080686877cf77f42a1a078076d57fe5, type: 3}
       propertyPath: textList.Array.data[4].s
-      value: "Rework ability holders to be lists\nwith individual sources \n(Stopped
-        at AbiltiySource and Origin_ scripts. In \"Unit\"\nshould remove previous
-        ability lists and use the new one instead)"
-      objectReference: {fileID: 0}
-    - target: {fileID: 11416984, guid: c080686877cf77f42a1a078076d57fe5, type: 3}
-      propertyPath: textList.Array.data[5].s
       value: 'Make the item selection zone follow the cursor
 
         (EffectManager)'
+      objectReference: {fileID: 0}
+    - target: {fileID: 11416984, guid: c080686877cf77f42a1a078076d57fe5, type: 3}
+      propertyPath: textList.Array.data[5].s
+      value: 'Fix the bug with "HasAbility" not working properly (Stopped in
+
+        Unit
+        at "HasAbility" and in "UpdateInfo")'
       objectReference: {fileID: 0}
     - target: {fileID: 11416984, guid: c080686877cf77f42a1a078076d57fe5, type: 3}
       propertyPath: textList.Array.data[6].s
@@ -15313,7 +15314,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 11416984, guid: c080686877cf77f42a1a078076d57fe5, type: 3}
       propertyPath: textList.Array.data[5].state
-      value: 2
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 11416984, guid: c080686877cf77f42a1a078076d57fe5, type: 3}
       propertyPath: textList.Array.data[6].state
@@ -54006,9 +54007,11 @@ MonoBehaviour:
   - Name: Water
     Type_: 1
     EffectManagerTag: 2
+    AppliedAbilities: 
   - Name: Oil
     Type_: 2
     EffectManagerTag: 3
+    AppliedAbilities: 
 --- !u!1 &1222966730
 GameObject:
   m_ObjectHideFlags: 0

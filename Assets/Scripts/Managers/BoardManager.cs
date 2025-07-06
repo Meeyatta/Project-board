@@ -456,7 +456,7 @@ public class BoardManager : MonoBehaviour
         return false;
     }
     //Returns a list of units with specified abilities
-    public List<Unit> Get_AllUnitsWithAbilities(List<Ability> abilities)
+    public List<Unit> Get_AllUnitsOnBoardWithAbilities(List<Ability> abilities)
     {
         List<Unit> units = new List<Unit>();
 
@@ -466,10 +466,12 @@ public class BoardManager : MonoBehaviour
             {
                 if (c == null || c.CurUnit == null) continue;
 
-                if (c.CurUnit.CurAbilities.Intersect<Ability>(abilities).Any())
+                bool All = true;
+                foreach (var a in abilities)
                 {
-                    units.Add(c.CurUnit);
+                    if (!c.CurUnit.HasAbility(a)) { All = false;break; }
                 }
+                if (All) { units.Add(c.CurUnit); }
             }
         }
 

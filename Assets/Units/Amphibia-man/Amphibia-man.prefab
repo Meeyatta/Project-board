@@ -54,7 +54,7 @@ MonoBehaviour:
   CurAttackZone: {fileID: 11400000, guid: 0975c85d43f513e4788e5c187d780b69, type: 2}
   MaxHealth: 3
   CodexPage: 3
-  BaseAbilities: 0c0000000100000003000000
+  Abilities_Base: 030000000a000000010000000c000000
   BaseKeywords: 
   CurColor: {r: 255, g: 255, b: 255, a: 1}
   PlayerColor: {r: 0, g: 255, b: 255, a: 1}

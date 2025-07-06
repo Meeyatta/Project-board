@@ -73,7 +73,7 @@ public static class Action_SelectUnitPosition
 
         void StopWaiting(Vector2Int v)
         {
-            Debug.Log("Selecting_strict - Stopped waiting");
+            if (ShouldDebug) Debug.Log("Selecting_strict - Stopped waiting");
             IsAwaitingAClickBack = false;
 
             if (CurUnit != null)

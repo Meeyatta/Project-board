@@ -78,28 +78,12 @@ public static class DamageDealing
     public static IEnumerator Damage(Unit target, Unit source)
     {
 
-        int startDamage = source.CurAttackZone.Damage; int EndDamage = startDamage;
+        int startDamage = source.CurAttackZone.Damage; 
         DamageType type = source.CurAttackZone.Type;
 
-        #region Modifying damage depending on abilities
-        switch (type)
-        {
-            case DamageType.Fire:
-                if (target.CurAbilities.Contains(Ability.Resistant_Fire)) { EndDamage -= 1; }
-                if (target.CurAbilities.Contains(Ability.Vulnerable_Fire)) { EndDamage += 1; }
-                break;
-            case DamageType.Lightning:
-                if (target.CurAbilities.Contains(Ability.Resistant_Lightning)) { EndDamage -= 1; }
-                if (target.CurAbilities.Contains(Ability.Vulnerable_Lightning)) { EndDamage += 1; }
-                break;
-            case DamageType.Physical:
-                if (target.CurAbilities.Contains(Ability.Resistant_Physical)) { EndDamage -= 1; }
-                if (target.CurAbilities.Contains(Ability.Vulnerable_Physical)) { EndDamage += 1; }
-                break;
-        }
-        #endregion
+        int EndDamage = AbilityManager.Instance.ModifyIncomingDamage(target, startDamage); //Modifying damage depending on abilities
 
-        if (target.CurAbilities.Contains(Ability.Invincible) || EndDamage < 0) 
+        if (target.HasAbility(Ability.Invincible) || EndDamage < 0) 
         { 
             EndDamage = 0;
             yield return new WaitForSeconds(Time.deltaTime);

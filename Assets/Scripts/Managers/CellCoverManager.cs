@@ -16,12 +16,14 @@ public class Cover
     public string Name;
     public CoverType Type_;
     public EffectManager.Tag EffectManagerTag;
+    public List<Ability> AppliedAbilities = new List<Ability>();
 
-    public Cover(string n, CoverType type, EffectManager.Tag tag)
+    public Cover(string n, CoverType type, EffectManager.Tag tag, List<Ability> l)
     {
         Name = n;
         Type_ = type;
         EffectManagerTag = tag;
+        AppliedAbilities = l;
     }
 }
 
@@ -72,34 +74,66 @@ public class CellCoverManager : MonoBehaviour
         Singleton();
     }
 
+    #region Adding abilities to unit depending on what covers it stands
+    void AddAbilitiesToUnitOnCover(Unit u)
+    {
+        List<Vector2Int> positions = BoardManager.Instance.Get_UnitPositions(u);
+        foreach (var pos in positions)
+        {
+            CoverType posCovT = BoardManager.Instance.Board[pos.x].Cells[pos.y].CoveredBy;
+
+            if (posCovT != CoverType.None)
+            {
+                Cover c = GetCover(posCovT);
+                foreach (var a in c.AppliedAbilities)
+                {
+                    Origin origin = new Origin_CoverUnderneath(pos, c.Type_);
+                    AbilityAndOrigin aS = new AbilityAndOrigin(a, origin);
+
+                    u.Abilities.Add(aS);
+                }
+            }
+        }
+        
+    }
+    #endregion
+
+    #region Removes all abilities from cell covers when unit no longer stands on top of appropriate ones
+    void RemoveAbilitiesOfCover(Unit u)
+    {
+        List<Vector2Int> positions = BoardManager.Instance.Get_UnitPositions(u);
+
+        //List<>
+        foreach (var a in u.Abilities)
+        {
+            if (a.Origin_ is Origin_CoverUnderneath origin)
+            {
+                Vector2Int ability_coord = origin.CellCoord;
+                if (BoardManager.Instance.Board[ability_coord.x].Cells[ability_coord.y].CoveredBy != origin.CoverType)
+                {
+
+                }
+            }
+        }
+    }
+    #endregion
+
+    #region Tracks what abilities covers underneath units should give
+    void CoverAbilitiesTracking(List<Unit> all)
+    {
+        foreach (var u in all)
+        {
+            AddAbilitiesToUnitOnCover(u);
+            RemoveAbilitiesOfCover(u);
+        }
+    }
+    #endregion
+
     void FixedUpdate()
     {
-        List<Unit> list = BoardManager.Instance.Get_AllUnitsOnBoard();
+        List<Unit> all = BoardManager.Instance.Get_AllUnitsOnBoard();
 
-        foreach (var u in list)
-        {
-            HashSet<CoverType> covers = new HashSet<CoverType>();
-            foreach (var pos in BoardManager.Instance.Get_UnitPositions(u))
-            {
-                covers.Add(BoardManager.Instance.Board[pos.x].Cells[pos.y].CoveredBy);
-            }
-
-            #region Checks for coverings on cells occupied by the unit, adds abilities appropriately
-            #region Water
-            if (covers.Contains(CoverType.Water)) 
-            { u.CellCoverAbilities.Add(Ability.Resistant_Fire);  }
-            else if (u.CellCoverAbilities.Contains(Ability.Resistant_Fire)) 
-            { u.CellCoverAbilities.Remove(Ability.Resistant_Fire); }
-            #endregion
-            #region Oil
-            if (covers.Contains(CoverType.Oil)) 
-            { u.CellCoverAbilities.Add(Ability.Vulnerable_Fire); u.CellCoverAbilities.Add(Ability.Slippery); }
-            else if (u.CellCoverAbilities.Contains(Ability.Vulnerable_Fire) && u.CellCoverAbilities.Contains(Ability.Slippery)) 
-            { u.CellCoverAbilities.Remove(Ability.Vulnerable_Fire); u.CellCoverAbilities.Remove(Ability.Slippery); }
-            #endregion
-
-            #endregion
-        }
+        CoverAbilitiesTracking(all);
 
 
     }

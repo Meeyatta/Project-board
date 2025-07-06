@@ -97,7 +97,7 @@ public static class Action_NextTurn
     static int ntc = 0;
     public static IEnumerator NextTurn(ActionParameters parameters)
     {
-        Debug.Log("NextTurn");
+        if (ShouldDebug) Debug.Log("NextTurn");
         yield return new WaitForSeconds(Time.fixedDeltaTime / 100);
         if (IsChangingToNextTurn) yield break;
         IsChangingToNextTurn = true;

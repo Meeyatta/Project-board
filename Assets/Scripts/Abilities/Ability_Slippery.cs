@@ -8,7 +8,7 @@ public static class Ability_Slippery
     public static float Delay = 12f;
     public static bool Can(Unit u)
     {
-        return u.CurAbilities.Contains(Ability.Slippery);
+        return u.HasAbility(Ability.Slippery);
     }
     public static List<Vector2Int> GetRandPos(Unit u)
     {

@@ -2,7 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-//Basics of the type
 public enum OriginType  
 {
     Innate, //Unit starts with this ability by default and always has it during battle, unless it is explicitly removed
@@ -11,14 +10,13 @@ public enum OriginType
 }
 
 //This shows what kind of source the ability has: Is it innate, is it from an underneath cell cover
+[System.Serializable]
 public class AbilitySource 
 {
-    public OriginType Type;
-    public Origin_ Origin;
+    public Origin Origin;
 
-    public AbilitySource(OriginType t, Origin_ o)
+    public AbilitySource(OriginType t, Origin o)
     {
-        Type = t;
-        Origin = o;
+
     }
 }

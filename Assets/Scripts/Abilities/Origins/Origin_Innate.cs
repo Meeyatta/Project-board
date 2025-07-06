@@ -2,7 +2,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Origin_Innate : Origin_
+[System.Serializable]
+public class Origin_Innate : Origin
 {
     //Unit starts with this ability by default and always has it during battle, unless it is explicitly removed
+    public override bool Equals(Origin o)
+    {
+        return (o.GetType() == this.GetType());
+    }
 }

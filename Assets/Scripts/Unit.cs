@@ -12,6 +12,20 @@ public enum Keyword
     Neutral             //Something controlled by neither the enemy nor the player
 };
 
+
+[System.Serializable]
+public class AbilityAndOrigin
+{
+    public Ability Ability_;
+    public Origin Origin_;
+
+    public AbilityAndOrigin(Ability a, Origin o)
+    {
+        Ability_ = a;
+        Origin_ = o;
+    }
+}
+
 [System.Serializable]
 public class Unit : MonoBehaviour
 {
@@ -24,14 +38,120 @@ public class Unit : MonoBehaviour
     [Header("Abilities:")]
     #region Abilities
     public List<Ability> Abilities_Base = new List<Ability>();
-    public Dictionary<Ability, AbilitySource> Abilities = new Dictionary<Ability, AbilitySource>();
 
-    public List<Ability> BaseAbilities = new List<Ability>(); //Abilities unit has as a base, these are rarely changed
-    public HashSet<Ability> CondAbilities = new HashSet<Ability>(); //Abilities conditionally applied to unit during the game, these change often 
-    public HashSet<Ability> CellCoverAbilities = new HashSet<Ability>(); //Abilities applied depending on what thing the cells are covered with
-    public HashSet<Ability> CurAbilities = new HashSet<Ability>(); //Combination of Base abilities and Conditional Abilities
+    public List<AbilityAndOrigin> Abilities = new List<AbilityAndOrigin>();
+    #region Adding abilities to the unit
+    public void Abilities_Base_Add(List<AbilityAndOrigin> abNsources)
+    {
+        foreach (var v in abNsources)
+        {
+            Abilities_Base.Add(v.Ability_);
+        }
+    }
+    public void Abilities_Base_Add(AbilityAndOrigin abNsource)
+    {
+        Abilities_Base.Add(abNsource.Ability_);
+    }
+    public void Abilities_Base_Add(Ability a)
+    {
+        Abilities_Base.Add(a);
+    }
+
+    public void Ability_Add(List<AbilityAndOrigin> abNsources)
+    {
+        foreach (var v in abNsources)
+        {
+            Abilities.Add(v);
+        }
+    }
+    public void Ability_Add(AbilityAndOrigin abNsource)
+    {
+        Abilities.Add(abNsource);
+    }
+    public void Ability_Add(Ability a, Origin o)
+    {
+        AbilityAndOrigin ab = new AbilityAndOrigin(a, o);
+        Abilities.Add(ab);
+    }
     #endregion
-    
+    #region Removing abilities from the unit
+    public void AbilityRemove(AbilityAndOrigin aas)
+    {
+        Abilities.Remove(aas);
+    }
+    public void AbilityRemove(Ability a, Origin o)
+    {
+        AbilityAndOrigin aas = new AbilityAndOrigin(a, o);
+        Abilities.Remove(aas);
+    }
+
+    public List<AbilityAndOrigin> Ability_RemoveAll_ByAbility(Ability a)
+    {
+        List<AbilityAndOrigin> abilitiesToDelete = new List<AbilityAndOrigin>();
+        foreach (var v in Abilities)
+        {
+            if (v.Ability_ == a) { abilitiesToDelete.Add(v); }
+        }
+
+        List<AbilityAndOrigin> returnList = abilitiesToDelete;
+
+        while (abilitiesToDelete.Count > 0)
+        {
+            Abilities.Remove(abilitiesToDelete[0]);
+            abilitiesToDelete.Remove(abilitiesToDelete[0]);
+        }
+
+        return returnList;
+    }
+    public List<AbilityAndOrigin> Ability_RemoveAll_ByOrigin(Origin o)
+    {
+        List<AbilityAndOrigin> abilitiesToDelete = new List<AbilityAndOrigin>();
+        foreach (var v in Abilities)
+        {
+            if (v.Origin_.GetType() == o.GetType()) { abilitiesToDelete.Add(v); }
+        }
+
+        List<AbilityAndOrigin> returnList = abilitiesToDelete;
+
+        while (abilitiesToDelete.Count > 0)
+        {
+            Abilities.Remove(abilitiesToDelete[0]);
+            abilitiesToDelete.Remove(abilitiesToDelete[0]);
+        }
+
+        return returnList;
+    }
+    #endregion
+    #region Checking for abilities
+    public bool HasAbility(Ability a)
+    {
+        foreach (var v in Abilities)
+        {
+            if (v.Ability_ == a) { return true; }
+        }
+
+        return false;
+    }
+    public bool HasAbility(AbilityAndOrigin aas)
+    {    
+        foreach (var v in Abilities)
+        {          
+            bool c = true;
+            if (v.Ability_ == aas.Ability_ && v.Origin_.Equals(aas.Origin_)) { c = true;  }
+            else { c = false; }
+
+        }
+
+        return false;
+    }
+    #endregion
+
+    //public List<Ability> BaseAbilities = new List<Ability>(); //Abilities unit has as a base, these are rarely changed
+    //public HashSet<Ability> CondAbilities = new HashSet<Ability>(); //Abilities conditionally applied to unit during the game, these change often 
+    //public HashSet<Ability> CellCoverAbilities = new HashSet<Ability>(); //Abilities applied depending on what thing the cells are covered with
+    //public HashSet<Ability> CurAbilities = new HashSet<Ability>(); //Combination of Base abilities and Conditional Abilities
+    #endregion
+
     [Header("Keywords:")]
     #region Keywords
     public List<Keyword> BaseKeywords = new List<Keyword>();
@@ -103,8 +223,8 @@ public class Unit : MonoBehaviour
         #region Setting up innate abilities
         foreach (var a in Abilities_Base) 
         {
-            AbilitySource aS = new AbilitySource(OriginType.Innate, new Origin_Innate());
-            Abilities.Add(a, aS); 
+            AbilityAndOrigin aS = new AbilityAndOrigin(a, new Origin_Innate());
+            Abilities.Add(aS); 
         }
         #endregion
     }
@@ -204,12 +324,19 @@ public class Unit : MonoBehaviour
     }
     void UpdateInfo()
     {
-        var curA = new HashSet<Ability>();
-        curA.AddRange(BaseAbilities);
-        curA.AddRange(CondAbilities);
-        curA.AddRange(CellCoverAbilities);
+        foreach (var b in Abilities_Base)
+        {
+            AbilityAndOrigin aas = new AbilityAndOrigin(b, new Origin_Innate());
 
-        CurAbilities = curA;
+            if (!HasAbility(aas))
+            {
+                Abilities.Add(aas);
+            }
+            else
+            {
+                Debug.Log("");
+            }
+        }
 
         var curK = new HashSet<Keyword>();
         curK.AddRange(BaseKeywords);

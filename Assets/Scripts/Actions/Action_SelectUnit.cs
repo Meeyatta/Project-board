@@ -14,7 +14,7 @@ public static class Action_SelectUnit
     public static IEnumerator Select(ActionParameters parameters)
     {
         GameManager.Instance.CancelEvent.AddListener(Cancel);
-        Debug.Log("Unit on " + parameters.CellsCoordinates[0] + " was selected");
+        if (ShouldCancel) Debug.Log("Unit on " + parameters.CellsCoordinates[0] + " was selected");
 
         if (parameters.IntNumber == 0) { CanCancel = true; }
 

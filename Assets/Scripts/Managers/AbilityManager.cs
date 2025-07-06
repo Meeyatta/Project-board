@@ -14,10 +14,10 @@ public enum Ability
     Resistant_Lightning,    //-1 incoming lightning damage
     Resistant_Physical,          //-1 incoming physical damage
     Vulnerable_Physical,          //+1 incoming physical damage
-    Endruing,         //-1 incoming poison damage
-    Sickly,           //+1 incoming poison damage
-    Insulated,        //-1 incoming frost damage
-    Wet,              //+1 incoming frost damage
+    Resistant_Poison,         //-1 incoming poison damage
+    Vulnerable_Poison,           //+1 incoming poison damage
+    Resistant_Frost,        //-1 incoming frost damage
+    Vulnerable_Frost,              //+1 incoming frost damage
 
     Score,              //Adds score to player/enemy side if their units are within objectives
     Slippery,         //After ending their move, unit moves 1 cell in a random direction
@@ -46,7 +46,7 @@ public class AbilityManager : MonoBehaviour
         Instance = this;
     }
 
-    #region ModifyDamage involves functionality of all abilities what modify incoming damage
+    #region ModifyDamage involves functionality of all abilities what modify incoming damage. This monstrocity has to be changed, but so far I need it to be easily read, not efficient
     public int ModifyIncomingDamage(Unit target, int starterDamage)
     {
         int endDamage = starterDamage;
@@ -56,28 +56,28 @@ public class AbilityManager : MonoBehaviour
         switch (type)
         {
             case DamageType.Fire:
-                if (target.CurAbilities.Contains(Ability.Resistant_Fire)) { endDamage -= 1; }
-                if (target.CurAbilities.Contains(Ability.Vulnerable_Fire)) { endDamage += 1; }
+                if (target.HasAbility(Ability.Resistant_Fire)) { endDamage -= 1; }
+                if (target.HasAbility(Ability.Vulnerable_Fire)) { endDamage += 1; }
                 break;
             case DamageType.Lightning:
-                if (target.CurAbilities.Contains(Ability.Resistant_Lightning)) { endDamage -= 1; }
-                if (target.CurAbilities.Contains(Ability.Vulnerable_Lightning)) { endDamage += 1; }
+                if (target.HasAbility(Ability.Resistant_Lightning)) { endDamage -= 1; }
+                if (target.HasAbility(Ability.Vulnerable_Lightning)) { endDamage += 1; }
                 break;
             case DamageType.Physical:
-                if (target.CurAbilities.Contains(Ability.Resistant_Physical)) { endDamage -= 1; }
-                if (target.CurAbilities.Contains(Ability.Vulnerable_Physical)) { endDamage += 1; }
+                if (target.HasAbility(Ability.Resistant_Physical)) { endDamage -= 1; }
+                if (target.HasAbility(Ability.Vulnerable_Physical)) { endDamage += 1; }
                 break;
             case DamageType.Poison:
-                if (target.CurAbilities.Contains(Ability.Endruing)) { endDamage -= 1; }
-                if (target.CurAbilities.Contains(Ability.Sickly)) { endDamage += 1; }
+                if (target.HasAbility(Ability.Resistant_Poison)) { endDamage -= 1; }
+                if (target.HasAbility(Ability.Vulnerable_Poison)) { endDamage += 1; }
                 break;
             case DamageType.Frost:
-                if (target.CurAbilities.Contains(Ability.Insulated)) { endDamage -= 1; }
-                if (target.CurAbilities.Contains(Ability.Wet)) { endDamage += 1; }
+                if (target.HasAbility(Ability.Resistant_Frost)) { endDamage -= 1; }
+                if (target.HasAbility(Ability.Vulnerable_Frost)) { endDamage += 1; }
                 break;
         }
         #endregion
-        if (target.CurAbilities.Contains(Ability.Invincible) || endDamage < 0) { endDamage = 0; }
+        if (target.HasAbility(Ability.Invincible) || endDamage < 0) { endDamage = 0; }
 
         return endDamage;
     }
