@@ -151,7 +151,7 @@ public class ItemManagement : MonoBehaviour
     }
     public void SpendCurItem(Item i)
     {
-        Debug.Log("Spent current item");
+        if (ShouldDebug) Debug.Log("Spent current item");
         if (CurItem == i)
         {
             CurItem = null;

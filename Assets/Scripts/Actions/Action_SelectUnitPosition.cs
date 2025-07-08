@@ -11,7 +11,7 @@ public static class Action_SelectUnitPosition
     public static bool IsAwaitingAClickBack = true;
     static bool ShouldCancel = false;
 
-    static bool ShouldDebug = true;
+    static bool ShouldDebug = false;
 
     static void Cancel()
     {

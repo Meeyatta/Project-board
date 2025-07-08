@@ -6,7 +6,7 @@ using UnityEngine;
 public class EnemyManager : MonoBehaviour
 {
     public int StarterUnitsAmount;
-    public bool DebugBehaviour;
+    public bool ShouldDebug;
 
     [Header("---Delays---")]
     public float DeployNewUnit_Before;
@@ -79,7 +79,7 @@ public class EnemyManager : MonoBehaviour
         IsPlayingTurn = false;
         if (cEnemyTurn != null) StopCoroutine(cEnemyTurn);
         cEnemyTurn = null;
-        if (DebugBehaviour) Debug.Log("Ended the enemy turn");
+        if (ShouldDebug) Debug.Log("Ended the enemy turn");
     }
 
     IEnumerator EnemyTurn()
@@ -89,12 +89,12 @@ public class EnemyManager : MonoBehaviour
         if (BattleStatsManager.Instance.CurTurn == Side.Player) { EndEnemyTurn(); yield break; }
 
         IsPlayingTurn = true;
-        if (DebugBehaviour) Debug.Log("Started enemy turn");
+        if (ShouldDebug) Debug.Log("Started enemy turn");
 
         if (BattleStatsManager.Instance.CurRound > 0)
         {
             if (BattleStatsManager.Instance.CurTurn == Side.Player) { EndEnemyTurn(); yield break; }
-            if (DebugBehaviour) Debug.Log("Thinking");
+            if (ShouldDebug) Debug.Log("Thinking");
             yield return new WaitForSeconds(ThinkingDelay);
 
             if (BattleStatsManager.Instance.CurTurn == Side.Player) { EndEnemyTurn(); yield break; }
@@ -104,11 +104,11 @@ public class EnemyManager : MonoBehaviour
 
             if (BattleStatsManager.Instance.CurTurn == Side.Player) { EndEnemyTurn(); yield break; }
 
-            if (DebugBehaviour) Debug.Log("Moving all enemy units");
+            if (ShouldDebug) Debug.Log("Moving all enemy units");
             yield return MovingAllEnemyUnits(); //Moving all units on the board
         }
 
-        if (DebugBehaviour) Debug.Log("initiated the next turn");
+        if (ShouldDebug) Debug.Log("initiated the next turn");
         ActionParameters turnParameters = new ActionParameters(GameManager.ActionType.NextTurn, null, null, null, null, 0);
         yield return GameManager.Instance.Action(turnParameters);
 
@@ -120,7 +120,7 @@ public class EnemyManager : MonoBehaviour
     {
         if (BattleStatsManager.Instance.CurRound <= 1 || Army_NotPlaced.Count <= 0) yield break;
         HasToDeploy = false;
-        if (DebugBehaviour) Debug.Log("Started DeployNewEnemy");
+        if (ShouldDebug) Debug.Log("Started DeployNewEnemy");
 
         CameraManager.Instance.SetCam(CameraManager.Instance.FrontUpper);
 
@@ -135,7 +135,7 @@ public class EnemyManager : MonoBehaviour
 
         yield return new WaitForSeconds(DeployNewUnit_After);
 
-        if (DebugBehaviour) Debug.Log("Ended DeployNewEnemy");
+        if (ShouldDebug) Debug.Log("Ended DeployNewEnemy");
     }
     #endregion
 
@@ -188,7 +188,7 @@ public class EnemyManager : MonoBehaviour
         #endregion
 
         #region End moving all units and end the turn
-        if (DebugBehaviour) Debug.Log("Ended moving all enemy units");
+        if (ShouldDebug) Debug.Log("Ended moving all enemy units");
 
         #endregion
     }
@@ -211,7 +211,10 @@ public class EnemyManager : MonoBehaviour
     {
         #region Check if within objective - if yes, stay still
         List<Unit> o = BoardManager.Instance.Get_UnitsWithKeywordsInRange(u, 1, new List<Keyword> { Keyword.Objective });
-        if (o != null && o.Count > 0) { Debug.Log(u.UnitName + " is already within an objective, going to stand still"); return null; }
+        if (o != null && o.Count > 0) 
+        { 
+            if (ShouldDebug) Debug.Log(u.UnitName + " is already within an objective, going to stand still"); 
+            return null; }
         #endregion
 
         #region Find closest, 2nd closest and one other objective
@@ -289,9 +292,9 @@ public class EnemyManager : MonoBehaviour
         #endregion
 
         //Emergency situation, something went wrong
-        Debug.Log(closestObj);
-        Debug.Log(scndClosestObj);
-        Debug.Log("No AI conditions satisfied, something is wrong");
+        if (ShouldDebug) Debug.Log(closestObj);
+        if (ShouldDebug) Debug.Log(scndClosestObj);
+        if (ShouldDebug) Debug.Log("No AI conditions satisfied, something is wrong");
         return null;
     }
     #endregion

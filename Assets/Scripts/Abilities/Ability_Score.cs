@@ -3,20 +3,26 @@ using System.Collections.Generic;
 using System.Diagnostics.Tracing;
 using UnityEngine;
 using UnityEngine.Windows;
-using UnityEngine.Events;
 
-public static class Ability_Score
+[CreateAssetMenu(menuName = "Abilities/Score")]
+public class Ability_Score : Ability
 {
-    const float DelayBetweenScores = 20;
-    public static UnityEvent E_ScoredForPlayer= new UnityEvent();
-
-    const string JitterAnimTrigger = "jitter";
-
-    static bool ShouldDebug = false;
-
-    public static int Check(Unit obj)
+    public Ability_Score(Ability_Name n, string d, Origin or, Unit ow) : base(n, d, or, ow)
     {
-        var l = BoardManager.Instance.Get_UnitsInRange(obj, 1);
+        Name = n;
+        Description = d;
+        Origin_ = or;
+        Owner = ow;
+    }
+
+    public string JitterAnimTrigger = "jitter";
+
+    bool ShouldDebug = false;
+
+
+    public int Check()
+    {
+        var l = BoardManager.Instance.Get_UnitsInRange(Owner, 1);
         if (ShouldDebug) foreach(var v in l) { Debug.Log("all: " + v.gameObject.name); }
         if (l == null || l.Count <= 0) return 0;
 
@@ -28,50 +34,8 @@ public static class Ability_Score
         if (ShouldDebug) foreach (var v in eU) { Debug.Log("enemy - " + v.gameObject.name); }
 
         return pU.Count - eU.Count;
-
     }
 
-    //Main function, goes through every objective on the map and scores appropriately (checks for the keywords of surrounding units)
-    public static IEnumerator GlobalScore(ActionParameters parameters)
-    {
-        List<Keyword> keywords = parameters.Keywords;
-        yield return new WaitForSeconds(Time.deltaTime);
-
-        List<Keyword> objs = new List<Keyword> { Keyword.Objective };
-        List<Unit> all = BoardManager.Instance.Get_AllUnitsWithKeywords(objs);
-
-        foreach (var a in all)
-        {
-            int res = Check(a);
-            if (ShouldDebug) Debug.Log("result for " + a.gameObject.name + " is " + Check(a));
-
-            #region Player scores
-            if (res > 0 && BattleStatsManager.Instance.CurTurn == Side.Player)
-            {
-                a.Anim.SetTrigger(JitterAnimTrigger);
-                ScoreClock.Instance.Shrug_Visuals();
-                E_ScoredForPlayer.Invoke();
-                BattleStatsManager.Instance.AddPointPlayer();
-            }
-            #endregion
-            #region Enemy scores
-            if (res < 0 && BattleStatsManager.Instance.CurTurn == Side.Enemy)
-            {
-                a.Anim.SetTrigger(JitterAnimTrigger);
-                ScoreClock.Instance.Shrug_Visuals();
-
-                BattleStatsManager.Instance.AddPointEnemy();
-            }
-            #endregion
-            #region Neither scores
-            //TODO:
-            #endregion
-
-            yield return new WaitForSeconds(DelayBetweenScores * Time.fixedDeltaTime);
-        }
-
-        GameManager.Instance.RemoveAction(parameters);
-    }
     #region Conditions for either player or enemy scoring
     static bool PlayerScoreConditions(List<Unit> playerUnits, List<Unit> enemyUnits, List<Keyword> keywords) 
     {

@@ -205,10 +205,21 @@ public static class Action_Move
             
         }
 
-        ActionParameters ap = new ActionParameters(GameManager.ActionType.Slip, parameters.ActionTargetUnits, null, null, null, 0);
-        yield return Ability_Slippery.Try(ap);
-        E_AfterMove.Invoke(ActionTargetUnit);
+        #region Checking if unit should slip after moving
+        Ability_Slippery ability_slippery = ActionTargetUnit.Get_Ability(Ability_Name.Slippery) as Ability_Slippery;
+        if (ability_slippery is Ability_Slippery) { } else { }
 
+        if (ability_slippery != null)
+        {
+            yield return ability_slippery.Try();
+        }
+        else
+        {
+            
+        }    
+        #endregion
+
+        E_AfterMove.Invoke(ActionTargetUnit);
         yield return new WaitForSeconds(Time.fixedDeltaTime);
         GameManager.Instance.RemoveAction(parameters);
     }

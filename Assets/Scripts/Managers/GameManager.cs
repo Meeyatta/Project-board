@@ -29,6 +29,7 @@ using UnityEngine.InputSystem;
         Redeploy(Unit unit, List<Vector2Int> CellsCoordinates) - Places the unit on the position within the deployment zone
         DeployNew() - Gives player a choice between 3 not-deployed units and places one of them on the board
         DeployPlayerStarter(int IntNumber) - Places makes player draw one of 3 units a certain amount of times
+        GlobalScore() - Makes it so all objects with Score ability add points to either the enemy or the player
        
         --ABILITIES--
 
@@ -77,7 +78,7 @@ public class GameManager : MonoBehaviour
     public enum ActionType 
     { 
     Attack, AttackFromKeyworded, Move, Place, SelectUnit, PlayerCreate, Pre_NextTurn, NextTurn, Create, CreateBattlefield, Deploy, Redeploy,
-    DeployNew, DeployPlayerStarters,
+    DeployNew, DeployPlayerStarters, GlobalScore,
 
     Score, Slip,
 
@@ -262,29 +263,16 @@ public class GameManager : MonoBehaviour
                 break;
             #endregion DeployPlayerStarter(int IntNumber)
 
-            /* --ABILITIES-- */
-
-            //Goes through every objective and scores for the player or enemy (Depends on what is passed in parameters)
-            #region Score()
-            case ActionType.Score:
-
-                ActionSlot score = new ActionSlot(Ability_Score.GlobalScore(parameters), ActionType.Score, parameters);
-                ActionQueue.Enqueue(score);
+            //Makes it so all objects with Score ability add points to either the enemy or the player
+            #region GlobalScore()
+            case ActionType.GlobalScore:
+                ActionSlot globalScore = new ActionSlot(Action_GlobalScore.GlobalScore(parameters), ActionType.GlobalScore, parameters);
+                ActionQueue.Enqueue(globalScore);
 
                 break;
-            #endregion Create(GameObject Object, Vector2Int CellsCoordinates)
-
-            //Moves unit into a random direction
-            #region Slip(ActionTargetUnits)
-            case ActionType.Slip:
-
-                ActionSlot slip = new ActionSlot(Ability_Slippery.Try(parameters), ActionType.Slip, parameters);
-                ActionQueue.Enqueue(slip);
-
-                break;
-            #endregion Slip(ActionTargetUnits)
-
-            //Items
+            #endregion GlobalScore()
+         
+            // --Items--
 
             //Water Bucket - covers a selected 3x3 square in Water
             #region WaterBucket()

@@ -16,9 +16,9 @@ public class Cover
     public string Name;
     public CoverType Type_;
     public EffectManager.Tag EffectManagerTag;
-    public List<Ability> AppliedAbilities = new List<Ability>();
+    public List<Ability_Name> AppliedAbilities = new List<Ability_Name>();
 
-    public Cover(string n, CoverType type, EffectManager.Tag tag, List<Ability> l)
+    public Cover(string n, CoverType type, EffectManager.Tag tag, List<Ability_Name> l)
     {
         Name = n;
         Type_ = type;
@@ -88,9 +88,9 @@ public class CellCoverManager : MonoBehaviour
                 foreach (var a in c.AppliedAbilities)
                 {
                     Origin origin = new Origin_CoverUnderneath(pos, c.Type_);
-                    AbilityAndOrigin aS = new AbilityAndOrigin(a, origin);
+                    Ability newAb = new Ability(a, "Ability applied by cover manager", origin, u);
 
-                    u.Abilities.Add(aS);
+                    u.Abilities.Add(newAb);
                 }
             }
         }

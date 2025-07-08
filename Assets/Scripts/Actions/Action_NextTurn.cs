@@ -69,7 +69,7 @@ public static class Action_NextTurn
 
             ActionParameters score = new ActionParameters(
             GameManager.ActionType.Score, null, sideKeyword, null, null, 0);
-            yield return Ability_Score.GlobalScore(score);
+            yield return Action_GlobalScore.GlobalScore(score);
         }
 
         #endregion
@@ -110,6 +110,8 @@ public static class Action_NextTurn
         yield return SetRoundNTurn(nR, nT, true, true);
 
         IsChangingToNextTurn = false;
+
+        yield return new WaitForSeconds(Time.fixedDeltaTime / 100);
         GameManager.Instance.RemoveAction(parameters);
     }
 }

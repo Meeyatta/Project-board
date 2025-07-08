@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 3966127357866609508}
   - component: {fileID: 6228343270505643353}
   m_Layer: 0
-  m_Name: Amphibia-man
+  m_Name: Amphibian
   m_TagString: Unit
   m_Icon: {fileID: -5938655980376293919, guid: 0000000000000000d000000000000000, type: 0}
   m_NavMeshLayer: 0
@@ -54,7 +54,12 @@ MonoBehaviour:
   CurAttackZone: {fileID: 11400000, guid: 0975c85d43f513e4788e5c187d780b69, type: 2}
   MaxHealth: 3
   CodexPage: 3
-  Abilities_Base: 030000000a000000010000000c000000
+  Abilities_Base:
+  - {fileID: 11400000, guid: 5267f78161799aa4eb89a35136c26d1b, type: 2}
+  - {fileID: 11400000, guid: 86abd157a6ccbf941a3f176dda5a1e78, type: 2}
+  - {fileID: 11400000, guid: d6728f60dadb5454b98eb843dad20f91, type: 2}
+  - {fileID: 11400000, guid: 6db79588636def741ad617d9cf5c39ea, type: 2}
+  Abilities: []
   BaseKeywords: 
   CurColor: {r: 255, g: 255, b: 255, a: 1}
   PlayerColor: {r: 0, g: 255, b: 255, a: 1}

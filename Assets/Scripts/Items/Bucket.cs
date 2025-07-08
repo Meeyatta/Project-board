@@ -6,7 +6,7 @@ using UnityEngine.Events;
 //Base class for all items what apply a cell cover over an area
 public static class Bucket 
 {
-    public static bool ShouldDebug = true;
+    public static bool ShouldDebug = false;
     public static bool ShouldCancel = false;
 
     #region Pass a 2-count list with a width and height, returns a lsit of relative positions on the board

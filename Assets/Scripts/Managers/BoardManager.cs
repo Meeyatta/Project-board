@@ -456,7 +456,7 @@ public class BoardManager : MonoBehaviour
         return false;
     }
     //Returns a list of units with specified abilities
-    public List<Unit> Get_AllUnitsOnBoardWithAbilities(List<Ability> abilities)
+    public List<Unit> Get_AllUnitsOnBoardWithAbilities(List<Ability_Name> abilities)
     {
         List<Unit> units = new List<Unit>();
 

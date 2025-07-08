@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using static UnityEngine.GraphicsBuffer;
 
-//Continuously checks if conditions for specific unit ablities are satisfied, if so, triggers them
+//Holds all of the abilities and is responsible for things with them
 
-public enum Ability 
+public enum Ability_Name 
 { 
     Invincible,       //All incoming damage is set to 0
     Resistant_Fire,        //-1 incoming fire damage
@@ -56,28 +56,28 @@ public class AbilityManager : MonoBehaviour
         switch (type)
         {
             case DamageType.Fire:
-                if (target.HasAbility(Ability.Resistant_Fire)) { endDamage -= 1; }
-                if (target.HasAbility(Ability.Vulnerable_Fire)) { endDamage += 1; }
+                if (target.HasAbility(Ability_Name.Resistant_Fire)) { endDamage -= 1; }
+                if (target.HasAbility(Ability_Name.Vulnerable_Fire)) { endDamage += 1; }
                 break;
             case DamageType.Lightning:
-                if (target.HasAbility(Ability.Resistant_Lightning)) { endDamage -= 1; }
-                if (target.HasAbility(Ability.Vulnerable_Lightning)) { endDamage += 1; }
+                if (target.HasAbility(Ability_Name.Resistant_Lightning)) { endDamage -= 1; }
+                if (target.HasAbility(Ability_Name.Vulnerable_Lightning)) { endDamage += 1; }
                 break;
             case DamageType.Physical:
-                if (target.HasAbility(Ability.Resistant_Physical)) { endDamage -= 1; }
-                if (target.HasAbility(Ability.Vulnerable_Physical)) { endDamage += 1; }
+                if (target.HasAbility(Ability_Name.Resistant_Physical)) { endDamage -= 1; }
+                if (target.HasAbility(Ability_Name.Vulnerable_Physical)) { endDamage += 1; }
                 break;
             case DamageType.Poison:
-                if (target.HasAbility(Ability.Resistant_Poison)) { endDamage -= 1; }
-                if (target.HasAbility(Ability.Vulnerable_Poison)) { endDamage += 1; }
+                if (target.HasAbility(Ability_Name.Resistant_Poison)) { endDamage -= 1; }
+                if (target.HasAbility(Ability_Name.Vulnerable_Poison)) { endDamage += 1; }
                 break;
             case DamageType.Frost:
-                if (target.HasAbility(Ability.Resistant_Frost)) { endDamage -= 1; }
-                if (target.HasAbility(Ability.Vulnerable_Frost)) { endDamage += 1; }
+                if (target.HasAbility(Ability_Name.Resistant_Frost)) { endDamage -= 1; }
+                if (target.HasAbility(Ability_Name.Vulnerable_Frost)) { endDamage += 1; }
                 break;
         }
         #endregion
-        if (target.HasAbility(Ability.Invincible) || endDamage < 0) { endDamage = 0; }
+        if (target.HasAbility(Ability_Name.Invincible) || endDamage < 0) { endDamage = 0; }
 
         return endDamage;
     }

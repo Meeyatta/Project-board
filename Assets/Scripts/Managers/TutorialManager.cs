@@ -214,7 +214,8 @@ public class TutorialManager : MonoBehaviour
 
         #region Waiting until player scores a point
         bool iswaiting_ToScore = true; void stopwaiting_score() { iswaiting_ToScore = false; }
-        Ability_Score.E_ScoredForPlayer.AddListener(stopwaiting_score);
+
+        Action_GlobalScore.E_ScoredForPlayer.AddListener(stopwaiting_score);
 
         void ScorePlayer()
         {
@@ -231,7 +232,7 @@ public class TutorialManager : MonoBehaviour
 
         yield return new WaitForSeconds(Time.fixedDeltaTime);
         Action_Move.E_AfterMove.RemoveListener(stopmovingto);
-        Ability_Score.E_ScoredForPlayer.RemoveListener(stopwaiting_score);
+        Action_GlobalScore.E_ScoredForPlayer.RemoveListener(stopwaiting_score);
         PassTurnButton.Instance.E_PassedTurn.RemoveListener(ScorePlayer);
         Debug.Log("Ended fourth");
     }

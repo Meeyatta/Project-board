@@ -14,19 +14,6 @@ public enum Keyword
 
 
 [System.Serializable]
-public class AbilityAndOrigin
-{
-    public Ability Ability_;
-    public Origin Origin_;
-
-    public AbilityAndOrigin(Ability a, Origin o)
-    {
-        Ability_ = a;
-        Origin_ = o;
-    }
-}
-
-[System.Serializable]
 public class Unit : MonoBehaviour
 {
     public string UnitName;
@@ -39,61 +26,74 @@ public class Unit : MonoBehaviour
     #region Abilities
     public List<Ability> Abilities_Base = new List<Ability>();
 
-    public List<AbilityAndOrigin> Abilities = new List<AbilityAndOrigin>();
-    #region Adding abilities to the unit
-    public void Abilities_Base_Add(List<AbilityAndOrigin> abNsources)
+    public List<Ability> Abilities = new List<Ability>();
+
+    #region Receiving abilities from a unit
+    public List<Ability> Get_Abilities_ByName(Ability_Name n)
     {
-        foreach (var v in abNsources)
+        if (!HasAbility(n)) { Debug.Log(UnitName + " doesn't have " + n); return null; }
+
+        List<Ability> abilities = new List<Ability>();
+        foreach (var a in Abilities)
         {
-            Abilities_Base.Add(v.Ability_);
+            if (a.Name == n) { abilities.Add(a); }
         }
-    }
-    public void Abilities_Base_Add(AbilityAndOrigin abNsource)
-    {
-        Abilities_Base.Add(abNsource.Ability_);
-    }
-    public void Abilities_Base_Add(Ability a)
-    {
-        Abilities_Base.Add(a);
+
+        return abilities;
     }
 
-    public void Ability_Add(List<AbilityAndOrigin> abNsources)
+    public Ability Get_Ability(Ability_Name n)
     {
-        foreach (var v in abNsources)
+        List<Ability> abilities = Get_Abilities_ByName(n);
+        
+        if (abilities != null && abilities.Count > 0) { return abilities[0]; }
+        return null;
+    }
+    #endregion
+
+    #region Adding abilities to the unit
+    public void Abilities_Base_Add(List<Ability> ab)
+    {
+        foreach (var v in ab)
+        {
+            Abilities_Base.Add(v);
+        }
+    }
+    public void Abilities_Base_Add(Ability ab)
+    {
+        Abilities_Base.Add(ab);
+    }
+
+    public void Ability_Add(List<Ability> abilities)
+    {
+        foreach (var v in abilities)
         {
             Abilities.Add(v);
         }
     }
-    public void Ability_Add(AbilityAndOrigin abNsource)
+    public void Ability_Add(Ability ability)
     {
-        Abilities.Add(abNsource);
-    }
-    public void Ability_Add(Ability a, Origin o)
-    {
-        AbilityAndOrigin ab = new AbilityAndOrigin(a, o);
-        Abilities.Add(ab);
+        Abilities.Add(ability);
     }
     #endregion
+
     #region Removing abilities from the unit
-    public void AbilityRemove(AbilityAndOrigin aas)
+    public void AbilityRemove(Ability ab)
     {
-        Abilities.Remove(aas);
-    }
-    public void AbilityRemove(Ability a, Origin o)
-    {
-        AbilityAndOrigin aas = new AbilityAndOrigin(a, o);
-        Abilities.Remove(aas);
+        if (HasAbility(ab)) Abilities.Remove(ab);
     }
 
-    public List<AbilityAndOrigin> Ability_RemoveAll_ByAbility(Ability a)
+    public List<Ability> Ability_RemoveAll_ByAbility(Ability_Name a)
     {
-        List<AbilityAndOrigin> abilitiesToDelete = new List<AbilityAndOrigin>();
+        if (!HasAbility(a)) return null;
+
+        List<Ability> abilitiesToDelete = new List<Ability>();
         foreach (var v in Abilities)
         {
-            if (v.Ability_ == a) { abilitiesToDelete.Add(v); }
+            if (v.Name == a) { abilitiesToDelete.Add(v); }
         }
 
-        List<AbilityAndOrigin> returnList = abilitiesToDelete;
+        List<Ability> returnList = abilitiesToDelete;
 
         while (abilitiesToDelete.Count > 0)
         {
@@ -103,15 +103,15 @@ public class Unit : MonoBehaviour
 
         return returnList;
     }
-    public List<AbilityAndOrigin> Ability_RemoveAll_ByOrigin(Origin o)
+    public List<Ability> Ability_RemoveAll_ByOrigin(Origin o)
     {
-        List<AbilityAndOrigin> abilitiesToDelete = new List<AbilityAndOrigin>();
+        List<Ability> abilitiesToDelete = new List<Ability>();
         foreach (var v in Abilities)
         {
             if (v.Origin_.GetType() == o.GetType()) { abilitiesToDelete.Add(v); }
         }
 
-        List<AbilityAndOrigin> returnList = abilitiesToDelete;
+        List<Ability> returnList = abilitiesToDelete;
 
         while (abilitiesToDelete.Count > 0)
         {
@@ -122,24 +122,27 @@ public class Unit : MonoBehaviour
         return returnList;
     }
     #endregion
+
     #region Checking for abilities
-    public bool HasAbility(Ability a)
+    public bool HasAbility(Ability_Name a)
     {
         foreach (var v in Abilities)
         {
-            if (v.Ability_ == a) { return true; }
+            if (v.Name == a) { return true; }
         }
 
         return false;
     }
-    public bool HasAbility(AbilityAndOrigin aas)
-    {    
-        foreach (var v in Abilities)
-        {          
-            bool c = true;
-            if (v.Ability_ == aas.Ability_ && v.Origin_.Equals(aas.Origin_)) { c = true;  }
-            else { c = false; }
+    public bool HasAbility(Ability ab)
+    {
 
+        foreach (var v in Abilities)
+        {
+            Origin og;
+            if (v.Origin_ == null) { og = new Origin_Innate(); Debug.Log("ORIGIN NULL - DEFAULTING TO INNATE"); }
+            else { og = v.Origin_; }
+
+            if (v.Name == ab.Name && og.Equals(ab.Origin_)) { return true;  }
         }
 
         return false;
@@ -221,11 +224,13 @@ public class Unit : MonoBehaviour
         else { Debug.Log(UnitName + " " + gameObject.name + " HAS NO UnitModelShowcase"); }
 
         #region Setting up innate abilities
-        foreach (var a in Abilities_Base) 
+        foreach (var a in Abilities_Base)
         {
-            AbilityAndOrigin aS = new AbilityAndOrigin(a, new Origin_Innate());
-            Abilities.Add(aS); 
+            Ability aa = Instantiate(a);
+            aa.Owner = this;
+            Abilities.Add(aa);
         }
+           
         #endregion
     }
 
@@ -326,15 +331,14 @@ public class Unit : MonoBehaviour
     {
         foreach (var b in Abilities_Base)
         {
-            AbilityAndOrigin aas = new AbilityAndOrigin(b, new Origin_Innate());
-
-            if (!HasAbility(aas))
+            if (!HasAbility(b))
             {
-                Abilities.Add(aas);
+                Ability baseToCurAbility = new Ability(b.Name, b.Description, new Origin_Innate(), b.Owner);
+                Abilities.Add(b);
             }
             else
             {
-                Debug.Log("");
+
             }
         }
 

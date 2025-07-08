@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class EffectPools : MonoBehaviour
 {
+    public static EffectPools Instance;
     [System.Serializable]
     public class Pool
     {
@@ -15,7 +16,19 @@ public class EffectPools : MonoBehaviour
     public List<Pool> Pools = new List<Pool>();
     public Dictionary<string, Queue<GameObject>> CurrentPools = new Dictionary<string, Queue<GameObject>>();
 
-    // Start is called before the first frame update
+    private void Awake()
+    {
+        if (Instance != null)
+        {
+            Destroy(this);
+        }
+        else
+        {
+            Instance = this;
+        }
+        DontDestroyOnLoad(this);
+    }
+
     void Start()
     {
         foreach (Pool p in Pools)

@@ -83,7 +83,7 @@ public static class DamageDealing
 
         int EndDamage = AbilityManager.Instance.ModifyIncomingDamage(target, startDamage); //Modifying damage depending on abilities
 
-        if (target.HasAbility(Ability.Invincible) || EndDamage < 0) 
+        if (target.HasAbility(Ability_Name.Invincible) || EndDamage < 0) 
         { 
             EndDamage = 0;
             yield return new WaitForSeconds(Time.deltaTime);

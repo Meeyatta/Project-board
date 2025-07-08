@@ -15179,7 +15179,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 11416984, guid: c080686877cf77f42a1a078076d57fe5, type: 3}
       propertyPath: textList.Array.size
-      value: 3
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 11416984, guid: c080686877cf77f42a1a078076d57fe5, type: 3}
       propertyPath: textList.Array.data[0].s
@@ -15198,25 +15198,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 11416984, guid: c080686877cf77f42a1a078076d57fe5, type: 3}
       propertyPath: textList.Array.data[3].s
-      value: "Add the item system:\n\t1) Round starts\n\t2) Enemy deploys their units\n\t3)
-        Camera lowers in front of the board\n\t4) 3 Possible units drawn from the
-        left\n\t5) 2 Possible items drawn from right\n\t5.a) Clicking on an item
-        places it in the\nitem zone\n\t5.b) Clicking on a unit makes player \nplace
-        that unit on the board\n\t6) Player cannot pass or move units\nuntil they
-        select both a new unit and an item"
+      value: Change abilities into standalone objects
       objectReference: {fileID: 0}
     - target: {fileID: 11416984, guid: c080686877cf77f42a1a078076d57fe5, type: 3}
       propertyPath: textList.Array.data[4].s
-      value: 'Make the item selection zone follow the cursor
-
-        (EffectManager)'
+      value: You can select units while placing an item
       objectReference: {fileID: 0}
     - target: {fileID: 11416984, guid: c080686877cf77f42a1a078076d57fe5, type: 3}
       propertyPath: textList.Array.data[5].s
-      value: 'Fix the bug with "HasAbility" not working properly (Stopped in
-
-        Unit
-        at "HasAbility" and in "UpdateInfo")'
+      value: REsistances/Vulnerabilities don't work
       objectReference: {fileID: 0}
     - target: {fileID: 11416984, guid: c080686877cf77f42a1a078076d57fe5, type: 3}
       propertyPath: textList.Array.data[6].s
@@ -15306,11 +15296,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 11416984, guid: c080686877cf77f42a1a078076d57fe5, type: 3}
       propertyPath: textList.Array.data[3].state
-      value: 0
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 11416984, guid: c080686877cf77f42a1a078076d57fe5, type: 3}
       propertyPath: textList.Array.data[4].state
-      value: 2
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 11416984, guid: c080686877cf77f42a1a078076d57fe5, type: 3}
       propertyPath: textList.Array.data[5].state
@@ -15354,15 +15344,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 11416984, guid: c080686877cf77f42a1a078076d57fe5, type: 3}
       propertyPath: textList.Array.data[3].deleteQuestion
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 11416984, guid: c080686877cf77f42a1a078076d57fe5, type: 3}
       propertyPath: textList.Array.data[4].deleteQuestion
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 11416984, guid: c080686877cf77f42a1a078076d57fe5, type: 3}
       propertyPath: textList.Array.data[5].deleteQuestion
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 11416984, guid: c080686877cf77f42a1a078076d57fe5, type: 3}
       propertyPath: textList.Array.data[6].deleteQuestion
@@ -83511,7 +83501,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   StarterUnitsAmount: 5
-  DebugBehaviour: 0
+  ShouldDebug: 0
   DeployNewUnit_Before: 1
   DeployNewUnit_After: 1.2
   ThinkingDelay: 1
