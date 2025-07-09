@@ -31,7 +31,7 @@ public class Unit : MonoBehaviour
     #region Receiving abilities from a unit
     public List<Ability> Get_Abilities_ByName(Ability_Name n)
     {
-        if (!HasAbility(n)) { Debug.Log(UnitName + " doesn't have " + n); return null; }
+        if (!HasAbility(n)) { return null; }
 
         List<Ability> abilities = new List<Ability>();
         foreach (var a in Abilities)

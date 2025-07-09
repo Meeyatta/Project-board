@@ -263,14 +263,16 @@ public class EffectManager : MonoBehaviour
             foreach (var v in list)
             {
                 Ability_Score ability_score = v.Key.Get_Ability(Ability_Name.Score) as Ability_Score;
-                if (ability_score is Ability_Score) { } else { Debug.LogError("ABILITY IS NOT SCORE: " + ability_score.GetType()); }
+                if (ability_score != null)
+                {
+                    if (ability_score is Ability_Score) { } else { Debug.LogError("ABILITY IS NOT SCORE: " + ability_score.GetType()); }
 
-                int s = ability_score.Check();
+                    int s = ability_score.Check();
 
-                v.Value.material = ObjMat_Neutral;
-                if (s > 0) { v.Value.material = ObjMat_Player; }
-                if (s < 0) { v.Value.material = ObjMat_Enemy; }
-
+                    v.Value.material = ObjMat_Neutral;
+                    if (s > 0) { v.Value.material = ObjMat_Player; }
+                    if (s < 0) { v.Value.material = ObjMat_Enemy; }
+                }              
             }
 
             yield return new WaitForSeconds(Time.fixedDeltaTime);
@@ -432,8 +434,6 @@ public class EffectManager : MonoBehaviour
         {
             Vector2Int coord = (c - center);
             GameObject g = InstantiateFromPool(coverTag, new Vector3(0, 0, 0), Quaternion.identity);
-
-            Debug.Log(coord + " " + g.name);
 
             Covers.Add(coord, g);
         }

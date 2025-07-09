@@ -80,7 +80,6 @@ public class Ability_Slippery : Ability
     }
     public IEnumerator Try()
     {
-        Debug.Log("Tried slipping");
         if (!Can()) { Debug.Log("Cant slip"); yield break; }
         else
         {

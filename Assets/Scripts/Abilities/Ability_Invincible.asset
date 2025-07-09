@@ -9,10 +9,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6ac927bfae0b692498bdb69ff04ddf7e, type: 3}
-  m_Name: Ability_Slippery
+  m_Script: {fileID: 11500000, guid: 869d4f3b8754cde4cad8d892fbf45e54, type: 3}
+  m_Name: Ability_Invincible
   m_EditorClassIdentifier: 
-  Name: 4
+  Name: 0
   Description: 
   Owner: {fileID: 0}
-  Delay: 12

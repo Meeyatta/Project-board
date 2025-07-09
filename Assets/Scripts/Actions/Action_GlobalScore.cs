@@ -22,32 +22,35 @@ public static class Action_GlobalScore
         foreach (var unit in all)
         {
             Ability_Score ability_score = unit.Get_Ability(Ability_Name.Score) as Ability_Score;
-            if (ability_score is Ability_Score) { } else { Debug.LogError("ABILITY IS NOT SCORE"); }
-
-            int res = ability_score.Check();
-            if (ShouldDebug) Debug.Log("result for " + unit.gameObject.name + " is " + ability_score.Check());
-
-            #region Player scores
-            if (res > 0 && BattleStatsManager.Instance.CurTurn == Side.Player)
+            if (ability_score != null)
             {
-                unit.Anim.SetTrigger(ability_score.JitterAnimTrigger);
-                ScoreClock.Instance.Shrug_Visuals();
-                E_ScoredForPlayer.Invoke();
-                BattleStatsManager.Instance.AddPointPlayer();
-            }
-            #endregion
-            #region Enemy scores
-            if (res < 0 && BattleStatsManager.Instance.CurTurn == Side.Enemy)
-            {
-                unit.Anim.SetTrigger(ability_score.JitterAnimTrigger);
-                ScoreClock.Instance.Shrug_Visuals();
+                if (ability_score is Ability_Score) { } else { Debug.LogError("ABILITY IS NOT SCORE"); }
 
-                BattleStatsManager.Instance.AddPointEnemy();
+                int res = ability_score.Check();
+                if (ShouldDebug) Debug.Log("result for " + unit.gameObject.name + " is " + ability_score.Check());
+
+                #region Player scores
+                if (res > 0 && BattleStatsManager.Instance.CurTurn == Side.Player)
+                {
+                    unit.Anim.SetTrigger(ability_score.JitterAnimTrigger);
+                    ScoreClock.Instance.Shrug_Visuals();
+                    E_ScoredForPlayer.Invoke();
+                    BattleStatsManager.Instance.AddPointPlayer();
+                }
+                #endregion
+                #region Enemy scores
+                if (res < 0 && BattleStatsManager.Instance.CurTurn == Side.Enemy)
+                {
+                    unit.Anim.SetTrigger(ability_score.JitterAnimTrigger);
+                    ScoreClock.Instance.Shrug_Visuals();
+
+                    BattleStatsManager.Instance.AddPointEnemy();
+                }
+                #endregion
+                #region Neither scores
+                //TODO:
+                #endregion
             }
-            #endregion
-            #region Neither scores
-            //TODO:
-            #endregion
 
             yield return new WaitForSeconds(DelayBetweenScores * Time.fixedDeltaTime);
         }

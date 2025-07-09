@@ -55,10 +55,10 @@ MonoBehaviour:
   MaxHealth: 3
   CodexPage: 3
   Abilities_Base:
-  - {fileID: 11400000, guid: 5267f78161799aa4eb89a35136c26d1b, type: 2}
+  - {fileID: 11400000, guid: 63b58d8a625dc034c9495fc59698afbb, type: 2}
+  - {fileID: 11400000, guid: c91003656f0112e4da48f41a0dfb9b67, type: 2}
+  - {fileID: 11400000, guid: cbf3bbc189bd3d14398f44fbdfe5e3b3, type: 2}
   - {fileID: 11400000, guid: 86abd157a6ccbf941a3f176dda5a1e78, type: 2}
-  - {fileID: 11400000, guid: d6728f60dadb5454b98eb843dad20f91, type: 2}
-  - {fileID: 11400000, guid: 6db79588636def741ad617d9cf5c39ea, type: 2}
   Abilities: []
   BaseKeywords: 
   CurColor: {r: 255, g: 255, b: 255, a: 1}

@@ -207,7 +207,6 @@ public static class Action_Move
 
         #region Checking if unit should slip after moving
         Ability_Slippery ability_slippery = ActionTargetUnit.Get_Ability(Ability_Name.Slippery) as Ability_Slippery;
-        if (ability_slippery is Ability_Slippery) { } else { }
 
         if (ability_slippery != null)
         {
@@ -215,7 +214,7 @@ public static class Action_Move
         }
         else
         {
-            
+
         }    
         #endregion
 

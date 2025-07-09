@@ -194,6 +194,7 @@ MonoBehaviour:
   CodexPage: 0
   Abilities_Base:
   - {fileID: 11400000, guid: ba989b93548b84344b659e810364ade7, type: 2}
+  - {fileID: 11400000, guid: 3ad0e1371c1d6924ea328c3587ef8535, type: 2}
   Abilities: []
   BaseKeywords: 0300000002000000
   CurColor: {r: 255, g: 255, b: 255, a: 1}

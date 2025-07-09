@@ -81,7 +81,7 @@ public static class DamageDealing
         int startDamage = source.CurAttackZone.Damage; 
         DamageType type = source.CurAttackZone.Type;
 
-        int EndDamage = AbilityManager.Instance.ModifyIncomingDamage(target, startDamage); //Modifying damage depending on abilities
+        int EndDamage = AbilityManager.Instance.ModifyIncomingDamage(target, startDamage, type); //Modifying damage depending on abilities
 
         if (target.HasAbility(Ability_Name.Invincible) || EndDamage < 0) 
         { 
