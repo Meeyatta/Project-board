@@ -199,24 +199,26 @@ public static class Action_Move
             AudioManager.Instance.Play(SoundName.Step, ActionTargetUnit.transform);
 
             yield return BoardManager.Instance.StartCoroutine(BoardManager.Instance.PlaceUnit(ActionTargetUnit, newPoss));
+
+
+            #region Checking if unit should slip after moving
+            Ability_Slippery ability_slippery = ActionTargetUnit.Get_Ability(Ability_Name.Slippery) as Ability_Slippery;
+
+            if (ability_slippery != null)
+            {
+                yield return ability_slippery.Try();
+            }
+            else
+            {
+
+            }
+            #endregion
         }
         else
         {
             
         }
 
-        #region Checking if unit should slip after moving
-        Ability_Slippery ability_slippery = ActionTargetUnit.Get_Ability(Ability_Name.Slippery) as Ability_Slippery;
-
-        if (ability_slippery != null)
-        {
-            yield return ability_slippery.Try();
-        }
-        else
-        {
-
-        }    
-        #endregion
 
         E_AfterMove.Invoke(ActionTargetUnit);
         yield return new WaitForSeconds(Time.fixedDeltaTime);

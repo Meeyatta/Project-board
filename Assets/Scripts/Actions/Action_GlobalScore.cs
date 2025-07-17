@@ -7,11 +7,12 @@ public static class Action_GlobalScore
 {
     static float DelayBetweenScores = 20;
     public static UnityEvent E_ScoredForPlayer = new UnityEvent();
-    static bool ShouldDebug = false;
+    static bool ShouldDebug = true;
 
     public static IEnumerator GlobalScore(ActionParameters parameters)
     {
         yield return new WaitForSeconds(Time.fixedDeltaTime / 100);
+        if (ShouldDebug) Debug.Log("GlobalScore");
 
         List<Keyword> keywords = parameters.Keywords;
         yield return new WaitForSeconds(Time.deltaTime);
@@ -39,7 +40,7 @@ public static class Action_GlobalScore
                 }
                 #endregion
                 #region Enemy scores
-                if (res < 0 && BattleStatsManager.Instance.CurTurn == Side.Enemy)
+                else if (res < 0 && BattleStatsManager.Instance.CurTurn == Side.Enemy)
                 {
                     unit.Anim.SetTrigger(ability_score.JitterAnimTrigger);
                     ScoreClock.Instance.Shrug_Visuals();
@@ -48,8 +49,15 @@ public static class Action_GlobalScore
                 }
                 #endregion
                 #region Neither scores
-                //TODO:
+                else
+                {
+                    if (ShouldDebug) Debug.Log("Neither side scores");
+                }
                 #endregion
+            }
+            else
+            {
+                if (ShouldDebug) Debug.Log("Ability is null for " + unit.UnitName + " " + ability_score.Name);
             }
 
             yield return new WaitForSeconds(DelayBetweenScores * Time.fixedDeltaTime);

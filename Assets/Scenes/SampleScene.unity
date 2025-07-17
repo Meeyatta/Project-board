@@ -6006,7 +6006,7 @@ GameObject:
   - component: {fileID: 151285550}
   - component: {fileID: 151285549}
   m_Layer: 5
-  m_Name: TestUnitButton
+  m_Name: Amphibian(player)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -15179,7 +15179,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 11416984, guid: c080686877cf77f42a1a078076d57fe5, type: 3}
       propertyPath: textList.Array.size
-      value: 5
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 11416984, guid: c080686877cf77f42a1a078076d57fe5, type: 3}
       propertyPath: textList.Array.data[0].s
@@ -15198,16 +15198,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 11416984, guid: c080686877cf77f42a1a078076d57fe5, type: 3}
       propertyPath: textList.Array.data[3].s
-      value: You can select units while placing an item
+      value: Rework the creation menu
       objectReference: {fileID: 0}
     - target: {fileID: 11416984, guid: c080686877cf77f42a1a078076d57fe5, type: 3}
       propertyPath: textList.Array.data[4].s
-      value: "Not sure if bug or mechanic - make it so damage zones \npenetrating
-        targets requires a specific ability"
+      value: '"Slippery" works after you try to move to a position you cant'
       objectReference: {fileID: 0}
     - target: {fileID: 11416984, guid: c080686877cf77f42a1a078076d57fe5, type: 3}
       propertyPath: textList.Array.data[5].s
-      value: REsistances/Vulnerabilities don't work
+      value: '"Slippery" works after you try to move to a position you cant'
       objectReference: {fileID: 0}
     - target: {fileID: 11416984, guid: c080686877cf77f42a1a078076d57fe5, type: 3}
       propertyPath: textList.Array.data[6].s
@@ -15297,11 +15296,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 11416984, guid: c080686877cf77f42a1a078076d57fe5, type: 3}
       propertyPath: textList.Array.data[3].state
-      value: 1
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 11416984, guid: c080686877cf77f42a1a078076d57fe5, type: 3}
       propertyPath: textList.Array.data[4].state
-      value: 2
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 11416984, guid: c080686877cf77f42a1a078076d57fe5, type: 3}
       propertyPath: textList.Array.data[5].state
@@ -15349,7 +15348,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 11416984, guid: c080686877cf77f42a1a078076d57fe5, type: 3}
       propertyPath: textList.Array.data[4].deleteQuestion
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 11416984, guid: c080686877cf77f42a1a078076d57fe5, type: 3}
       propertyPath: textList.Array.data[5].deleteQuestion
@@ -46100,6 +46099,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8451e0abbec003347affed5d58fdbf5d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ShouldDebug: 0
 --- !u!1 &1034999840
 GameObject:
   m_ObjectHideFlags: 0
@@ -54169,7 +54169,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Buttons:
-  - Name: TestUnit
+  - Name: Amphibian(player)
     ButtonObj: {fileID: 151285549}
     Prefab: {fileID: 0}
   - Name: TestMulticellUnit
@@ -54241,6 +54241,7 @@ MonoBehaviour:
   Items:
   - {fileID: 1475337113}
   - {fileID: 1613381411}
+  IsUsingItem: 0
   CurItem: {fileID: 0}
   PossibleItems: []
   AvailableItems: []
@@ -59270,7 +59271,7 @@ GameObject:
   - component: {fileID: 1324948932}
   - component: {fileID: 1324948933}
   m_Layer: 0
-  m_Name: ScoreManager
+  m_Name: BattleStatsManager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

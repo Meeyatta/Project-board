@@ -216,12 +216,12 @@ public class ClickManager : MonoBehaviour
     {
         if (C_ClickCoroutine == null)
         {
-            C_ClickCoroutine = StartCoroutine(CellClickCoroutine_2(coords));
+            C_ClickCoroutine = StartCoroutine(CellClickCoroutine(coords));
         }
         else
         {
             StopCoroutine(C_ClickCoroutine);
-            C_ClickCoroutine = StartCoroutine(CellClickCoroutine_2(coords));
+            C_ClickCoroutine = StartCoroutine(CellClickCoroutine(coords));
         }
     }
 
@@ -321,7 +321,7 @@ public class ClickManager : MonoBehaviour
     }
 
     //New trial version where each click have individual conditions
-    IEnumerator CellClickCoroutine_2(Vector2Int coords)
+    IEnumerator CellClickCoroutine(Vector2Int coords)
     {
         yield return new WaitForSeconds(Time.fixedDeltaTime);
 
@@ -366,8 +366,11 @@ public class ClickManager : MonoBehaviour
         #endregion
 
         #region Selecting a new player unit
-        else if (BoardManager.Instance.Board[coords.x].Cells[coords.y].CurUnit != null && 
-            BoardManager.Instance.Board[coords.x].Cells[coords.y].CurUnit.CurKeywords.Contains(Keyword.Player) && GameManager.Instance.CurUnitSelected != BoardManager.Instance.Board[coords.x].Cells[coords.y].CurUnit)         
+        else if (BoardManager.Instance.Board[coords.x].Cells[coords.y].CurUnit != null &&                                   //Must be unit on cooordinates
+                BoardManager.Instance.Board[coords.x].Cells[coords.y].CurUnit.CurKeywords.Contains(Keyword.Player) &&       //Must be player unit
+                GameManager.Instance.CurUnitSelected != BoardManager.Instance.Board[coords.x].Cells[coords.y].CurUnit &&
+                !ItemManagement.Instance.IsUsingItem                                                                        //We are not using any items
+                )         
         {
             if (!Action_DrawPlayerResources.IsDeployingNewResources)
             {

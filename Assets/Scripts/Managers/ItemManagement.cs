@@ -27,7 +27,7 @@ public class ItemManagement : MonoBehaviour
     #endregion
   
     public List<Item> Items;
-
+    public bool IsUsingItem;
     public Item CurItem = new Item();
     public List<Item> PossibleItems = new List<Item>();
     public List<Item> AvailableItems = new List<Item>();
@@ -112,32 +112,34 @@ public class ItemManagement : MonoBehaviour
     //Using an item
     public IEnumerator UseItem(Item i)
     {
-        Debug.Log("Tried using an item");
         if (!ItemCondition())
         {
-            Debug.Log("Failed Using an item");
+            if (ShouldDebug) Debug.Log("Failed Using an item");
             yield return null; 
         }
         else
         {
             CurItem.gameObject.SetActive(false);
-            Debug.Log("Using an item");
+            if (ShouldDebug) Debug.Log("Using an item");
+            IsUsingItem = true;
 
             switch (i.Id)
             {
                 case ItemId.water:
                     ActionParameters w = new ActionParameters(GameManager.ActionType.WaterBucket, null, null, null, null, 0);
-                    yield return GameManager.Instance.Action(w);
+                    yield return Item_WaterBucket.WaterBucket(w);
                     break;
                 case ItemId.oil:
                     ActionParameters o = new ActionParameters(GameManager.ActionType.OilBucket, null, null, null, null, 0);
-                    yield return GameManager.Instance.Action(o);
+                    yield return Item_OilBucket.OilBucket(o);
                     break;
                 default:
-                    Debug.LogError("Item ID type " + i.Id + " behaviour not set up");
+                    if (ShouldDebug) Debug.LogError("Item ID type " + i.Id + " behaviour not set up");
                     break;
             }
 
+            if (ShouldDebug) Debug.Log("Stopped using an item");
+            IsUsingItem = false;
             cUsingItem = null;
         }
     

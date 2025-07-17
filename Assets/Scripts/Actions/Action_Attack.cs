@@ -27,12 +27,15 @@ public static class Action_Attack
         {
             for (int i = 0; i < line.Positions.Count; i++)
             {
+                bool canGoFurther = true;
+
                 foreach (Vector2Int unitP in BoardManager.Instance.Get_UnitPositions(source))
                 {
-                    if (!BoardManager.Instance.IsInBounds(line.Positions[i] + unitP)) { break; }
+                    if (!BoardManager.Instance.IsInBounds(line.Positions[i] + unitP)) { canGoFurther = false; break; }
                     int x = line.Positions[i].x; int y = line.Positions[i].y;
                     if (BoardManager.Instance.Board[unitP.x + x].Cells[unitP.y + y].CurUnit != null && !line.IsEvading)
                     {
+                        canGoFurther = false;
                         Unit curUn = BoardManager.Instance.Board[unitP.x + x].Cells[unitP.y + y].CurUnit;
                         if (!res.Contains(curUn) && GameManager.Instance.UnitHasAllKeywords(curUn, keywords)) { res.Add(curUn); }
                         break;
@@ -40,6 +43,7 @@ public static class Action_Attack
 
                 }
 
+                if (!canGoFurther) break;
             }
         }
         #endregion

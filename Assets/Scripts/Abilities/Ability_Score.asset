@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5b16d9e76e978e47bdd2ddf4a0755f1, type: 3}
   m_Name: Ability_Score
   m_EditorClassIdentifier: 
-  Name: 11
+  Name: 3
   Description: 
   Owner: {fileID: 0}
   JitterAnimTrigger: jitter

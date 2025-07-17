@@ -19,6 +19,7 @@ public enum Ability_Name
 
 public class AbilityManager : MonoBehaviour
 {
+    public bool ShouldDebug;
     public static AbilityManager Instance;
     Coroutine CurCheckForAbilities = null;
     void Singleton()
@@ -46,22 +47,22 @@ public class AbilityManager : MonoBehaviour
         List<Ability> resistances = target.Get_Abilities_ByName(Ability_Name.Resistance);
         if (resistances != null)
         {
-            Debug.Log("Got " + resistances.Count + " resistances for " + target.UnitName);
+            if (ShouldDebug) Debug.Log("Got " + resistances.Count + " resistances for " + target.UnitName);
             foreach (var r in resistances)
             {
                 Ability_Resistance ar = r as Ability_Resistance;
                 if (ar != null)
                 {
-                    Debug.Log("Got resistance: " + ar.Type + " attack type: " + damageType);
+                    if (ShouldDebug) Debug.Log("Got resistance: " + ar.Type + " attack type: " + damageType);
                     if (ar.Type == damageType)
                     {
                         endDamage = Mathf.Clamp(endDamage - 1, 0, endDamage);
-                        Debug.Log("Decreasing the " + damageType + " damage to " + endDamage);
+                        if (ShouldDebug) Debug.Log("Decreasing the " + damageType + " damage to " + endDamage);
                     }
                 }
                 else
                 {
-                    Debug.Log("Can't convert " + r.Name + " to resistance");
+                    if (ShouldDebug) Debug.Log("Can't convert " + r.Name + " to resistance");
                 }
             }
         }  
@@ -71,23 +72,23 @@ public class AbilityManager : MonoBehaviour
         List<Ability> vulnerabilities = target.Get_Abilities_ByName(Ability_Name.Vulnerability);
         if (vulnerabilities != null)
         {
-            Debug.Log("Got " + vulnerabilities.Count + " vulnerabilities for " + target.UnitName);
+            if (ShouldDebug) Debug.Log("Got " + vulnerabilities.Count + " vulnerabilities for " + target.UnitName);
 
             foreach (var v in vulnerabilities)
             {
                 Ability_Vulnerability av = v as Ability_Vulnerability;
-                Debug.Log("Got vulnerability: " + av.Type + " attack type: " + damageType);
+                if (ShouldDebug) Debug.Log("Got vulnerability: " + av.Type + " attack type: " + damageType);
                 if (av != null)
                 {
                     if (av.Type == damageType)
                     {
                         endDamage = Mathf.Clamp(endDamage + 1, endDamage, 99999);
-                        Debug.Log("Increasing the " + damageType + " damage to " + endDamage);
+                        if (ShouldDebug) Debug.Log("Increasing the " + damageType + " damage to " + endDamage);
                     }
                 }
                 else
                 {
-                    Debug.Log("Can't convert " + v.Name + " to vulnerability");
+                    if (ShouldDebug) Debug.Log("Can't convert " + v.Name + " to vulnerability");
                 }
             }
         }
