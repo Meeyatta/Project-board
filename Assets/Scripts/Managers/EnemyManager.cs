@@ -20,7 +20,7 @@ public class EnemyManager : MonoBehaviour
     public bool IsPlayingTurn;
     public Unit NextUnit;
 
-    public List<Unit> Army = new List<Unit>();
+    public List<UnitAmount> Army = new List<UnitAmount>();
 
     List<Unit> FullArmy = new List<Unit>();
     public List<Unit> Army_NotPlaced = new List<Unit>();
@@ -328,11 +328,13 @@ public class EnemyManager : MonoBehaviour
     {
         foreach (var v in Army)
         {
-            Unit u = Instantiate(v.gameObject, new Vector3(255, 0, 0), Quaternion.identity, EnemyUitsTr).GetComponent<Unit>();
-            yield return new WaitForSeconds(Time.fixedDeltaTime);
-            u.SetToEnemy();
-            FullArmy.Add(u);
-            
+            for (var i = 0; i < v.Amount; i++)
+            {
+                Unit u = Instantiate(v.Unit_, new Vector3(255, 0, 0), Quaternion.identity, EnemyUitsTr).GetComponent<Unit>();
+                yield return new WaitForSeconds(Time.fixedDeltaTime);
+                u.SetToEnemy();
+                FullArmy.Add(u);
+            }           
         }
     }
 

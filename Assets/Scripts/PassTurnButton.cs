@@ -14,6 +14,7 @@ public class PassTurnButton : MonoBehaviour
     public bool CanPass = true;
 
     const string Shrugstr = "shrug";
+    const string Jumpstr = "jump";
     Animator anim;
 
     public UnityEvent E_PassedTurn;
@@ -88,6 +89,11 @@ public class PassTurnButton : MonoBehaviour
     bool TutorialCond()
     {
         return (TutorialManager.Instance != null && TutorialManager.Instance.Tutorial_CanPass);
+    }
+
+    public void RemindToPass()
+    {
+        anim.SetTrigger(Jumpstr);
     }
 
     bool PassConditions()

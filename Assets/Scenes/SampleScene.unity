@@ -15179,7 +15179,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 11416984, guid: c080686877cf77f42a1a078076d57fe5, type: 3}
       propertyPath: textList.Array.size
-      value: 4
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 11416984, guid: c080686877cf77f42a1a078076d57fe5, type: 3}
       propertyPath: textList.Array.data[0].s
@@ -15202,11 +15202,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 11416984, guid: c080686877cf77f42a1a078076d57fe5, type: 3}
       propertyPath: textList.Array.data[4].s
-      value: '"Slippery" works after you try to move to a position you cant'
+      value: empty content item
       objectReference: {fileID: 0}
     - target: {fileID: 11416984, guid: c080686877cf77f42a1a078076d57fe5, type: 3}
       propertyPath: textList.Array.data[5].s
-      value: '"Slippery" works after you try to move to a position you cant'
+      value: Rework the creation menu
       objectReference: {fileID: 0}
     - target: {fileID: 11416984, guid: c080686877cf77f42a1a078076d57fe5, type: 3}
       propertyPath: textList.Array.data[6].s
@@ -15300,11 +15300,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 11416984, guid: c080686877cf77f42a1a078076d57fe5, type: 3}
       propertyPath: textList.Array.data[4].state
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 11416984, guid: c080686877cf77f42a1a078076d57fe5, type: 3}
       propertyPath: textList.Array.data[5].state
-      value: 1
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 11416984, guid: c080686877cf77f42a1a078076d57fe5, type: 3}
       propertyPath: textList.Array.data[6].state
@@ -15348,7 +15348,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 11416984, guid: c080686877cf77f42a1a078076d57fe5, type: 3}
       propertyPath: textList.Array.data[4].deleteQuestion
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 11416984, guid: c080686877cf77f42a1a078076d57fe5, type: 3}
       propertyPath: textList.Array.data[5].deleteQuestion
@@ -29923,7 +29923,7 @@ Transform:
   m_GameObject: {fileID: 695396555}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0.39658892, z: -0, w: 0.91799635}
-  m_LocalPosition: {x: 27.965506, y: 0.71, z: -11.314527}
+  m_LocalPosition: {x: 27.96551, y: 0.71, z: -11.31453}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -31315,15 +31315,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   StarterUnitsAmount: 4
   Army:
-  - {fileID: 1682432416608124755, guid: 08825e29c16e3e54eab9f28c3ec32750, type: 3}
-  - {fileID: 1682432416608124755, guid: 08825e29c16e3e54eab9f28c3ec32750, type: 3}
-  - {fileID: 1682432416608124755, guid: 08825e29c16e3e54eab9f28c3ec32750, type: 3}
-  - {fileID: 1467022029548607331, guid: 47055914ca9fac745a13d5de04bfe097, type: 3}
-  - {fileID: 1467022029548607331, guid: 47055914ca9fac745a13d5de04bfe097, type: 3}
-  - {fileID: 1467022029548607331, guid: 47055914ca9fac745a13d5de04bfe097, type: 3}
-  - {fileID: 7414565371915086219, guid: ca00f1841f6954c48bd6541892bdb97b, type: 3}
-  - {fileID: 7414565371915086219, guid: ca00f1841f6954c48bd6541892bdb97b, type: 3}
-  - {fileID: 7414565371915086219, guid: ca00f1841f6954c48bd6541892bdb97b, type: 3}
+  - Unit_: {fileID: 7414565371915086219, guid: ca00f1841f6954c48bd6541892bdb97b, type: 3}
+    Amount: 3
+  - Unit_: {fileID: 1467022029548607331, guid: 47055914ca9fac745a13d5de04bfe097, type: 3}
+    Amount: 3
+  - Unit_: {fileID: 1682432416608124755, guid: 08825e29c16e3e54eab9f28c3ec32750, type: 3}
+    Amount: 3
   Army_NotPlaced: []
   Army_Placed: []
   PlayerUitsTr: {fileID: 0}
@@ -83513,15 +83510,12 @@ MonoBehaviour:
   IsPlayingTurn: 0
   NextUnit: {fileID: 0}
   Army:
-  - {fileID: 7414565371915086219, guid: ca00f1841f6954c48bd6541892bdb97b, type: 3}
-  - {fileID: 7414565371915086219, guid: ca00f1841f6954c48bd6541892bdb97b, type: 3}
-  - {fileID: 7414565371915086219, guid: ca00f1841f6954c48bd6541892bdb97b, type: 3}
-  - {fileID: 1467022029548607331, guid: 47055914ca9fac745a13d5de04bfe097, type: 3}
-  - {fileID: 1467022029548607331, guid: 47055914ca9fac745a13d5de04bfe097, type: 3}
-  - {fileID: 1467022029548607331, guid: 47055914ca9fac745a13d5de04bfe097, type: 3}
-  - {fileID: 1682432416608124755, guid: 08825e29c16e3e54eab9f28c3ec32750, type: 3}
-  - {fileID: 1682432416608124755, guid: 08825e29c16e3e54eab9f28c3ec32750, type: 3}
-  - {fileID: 1682432416608124755, guid: 08825e29c16e3e54eab9f28c3ec32750, type: 3}
+  - Unit_: {fileID: 7414565371915086219, guid: ca00f1841f6954c48bd6541892bdb97b, type: 3}
+    Amount: 3
+  - Unit_: {fileID: 1467022029548607331, guid: 47055914ca9fac745a13d5de04bfe097, type: 3}
+    Amount: 3
+  - Unit_: {fileID: 1682432416608124755, guid: 08825e29c16e3e54eab9f28c3ec32750, type: 3}
+    Amount: 3
   Army_NotPlaced: []
   Army_Placed: []
   EnemyUitsTr: {fileID: 0}

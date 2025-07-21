@@ -55,6 +55,11 @@ public class CameraManager : MonoBehaviour
         }
     }
 
+    public void LookAtResources()
+    {
+        SetCam(InFrontOfBoad);
+    }
+
     #region Sets camera to the specific position
     public void SetCam(List<GameObject> camm)
     {
