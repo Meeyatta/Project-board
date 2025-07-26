@@ -286,7 +286,7 @@ public class EnemyManager : MonoBehaviour
         #region Move towards the oter remaining objective
         if (otherObj != null)
         {
-            Debug.Log(u.UnitName + " Moves to the other objective");
+            if (ShouldDebug) Debug.Log(u.UnitName + " Moves to the other objective");
             return GetPosToPoint(otherObj, u);
         }
         #endregion

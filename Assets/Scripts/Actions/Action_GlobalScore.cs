@@ -7,7 +7,7 @@ public static class Action_GlobalScore
 {
     static float DelayBetweenScores = 20;
     public static UnityEvent E_ScoredForPlayer = new UnityEvent();
-    static bool ShouldDebug = true;
+    static bool ShouldDebug = false;
 
     public static IEnumerator GlobalScore(ActionParameters parameters)
     {

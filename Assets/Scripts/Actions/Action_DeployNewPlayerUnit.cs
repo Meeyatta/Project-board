@@ -174,11 +174,9 @@ public static class Action_DeployNewPlayerUnit
         E_DeployedNewPlayerUnit.Invoke(selectedUnit);
         GameManager.Instance.CurUnitSelected = null;
 
-        IsDeploying = false;
         ClickManager.Instance.E_Click_unit.RemoveListener(stopAwaitingSelection);
-
-        yield return new WaitForSeconds(Time.fixedDeltaTime);
         GameManager.Instance.RemoveAction(parameters);
+        IsDeploying = false;
 
     }
 

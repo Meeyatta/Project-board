@@ -7,6 +7,7 @@ public static class Action_DrawNewItem
 {
     static int AmountOfPossibleItems = 2;
     static bool ShouldDebug = true;
+    public static bool IsDrawingNewItem = false;
 
     const string IsHoveringStr = "isHovering";
     const string IsRaisedStr = "isRaised";
@@ -21,6 +22,7 @@ public static class Action_DrawNewItem
 
     public static IEnumerator DrawNewItem()
     {
+        IsDrawingNewItem = true;
         yield return new WaitForSeconds(Time.fixedDeltaTime);
 
         if (ShouldDebug) Debug.Log("Initiated DrawPossibleItems of " + AmountOfPossibleItems);
@@ -51,34 +53,8 @@ public static class Action_DrawNewItem
         {
             yield return new WaitForSeconds(Time.fixedDeltaTime / 1000);
         }
-        //    #region If player foces on new units
-        //    if (IsFocused())
-        //    {
-        //        SetPos(UnitPlacementBag.Instance.UnitsPos_InFront, pulledUnits);
 
-        //        if (ClickManager.Instance.CurrentPointedAtUnit != null)
-        //        {
-        //            foreach (var v in pulledUnits)
-        //            {
-        //                if (v == ClickManager.Instance.CurrentPointedAtUnit)
-        //                {
-        //                    v.Anim.SetBool(IsRaisedStr, true);
-        //                }
-        //                else
-        //                {
-        //                    v.Anim.SetBool(IsRaisedStr, false);
-        //                }
-        //            }
-        //        }
-        //    }
-        //    #endregion
-        //    #region If looking somewhere else
-        //    else
-        //    {
-        //        SetPos(UnitPlacementBag.Instance.UnitsPos_Below, pulledUnits);
-        //    }
-        //    #endregion
-        //}
+        IsDrawingNewItem = false;
         #endregion
     }
 }

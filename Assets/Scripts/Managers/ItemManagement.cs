@@ -32,7 +32,7 @@ public class ItemManagement : MonoBehaviour
     public List<Item> PossibleItems = new List<Item>();
     public List<Item> AvailableItems = new List<Item>();
 
-    public bool ShouldDebug;
+    public bool ShouldDebug = true;
 
     [Header("---------")]
     public GameObject CurItem_PosObj;
@@ -55,9 +55,9 @@ public class ItemManagement : MonoBehaviour
 
     bool ItemCondition()
     {
-        Debug.Log("BattleStatsManager.Instance.PlayerTurnActionCondition() " + BattleStatsManager.Instance.PlayerTurnActionCondition());
-        Debug.Log("!Action_DrawPlayerResources.IsDeployingNewResources " + !Action_DrawPlayerResources.IsDeployingNewResources);
-        Debug.Log("BattleStatsManager.Instance.CurRound " + BattleStatsManager.Instance.CurRound);
+        //Debug.Log("BattleStatsManager.Instance.PlayerTurnActionCondition() " + BattleStatsManager.Instance.PlayerTurnActionCondition());
+        //Debug.Log("!Action_DrawPlayerResources.IsDeployingNewResources " + !Action_DrawPlayerResources.IsDeployingNewResources);
+        //Debug.Log("BattleStatsManager.Instance.CurRound " + BattleStatsManager.Instance.CurRound);
 
         return BattleStatsManager.Instance.PlayerTurnActionCondition() &&   //Only on player's turn
             !Action_DrawPlayerResources.IsDeployingNewResources &&          //Only when not deploying resources
@@ -119,7 +119,9 @@ public class ItemManagement : MonoBehaviour
         }
         else
         {
-            CurItem.gameObject.SetActive(false);
+            CurItem.gameObject.transform.position = new Vector3(0, -255, 0);
+            CurItem = null;
+
             if (ShouldDebug) Debug.Log("Using an item");
             IsUsingItem = true;
 

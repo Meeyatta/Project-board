@@ -98,7 +98,9 @@ public class PassTurnButton : MonoBehaviour
 
     bool PassConditions()
     {
-        if (Action_DeployPlayerStarters.DeployedPlayerStarters || Action_DeployNewPlayerUnit.IsDeploying)
+
+        if (Action_DeployPlayerStarters.DeployedPlayerStarters || Action_DeployNewPlayerUnit.IsDeploying ||
+            Action_DrawPlayerResources.IsDeployingNewResources || Action_DrawNewItem.IsDrawingNewItem)
             { RuleMessageManager.Instance.PlayMessage(RuleMessageInd.PassBeforeDraw); return false; }
 
         if (BattleStatsManager.Instance.CurTurn != Side.Player) 
@@ -106,6 +108,7 @@ public class PassTurnButton : MonoBehaviour
 
         if (!CanPass || Time.time <= nextClickTime) 
             { return false; }
+
 
         return true;
     }
