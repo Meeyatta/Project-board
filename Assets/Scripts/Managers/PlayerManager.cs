@@ -108,7 +108,7 @@ public class PlayerManager : MonoBehaviour
         {
             for (var i = 0; i < v.Amount; i++)
             {
-                Unit u = Instantiate(v.Unit_, new Vector3(255, 0, 0), Quaternion.identity, PlayerUitsTr).GetComponent<Unit>();
+                Unit u = Instantiate(v.Unit_, new Vector3(255, -999, 0), Quaternion.identity, PlayerUitsTr).GetComponent<Unit>();
                 u.SetToPlayer();
                 FullArmy.Add(u);
                 yield return new WaitForSeconds(Time.fixedDeltaTime);

@@ -21,8 +21,8 @@ public static class Action_PlayerCreate
         List<Vector2Int> uPos = BoardManager.Instance.SingleCellToUnitPositions(u, pos);
 
         List<Vector2Int> availableDeploymentsPosses = new List<Vector2Int>();
-        int miX = BoardManager.Instance.PlayerDeploymentZone[0].x; int maX = BoardManager.Instance.PlayerDeploymentZone[1].x+1;
-        int miY = BoardManager.Instance.PlayerDeploymentZone[0].y; int maY = BoardManager.Instance.PlayerDeploymentZone[1].y+1;
+        int miX = BoardManager.Instance.PlayerDeployment_start.x; int maX = BoardManager.Instance.PlayerDeployment_end.x+1;
+        int miY = BoardManager.Instance.PlayerDeployment_start.y; int maY = BoardManager.Instance.PlayerDeployment_end.y+1;
         for (int x = miX; x < maX; x++)
         {
             for (int y = miY; y < maY; y++)

@@ -218,7 +218,10 @@ public class Unit : MonoBehaviour
 
         if (UnitModelShowcase != null) 
         {
-            UnitModelShowcase = Instantiate(UnitModelShowcase);
+            GameObject g = GameObject.Find("PlayerUnits");
+            if (g != null) {  UnitModelShowcase = Instantiate(UnitModelShowcase, new Vector3(-255, -99, 0), Quaternion.identity, g.transform); }
+            else { UnitModelShowcase = Instantiate(UnitModelShowcase, new Vector3(-255, -99, 0), Quaternion.identity); }
+            
             UnitModelShowcase.SetActive(false);
         }
         else { Debug.Log(UnitName + " " + gameObject.name + " HAS NO UnitModelShowcase"); }

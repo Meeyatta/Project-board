@@ -96,21 +96,22 @@ public class BoardManager : MonoBehaviour
     public float DefaultY;
     public float CellSize;
     public float InBetweenSpace;
-    public int Width;
-    public int Height;
+    public int Width() { return Board.Count(); }
+    public int Height() { return Board[0].Cells.Count(); }
 
-    #region DeploymentZones - 2 element lists where first - top-left point, second - bottom-right point
-    public List<Vector2Int> PlayerDeploymentZone = new List<Vector2Int> { new Vector2Int(4, 12), new Vector2Int(12, 14) };
-    public List<Vector2Int> EnemyDeploymentZone = new List<Vector2Int> { new Vector2Int(4, 2), new Vector2Int(12, 4) };
-
+    #region DeploymentZones for player and current enemy
+    public Vector2Int PlayerDeployment_start; public Vector2Int PlayerDeployment_end;
+    public Vector2Int EnemyDeployment_start; public Vector2Int EnemyDeployment_end;
     #endregion
 
     public GameObject CellsObj;
     public CellsHolder CHolder;
 
     public GameObject BoardCellObj;
+    public GameObject CurBoard_obj;
     public List<Column> Board;
-    
+
+    public bool ShouldDebug;
     public static BoardManager Instance;
     #region Events 
     void Start()
@@ -145,20 +146,29 @@ public class BoardManager : MonoBehaviour
         Rebuilds all the cells both in the table and in the scene. Doing so sets all cells as unoccupied,
         (must copy the table and Cells object to keep the changes)
     */
-    void Build()
+    public void Build(int w, int h, 
+        Vector2Int player_deployment_start, Vector2Int player_deployment_end,
+        Vector2Int enemy_deployment_start, Vector2Int enemy_deployment_end,
+        GameObject BoardName_obj)
     {
-      foreach (Transform t in CellsObj.transform)
+        foreach (Transform t in CellsObj.transform)
         {
             Destroy(t.gameObject);
         }
-        
+        Board.Clear();
+        if (CurBoard_obj != null) CurBoard_obj.SetActive(false);
+
+        PlayerDeployment_start = player_deployment_start; PlayerDeployment_end = player_deployment_end;
+        EnemyDeployment_start = enemy_deployment_start; EnemyDeployment_end = enemy_deployment_end;
+        CurBoard_obj = BoardName_obj;
+
         Board = new List<Column>();
-        for (int x = 0; x < Width; x++)
+        for (int x = 0; x < w; x++)
         {
             Column column = new Column();
             column.Cells = new List<Cell>();
 
-            for (int y = 0; y < Height; y++)
+            for (int y = 0; y < h; y++)
             {
                 #region Setup cells in a script table
                 Cell cell = new Cell();
@@ -170,16 +180,16 @@ public class BoardManager : MonoBehaviour
                 cell.CoveredBy = CoverType.None;
 
                 #region Check if zone is a player deployment zone
-                if (x >= PlayerDeploymentZone[0].x && x<= PlayerDeploymentZone[1].x &&
-                    y >= PlayerDeploymentZone[0].y && y <= PlayerDeploymentZone[1].y)
+                if (x >= player_deployment_start.x && x <= player_deployment_end.x &&
+                    y >= enemy_deployment_end.y && y <= enemy_deployment_end.y)
                 {
                     cell.Tags.Add(CellTag.PlayerDeploymentZone);
                 }
                 #endregion
 
                 #region Check if zone is an enemy deployment zone
-                if (x >= EnemyDeploymentZone[0].x && x <= EnemyDeploymentZone[1].x &&
-                    y >= EnemyDeploymentZone[0].y && y <= EnemyDeploymentZone[1].y)
+                if (x >= enemy_deployment_start.x && x <= enemy_deployment_start.x &&
+                    y >= enemy_deployment_end.y && y <= enemy_deployment_end.y)
                 {
                     cell.Tags.Add(CellTag.EnemyDeploymentZone);
                 }
@@ -191,7 +201,7 @@ public class BoardManager : MonoBehaviour
                 #region Create cell objects in the world
                 BoardCell newCell = Instantiate(BoardCellObj, cell.Position, Quaternion.identity, CellsObj.transform).GetComponent<BoardCell>();
 
-                Debug.Log("Placing the cell " + newCell.gameObject.name + " at " + cell.Position + " actual position: " + newCell.transform.position);
+                if (ShouldDebug) Debug.Log("Placing the cell " + newCell.gameObject.name + " at " + cell.Position + " actual position: " + newCell.transform.position);
 
                 newCell.gameObject.name = "Cell " + cell.Coordinates.ToString();
                 newCell.Coordinates = cell.Coordinates;
@@ -215,10 +225,10 @@ public class BoardManager : MonoBehaviour
     public void Print()
     {
         Debug.Log("-----------------------------");
-        for (int y = 0; y < Height; y++)
+        for (int y = 0; y < Height(); y++)
         {
             string line = "|";
-            for (int x = 0; x < Width; x++)
+            for (int x = 0; x < Width(); x++)
             {
                 if (Board[x].Cells[y].CurUnit != null)
                 {
@@ -505,9 +515,9 @@ public class BoardManager : MonoBehaviour
         List<Unit> res = new List<Unit>();
         foreach (var coords in Get_UnitPositions(u))
         {
-            for (int x = Mathf.Max(coords.x - r, 0); x < Mathf.Min(coords.x + r + 1, Width); x++)
+            for (int x = Mathf.Max(coords.x - r, 0); x < Mathf.Min(coords.x + r + 1, Width()); x++)
             {
-                for (int y = Mathf.Max(coords.y - r, 0); y < Mathf.Min(coords.y + r + 1, Height); y++)
+                for (int y = Mathf.Max(coords.y - r, 0); y < Mathf.Min(coords.y + r + 1, Height()); y++)
                 {
                     if (x == coords.x && y == coords.y) { continue; }
 
@@ -526,9 +536,9 @@ public class BoardManager : MonoBehaviour
         List<Unit> res = new List<Unit>();
         foreach (var coords in Get_UnitPositions(u))
         {
-            for (int x = Mathf.Max(coords.x - r, 0); x < Mathf.Min(coords.x + r + 1, Width); x++)
+            for (int x = Mathf.Max(coords.x - r, 0); x < Mathf.Min(coords.x + r + 1, Width()); x++)
             {
-                for (int y = Mathf.Max(coords.y - r, 0); y < Mathf.Min(coords.y + r + 1, Height); y++)
+                for (int y = Mathf.Max(coords.y - r, 0); y < Mathf.Min(coords.y + r + 1, Height()); y++)
                 {
                     if (x == coords.x && y == coords.y) { continue; }
 
@@ -561,7 +571,7 @@ public class BoardManager : MonoBehaviour
     {
         if (Input.GetKeyDown("p")) { Print(); }
 
-        if (Input.GetKeyDown("b")) { Build(); }
+        //if (Input.GetKeyDown("b")) { Build(); }
 
         foreach (var l in Board)
         {

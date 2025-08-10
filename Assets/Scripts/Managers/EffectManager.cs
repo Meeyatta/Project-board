@@ -28,7 +28,6 @@ public class EffectManager : MonoBehaviour
     public Material ObjMat_Player;
     public Material ObjMat_Enemy;
 
-    public GameObject CellOverlay;
     public float ModelOffset;
 
     public GameObject EffectsObj; //Parent of all effect objects
@@ -83,7 +82,7 @@ public class EffectManager : MonoBehaviour
         GameManager.Instance.E_ShowDeployment.AddListener(ShowDeployment);
         GameManager.Instance.E_HideDeployment.AddListener(HideDeployment);
 
-        if (BattlefieldManager.Instance != null) BattlefieldManager.Instance.eBattlefieldCreation.AddListener(StartUpdatingObjectiveControl);
+        if (BattleManager.Instance != null) BattleManager.Instance.eBattlefieldCreation.AddListener(StartUpdatingObjectiveControl);
 
         Action_NextTurn.E_Turn_Functional.AddListener(HideAllPlayerMovement);
 
@@ -101,7 +100,7 @@ public class EffectManager : MonoBehaviour
         GameManager.Instance.E_ShowDeployment.RemoveListener(ShowDeployment);
         GameManager.Instance.E_HideDeployment.RemoveListener(HideDeployment);
 
-        if (BattlefieldManager.Instance != null) BattlefieldManager.Instance.eBattlefieldCreation.RemoveListener(StartUpdatingObjectiveControl);
+        if (BattleManager.Instance != null) BattleManager.Instance.eBattlefieldCreation.RemoveListener(StartUpdatingObjectiveControl);
 
         Action_NextTurn.E_Turn_Functional.RemoveListener(HideAllPlayerMovement);
 
@@ -590,34 +589,42 @@ public class EffectManager : MonoBehaviour
 
             #region Going through all deployment zone positions remaining
             List<Vector2Int> zone = new List<Vector2Int>();
-            if (u.CurKeywords.Contains(Keyword.Player)) { zone.AddRange(BoardManager.Instance.PlayerDeploymentZone); }
-            if (zone.Count >= 2)
+
+            if (!u.CurKeywords.Contains(Keyword.Player))
             {
-                for (int x = zone[0].x; x <= zone[1].x; x++)
+                if (!DeploymentEffectsToHide.ContainsKey(u)) { DeploymentEffectsToHide.Add(u, ePu); }
+                return;
+            }
+
+            #region Going through all player deployment zones and enabling effects for them
+            zone = new List<Vector2Int> { BoardManager.Instance.PlayerDeployment_start, BoardManager.Instance.PlayerDeployment_end };
+
+            for (int x = zone[0].x; x <= zone[1].x; x++)
+            {
+                for (int y = zone[0].y; y <= zone[1].y; y++)
                 {
-                    for (int y = zone[0].y; y <= zone[1].y; y++)
+                    List<Vector2Int> positions = new List<Vector2Int>(); positions.AddRange(u.Size.Positions);
+                    for (int i = 0; i < positions.Count; i++) { positions[i] += new Vector2Int(x, y); }
+
+                    bool isApplicable = true;
+                    #region Check if all positions are within the deployment zone
+                    foreach (var v in positions)
                     {
-                        List<Vector2Int> positions = new List<Vector2Int>(); positions.AddRange(u.Size.Positions);
-                        for (int i = 0; i < positions.Count; i++) { positions[i] += new Vector2Int(x, y); }
+                        if (v.x < zone[0].x || v.x > zone[1].x || v.y < zone[0].y || v.y > zone[1].y) { isApplicable = false; break; }
+                        if (BoardManager.Instance.Board[x].Cells[y].CurUnit != null) { isApplicable = false; break; }
+                    }
+                    #endregion
 
-                        bool isApplicable = true;
-                        #region Check if all positions are within the deployment zone
-                        foreach (var v in positions)
-                        {
-                            if (v.x < zone[0].x || v.x > zone[1].x || v.y < zone[0].y || v.y > zone[1].y) { isApplicable = false; break; }
-                            if (BoardManager.Instance.Board[x].Cells[y].CurUnit != null) { isApplicable = false; break; }
-                        }
-                        #endregion
-
-                        if (isApplicable)
-                        {
-                            GameObject overlay = InstantiateFromPool(Tag.Placement, BoardManager.Instance.BoardToWorldPosition(positions).Value,
-                                Quaternion.identity);
-                            ePu.Add(overlay);
-                        }
+                    if (isApplicable)
+                    {
+                        GameObject overlay = InstantiateFromPool(Tag.Placement, BoardManager.Instance.BoardToWorldPosition(positions).Value,
+                            Quaternion.identity);
+                        ePu.Add(overlay);
                     }
                 }
-            }  
+            }
+            #endregion
+
             #endregion
 
             if (!DeploymentEffectsToHide.ContainsKey(u)) { DeploymentEffectsToHide.Add(u, ePu); }

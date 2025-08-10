@@ -17,7 +17,7 @@ public static class Action_Redeploy
     public static List<Vector2Int> Get_MovementPositionsFromSingleCoordinate(Unit ActionTargetUnit, List<Vector2Int> CellsCoordinates)
     {
         List<Vector2Int> res = new List<Vector2Int>();
-        List<Vector2Int> zone = BoardManager.Instance.PlayerDeploymentZone;
+        List<Vector2Int> zone = new List<Vector2Int> { BoardManager.Instance.PlayerDeployment_start, BoardManager.Instance.PlayerDeployment_end };
         for (int x = zone[0].x; x <= zone[1].x; x++)
         {
             for (int y = zone[0].y; y <= zone[1].y; y++)
@@ -51,8 +51,8 @@ public static class Action_Redeploy
         List<List<Vector2Int>> res = new List<List<Vector2Int>>();
 
         List<Vector2Int> zone = new List<Vector2Int>();
-        if (u.CurKeywords.Contains(Keyword.Player)) { zone.AddRange(BoardManager.Instance.PlayerDeploymentZone); } 
-        else { zone.AddRange(BoardManager.Instance.EnemyDeploymentZone);}
+        if (u.CurKeywords.Contains(Keyword.Player)) { zone = new List<Vector2Int> { BoardManager.Instance.PlayerDeployment_start, BoardManager.Instance.PlayerDeployment_end }; } 
+        else { zone = new List<Vector2Int> { BoardManager.Instance.EnemyDeployment_start, BoardManager.Instance.EnemyDeployment_end }; }
 
         #region Going through all deployment zone positions and fitting unit inside of them
         for (int x = zone[0].x; x <= zone[1].x; x++) 

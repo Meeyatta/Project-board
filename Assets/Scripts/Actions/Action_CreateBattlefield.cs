@@ -2,30 +2,40 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public static class Action_CreateBattlefield 
+public static class Action_CreateBattlefield
 {
     public static bool ShouldDebug;
-    public static IEnumerator CreateBattlefield(ActionParameters parameters)
+
+    public static IEnumerator CreateBattlefield(int width, int height, 
+        List<Vector2Int> objectiveCoords,
+        Vector2Int player_deployment_start, Vector2Int player_deployment_end,
+        Vector2Int enemy_deployment_start, Vector2Int enemy_deployment_end,
+        GameObject boardName_obj
+        )
     {
         yield return new WaitForSeconds(Time.deltaTime);
+        BoardManager.Instance.Build(width, height,
+                                    player_deployment_start, player_deployment_end,
+                                    enemy_deployment_start, enemy_deployment_end,
+                                    boardName_obj);
 
         #region Placing objectives
-        if (parameters.CellsCoordinates == null || parameters.CellsCoordinates.Count <= 0) { Debug.LogError("Cannot place objectives: Passed CellsCoordinates must have values"); }
+        if (objectiveCoords == null || objectiveCoords.Count <= 0) { Debug.LogError("Cannot place objectives: Passed CellsCoordinates must have values"); }
 
-        List<Vector2Int> Coords = parameters.CellsCoordinates;
-        if (ShouldDebug) Debug.Log("Placing " + Coords.Count + " objectives");
+        if (ShouldDebug) Debug.Log("Placing " + objectiveCoords.Count + " objectives");
 
-        for (int i = 0; i < parameters.CellsCoordinates.Count; i++) 
+        for (int i = 0; i < objectiveCoords.Count; i++)
         {
-            GameObject objective = BattlefieldManager.Instance.Objective_Obj;
-            ActionParameters parametersCreate = new ActionParameters(GameManager.ActionType.Create, null, null, new List<Vector2Int> { Coords[i] }, objective, -1);
+            GameObject objective = BattleManager.Instance.Objective_Obj;
+            ActionParameters parametersCreate = new ActionParameters(GameManager.ActionType.Create, null, null, new List<Vector2Int> { objectiveCoords[i] }, objective, -1);
 
             yield return Action_Create.Create(parametersCreate);
         }
         #endregion
 
-        yield return new WaitForSeconds(Time.deltaTime);
-        GameManager.Instance.RemoveAction(parameters);
+        if (boardName_obj != null) { boardName_obj.SetActive(true); } else { Debug.Log("Cant turn on " + boardName_obj); }
+
+        yield return null;
     }
-    
+
 }

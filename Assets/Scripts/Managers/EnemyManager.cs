@@ -20,8 +20,6 @@ public class EnemyManager : MonoBehaviour
     public bool IsPlayingTurn;
     public Unit NextUnit;
 
-    public List<UnitAmount> Army = new List<UnitAmount>();
-
     List<Unit> FullArmy = new List<Unit>();
     public List<Unit> Army_NotPlaced = new List<Unit>();
     public List<Unit> Army_Placed = new List<Unit>();
@@ -48,7 +46,6 @@ public class EnemyManager : MonoBehaviour
     void Awake()
     {
         Singleton();
-
     }
     #endregion
 
@@ -127,8 +124,10 @@ public class EnemyManager : MonoBehaviour
         yield return new WaitForSeconds(DeployNewUnit_Before);
 
         List<Unit> newEnemy = new List<Unit> { Army_NotPlaced[0] };
+        List<Vector2Int> enemyDeploymentZone = new List<Vector2Int> {BoardManager.Instance.EnemyDeployment_start, BoardManager.Instance.EnemyDeployment_end};
+
         ActionParameters parameters = new ActionParameters(
-                    GameManager.ActionType.Deploy, newEnemy, null, BoardManager.Instance.EnemyDeploymentZone, null, 1);
+                    GameManager.ActionType.Deploy, newEnemy, null, enemyDeploymentZone, null, 1);
         yield return Action_Deployment.Deploy(parameters);
 
         RecordPlacedUnit(Army_NotPlaced[0]);
@@ -324,13 +323,22 @@ public class EnemyManager : MonoBehaviour
         Army_Placed.Add(unit);
     }
 
-    public IEnumerator InstantiateEnemyUnits()
+    public IEnumerator StartBattleWithOpponent(Opponent opponent)
     {
-        foreach (var v in Army)
+        List<UnitAmount> army = opponent.Army;
+
+        yield return EnemyManager.Instance.InstantiateEnemyUnits(army);
+        EnemyManager.Instance.ResetArmy();
+        yield return EnemyManager.Instance.DeployEnemies();
+    }
+
+    IEnumerator InstantiateEnemyUnits(List<UnitAmount> army)
+    {
+        foreach (var v in army)
         {
             for (var i = 0; i < v.Amount; i++)
             {
-                Unit u = Instantiate(v.Unit_, new Vector3(255, 0, 0), Quaternion.identity, EnemyUitsTr).GetComponent<Unit>();
+                Unit u = Instantiate(v.Unit_, new Vector3(255, -999, 0), Quaternion.identity, EnemyUitsTr).GetComponent<Unit>();
                 yield return new WaitForSeconds(Time.fixedDeltaTime);
                 u.SetToEnemy();
                 FullArmy.Add(u);
@@ -347,9 +355,10 @@ public class EnemyManager : MonoBehaviour
             toDeploy.Add(Army_NotPlaced[i]);
             totalAm++;
         }
+        List<Vector2Int> enemyDeploymentZone = new List<Vector2Int> { BoardManager.Instance.EnemyDeployment_start, BoardManager.Instance.EnemyDeployment_end };
 
         ActionParameters parameters = new ActionParameters(
-                    GameManager.ActionType.Deploy, toDeploy, null, BoardManager.Instance.EnemyDeploymentZone, null, totalAm);
+                    GameManager.ActionType.Deploy, toDeploy, null, enemyDeploymentZone, null, totalAm);
         yield return StartCoroutine(GameManager.Instance.Action(parameters));
 
         foreach (var u in toDeploy) { RecordPlacedUnit(u); }

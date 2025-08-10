@@ -228,10 +228,11 @@ public class GameManager : MonoBehaviour
             #endregion Deploy(List<Vector2Int> CellsCoordinates, GameObject Object, int IntNumber)
 
             //Places the battlefield things like objectives & obstacles
+            //DEPRECATED, USE COROUTINES
             #region CreateBattlefield()
             case ActionType.CreateBattlefield:
-                ActionSlot createBattlefield = new ActionSlot(Action_CreateBattlefield.CreateBattlefield(parameters), ActionType.CreateBattlefield, parameters);
-                ActionQueue.Enqueue(createBattlefield);
+                //ActionSlot createBattlefield = new ActionSlot(Action_CreateBattlefield.CreateBattlefield(parameters), ActionType.CreateBattlefield, parameters);
+                //ActionQueue.Enqueue(createBattlefield);
 
                 break;
             #endregion CreateBattlefield()
