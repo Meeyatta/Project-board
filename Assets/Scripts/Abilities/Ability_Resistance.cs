@@ -2,16 +2,15 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[CreateAssetMenu(menuName = "Abilities/Resistance")]
 public class Ability_Resistance : Ability
 {
-    public Ability_Resistance(Ability_Name n, string d, Origin or, Unit ow) : base(n, d, or, ow)
+    public Ability_Resistance(Ability_Name n, string d, Origin or, Unit ow) : base(n, d, ow)
     {
-        Name = n;
+        aName = n;
         Description = d;
-        Origin_ = or;
         Owner = ow;
     }
 
     public DamageType Type;
+
 }

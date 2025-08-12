@@ -16,15 +16,9 @@ public class Cover
     public string Name;
     public CoverType Type_;
     public EffectManager.Tag EffectManagerTag;
-    public List<Ability_Name> AppliedAbilities = new List<Ability_Name>();
 
-    public Cover(string n, CoverType type, EffectManager.Tag tag, List<Ability_Name> l)
-    {
-        Name = n;
-        Type_ = type;
-        EffectManagerTag = tag;
-        AppliedAbilities = l;
-    }
+    [SerializeReference] public List<Ability> AppliedAbilities = new List<Ability>();
+
 }
 
 public class CellCoverManager : MonoBehaviour
@@ -74,23 +68,45 @@ public class CellCoverManager : MonoBehaviour
         Singleton();
     }
 
+    private void Start()
+    {
+        StartCoroutine(CoverAbilitiesTracking());
+    }
+
     #region Adding abilities to unit depending on what covers it stands
     void AddAbilitiesToUnitOnCover(Unit u)
     {
+        if (ShouldDebug) Debug.Log("-------------------------------");
+        if (ShouldDebug) Debug.Log("Debugging cover for: " + u.name);
+
         List<Vector2Int> positions = BoardManager.Instance.Get_UnitPositions(u);
         foreach (var pos in positions)
         {
             CoverType posCovT = BoardManager.Instance.Board[pos.x].Cells[pos.y].CoveredBy;
+            if (ShouldDebug) Debug.Log("Checking " + pos + " - covered by " + posCovT);
 
             if (posCovT != CoverType.None)
             {
                 Cover c = GetCover(posCovT);
                 foreach (var a in c.AppliedAbilities)
                 {
-                    Origin origin = new Origin_CoverUnderneath(pos, c.Type_);
-                    Ability newAb = new Ability(a, "Ability applied by cover manager", origin, u);
+                    Ability newAb = a;
+                    AbilityInstance abilityInstance = new AbilityInstance(newAb, null, u);
+                    Origin_CoverUnderneath og = new Origin_CoverUnderneath(abilityInstance, pos, posCovT);
+                    abilityInstance.Origin_ = og;
 
-                    u.Abilities.Add(newAb);
+                    u.Ability_Add(abilityInstance); 
+                    //if (ShouldDebug) Debug.Log("Applying ability \" " + a + " \" to " + u.name + " on " + pos);
+
+                    //Ability newAb = a;
+                    //newAb.Description = "Ability applied by cover manager";
+
+                    //Origin_CoverUnderneath origin = new Origin_CoverUnderneath(newAb, pos, c.Type_);
+                    //newAb.Origin_ = origin;
+
+                    //newAb.Owner = u;
+
+                    //if (!u.HasAbility(newAb)) { Debug.Log("Adding " + newAb.aName + " to " + u.name); u.Ability_Add(newAb); }
                 }
             }
         }
@@ -111,7 +127,7 @@ public class CellCoverManager : MonoBehaviour
                 Vector2Int ability_coord = origin.CellCoord;
                 if (BoardManager.Instance.Board[ability_coord.x].Cells[ability_coord.y].CoveredBy != origin.CoverType)
                 {
-
+                    u.Ability_Remove(a);
                 }
             }
         }
@@ -119,21 +135,25 @@ public class CellCoverManager : MonoBehaviour
     #endregion
 
     #region Tracks what abilities covers underneath units should give
-    void CoverAbilitiesTracking(List<Unit> all)
+    IEnumerator CoverAbilitiesTracking()
     {
-        foreach (var u in all)
+        while (true)
         {
-            AddAbilitiesToUnitOnCover(u);
-            RemoveAbilitiesOfCover(u);
+            yield return new WaitForSeconds(Time.fixedDeltaTime);
+
+            List<Unit> all = BoardManager.Instance.Get_AllUnitsOnBoard();
+            foreach (var u in all)
+            {
+                AddAbilitiesToUnitOnCover(u);
+                RemoveAbilitiesOfCover(u);
+            }
         }
+        
     }
     #endregion
 
     void FixedUpdate()
     {
-        List<Unit> all = BoardManager.Instance.Get_AllUnitsOnBoard();
-
-        CoverAbilitiesTracking(all);
 
 
     }

@@ -22,10 +22,11 @@ public static class Action_GlobalScore
 
         foreach (var unit in all)
         {
-            Ability_Score ability_score = unit.Get_Ability(Ability_Name.Score) as Ability_Score;
+            if (unit.Get_AbilityInstance(Ability_Name.Score).Ability_ is Ability_Score) { } else { Debug.LogError("ABILITY IS NOT SCORE"); }
+
+            Ability_Score ability_score = unit.Get_AbilityInstance(Ability_Name.Score).Ability_ as Ability_Score;
             if (ability_score != null)
             {
-                if (ability_score is Ability_Score) { } else { Debug.LogError("ABILITY IS NOT SCORE"); }
 
                 int res = ability_score.Check();
                 if (ShouldDebug) Debug.Log("result for " + unit.gameObject.name + " is " + ability_score.Check());
@@ -57,7 +58,7 @@ public static class Action_GlobalScore
             }
             else
             {
-                if (ShouldDebug) Debug.Log("Ability is null for " + unit.UnitName + " " + ability_score.Name);
+                if (ShouldDebug) Debug.Log("Ability is null for " + unit.UnitName + " " + ability_score.aName);
             }
 
             yield return new WaitForSeconds(DelayBetweenScores * Time.fixedDeltaTime);

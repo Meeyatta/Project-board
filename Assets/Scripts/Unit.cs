@@ -24,27 +24,27 @@ public class Unit : MonoBehaviour
     public int CodexPage;
     [Header("Abilities:")]
     #region Abilities
-    public List<Ability> Abilities_Base = new List<Ability>();
+    public List<Ability> Abilities_Innate = new List<Ability>();
 
-    public List<Ability> Abilities = new List<Ability>();
+    public List<AbilityInstance> Abilities = new List<AbilityInstance>();
 
     #region Receiving abilities from a unit
-    public List<Ability> Get_Abilities_ByName(Ability_Name n)
+    public List<AbilityInstance> Get_Abilities_ByName(Ability_Name n)
     {
         if (!HasAbility(n)) { return null; }
 
-        List<Ability> abilities = new List<Ability>();
+        List<AbilityInstance> abilities = new List<AbilityInstance>();
         foreach (var a in Abilities)
         {
-            if (a.Name == n) { abilities.Add(a); }
+            if (a.Ability_.aName == n) { abilities.Add(a); }
         }
 
         return abilities;
     }
 
-    public Ability Get_Ability(Ability_Name n)
+    public AbilityInstance Get_AbilityInstance(Ability_Name n)
     {
-        List<Ability> abilities = Get_Abilities_ByName(n);
+        List<AbilityInstance> abilities = Get_Abilities_ByName(n);
         
         if (abilities != null && abilities.Count > 0) { return abilities[0]; }
         return null;
@@ -56,44 +56,48 @@ public class Unit : MonoBehaviour
     {
         foreach (var v in ab)
         {
-            Abilities_Base.Add(v);
+            Abilities_Innate.Add(v);
         }
     }
     public void Abilities_Base_Add(Ability ab)
     {
-        Abilities_Base.Add(ab);
+        Abilities_Innate.Add(ab);
     }
 
-    public void Ability_Add(List<Ability> abilities)
+    public void Ability_Add(List<AbilityInstance> abilities)
     {
         foreach (var v in abilities)
         {
-            Abilities.Add(v);
+            Ability_Add(v);
         }
     }
-    public void Ability_Add(Ability ability)
+    public void Ability_Add(AbilityInstance ability)
     {
+        var abilityInstance_old = HasAbility_wOrigin(ability.Ability_.aName, ability.Origin_);
+        if (abilityInstance_old != null) { Abilities.Remove(abilityInstance_old); } 
+
+        ability.Owner = this;
         Abilities.Add(ability);
     }
     #endregion
 
     #region Removing abilities from the unit
-    public void AbilityRemove(Ability ab)
+    public void Ability_Remove(AbilityInstance ab)
     {
-        if (HasAbility(ab)) Abilities.Remove(ab);
+        if (Abilities.Contains(ab)) Abilities.Remove(ab);
     }
 
-    public List<Ability> Ability_RemoveAll_ByAbility(Ability_Name a)
+    public List<AbilityInstance> Ability_RemoveAll_ByAbility(Ability_Name a)
     {
         if (!HasAbility(a)) return null;
 
-        List<Ability> abilitiesToDelete = new List<Ability>();
+        List<AbilityInstance> abilitiesToDelete = new List<AbilityInstance>();
         foreach (var v in Abilities)
         {
-            if (v.Name == a) { abilitiesToDelete.Add(v); }
+            if (v.Ability_.aName == a) { abilitiesToDelete.Add(v); }
         }
 
-        List<Ability> returnList = abilitiesToDelete;
+        List<AbilityInstance> returnList = abilitiesToDelete;
 
         while (abilitiesToDelete.Count > 0)
         {
@@ -103,15 +107,15 @@ public class Unit : MonoBehaviour
 
         return returnList;
     }
-    public List<Ability> Ability_RemoveAll_ByOrigin(Origin o)
+    public List<AbilityInstance> Ability_RemoveAll_ByOrigin(Origin o)
     {
-        List<Ability> abilitiesToDelete = new List<Ability>();
+        List<AbilityInstance> abilitiesToDelete = new List<AbilityInstance>();
         foreach (var v in Abilities)
         {
             if (v.Origin_.GetType() == o.GetType()) { abilitiesToDelete.Add(v); }
         }
 
-        List<Ability> returnList = abilitiesToDelete;
+        List<AbilityInstance> returnList = abilitiesToDelete;
 
         while (abilitiesToDelete.Count > 0)
         {
@@ -128,24 +132,21 @@ public class Unit : MonoBehaviour
     {
         foreach (var v in Abilities)
         {
-            if (v.Name == a) { return true; }
+            if (v.Ability_.aName == a) { return true; }
         }
 
         return false;
     }
-    public bool HasAbility(Ability ab)
+    public AbilityInstance HasAbility_wOrigin(Ability_Name name, Origin origin)
     {
-
-        foreach (var v in Abilities)
+        //Debug.Log("--------------------------------------");
+        //Debug.Log("Checking if " + UnitName + " has ability: " + ability.Name);
+        foreach (var ability in Abilities)
         {
-            Origin og;
-            if (v.Origin_ == null) { og = new Origin_Innate(); Debug.Log("ORIGIN NULL - DEFAULTING TO INNATE"); }
-            else { og = v.Origin_; }
-
-            if (v.Name == ab.Name && og.Equals(ab.Origin_)) { return true;  }
+            if (ability.Ability_.aName == name && ability.Origin_.Equals(origin)) { return ability; }
         }
 
-        return false;
+        return null;
     }
     #endregion
 
@@ -227,14 +228,18 @@ public class Unit : MonoBehaviour
         else { Debug.Log(UnitName + " " + gameObject.name + " HAS NO UnitModelShowcase"); }
 
         #region Setting up innate abilities
-        foreach (var a in Abilities_Base)
+        foreach (var ab in Abilities_Innate)
         {
-            Ability aa = Instantiate(a);
-            aa.Owner = this;
-            Abilities.Add(aa);
+            AbilityInstance ability = new AbilityInstance(ab, null, this);
+            Origin_Innate og = new Origin_Innate(ability);
+            ability.Origin_ = og;
+
+            Abilities.Add(ability);
         }
-           
+
         #endregion
+
+        UpdateInfo();
     }
 
     #region Turns this into a player unit
@@ -270,7 +275,6 @@ public class Unit : MonoBehaviour
     }
     #endregion
 
-
     #region Turn this unit into a neutral unit
     public void SetToNeutral()
     {
@@ -297,6 +301,7 @@ public class Unit : MonoBehaviour
             FrontSpriteRot();
         }
     }
+
     #region Rotating the unit's sprite when looking from on top
     void FrontSpriteRot()
     {
@@ -332,32 +337,40 @@ public class Unit : MonoBehaviour
     }
     void UpdateInfo()
     {
-        foreach (var b in Abilities_Base)
+        UpdateInnateAbilities();
+        UpdateKeywords();
+    }
+
+    void UpdateInnateAbilities()
+    {
+        foreach (var ability in Abilities_Innate)
         {
-            if (!HasAbility(b))
-            {
-                Ability baseToCurAbility = new Ability(b.Name, b.Description, new Origin_Innate(), b.Owner);
-                Abilities.Add(b);
-            }
-            else
-            {
+            AbilityInstance abilityInstance = new AbilityInstance(ability, null, this);
+            Origin_Innate org = new Origin_Innate(abilityInstance);
+            abilityInstance.Origin_ = org;
 
-            }
+            Ability_Add(abilityInstance);
         }
+    }
 
+    void UpdateKeywords()
+    {
         var curK = new HashSet<Keyword>();
         curK.AddRange(BaseKeywords);
         curK.AddRange(CondKeywords);
         CurKeywords = curK;
+    }
 
+    void UpdateOutlines()
+    {
         if (BaseOutline != null) BaseOutline.OutlineColor = CurColor;
         if (BaseOutline != null) BaseOutline.enabled = !Moved;
-
     }
+
     void FixedUpdate()
     {
         UpdateSprite();
 
-        UpdateInfo();
+        UpdateOutlines();
     }
 }

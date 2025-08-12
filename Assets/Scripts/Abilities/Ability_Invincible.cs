@@ -5,11 +5,10 @@ using UnityEngine;
 [CreateAssetMenu(menuName = "Abilities/Invincible")]
 public class Ability_Invincible : Ability
 {
-    public Ability_Invincible(Ability_Name n, string d, Origin or, Unit ow) : base(n, d, or, ow)
+    public Ability_Invincible(Ability_Name n, string d, Origin or, Unit ow) : base(n, d, ow)
     {
-        Name = n;
+        aName = n;
         Description = d;
-        Origin_ = or;
         Owner = ow;
     }
 }

@@ -7,11 +7,10 @@ using UnityEngine.Windows;
 [CreateAssetMenu(menuName = "Abilities/Score")]
 public class Ability_Score : Ability
 {
-    public Ability_Score(Ability_Name n, string d, Origin or, Unit ow) : base(n, d, or, ow)
+    public Ability_Score(Ability_Name n, string d, Origin or, Unit ow) : base(n, d, ow)
     {
-        Name = n;
+        aName = n;
         Description = d;
-        Origin_ = or;
         Owner = ow;
     }
 

@@ -3,22 +3,19 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 
-[CreateAssetMenu(menuName = "Abilities/Slippery")]
-public class Ability_Slippery : Ability
+[System.Serializable]
+public class A_Slippery : Ability
 {
-    public Ability_Slippery(Ability_Name n, string d, Origin or, Unit ow) : base(n, d, or, ow)
+    public A_Slippery(Ability_Name n, string d, Origin or, Unit ow) : base(n, d, ow)
     {
-        Name = n;
+        aName = n;
         Description = d;
-        Origin_ = or;
         Owner = ow;
     }
 
+
     public float Delay = 12f;
-    public bool Can()
-    {
-        return Owner.HasAbility(this);
-    }
+
     public List<Vector2Int> GetRandPos()
     {
         List<Vector2Int> res = new List<Vector2Int>();
@@ -80,30 +77,26 @@ public class Ability_Slippery : Ability
     }
     public IEnumerator Try()
     {
-        if (!Can()) { Debug.Log("Cant slip"); yield break; }
-        else
+        yield return new WaitForSeconds(Delay * Time.fixedDeltaTime);
+
+        AudioManager.Instance.Play(SoundName.Slip, Owner.transform);
+
+        List<Vector2Int> endPoss = GetRandPos();
+        bool IsValid = BoardManager.Instance.AreInBounds(endPoss) && !BoardManager.Instance.AreAnyOccupied(endPoss);
+        if (IsValid)
         {
-            yield return new WaitForSeconds(Delay * Time.fixedDeltaTime);
+            //Debug.Log("Supposed to slip");
 
-            AudioManager.Instance.Play(SoundName.Slip, Owner.transform);
-
-            List<Vector2Int> endPoss = GetRandPos();
-            bool IsValid = BoardManager.Instance.AreInBounds(endPoss) && !BoardManager.Instance.AreAnyOccupied(endPoss);
-            if (IsValid)
+            List<Vector2Int> oldPos = BoardManager.Instance.Get_UnitPositions(Owner);
+            foreach (Vector2Int v in oldPos)
             {
-                //Debug.Log("Supposed to slip");
-
-                List<Vector2Int> oldPos = BoardManager.Instance.Get_UnitPositions(Owner);
-                foreach (Vector2Int v in oldPos)
-                {
-                    BoardManager.Instance.Board[v.x].Cells[v.y].CurUnit = null;
-                }
-
-                yield return BoardManager.Instance.StartCoroutine(BoardManager.Instance.PlaceUnit(Owner, endPoss));
+                BoardManager.Instance.Board[v.x].Cells[v.y].CurUnit = null;
             }
 
-            yield return new WaitForSeconds(Time.fixedDeltaTime);
-        }      
+            yield return BoardManager.Instance.StartCoroutine(BoardManager.Instance.PlaceUnit(Owner, endPoss));
+        }
+
+        yield return new WaitForSeconds(Time.fixedDeltaTime);
     }
 
 }

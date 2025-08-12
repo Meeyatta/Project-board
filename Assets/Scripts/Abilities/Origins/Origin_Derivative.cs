@@ -9,9 +9,10 @@ public class Origin_Derivative : Origin
     public Ability_Name OriginalAbility; //What ability created this ability
     public Unit OrAbHolder;  //What unit had the OriginalAbility
 
-    public Origin_Derivative(Ability_Name a, Unit h)
+    public Origin_Derivative(AbilityInstance p ,Ability_Name n, Unit h) : base(p)
     {
-        OriginalAbility = a;
+        Parent = p;
+        OriginalAbility = n;
         OrAbHolder = h;
     }
 

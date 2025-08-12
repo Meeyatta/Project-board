@@ -261,11 +261,12 @@ public class EffectManager : MonoBehaviour
         {
             foreach (var v in list)
             {
-                Ability_Score ability_score = v.Key.Get_Ability(Ability_Name.Score) as Ability_Score;
+                Ability_Score ability_score = null;
+                AbilityInstance aI = v.Key.Get_AbilityInstance(Ability_Name.Score);
+                if (aI != null) { ability_score = v.Key.Get_AbilityInstance(Ability_Name.Score).Ability_ as Ability_Score; }
+                 
                 if (ability_score != null)
                 {
-                    if (ability_score is Ability_Score) { } else { Debug.LogError("ABILITY IS NOT SCORE: " + ability_score.GetType()); }
-
                     int s = ability_score.Check();
 
                     v.Value.material = ObjMat_Neutral;

@@ -15202,12 +15202,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 11416984, guid: c080686877cf77f42a1a078076d57fe5, type: 3}
       propertyPath: textList.Array.data[4].s
-      value: 'Finish the opponent system (Stopped at BattleManager, TestLauncher,
+      value: 'Impossible to drag-and-drop abilities in the inspector with current
+        setup.
 
-        Action_CreateBattlefield),
-        stopped at making custom
-
-        player and enemy deployment zones work'
+        Create custom covers with concrete abilities for CellCoverManager'
       objectReference: {fileID: 0}
     - target: {fileID: 11416984, guid: c080686877cf77f42a1a078076d57fe5, type: 3}
       propertyPath: textList.Array.data[5].s
@@ -15305,11 +15303,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 11416984, guid: c080686877cf77f42a1a078076d57fe5, type: 3}
       propertyPath: textList.Array.data[4].state
-      value: 2
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 11416984, guid: c080686877cf77f42a1a078076d57fe5, type: 3}
       propertyPath: textList.Array.data[5].state
-      value: 2
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 11416984, guid: c080686877cf77f42a1a078076d57fe5, type: 3}
       propertyPath: textList.Array.data[6].state
@@ -15357,7 +15355,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 11416984, guid: c080686877cf77f42a1a078076d57fe5, type: 3}
       propertyPath: textList.Array.data[5].deleteQuestion
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 11416984, guid: c080686877cf77f42a1a078076d57fe5, type: 3}
       propertyPath: textList.Array.data[6].deleteQuestion
@@ -31399,8 +31397,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   StarterUnitsAmount: 4
   Army:
-  - Unit_: {fileID: 7414565371915086219, guid: ca00f1841f6954c48bd6541892bdb97b, type: 3}
-    Amount: 3
   - Unit_: {fileID: 1467022029548607331, guid: 47055914ca9fac745a13d5de04bfe097, type: 3}
     Amount: 3
   - Unit_: {fileID: 1682432416608124755, guid: 08825e29c16e3e54eab9f28c3ec32750, type: 3}
@@ -42584,8 +42580,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 963194225}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.20256189, y: -0, z: -0, w: 0.9792695}
-  m_LocalPosition: {x: 8.999999, y: 6.1, z: 10.32}
+  m_LocalRotation: {x: 0.5, y: -0, z: -0, w: 0.8660254}
+  m_LocalPosition: {x: -0.00000047683716, y: 7.3799996, z: 8.27}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -54155,11 +54151,17 @@ MonoBehaviour:
   - Name: Water
     Type_: 1
     EffectManagerTag: 2
-    AppliedAbilities: 
+    AppliedAbilities:
+    - rid: -2
   - Name: Oil
     Type_: 2
     EffectManagerTag: 3
-    AppliedAbilities: 
+    AppliedAbilities: []
+  references:
+    version: 2
+    RefIds:
+    - rid: -2
+      type: {class: , ns: , asm: }
 --- !u!1 &1222966730
 GameObject:
   m_ObjectHideFlags: 0

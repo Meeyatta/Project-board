@@ -12,7 +12,7 @@ public enum Ability_Name
     Resistance,       //Incoming damage of a specific type is decreased by 1
     Score,              //Adds score to player/enemy side if their units are within objectives
     Slippery,         //After ending their move, unit moves 1 cell in a random direction
-
+    Entrenching         //At the beginning of the round, if the unit hasn't moved on their previous turn, gains "Resistance:Physical" until moves
 }
 
 
@@ -44,13 +44,13 @@ public class AbilityManager : MonoBehaviour
         int endDamage = starterDamage;
 
         #region Decreasing the damage in case of resistances
-        List<Ability> resistances = target.Get_Abilities_ByName(Ability_Name.Resistance);
+        List<AbilityInstance> resistances = target.Get_Abilities_ByName(Ability_Name.Resistance);
         if (resistances != null)
         {
             if (ShouldDebug) Debug.Log("Got " + resistances.Count + " resistances for " + target.UnitName);
             foreach (var r in resistances)
             {
-                Ability_Resistance ar = r as Ability_Resistance;
+                Ability_Resistance ar = r.Ability_ as Ability_Resistance;
                 if (ar != null)
                 {
                     if (ShouldDebug) Debug.Log("Got resistance: " + ar.Type + " attack type: " + damageType);
@@ -62,21 +62,21 @@ public class AbilityManager : MonoBehaviour
                 }
                 else
                 {
-                    if (ShouldDebug) Debug.Log("Can't convert " + r.Name + " to resistance");
+                    if (ShouldDebug) Debug.Log("Can't convert " + r.Ability_.aName + " to resistance");
                 }
             }
         }  
         #endregion
 
         #region Increasing the damage in case of vulnerabilities
-        List<Ability> vulnerabilities = target.Get_Abilities_ByName(Ability_Name.Vulnerability);
+        List<AbilityInstance> vulnerabilities = target.Get_Abilities_ByName(Ability_Name.Vulnerability);
         if (vulnerabilities != null)
         {
             if (ShouldDebug) Debug.Log("Got " + vulnerabilities.Count + " vulnerabilities for " + target.UnitName);
 
             foreach (var v in vulnerabilities)
             {
-                Ability_Vulnerability av = v as Ability_Vulnerability;
+                Ability_Vulnerability av = v.Ability_ as Ability_Vulnerability;
                 if (ShouldDebug) Debug.Log("Got vulnerability: " + av.Type + " attack type: " + damageType);
                 if (av != null)
                 {
@@ -88,7 +88,7 @@ public class AbilityManager : MonoBehaviour
                 }
                 else
                 {
-                    if (ShouldDebug) Debug.Log("Can't convert " + v.Name + " to vulnerability");
+                    if (ShouldDebug) Debug.Log("Can't convert " + v.Ability_.aName + " to vulnerability");
                 }
             }
         }

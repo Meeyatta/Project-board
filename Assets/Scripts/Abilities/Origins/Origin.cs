@@ -5,6 +5,13 @@ using UnityEngine;
 [System.Serializable]
 public class Origin 
 {
+    public AbilityInstance Parent;
+
+    public Origin(AbilityInstance a)
+    {
+        Parent = a;
+    }
+
     /*
         Types of ability Origins:
     Origin_Innate - Unit starts with this ability by default and always has it during battle, unless it is explicitly removed
@@ -16,6 +23,7 @@ public class Origin
     //Function unique to each origin which checks if an origin is equal to another one
     public virtual bool Equals(Origin o)
     {
+        Debug.Log("Checking if blank origin is equal to" + o.GetType());
         return (o.GetType() == this.GetType());
     }
 }
