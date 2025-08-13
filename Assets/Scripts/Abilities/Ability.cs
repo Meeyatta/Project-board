@@ -9,13 +9,13 @@ public class Ability
 {
     public Ability_Name aName;
     public string Description;
-    public Unit Owner;
+    public AbilityInstance Instance;
     
-    public Ability(Ability_Name n, string d, Unit ow)
+    public Ability(Ability_Name n, string d, AbilityInstance i)
     {
         aName = n;
         Description = d;
-        Owner = ow;
+        Instance = i;
     }
     public Ability() { }
 

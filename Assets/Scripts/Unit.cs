@@ -24,7 +24,7 @@ public class Unit : MonoBehaviour
     public int CodexPage;
     [Header("Abilities:")]
     #region Abilities
-    public List<Ability> Abilities_Innate = new List<Ability>();
+    public List<Ability_Name> Abilities_Innate = new List<Ability_Name>();
 
     public List<AbilityInstance> Abilities = new List<AbilityInstance>();
 
@@ -56,12 +56,12 @@ public class Unit : MonoBehaviour
     {
         foreach (var v in ab)
         {
-            Abilities_Innate.Add(v);
+            Abilities_Innate.Add(v.aName);
         }
     }
     public void Abilities_Base_Add(Ability ab)
     {
-        Abilities_Innate.Add(ab);
+        Abilities_Innate.Add(ab.aName);
     }
 
     public void Ability_Add(List<AbilityInstance> abilities)
@@ -143,6 +143,9 @@ public class Unit : MonoBehaviour
         //Debug.Log("Checking if " + UnitName + " has ability: " + ability.Name);
         foreach (var ability in Abilities)
         {
+            if (ability == null) Debug.LogError("ERROR: Ability " + ability + " has null Ability_");
+            if (ability.Ability_ == null) Debug.LogError("ERROR: Ability " + ability + " has null Ability_");
+            if (ability.Origin_ == null) Debug.LogError("ERROR: Ability " + ability.Ability_.aName + " has null Origin");
             if (ability.Ability_.aName == name && ability.Origin_.Equals(origin)) { return ability; }
         }
 
@@ -227,19 +230,9 @@ public class Unit : MonoBehaviour
         }
         else { Debug.Log(UnitName + " " + gameObject.name + " HAS NO UnitModelShowcase"); }
 
-        #region Setting up innate abilities
-        foreach (var ab in Abilities_Innate)
-        {
-            AbilityInstance ability = new AbilityInstance(ab, null, this);
-            Origin_Innate og = new Origin_Innate(ability);
-            ability.Origin_ = og;
+        UpdateInnateAbilities();
 
-            Abilities.Add(ability);
-        }
-
-        #endregion
-
-        UpdateInfo();
+        UpdateKeywords();
     }
 
     #region Turns this into a player unit
@@ -335,19 +328,13 @@ public class Unit : MonoBehaviour
     {
         AudioManager.Instance.Play(name, transform);
     }
-    void UpdateInfo()
-    {
-        UpdateInnateAbilities();
-        UpdateKeywords();
-    }
 
     void UpdateInnateAbilities()
     {
         foreach (var ability in Abilities_Innate)
         {
-            AbilityInstance abilityInstance = new AbilityInstance(ability, null, this);
-            Origin_Innate org = new Origin_Innate(abilityInstance);
-            abilityInstance.Origin_ = org;
+            Origin_Innate origin = new Origin_Innate(null);
+            AbilityInstance abilityInstance = AbilityManager.Instance.Ability_Create(this, ability, origin);
 
             Ability_Add(abilityInstance);
         }

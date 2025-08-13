@@ -2,13 +2,13 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Ability_Entrenching : Ability
+public class A_Entrenching : Ability
 {
-    public Ability_Entrenching(Ability_Name n, string d, Origin or, Unit ow) : base(n, d, ow)
+    public A_Entrenching(Ability_Name n, string d, AbilityInstance i) : base(n, d, i)
     {
         aName = n;
         Description = d;
-        Owner = ow;
+        Instance = i;
     }
 
     public IEnumerator Try()

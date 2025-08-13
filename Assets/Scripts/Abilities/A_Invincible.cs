@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [CreateAssetMenu(menuName = "Abilities/Invincible")]
-public class Ability_Invincible : Ability
+public class A_Invincible : Ability
 {
-    public Ability_Invincible(Ability_Name n, string d, Origin or, Unit ow) : base(n, d, ow)
+    public A_Invincible(Ability_Name n, string d, AbilityInstance i) : base(n, d, i)
     {
         aName = n;
         Description = d;
-        Owner = ow;
+        Instance = i;
     }
 }

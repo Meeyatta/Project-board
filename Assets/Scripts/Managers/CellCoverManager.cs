@@ -17,7 +17,7 @@ public class Cover
     public CoverType Type_;
     public EffectManager.Tag EffectManagerTag;
 
-    [SerializeReference] public List<Ability> AppliedAbilities = new List<Ability>();
+    public List<Ability_Name> Abilities = new List<Ability_Name>();
 
 }
 
@@ -41,6 +41,7 @@ public class CellCoverManager : MonoBehaviour
 
     public bool ShouldDebug;
     public List<Cover> Covers;
+
     public Cover GetCover(CoverType type)
     {
         foreach (var v in Covers)
@@ -80,34 +81,23 @@ public class CellCoverManager : MonoBehaviour
         if (ShouldDebug) Debug.Log("Debugging cover for: " + u.name);
 
         List<Vector2Int> positions = BoardManager.Instance.Get_UnitPositions(u);
-        foreach (var pos in positions)
+        foreach (var position in positions)
         {
-            CoverType posCovT = BoardManager.Instance.Board[pos.x].Cells[pos.y].CoveredBy;
-            if (ShouldDebug) Debug.Log("Checking " + pos + " - covered by " + posCovT);
+            CoverType positionCoverType = BoardManager.Instance.Board[position.x].Cells[position.y].CoveredBy;
+            if (ShouldDebug) Debug.Log("Checking " + position + " - covered by " + positionCoverType);
 
-            if (posCovT != CoverType.None)
+            if (positionCoverType == CoverType.None) continue;
+
+            Cover c = GetCover(positionCoverType);
+            foreach (var a in c.Abilities)
             {
-                Cover c = GetCover(posCovT);
-                foreach (var a in c.AppliedAbilities)
-                {
-                    Ability newAb = a;
-                    AbilityInstance abilityInstance = new AbilityInstance(newAb, null, u);
-                    Origin_CoverUnderneath og = new Origin_CoverUnderneath(abilityInstance, pos, posCovT);
-                    abilityInstance.Origin_ = og;
+                Origin_CoverUnderneath origin = new Origin_CoverUnderneath(null, position, positionCoverType);
+                AbilityInstance abilityInstance = AbilityManager.Instance.Ability_Create(u, a, origin);
+                if (origin != null) origin.Parent = abilityInstance;
 
-                    u.Ability_Add(abilityInstance); 
-                    //if (ShouldDebug) Debug.Log("Applying ability \" " + a + " \" to " + u.name + " on " + pos);
 
-                    //Ability newAb = a;
-                    //newAb.Description = "Ability applied by cover manager";
 
-                    //Origin_CoverUnderneath origin = new Origin_CoverUnderneath(newAb, pos, c.Type_);
-                    //newAb.Origin_ = origin;
-
-                    //newAb.Owner = u;
-
-                    //if (!u.HasAbility(newAb)) { Debug.Log("Adding " + newAb.aName + " to " + u.name); u.Ability_Add(newAb); }
-                }
+                u.Ability_Add(abilityInstance);
             }
         }
         

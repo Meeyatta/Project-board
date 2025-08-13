@@ -18,16 +18,13 @@ public class Origin_CoverUnderneath : Origin
 
     public override bool Equals(Origin o)
     {
-        Debug.Log("Checking if Origin_CoverUnderneath of " + Parent.Ability_.aName + " is equal to" + o.GetType() + " of " + o.Parent.Ability_.aName);
         if (o is Origin_CoverUnderneath origin)
-        {
-            Debug.Log("Stats of this: " + CellCoord + " " + CoverType);
-            Debug.Log("Stats of compared to: " + origin.CellCoord + " " + origin.CoverType);
+        {         
             return (origin.CellCoord == CellCoord && origin.CoverType == CoverType);
         }
         else
         {
-            Debug.Log("Compared to origin is NOT cover underneath, origin is " + o.GetType());
+            
         }
         return false;
     }

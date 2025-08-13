@@ -261,9 +261,9 @@ public class EffectManager : MonoBehaviour
         {
             foreach (var v in list)
             {
-                Ability_Score ability_score = null;
+                A_Score ability_score = null;
                 AbilityInstance aI = v.Key.Get_AbilityInstance(Ability_Name.Score);
-                if (aI != null) { ability_score = v.Key.Get_AbilityInstance(Ability_Name.Score).Ability_ as Ability_Score; }
+                if (aI != null) { ability_score = v.Key.Get_AbilityInstance(Ability_Name.Score).Ability_ as A_Score; }
                  
                 if (ability_score != null)
                 {

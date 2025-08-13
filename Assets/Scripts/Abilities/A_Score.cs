@@ -5,13 +5,13 @@ using UnityEngine;
 using UnityEngine.Windows;
 
 [CreateAssetMenu(menuName = "Abilities/Score")]
-public class Ability_Score : Ability
+public class A_Score : Ability
 {
-    public Ability_Score(Ability_Name n, string d, Origin or, Unit ow) : base(n, d, ow)
+    public A_Score(Ability_Name n, string d, AbilityInstance i) : base(n, d, i)
     {
         aName = n;
         Description = d;
-        Owner = ow;
+        Instance = i;
     }
 
     public string JitterAnimTrigger = "jitter";
@@ -21,7 +21,7 @@ public class Ability_Score : Ability
 
     public int Check()
     {
-        var l = BoardManager.Instance.Get_UnitsInRange(Owner, 1);
+        var l = BoardManager.Instance.Get_UnitsInRange(Instance.Owner, 1);
         if (ShouldDebug) foreach(var v in l) { Debug.Log("all: " + v.gameObject.name); }
         if (l == null || l.Count <= 0) return 0;
 

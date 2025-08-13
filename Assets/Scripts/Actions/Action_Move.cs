@@ -185,44 +185,55 @@ public static class Action_Move
 
         List<Vector2Int> newPoss = Get_MovementPositionsFromSingleCoordinate(ActionTargetUnit, CellsCoordinates);
 
-        if (newPoss != null && newPoss.Count > 0 && !ActionTargetUnit.Moved)
+        if (newPoss == null || newPoss.Count == 0 || ActionTargetUnit.Moved)
         {
-            if (!BoardManager.Instance.AreInBounds(newPoss)) { Debug.LogError("ERROR: POSITION OUT OF BOUNDS"); yield break; }
-
-            List<Vector2Int> oldPos = BoardManager.Instance.Get_UnitPositions(ActionTargetUnit);
-            foreach (Vector2Int v in oldPos)
-            {
-                BoardManager.Instance.Board[v.x].Cells[v.y].CurUnit = null;
-            }
-            ActionTargetUnit.Moved = true;
-
-            AudioManager.Instance.Play(SoundName.Step, ActionTargetUnit.transform);
-
-            yield return BoardManager.Instance.StartCoroutine(BoardManager.Instance.PlaceUnit(ActionTargetUnit, newPoss));
-
-
-            #region Checking if unit should slip after moving
-            A_Slippery ability_slippery = ActionTargetUnit.Get_AbilityInstance(Ability_Name.Slippery).Ability_ as A_Slippery;
-
-            if (ability_slippery != null)
-            {
-                yield return ability_slippery.Try();
-            }
-            else
-            {
-
-            }
-            #endregion
-        }
-        else
-        {
-            
+            E_AfterMove.Invoke(ActionTargetUnit);
+            yield return new WaitForSeconds(Time.fixedDeltaTime);
+            GameManager.Instance.RemoveAction(parameters);
+            yield break;
         }
 
+        if (!BoardManager.Instance.AreInBounds(newPoss)) { Debug.LogError("ERROR: POSITION OUT OF BOUNDS"); yield break; }
+
+        List<Vector2Int> oldPos = BoardManager.Instance.Get_UnitPositions(ActionTargetUnit);
+        foreach (Vector2Int v in oldPos)
+        {
+            BoardManager.Instance.Board[v.x].Cells[v.y].CurUnit = null;
+        }
+        ActionTargetUnit.Moved = true;
+
+        AudioManager.Instance.Play(SoundName.Step, ActionTargetUnit.transform);
+
+        yield return BoardManager.Instance.StartCoroutine(BoardManager.Instance.PlaceUnit(ActionTargetUnit, newPoss));
+
+        yield return AbilityTriggers(ActionTargetUnit);
+        
 
         E_AfterMove.Invoke(ActionTargetUnit);
         yield return new WaitForSeconds(Time.fixedDeltaTime);
         GameManager.Instance.RemoveAction(parameters);
+    }
+
+    static IEnumerator AbilityTriggers(Unit unit)
+    {
+        #region Checking if unit should slip after moving
+        AbilityInstance abilityInstance_slippery = unit.Get_AbilityInstance(Ability_Name.Slippery);
+
+        if (abilityInstance_slippery == null || abilityInstance_slippery.Ability_ == null)
+        {
+            E_AfterMove.Invoke(unit);
+            yield return new WaitForSeconds(Time.fixedDeltaTime);
+            yield break;
+        }
+
+        A_Slippery ability_slippery = unit.Get_AbilityInstance(Ability_Name.Slippery).Ability_ as A_Slippery;
+
+        if (ability_slippery != null)
+        {
+            yield return ability_slippery.Try();
+        }
+
+        #endregion
     }
 
 }

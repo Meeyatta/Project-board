@@ -22,12 +22,17 @@ public static class Action_GlobalScore
 
         foreach (var unit in all)
         {
-            if (unit.Get_AbilityInstance(Ability_Name.Score).Ability_ is Ability_Score) { } else { Debug.LogError("ABILITY IS NOT SCORE"); }
+            AbilityInstance abilityInstance_Score = unit.Get_AbilityInstance(Ability_Name.Score);
 
-            Ability_Score ability_score = unit.Get_AbilityInstance(Ability_Name.Score).Ability_ as Ability_Score;
+            if (abilityInstance_Score == null || abilityInstance_Score.Ability_ == null)
+            {
+                yield return new WaitForSeconds(Time.fixedDeltaTime);
+                yield break;
+            }
+
+            A_Score ability_score = abilityInstance_Score.Ability_ as A_Score;
             if (ability_score != null)
             {
-
                 int res = ability_score.Check();
                 if (ShouldDebug) Debug.Log("result for " + unit.gameObject.name + " is " + ability_score.Check());
 

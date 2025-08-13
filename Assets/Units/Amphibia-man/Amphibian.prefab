@@ -48,17 +48,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f73be0a93713cd140a4e84a8916281e8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  UnitName: Amphibia-man
+  UnitName: Amphibian
   Size: {fileID: 11400000, guid: f43eef2810c610a449d400113da5059e, type: 2}
   CurMoveset: {fileID: 11400000, guid: 27a90ebe39d33a64490d4e4bae4f78ee, type: 2}
   CurAttackZone: {fileID: 11400000, guid: 0975c85d43f513e4788e5c187d780b69, type: 2}
   MaxHealth: 3
   CodexPage: 3
-  Abilities_Base:
-  - {fileID: 11400000, guid: 63b58d8a625dc034c9495fc59698afbb, type: 2}
-  - {fileID: 11400000, guid: c91003656f0112e4da48f41a0dfb9b67, type: 2}
-  - {fileID: 11400000, guid: cbf3bbc189bd3d14398f44fbdfe5e3b3, type: 2}
-  - {fileID: 11400000, guid: 86abd157a6ccbf941a3f176dda5a1e78, type: 2}
+  Abilities_Innate: 08000000010000000600000005000000
   Abilities: []
   BaseKeywords: 
   CurColor: {r: 255, g: 255, b: 255, a: 1}
