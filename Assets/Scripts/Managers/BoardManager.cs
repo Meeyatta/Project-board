@@ -96,12 +96,12 @@ public class BoardManager : MonoBehaviour
     public float DefaultY;
     public float CellSize;
     public float InBetweenSpace;
-    public int Width() { return Board.Count(); }
-    public int Height() { return Board[0].Cells.Count(); }
+    public int Get_Width() { return Board.Count(); }
+    public int Get_Height() { return Board[0].Cells.Count(); }
 
     #region DeploymentZones for player and current enemy
-    public Vector2Int PlayerDeployment_start; public Vector2Int PlayerDeployment_end;
-    public Vector2Int EnemyDeployment_start; public Vector2Int EnemyDeployment_end;
+    [HideInInspector] public Vector2Int PlayerDeployment_start; [HideInInspector] public Vector2Int PlayerDeployment_end;
+    [HideInInspector] public Vector2Int EnemyDeployment_start;[HideInInspector] public Vector2Int EnemyDeployment_end;
     #endregion
 
     public GameObject CellsObj;
@@ -146,70 +146,193 @@ public class BoardManager : MonoBehaviour
         Rebuilds all the cells both in the table and in the scene. Doing so sets all cells as unoccupied,
         (must copy the table and Cells object to keep the changes)
     */
-    public void Build(int w, int h, 
+
+    public IEnumerator Build2(int width, int height,
+        List<Vector2Int> objectivePositions,
         Vector2Int player_deployment_start, Vector2Int player_deployment_end,
         Vector2Int enemy_deployment_start, Vector2Int enemy_deployment_end,
-        GameObject BoardName_obj)
+        Vector3 cellsPosition,
+        GameObject boardObject, Vector3 boardPosition)
     {
-        foreach (Transform t in CellsObj.transform)
-        {
-            Destroy(t.gameObject);
-        }
-        Board.Clear();
-        if (CurBoard_obj != null) CurBoard_obj.SetActive(false);
+        yield return new WaitForSeconds(1);
 
+        #region Set up
         PlayerDeployment_start = player_deployment_start; PlayerDeployment_end = player_deployment_end;
         EnemyDeployment_start = enemy_deployment_start; EnemyDeployment_end = enemy_deployment_end;
-        CurBoard_obj = BoardName_obj;
 
-        Board = new List<Column>();
-        for (int x = 0; x < w; x++)
+        int middle_x = Mathf.FloorToInt(width / 2);
+        int middle_y = Mathf.FloorToInt(height / 2);
+        #endregion
+
+        #region Destroy all previous cell objects
+        foreach (Transform t in CellsObj.transform)
+        {
+            BoardManager_ObjPools.Instance.DestroyToPool(t.gameObject);
+        }
+        #endregion
+
+        #region Clear all cells in the script
+        Board.Clear();
+        #endregion
+
+        #region Create cells 
+        boardObject.transform.position = CellsObj.transform.parent.TransformPoint(boardPosition);
+        CellsObj.transform.position = CellsObj.transform.parent.TransformPoint(cellsPosition);
+        Debug.Log("CellsObj position " + CellsObj.transform.position);
+        Vector3 coordsToPos(int x, int y)
+        {
+            int relative_x = x - middle_x;
+            int relative_y = middle_y - y;
+
+            float newX = relative_x * InBetweenSpace;
+            float newY = relative_y * InBetweenSpace;
+
+            Debug.Log("Creating a cell at " + new Vector3(newX, DefaultY, newY));
+            return CellsObj.transform.TransformPoint(new Vector3(newX, DefaultY, newY));
+        }
+
+        for (int x = 0; x < width; x++)
         {
             Column column = new Column();
             column.Cells = new List<Cell>();
 
-            for (int y = 0; y < h; y++)
+            for (int y = height - 1; y >= 0; y--)
             {
-                #region Setup cells in a script table
                 Cell cell = new Cell();
                 cell.Coordinates = new Vector2Int(x, y);
-                cell.Position = transform.position + new Vector3(
-                        InBetweenSpace + x * (InBetweenSpace + CellSize), 
-                        DefaultY, 
-                        -1 * (InBetweenSpace + y * (InBetweenSpace + CellSize)) );
+                cell.Position = coordsToPos(x, y);
                 cell.CoveredBy = CoverType.None;
-
-                #region Check if zone is a player deployment zone
-                if (x >= player_deployment_start.x && x <= player_deployment_end.x &&
-                    y >= enemy_deployment_end.y && y <= enemy_deployment_end.y)
-                {
-                    cell.Tags.Add(CellTag.PlayerDeploymentZone);
-                }
-                #endregion
-
-                #region Check if zone is an enemy deployment zone
-                if (x >= enemy_deployment_start.x && x <= enemy_deployment_start.x &&
-                    y >= enemy_deployment_end.y && y <= enemy_deployment_end.y)
-                {
-                    cell.Tags.Add(CellTag.EnemyDeploymentZone);
-                }
-                #endregion
+                BoardManager_ObjPools.Instance.InstantiateFromPool("cell", cell.Position, Quaternion.identity);
 
                 column.Cells.Add(cell);
-                #endregion
-
-                #region Create cell objects in the world
-                BoardCell newCell = Instantiate(BoardCellObj, cell.Position, Quaternion.identity, CellsObj.transform).GetComponent<BoardCell>();
-
-                if (ShouldDebug) Debug.Log("Placing the cell " + newCell.gameObject.name + " at " + cell.Position + " actual position: " + newCell.transform.position);
-
-                newCell.gameObject.name = "Cell " + cell.Coordinates.ToString();
-                newCell.Coordinates = cell.Coordinates;
-                #endregion
+                //yield return new WaitForSeconds(0.5f);
             }
             Board.Add(column);
         }
+        #endregion
+
+        yield return new WaitForSeconds(0.5f);
+
+        #region Set up player and enemy zones
+
+        for (int x = 0; x < width; x++)
+        {
+            for (int y = 0; y < height; y++)
+            {
+                #region Player 
+                if (x >= player_deployment_start.x && x <= player_deployment_end.x &&
+                    y >= player_deployment_start.y && y <= player_deployment_end.y)
+                {
+                    Board[x].Cells[y].Tags.Add(CellTag.PlayerDeploymentZone);
+                }
+                #endregion
+
+                #region Enemy 
+                if (x >= enemy_deployment_start.x && x <= enemy_deployment_end.x &&
+                    y >= enemy_deployment_start.y && y <= enemy_deployment_end.y)
+                {
+                    Board[x].Cells[y].Tags.Add(CellTag.EnemyDeploymentZone);
+                }
+                #endregion
+            }
+        }
+
+        #endregion
+
+        yield return new WaitForSeconds(0.5f);
+
+        #region Deploy objectives
+        if (objectivePositions == null || objectivePositions.Count == 0) yield break;
+        for (int i = 0; i < objectivePositions.Count; i++)
+        {
+            GameObject objective = BattleManager.Instance.Objective_Obj;
+
+            List<Vector2Int> objPos = new List<Vector2Int> { objectivePositions[i] };
+            Debug.Log("Placed objective at " + objectivePositions[i]);
+            yield return Action_Create.Create(objective, objPos, -1);
+        }
+        #endregion
+
+        //Create the board
+
+
+        yield return null;
     }
+
+    //public void Build(int width, int height, 
+    //    Vector2Int player_deployment_start, Vector2Int player_deployment_end,
+    //    Vector2Int enemy_deployment_start, Vector2Int enemy_deployment_end,
+    //    Vector3 cellsPosition,
+    //    GameObject boardObject, Vector3 boardPosition)
+    //{
+
+
+    //    return;
+
+    //    foreach (Transform t in CellsObj.transform)
+    //    {
+    //        Destroy(t.gameObject);
+    //    }
+    //    Board.Clear();
+    //    if (CurBoard_obj != null) CurBoard_obj.SetActive(false);
+
+    //    PlayerDeployment_start = player_deployment_start; PlayerDeployment_end = player_deployment_end;
+    //    EnemyDeployment_start = enemy_deployment_start; EnemyDeployment_end = enemy_deployment_end;
+
+    //    Board = new List<Column>();
+    //    for (int x = 0; x < width; x++)
+    //    {
+    //        Column column = new Column();
+    //        column.Cells = new List<Cell>();
+
+    //        for (int y = 0; y < height; y++)
+    //        {
+    //            #region Setup cells in a script table
+    //            Cell cell = new Cell();
+    //            cell.Coordinates = new Vector2Int(x, y);
+    //            cell.Position = transform.position + new Vector3(
+    //                    InBetweenSpace + x * (InBetweenSpace + CellSize), 
+    //                    DefaultY, 
+    //                    -1 * (InBetweenSpace + y * (InBetweenSpace + CellSize)) );
+    //            cell.CoveredBy = CoverType.None;
+
+    //            #region Check if zone is a player deployment zone
+    //            if (x >= player_deployment_start.x && x <= player_deployment_end.x &&
+    //                y >= enemy_deployment_end.y && y <= enemy_deployment_end.y)
+    //            {
+    //                cell.Tags.Add(CellTag.PlayerDeploymentZone);
+    //            }
+    //            #endregion
+
+    //            #region Check if zone is an enemy deployment zone
+    //            if (x >= enemy_deployment_start.x && x <= enemy_deployment_start.x &&
+    //                y >= enemy_deployment_end.y && y <= enemy_deployment_end.y)
+    //            {
+    //                cell.Tags.Add(CellTag.EnemyDeploymentZone);
+    //            }
+    //            #endregion
+
+    //            column.Cells.Add(cell);
+    //            #endregion
+
+    //            #region Create cell objects in the world
+    //            BoardCell newCell = Instantiate(BoardCellObj, cell.Position, Quaternion.identity, CellsObj.transform).GetComponent<BoardCell>();
+
+    //            if (ShouldDebug) Debug.Log("Placing the cell " + newCell.gameObject.name + " at " + cell.Position + " actual position: " + newCell.transform.position);
+
+    //            newCell.gameObject.name = "Cell " + cell.Coordinates.ToString();
+    //            newCell.Coordinates = cell.Coordinates;
+    //            #endregion
+    //        }
+    //        Board.Add(column);
+    //    }
+
+    //    CellsObj.transform.localPosition = cellsPosition;
+
+    //    if (CurBoard_obj != null) { CurBoard_obj.SetActive(false); }
+    //    CurBoard_obj = boardObject; CurBoard_obj.SetActive(true);
+    //    CurBoard_obj.transform.localPosition = boardPosition;
+    //}
 
     public List<Vector2Int> SortPoss(List<Vector2Int> l)
     {
@@ -225,10 +348,10 @@ public class BoardManager : MonoBehaviour
     public void Print()
     {
         Debug.Log("-----------------------------");
-        for (int y = 0; y < Height(); y++)
+        for (int y = 0; y < Get_Height(); y++)
         {
             string line = "|";
-            for (int x = 0; x < Width(); x++)
+            for (int x = 0; x < Get_Width(); x++)
             {
                 if (Board[x].Cells[y].CurUnit != null)
                 {
@@ -419,11 +542,9 @@ public class BoardManager : MonoBehaviour
     //Returns true if the position is within bounds of the board
     public bool IsInBounds(Vector2Int v)
     {
-        if (v.x < 0 || v.x >= Board.Count) { return false; }                       //Changed ">=" to ">", might lead to soem errors
+        if (v.x < 0 || v.x >= Board.Count) { return false; }                       //Changed ">=" to ">", might lead to some errors
         if (v.y < 0 || v.y >= Board[v.x].Cells.Count) { return false; }
-
-        //Debug.Log(v + " is within bounds");
-
+    
         return true;
     }
 
@@ -515,9 +636,9 @@ public class BoardManager : MonoBehaviour
         List<Unit> res = new List<Unit>();
         foreach (var coords in Get_UnitPositions(u))
         {
-            for (int x = Mathf.Max(coords.x - r, 0); x < Mathf.Min(coords.x + r + 1, Width()); x++)
+            for (int x = Mathf.Max(coords.x - r, 0); x < Mathf.Min(coords.x + r + 1, Get_Width()); x++)
             {
-                for (int y = Mathf.Max(coords.y - r, 0); y < Mathf.Min(coords.y + r + 1, Height()); y++)
+                for (int y = Mathf.Max(coords.y - r, 0); y < Mathf.Min(coords.y + r + 1, Get_Height()); y++)
                 {
                     if (x == coords.x && y == coords.y) { continue; }
 
@@ -536,9 +657,9 @@ public class BoardManager : MonoBehaviour
         List<Unit> res = new List<Unit>();
         foreach (var coords in Get_UnitPositions(u))
         {
-            for (int x = Mathf.Max(coords.x - r, 0); x < Mathf.Min(coords.x + r + 1, Width()); x++)
+            for (int x = Mathf.Max(coords.x - r, 0); x < Mathf.Min(coords.x + r + 1, Get_Width()); x++)
             {
-                for (int y = Mathf.Max(coords.y - r, 0); y < Mathf.Min(coords.y + r + 1, Height()); y++)
+                for (int y = Mathf.Max(coords.y - r, 0); y < Mathf.Min(coords.y + r + 1, Get_Height()); y++)
                 {
                     if (x == coords.x && y == coords.y) { continue; }
 
@@ -569,6 +690,8 @@ public class BoardManager : MonoBehaviour
     }
     private void Update()
     {
+        //Debug.Log("CellsObj position " + CellsObj.transform.position);
+
         if (Input.GetKeyDown("p")) { Print(); }
 
         //if (Input.GetKeyDown("b")) { Build(); }

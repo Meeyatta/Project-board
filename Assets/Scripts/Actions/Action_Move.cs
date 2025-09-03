@@ -161,7 +161,7 @@ public static class Action_Move
     {
         List<List<List<Vector2Int>>> res = Get_PossibleMovement(ActionTargetUnit);
   
-        for (int i = 0; i < BoardManager.Instance.Height(); i++)
+        for (int i = 0; i < BoardManager.Instance.Get_Height(); i++)
         {
             foreach (var line in res)
             {

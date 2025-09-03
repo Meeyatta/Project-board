@@ -38,6 +38,7 @@ public static class Action_Deployment
 
         #region Record the deployment zone
         List<Cell> deploymentZoneCells = new List<Cell>();
+
         for (int x = miX; x < maX; x++)
         {
             for (int y = miY; y < maY; y++)
@@ -56,7 +57,7 @@ public static class Action_Deployment
             if (remainingCells.Count < unit.Size.Positions.Count) { break; } //If ran out of space completely
 
             #region Trying to fit unit in random positions, if tried to do it 999 times and failed - means there is no space left
-            int safeGuard = 9999; 
+            int safeGuard = 9999;
             List<Vector2Int> newPos = randPos(unit, remainingCells, miX, maX, miY, maY);
             while ((!BoardManager.Instance.AreInBounds(newPos) || BoardManager.Instance.AreAnyOccupied(newPos))
                 && unitsLeft > 0 && safeGuard > 0)

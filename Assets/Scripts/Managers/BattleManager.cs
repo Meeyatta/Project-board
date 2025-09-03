@@ -11,21 +11,24 @@ public class BattleParameters
     public Vector2Int Player_deployment_start; public Vector2Int Player_deployment_end;
     public Vector2Int Enemy_deployment_start; public Vector2Int Enemy_deployment_end;
     public Opponent Opponent_;
-    public GameObject Board_obj;
+    public Vector3 CellsPosition;
+    public GameObject BoardObject; public Vector3 BoardPosition;
 
     public BattleParameters(int width, int height,
                             List<Vector2Int> objectiveCoords,
                             Vector2Int player_deployment_start, Vector2Int player_deployment_end,
                             Vector2Int enemy_deployment_start, Vector2Int enemy_deployment_end,
                             Opponent opponent,
-                            GameObject board_obj)
+                            Vector3 cellsPosition,
+                            GameObject boardObject, Vector3 boardPosition)
     {
         BoardWidth = width; BoardHeight = height;
         ObjectiveCoords = objectiveCoords;
         Player_deployment_start = player_deployment_start; Player_deployment_end = player_deployment_end;
         Enemy_deployment_start = enemy_deployment_start; Enemy_deployment_end = enemy_deployment_end;
         Opponent_ = opponent;
-        Board_obj = board_obj;
+        CellsPosition = cellsPosition;
+        BoardObject = boardObject; BoardPosition = boardPosition;
     }
 }
 
@@ -68,12 +71,13 @@ public class BattleManager : MonoBehaviour
         yield return new WaitForSeconds(Delay * Time.fixedDeltaTime);
 
         #region Creating the battlefield
-        yield return Action_CreateBattlefield.CreateBattlefield(
+        yield return BoardManager.Instance.Build2(
             parameters.BoardWidth, parameters.BoardHeight,
             parameters.ObjectiveCoords,
             parameters.Player_deployment_start, parameters.Player_deployment_end,
             parameters.Enemy_deployment_start, parameters.Enemy_deployment_end,
-            parameters.Board_obj);
+            parameters.CellsPosition,
+            parameters.BoardObject, parameters.BoardPosition); 
         #endregion
 
         #region Placing enemy units

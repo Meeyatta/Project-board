@@ -394,7 +394,6 @@ public class EffectManager : MonoBehaviour
     }
     #endregion
 
-
     #region Showing positions of zones (Like bucket's water coverage)
     Coroutine CurZoneShowcase = null;
     public void StartShowingPossibleZone(List<Vector2Int> zoneCoords, Tag coverTag)

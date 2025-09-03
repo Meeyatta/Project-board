@@ -6,27 +6,20 @@ using UnityEngine.UIElements;
 public static class Action_Create
 {
     public static bool ShouldDebug = false;
-    public static IEnumerator Create(ActionParameters parameters)
-    {
-        GameObject Object = parameters.Object; List<Vector2Int> poss = parameters.CellsCoordinates;
-        int side = parameters.IntNumber;
 
-        #region Checking if we need to instantiate a new unit or if we can use an old one
-        Unit unit = new Unit();
-        if (parameters.ActionTargetUnits != null && parameters.ActionTargetUnits.Count > 0) 
-        {
-            unit = parameters.ActionTargetUnits[0]; 
-        }
-        else
-        {
-            unit = GameManager.Instantiate(Object, Vector3.zero, Quaternion.identity).GetComponent<Unit>();
-        }
-        #endregion
+    public static IEnumerator Create(GameObject obj, List<Vector2Int> positions, int side)
+    {
+        Unit unit = GameManager.Instantiate(obj, Vector3.zero, Quaternion.identity).GetComponent<Unit>();
+        yield return Create(unit, positions, side);
+    }
+
+    public static IEnumerator Create(Unit unit, List<Vector2Int> positions, int side)
+    {
 
         if (ShouldDebug) { Debug.Log("Creating a" + unit.gameObject.name + " as team: " + side); }
 
         #region Setting unit to one of the sides - player, enemy or neither
-        switch (side) 
+        switch (side)
         {
             case -1:
                 unit.SetToNeutral();
@@ -41,23 +34,45 @@ public static class Action_Create
         #endregion
 
         bool ViablePos = true;
-        foreach (var v in poss)
+        foreach (var v in positions)
         {
             if (!BoardManager.Instance.IsInBounds(v)) { ViablePos = false; Debug.Log(v + " is out of bounds"); break; }
 
-            if (BoardManager.Instance.Board[v.x].Cells[v.y].CurUnit != null) 
+            if (BoardManager.Instance.Board[v.x].Cells[v.y].CurUnit != null)
             { ViablePos = false; Debug.Log(v + " is occupied by " + BoardManager.Instance.Board[v.x].Cells[v.y].CurUnit.gameObject.name); break; }
         }
 
         //Debug.Log("ViablePos is: " + ViablePos);
         if (ViablePos)
         {
-            yield return GameManager.Instance.StartCoroutine(BoardManager.Instance.PlaceUnit(unit, poss));
+            yield return GameManager.Instance.StartCoroutine(BoardManager.Instance.PlaceUnit(unit, positions));
         }
         else
         {
             Debug.Log("Non viable position");
         }
+
+        yield return new WaitForSeconds(Time.fixedDeltaTime);
+    }
+
+    public static IEnumerator Create(ActionParameters parameters)
+    {
+        GameObject Object = parameters.Object; List<Vector2Int> positions = parameters.CellsCoordinates;
+        int side = parameters.IntNumber;
+
+        #region Checking if we need to instantiate a new unit or if we can use an old one
+        Unit unit = new Unit();
+        if (parameters.ActionTargetUnits != null && parameters.ActionTargetUnits.Count > 0) 
+        {
+            unit = parameters.ActionTargetUnits[0]; 
+        }
+        else
+        {
+            unit = GameManager.Instantiate(Object, Vector3.zero, Quaternion.identity).GetComponent<Unit>();
+        }
+        #endregion
+
+        yield return Create(unit, positions, side);
 
         yield return new WaitForSeconds(Time.fixedDeltaTime);
         GameManager.Instance.RemoveAction(parameters);

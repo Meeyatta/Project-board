@@ -890,7 +890,8 @@ MonoBehaviour:
   CurAttackZone: {fileID: 11400000, guid: 59b6673213aa0aa4594e93302ef17f53, type: 2}
   MaxHealth: 2
   CodexPage: 2
-  BaseAbilities: 
+  Abilities_Innate: 
+  Abilities: []
   BaseKeywords: 
   CurColor: {r: 255, g: 255, b: 255, a: 1}
   PlayerColor: {r: 0, g: 255, b: 255, a: 1}
@@ -905,7 +906,7 @@ MonoBehaviour:
   BaseOutline: {fileID: 9085269280771185901}
   BaseRend: {fileID: 7877832107532056008}
   UnitModelShowcase: {fileID: 103585049714133143}
-  ModelOffset: {x: 0, y: 1.55, z: 0}
+  ModelOffset: {x: 0, y: 1.63, z: 0}
   Anim: {fileID: 0}
 --- !u!95 &8177627826358126973
 Animator:

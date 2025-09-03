@@ -10,14 +10,16 @@ public static class Action_CreateBattlefield
         List<Vector2Int> objectiveCoords,
         Vector2Int player_deployment_start, Vector2Int player_deployment_end,
         Vector2Int enemy_deployment_start, Vector2Int enemy_deployment_end,
-        GameObject boardName_obj
+        Vector3 cellsPosition,
+        GameObject boardObject, Vector3 boardPosition
         )
     {
         yield return new WaitForSeconds(Time.deltaTime);
-        BoardManager.Instance.Build(width, height,
+        BoardManager.Instance.Build2(width, height,
+                                    objectiveCoords,
                                     player_deployment_start, player_deployment_end,
                                     enemy_deployment_start, enemy_deployment_end,
-                                    boardName_obj);
+                                    cellsPosition, boardObject, boardPosition);
 
         #region Placing objectives
         if (objectiveCoords == null || objectiveCoords.Count <= 0) { Debug.LogError("Cannot place objectives: Passed CellsCoordinates must have values"); }
@@ -32,8 +34,6 @@ public static class Action_CreateBattlefield
             yield return Action_Create.Create(parametersCreate);
         }
         #endregion
-
-        if (boardName_obj != null) { boardName_obj.SetActive(true); } else { Debug.Log("Cant turn on " + boardName_obj); }
 
         yield return null;
     }
