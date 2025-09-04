@@ -746,7 +746,7 @@ Transform:
   m_GameObject: {fileID: 84554518}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 16.1463, y: -2.9, z: -14.1709}
+  m_LocalPosition: {x: 16.1463, y: -8.7, z: -14.1709}
   m_LocalScale: {x: 113.73887, y: 1, z: 50.21024}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -14429,9 +14429,9 @@ MonoBehaviour:
   LayerMask:
     serializedVersion: 2
     m_Bits: 513
-  ShouldDebug: 0
-  ShouldDebugCellClicks: 0
-  ShouldDebugRaycast: 0
+  ShouldDebug: 1
+  ShouldDebugCellClicks: 1
+  ShouldDebugRaycast: 1
   ClickBackEvent:
     m_PersistentCalls:
       m_Calls: []
@@ -23716,6 +23716,18 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6881951783603279256, guid: f89c67a337fc6624e9ec611ec46291c5, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8439767997209304979, guid: f89c67a337fc6624e9ec611ec46291c5, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8439767997209304979, guid: f89c67a337fc6624e9ec611ec46291c5, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.407
+      objectReference: {fileID: 0}
+    - target: {fileID: 8439767997209304979, guid: f89c67a337fc6624e9ec611ec46291c5, type: 3}
+      propertyPath: m_LocalPosition.z
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []

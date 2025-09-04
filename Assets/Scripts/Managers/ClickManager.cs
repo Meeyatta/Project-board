@@ -546,6 +546,7 @@ public class ClickManager : MonoBehaviour
         #region If hit something
         if (hit.transform != null)
         {
+
             #region If hit a unit
             if (hit.transform.tag.ToLower() == "unit")
             {
