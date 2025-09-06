@@ -89,7 +89,7 @@ public static class Bucket
             Vector2Int center = BoardManager.Instance.Get_CenterOfZone(coverCoords);
             foreach (var v in coverCoords)
             {
-                Vector2Int newCoord = BoardManager.Instance.CursorToCellPosition() + (v - center);
+                Vector2Int newCoord = ClickManager.Instance.PointedAtCoords + (v - center);
                 BoardManager.Instance.Board[newCoord.x].Cells[newCoord.y].CoveredBy = coverType;
             }
 

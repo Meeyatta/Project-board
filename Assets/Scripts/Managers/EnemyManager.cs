@@ -51,12 +51,12 @@ public class EnemyManager : MonoBehaviour
 
     void Start()
     {
-        Action_NextTurn.E_Turn_Functional.AddListener(EnemyTurn_Handler);
+        BattleStatsManager.Instance.E_Turn_Functional.AddListener(EnemyTurn_Handler);
     }
 
     void OnDisable()
     {
-        Action_NextTurn.E_Turn_Functional.RemoveListener(EnemyTurn_Handler);
+        BattleStatsManager.Instance.E_Turn_Functional.RemoveListener(EnemyTurn_Handler);
     }
 
     Coroutine cEnemyTurn; float nextEnemyTurnTime = 0.1f; public float cooldown = 4;

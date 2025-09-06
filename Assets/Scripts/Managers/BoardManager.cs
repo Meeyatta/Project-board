@@ -178,16 +178,16 @@ public class BoardManager : MonoBehaviour
         #region Create cells 
         boardObject.transform.position = CellsObj.transform.parent.TransformPoint(boardPosition);
         CellsObj.transform.position = CellsObj.transform.parent.TransformPoint(cellsPosition);
-        Debug.Log("CellsObj position " + CellsObj.transform.position);
+        //Debug.Log("CellsObj position " + CellsObj.transform.position);
         Vector3 coordsToPos(int x, int y)
         {
             int relative_x = x - middle_x;
-            int relative_y = middle_y - y;
+            int relative_y = y - middle_y;
 
             float newX = relative_x * InBetweenSpace;
             float newY = relative_y * InBetweenSpace;
 
-            Debug.Log("Creating a cell at " + new Vector3(newX, DefaultY, newY));
+            //Debug.Log("Creating a cell at " + new Vector3(newX, DefaultY, newY));
             return CellsObj.transform.TransformPoint(new Vector3(newX, DefaultY, newY));
         }
 
@@ -196,13 +196,15 @@ public class BoardManager : MonoBehaviour
             Column column = new Column();
             column.Cells = new List<Cell>();
 
-            for (int y = height - 1; y >= 0; y--)
+            for (int y = 0; y < height; y++)
             {
                 Cell cell = new Cell();
                 cell.Coordinates = new Vector2Int(x, y);
                 cell.Position = coordsToPos(x, y);
                 cell.CoveredBy = CoverType.None;
-                BoardManager_ObjPools.Instance.InstantiateFromPool("cell", cell.Position, Quaternion.identity);
+
+                BoardCell bc = BoardManager_ObjPools.Instance.InstantiateFromPool("cell", cell.Position, Quaternion.identity).GetComponent<BoardCell>();
+                bc.Coordinates = cell.Coordinates;
 
                 column.Cells.Add(cell);
                 //yield return new WaitForSeconds(0.5f);
@@ -211,7 +213,7 @@ public class BoardManager : MonoBehaviour
         }
         #endregion
 
-        yield return new WaitForSeconds(0.5f);
+        yield return new WaitForSeconds(Time.fixedDeltaTime);
 
         #region Set up player and enemy zones
 
@@ -417,40 +419,6 @@ public class BoardManager : MonoBehaviour
         return units;
     }
 
-    //Returns the cell under the player's cursor
-    Vector2Int lastPres = new Vector2Int(-90, -90);
-    BoardCell lastBoardCell; GameObject lastCellObj;
-    public Vector2Int CursorToCellPosition()
-    {
-        RaycastHit hit;
-        Vector3 vect = Input.mousePosition;
-        vect.z = 999999;
-        Vector3 cPos = Camera.main.ScreenToWorldPoint(vect);
-        Physics.Raycast(Camera.main.transform.position, cPos, out hit, Mathf.Infinity, CellMask);
-        Debug.DrawRay(Camera.main.transform.position, cPos, Color.green); 
-
-        if (hit.transform != null)
-        {
-            if (lastCellObj != hit.transform.gameObject)
-            {
-                lastBoardCell = hit.transform.gameObject.GetComponent<BoardCell>();
-            }
-            else
-            {
-
-            }
-        }
-
-        if (lastBoardCell != null) { return lastBoardCell.Coordinates; }
-        else if (hit.transform != null)
-        {
-            return CellClosestToPosition(hit.point);
-        }
-        
-        return lastPres;
-
-    }
-
     //Returns a singular cell closest to the used Vector3
     Vector2Int CellClosestToPosition(Vector3 hitPosition)
     {
@@ -493,7 +461,7 @@ public class BoardManager : MonoBehaviour
     //Returns the positions of the space where unit can be placed closest to the cursor
     public List<Vector2Int> ClosestUnitPosToCursor(Unit unit)
     {
-        Vector2Int single = CursorToCellPosition();
+        Vector2Int single = ClickManager.Instance.PointedAtCoords;
 
         return SingleCellToUnitPositions(unit, single);
     }

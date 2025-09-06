@@ -224,7 +224,7 @@ public class ClickManager : MonoBehaviour
         #region Creating a new unit
         if (Action_PlayerCreate.IsWaitingForData /*&& Action_PlayerCreate.CanCreateThere(Action_PlayerCreate.CurUnit, coords)*/)
         {
-            if (ShouldDebugCellClicks) Debug.Log("Creating a unit");
+            if (ShouldDebugCellClicks) { Debug.Log("Creating a unit on " + coords); Debug.Log(ClickBackEvent.GetPersistentEventCount()); }
             ClickBackEvent.Invoke(coords);
         }
         #endregion
@@ -281,7 +281,7 @@ public class ClickManager : MonoBehaviour
         #endregion
 
         #region Trying to select a unit while we have resources to draw
-        if (BoardManager.Instance.Board[coords.x].Cells[coords.y].CurUnit != null && Action_DrawPlayerResources.IsDeployingNewResources)
+        else if (BoardManager.Instance.Board[coords.x].Cells[coords.y].CurUnit != null && Action_DrawPlayerResources.IsDeployingNewResources)
         {
             CameraManager.Instance.LookAtResources();
         }
@@ -534,6 +534,11 @@ public class ClickManager : MonoBehaviour
     #endregion
 
     #region Continuosly recording what things we are aiming at
+
+    Vector2Int vNull = new Vector2Int(-1, -1);
+    [HideInInspector]
+    public Vector2Int PointedAtCoords;
+
     public bool IsPointingAtTurnClock;
     void ContinuousChecking()
     {
@@ -582,6 +587,7 @@ public class ClickManager : MonoBehaviour
                         else { uP.Position = null; }
 
                         UnitClick = uP;
+                        if (uP.Position != null) PointedAtCoords = uP.Position.Value;
                         IsPointingAtTurnClock = false;
                         ItemClick = null;
 
@@ -611,6 +617,7 @@ public class ClickManager : MonoBehaviour
                     {
                         UnitClick = null; //This Might break
                         CellClick = b.Coordinates;
+                        PointedAtCoords = b.Coordinates;
                         ItemClick = null;
 
                         //if (ShouldDebug) Debug.Log("Found a new unit: " + CellClick);
@@ -643,6 +650,7 @@ public class ClickManager : MonoBehaviour
                         UnitClick = null; //This Might break
                         CellClick = null;
                         ItemClick = i;
+                        PointedAtCoords = vNull;
                         IsPointingAtTurnClock = false;
 
                         //if (ShouldDebug) Debug.Log("Found a new item: " + i.Name);
@@ -659,6 +667,7 @@ public class ClickManager : MonoBehaviour
 
                 CurrentPointedAtUnit = null;
                 CurrentPointedAtItem = null;
+                PointedAtCoords = vNull;
                 if (ShouldDebugRaycast) Debug.Log(hit.transform.gameObject.name + " turn clock was hit with raycast");
                 //PassTurnButton.Instance.Pass();
             }

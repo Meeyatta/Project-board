@@ -95,8 +95,6 @@ public class CellCoverManager : MonoBehaviour
                 AbilityInstance abilityInstance = AbilityManager.Instance.Ability_Create(u, a, origin);
                 if (origin != null) origin.Parent = abilityInstance;
 
-
-
                 u.Ability_Add(abilityInstance);
             }
         }

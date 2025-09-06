@@ -43,13 +43,13 @@ public class PassTurnButton : MonoBehaviour
     #region Subscribing/Unsubscribing events
     void SubscribeEvents()
     {
-        Action_NextTurn.E_Turn_Functional.AddListener(EnablePass);
-        Action_NextTurn.E_Turn_Visuals.AddListener(Shrug_Visuals);
+        BattleStatsManager.Instance.E_Turn_Functional.AddListener(EnablePass);
+        BattleStatsManager.Instance.E_Turn_Visuals.AddListener(Shrug_Visuals);
     }
     void OnDisable()
     {
-        Action_NextTurn.E_Turn_Functional.RemoveListener(EnablePass);
-        Action_NextTurn.E_Turn_Visuals.RemoveListener(Shrug_Visuals);
+        BattleStatsManager.Instance.E_Turn_Functional.RemoveListener(EnablePass);
+        BattleStatsManager.Instance.E_Turn_Visuals.RemoveListener(Shrug_Visuals);
     }
     #endregion
 

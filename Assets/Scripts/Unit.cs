@@ -202,6 +202,7 @@ public class Unit : MonoBehaviour
 
         if (Base != null ) BaseOutline = Base.GetComponent<Outline>();
         if (Base != null) BaseRend = Base.GetComponent<Renderer>();
+
     }
 
     private void Awake()
@@ -233,6 +234,18 @@ public class Unit : MonoBehaviour
         UpdateInnateAbilities();
 
         UpdateKeywords();
+
+    }
+
+    public IEnumerator OnFinishedCreation()
+    {
+        foreach (var a in Abilities)
+        {
+            Debug.Log(a.Ability_.GetType());
+            a.Ability_.Start();
+        }
+
+        yield return new WaitForSeconds(0.1f);
     }
 
     #region Turns this into a player unit
@@ -354,10 +367,24 @@ public class Unit : MonoBehaviour
         if (BaseOutline != null) BaseOutline.enabled = !Moved;
     }
 
+    void AbilityUpdates()
+    {
+        List<AbilityInstance> abilities = new List<AbilityInstance>();
+        abilities.AddRange(Abilities);
+        while (abilities.Count > 0)
+        {
+            if (abilities[0] == null) continue;
+            abilities[0].Ability_.Update();
+            abilities.Remove(abilities[0]);
+        }
+    }
+
     void FixedUpdate()
     {
         UpdateSprite();
 
         UpdateOutlines();
+
+        AbilityUpdates();
     }
 }

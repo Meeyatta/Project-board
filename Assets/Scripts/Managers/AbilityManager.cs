@@ -10,6 +10,7 @@ public enum Ability_Name
     Invincible,       //All incoming damage is set to 0
 
     #region Resistances - Incoming damage of that type is reduced by 1
+    Resistance_Physical,
     Resistance_Fire,
     Resistance_Lightning,
     Resistance_Frost,
@@ -17,6 +18,7 @@ public enum Ability_Name
     #endregion
 
     #region Vulnerabilities - Incoming damage of that type is increased by 1
+    Vulnerable_Physical,
     Vulnerable_Fire,
     Vulnerable_Lightning,
     Vulnerable_Frost,
@@ -47,6 +49,7 @@ public class AbilityManager : MonoBehaviour
     }
     void Awake()
     {
+        Singleton();
         Instance = this;
     }
 
@@ -65,8 +68,11 @@ public class AbilityManager : MonoBehaviour
                 break;
 
             #region Resistances
+            case Ability_Name.Resistance_Physical:
+                ability = new A_Resistance(name, DamageType.Physical, "", abilityInstance);
+                break;
             case Ability_Name.Resistance_Fire:
-                ability = new A_Resistance(name,DamageType.Fire, "", abilityInstance);
+                ability = new A_Resistance(name, DamageType.Fire, "", abilityInstance);
                 break;
             case Ability_Name.Resistance_Lightning:
                 ability = new A_Resistance(name, DamageType.Lightning, "", abilityInstance);
@@ -77,6 +83,9 @@ public class AbilityManager : MonoBehaviour
             #endregion
 
             #region Vulnerabilities
+            case Ability_Name.Vulnerable_Physical:
+                ability = new A_Vulnerability(name, DamageType.Physical, "", abilityInstance);
+                break;
             case Ability_Name.Vulnerable_Fire:
                 ability = new A_Vulnerability(name, DamageType.Fire, "", abilityInstance);
                 break;

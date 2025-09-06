@@ -105,11 +105,11 @@ public class GameManager : MonoBehaviour
     public UnityEvent<List<Unit>> E_HidePlacement;
     void Start()
     {
-        Action_NextTurn.E_Turn_Functional.AddListener(UnselectCurrentUnit);
+        BattleStatsManager.Instance.E_Turn_Functional.AddListener(UnselectCurrentUnit);
     }
     void OnDisable()
     {
-        Action_NextTurn.E_Turn_Functional.RemoveListener(UnselectCurrentUnit);
+        BattleStatsManager.Instance.E_Turn_Functional.RemoveListener(UnselectCurrentUnit);
 
     }
     #endregion Events

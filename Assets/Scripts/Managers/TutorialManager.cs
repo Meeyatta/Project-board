@@ -302,7 +302,7 @@ public class TutorialManager : MonoBehaviour
         {
             GameManager.Instance.CancelEvent.Invoke();
 
-            StartCoroutine( Action_NextTurn.SetRoundNTurn(BattleStatsManager.Instance.CurRound+1, Side.Player, true, true));
+            StartCoroutine(BattleStatsManager.Instance.SetRoundNTurn(BattleStatsManager.Instance.CurRound+1, Side.Player, true, true));
         }
         PassTurnButton.Instance.E_PassedTurn.AddListener(NormalPass);
 
@@ -354,13 +354,13 @@ public class TutorialManager : MonoBehaviour
         yield return Second_Passing();
 
         yield return new WaitForSeconds(Time.fixedDeltaTime);
-        yield return Action_NextTurn.SetRoundNTurn(1, Side.Player, false, false);
+        yield return BattleStatsManager.Instance.SetRoundNTurn(1, Side.Player, false, false);
 
         yield return new WaitForSeconds(Time.fixedDeltaTime);
         yield return Third_Movement();
 
         yield return new WaitForSeconds(Time.fixedDeltaTime);
-        yield return Action_NextTurn.SetRoundNTurn(2, Side.Player, false, false);
+        yield return BattleStatsManager.Instance.SetRoundNTurn(2, Side.Player, false, false);
 
         yield return new WaitForSeconds(Time.fixedDeltaTime);
         yield return Fourth_Objectives();
@@ -369,7 +369,7 @@ public class TutorialManager : MonoBehaviour
         yield return Fifth_Enemies();
 
         yield return new WaitForSeconds(Time.fixedDeltaTime);
-        yield return Action_NextTurn.SetRoundNTurn(3, Side.Player, false, false);
+        yield return BattleStatsManager.Instance.SetRoundNTurn(3, Side.Player, false, false);
 
         yield return new WaitForSeconds(Time.fixedDeltaTime);
         yield return Sixth_win_loss();

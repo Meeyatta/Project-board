@@ -37,11 +37,11 @@ public class PlayerManager : MonoBehaviour
     #endregion
     void Start()
     {
-        Action_NextTurn.E_Turn_Functional.AddListener(InitiatePlayerTurn);
+        BattleStatsManager.Instance.E_Turn_Functional.AddListener(InitiatePlayerTurn);
     }
     void OnDisable()
     {
-        Action_NextTurn.E_Turn_Functional.RemoveListener(InitiatePlayerTurn);
+        BattleStatsManager.Instance.E_Turn_Functional.RemoveListener(InitiatePlayerTurn);
     }
 
     Coroutine DoingPlayerTurn = null;

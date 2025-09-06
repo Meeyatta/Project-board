@@ -3790,7 +3790,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 11416984, guid: c080686877cf77f42a1a078076d57fe5, type: 3}
       propertyPath: textList.Array.size
-      value: 8
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 11416984, guid: c080686877cf77f42a1a078076d57fe5, type: 3}
       propertyPath: textList.Array.data[0].s
@@ -3825,15 +3825,18 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 11416984, guid: c080686877cf77f42a1a078076d57fe5, type: 3}
       propertyPath: textList.Array.data[7].s
-      value: Cell detection with mosue doesnt work
+      value: Orange cell overlays are broken for multicell units
       objectReference: {fileID: 0}
     - target: {fileID: 11416984, guid: c080686877cf77f42a1a078076d57fe5, type: 3}
       propertyPath: textList.Array.data[8].s
-      value: Commented out deployment in Acion_Deployment since it caused problems
+      value: Placing multicell units is awkward
       objectReference: {fileID: 0}
     - target: {fileID: 11416984, guid: c080686877cf77f42a1a078076d57fe5, type: 3}
       propertyPath: textList.Array.data[9].s
-      value: Add sounds & animation for units being damaged
+      value: 'Stopped working in Effect manager, decyphering what each
+
+        coroutine
+        actually shows'
       objectReference: {fileID: 0}
     - target: {fileID: 11416984, guid: c080686877cf77f42a1a078076d57fe5, type: 3}
       propertyPath: textList.Array.data[10].s
@@ -3929,7 +3932,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 11416984, guid: c080686877cf77f42a1a078076d57fe5, type: 3}
       propertyPath: textList.Array.data[9].state
-      value: 2
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 11416984, guid: c080686877cf77f42a1a078076d57fe5, type: 3}
       propertyPath: textList.Array.data[10].state
@@ -3973,7 +3976,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 11416984, guid: c080686877cf77f42a1a078076d57fe5, type: 3}
       propertyPath: textList.Array.data[8].deleteQuestion
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 11416984, guid: c080686877cf77f42a1a078076d57fe5, type: 3}
       propertyPath: textList.Array.data[9].deleteQuestion
@@ -7433,12 +7436,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e319a1d63310c7f41b1188cd299ccba2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  StarterUnitsAmount: 4
+  StarterUnitsAmount: 2
   Army:
-  - Unit_: {fileID: 1467022029548607331, guid: 47055914ca9fac745a13d5de04bfe097, type: 3}
-    Amount: 3
-  - Unit_: {fileID: 1682432416608124755, guid: 08825e29c16e3e54eab9f28c3ec32750, type: 3}
-    Amount: 3
+  - Unit_: {fileID: 1467022029548607331, guid: b22f1ef74eaa5e544848b22a1844bde0, type: 3}
+    Amount: 1
+  - Unit_: {fileID: 7414565371915086219, guid: ca00f1841f6954c48bd6541892bdb97b, type: 3}
+    Amount: 1
   Army_NotPlaced: []
   Army_Placed: []
   PlayerUitsTr: {fileID: 0}
@@ -14429,9 +14432,9 @@ MonoBehaviour:
   LayerMask:
     serializedVersion: 2
     m_Bits: 513
-  ShouldDebug: 1
-  ShouldDebugCellClicks: 1
-  ShouldDebugRaycast: 1
+  ShouldDebug: 0
+  ShouldDebugCellClicks: 0
+  ShouldDebugRaycast: 0
   ClickBackEvent:
     m_PersistentCalls:
       m_Calls: []
@@ -14446,6 +14449,7 @@ MonoBehaviour:
   E_Click_coords:
     m_PersistentCalls:
       m_Calls: []
+  PointedAtCoords: {x: 0, y: 0}
   IsPointingAtTurnClock: 0
 --- !u!1 &1260893863
 GameObject:
@@ -15255,15 +15259,25 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 13ab0b94ec151e446a1d1565290634d6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  E_WinOrLoss:
-    m_PersistentCalls:
-      m_Calls: []
   IsEnding: 0
   CurRound: 0
   CurTurn: 0
   NScoreDiff: 4
   Score_Player: 0
   Score_Enemy: 0
+  ShouldDebug: 0
+  E_Turn_Functional:
+    m_PersistentCalls:
+      m_Calls: []
+  E_Turn_Visuals:
+    m_PersistentCalls:
+      m_Calls: []
+  E_WinOrLoss:
+    m_PersistentCalls:
+      m_Calls: []
+  E_RoundStart:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1001 &1331675782
 PrefabInstance:
   m_ObjectHideFlags: 0

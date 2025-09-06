@@ -19,4 +19,14 @@ public class Ability
     }
     public Ability() { }
 
+    public virtual void Start()
+    {
+        Debug.Log("Base ability Start in " + Instance.Owner.gameObject.name);
+    }
+
+    public virtual void Update()
+    {
+
+    }
+
 }

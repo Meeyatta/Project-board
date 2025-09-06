@@ -62,6 +62,8 @@ public static class Action_PlayerCreate
         List<Vector2Int> positions = new List<Vector2Int>();
         void Get_ClickedCellCoordinates(List<Vector2Int> v2)
         {
+            if (ShouldDebug) Debug.Log("Action_PlayerCreate Received ESendPositionBack");
+
             if (CanCreateThere(unitList[0], v2[0]))
             {
                 ViablePos = true;
@@ -93,6 +95,7 @@ public static class Action_PlayerCreate
         if (ViablePos)
         {
             //Debug.Log("Viable position, supposed to be creating");
+            yield return CurUnit.OnFinishedCreation();
             yield return GameManager.Instance.StartCoroutine(BoardManager.Instance.PlaceUnit(CurUnit, positions));
         }
         else
@@ -101,8 +104,7 @@ public static class Action_PlayerCreate
         }
         #endregion
 
-        //Action_NextTurn.eTurnEvent_Functional.RemoveListener(Cancel);
-        //GameManager.Instance.CancelEvent.RemoveListener(Cancel);
+        
         yield return new WaitForSeconds(0.1f * Time.fixedDeltaTime);
         GameManager.Instance.RemoveAction(parameters);
     }
