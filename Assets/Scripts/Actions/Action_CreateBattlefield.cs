@@ -15,7 +15,7 @@ public static class Action_CreateBattlefield
         )
     {
         yield return new WaitForSeconds(Time.deltaTime);
-        BoardManager.Instance.Build2(width, height,
+        BoardManager.Instance.Build(width, height,
                                     objectiveCoords,
                                     player_deployment_start, player_deployment_end,
                                     enemy_deployment_start, enemy_deployment_end,

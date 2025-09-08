@@ -71,7 +71,7 @@ public class BattleManager : MonoBehaviour
         yield return new WaitForSeconds(Delay * Time.fixedDeltaTime);
 
         #region Creating the battlefield
-        yield return BoardManager.Instance.Build2(
+        yield return BoardManager.Instance.Build(
             parameters.BoardWidth, parameters.BoardHeight,
             parameters.ObjectiveCoords,
             parameters.Player_deployment_start, parameters.Player_deployment_end,

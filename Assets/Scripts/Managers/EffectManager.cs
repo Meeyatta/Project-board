@@ -361,7 +361,7 @@ public class EffectManager : MonoBehaviour
 
     #endregion
 
-    #region Coroutine for showing potential new unit position udner cursor within the "availableZone"
+    #region ShowingPotentialUnitPosition - Coroutine for showing potential new unit position udner cursor within the "availableZone"
     IEnumerator ShowingPotentialUnitPosition(Unit unit, List<Vector2Int> availableZone)
     {
         yield return new WaitForSeconds(Time.fixedDeltaTime * 0.01f);
@@ -371,14 +371,14 @@ public class EffectManager : MonoBehaviour
         while (CurUnitMovePosShowcase != null && BattleStatsManager.Instance.PlayerTurnActionCondition())
         {
             yield return new WaitForSeconds(Time.fixedDeltaTime * 0.1f);
-            //Debug.Log("ShowingPossibleUnitPosition");
 
             List<Vector2Int> pos = BoardManager.Instance.ClosestUnitPosToCursor(unit);
             if (availableZone != null && availableZone.Count > 0 && pos != null && pos.Count > 0 &&
                 availableZone.Intersect<Vector2Int>(pos).Any())
             {
                 unit.UnitModelShowcase.SetActive(true);
-                unit.UnitModelShowcase.transform.position = BoardManager.Instance.BoardToWorldPosition(pos).Value + unit.ModelOffset;
+                List<Vector2Int> p = new List<Vector2Int> { pos[0] };
+                unit.UnitModelShowcase.transform.position = BoardManager.Instance.BoardToWorldPosition(p).Value + unit.ModelOffset;
             }
         }
 
@@ -388,7 +388,7 @@ public class EffectManager : MonoBehaviour
     }
     #endregion
 
-    #region Showing possible unit movement position under the cursor
+    #region Showing possible unit movement position under the cursor. Uses "ShowingPotentialUnitPosition"
     Coroutine CurUnitMovePosShowcase;
     void ShowingPotentialMovedPosition_Start(Unit unit)
     {
@@ -414,23 +414,7 @@ public class EffectManager : MonoBehaviour
     }
     #endregion
 
-    #region Showing position of unit under the cursor when redeploying
-    void StartShowingPossibleUnitRedeployment(Unit unit)
-    {
-        //Debug.Log("StartShowingPossibleUnitRedeployment");
-
-        if (CurUnitMovePosShowcase == null)
-        {
-            List<Vector2Int> poss = new List<Vector2Int>();
-            foreach (var v in Action_Redeploy.Get_PossibleDeployments(unit)) { foreach (var vv in v) { poss.Add(vv); } }
-
-            CurUnitMovePosShowcase = StartCoroutine(ShowingPotentialUnitPosition(unit, poss));
-        }
-
-    }
-    #endregion
-
-    #region Showing possible movement positions of unit
+    #region Showing ALL possible movement positions of unit
     void ShowMovement(List<Unit> units)
     {
         if (ShouldDebug) Debug.Log("Showing movement");
@@ -479,26 +463,29 @@ public class EffectManager : MonoBehaviour
     }
     #endregion
 
-    #region Showing possible deployment positions 
+    #region Showing ALL possible deployment positions 
     void ShowDeployment(List<Unit> units)
     {
         if (ShouldDebug) Debug.Log("Showing deployment");
 
-        foreach (Unit u in units)
+        foreach (Unit unit in units)
         {
-            if (DeploymentEffectsToHide.ContainsKey(u)) continue;
+            if (DeploymentEffectsToHide.ContainsKey(unit)) continue;
 
             List<GameObject> ePu = new List<GameObject>();
-            StartShowingPossibleUnitRedeployment(u);
+
+            #region ShowingPotentialUnitPosition under cursor
+            if (CurUnitMovePosShowcase == null)
+            {
+                List<Vector2Int> poss = new List<Vector2Int>();
+                foreach (var v in Action_Redeploy.Get_PossibleDeployments(unit)) { foreach (var vv in v) { poss.Add(vv); } }
+
+                CurUnitMovePosShowcase = StartCoroutine(ShowingPotentialUnitPosition(unit, poss));
+            }
+            #endregion
 
             #region Going through all deployment zone positions remaining
             List<Vector2Int> zone = new List<Vector2Int>();
-
-            if (!u.CurKeywords.Contains(Keyword.Player))
-            {
-                if (!DeploymentEffectsToHide.ContainsKey(u)) { DeploymentEffectsToHide.Add(u, ePu); }
-                return;
-            }
 
             #region Going through all player deployment zones and enabling effects for them
             zone = new List<Vector2Int> { BoardManager.Instance.PlayerDeployment_start, BoardManager.Instance.PlayerDeployment_end };
@@ -507,7 +494,7 @@ public class EffectManager : MonoBehaviour
             {
                 for (int y = zone[0].y; y <= zone[1].y; y++)
                 {
-                    List<Vector2Int> positions = new List<Vector2Int>(); positions.AddRange(u.Size.Positions);
+                    List<Vector2Int> positions = new List<Vector2Int>(); positions.AddRange(unit.Size.Positions);
                     for (int i = 0; i < positions.Count; i++) { positions[i] += new Vector2Int(x, y); }
 
                     bool isApplicable = true;
@@ -519,19 +506,22 @@ public class EffectManager : MonoBehaviour
                     }
                     #endregion
 
-                    if (isApplicable)
+                    if (!isApplicable) continue;
+
+                    foreach (var pos in positions)
                     {
-                        GameObject overlay = InstantiateFromPool(Tag.Placement, BoardManager.Instance.BoardToWorldPosition(positions).Value,
-                            Quaternion.identity);
+                        List<Vector2Int> p = new List<Vector2Int> { pos };
+                        GameObject overlay = InstantiateFromPool(Tag.Placement, BoardManager.Instance.BoardToWorldPosition(p).Value, Quaternion.identity);
                         ePu.Add(overlay);
                     }
+                    
                 }
             }
             #endregion
 
             #endregion
 
-            if (!DeploymentEffectsToHide.ContainsKey(u)) { DeploymentEffectsToHide.Add(u, ePu); }
+            if (!DeploymentEffectsToHide.ContainsKey(unit)) { DeploymentEffectsToHide.Add(unit, ePu); }
 
         }
     }

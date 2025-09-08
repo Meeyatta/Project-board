@@ -147,7 +147,7 @@ public class BoardManager : MonoBehaviour
         (must copy the table and Cells object to keep the changes)
     */
 
-    public IEnumerator Build2(int width, int height,
+    public IEnumerator Build(int width, int height,
         List<Vector2Int> objectivePositions,
         Vector2Int player_deployment_start, Vector2Int player_deployment_end,
         Vector2Int enemy_deployment_start, Vector2Int enemy_deployment_end,
@@ -184,7 +184,7 @@ public class BoardManager : MonoBehaviour
             int relative_x = x - middle_x;
             int relative_y = y - middle_y;
 
-            float newX = relative_x * InBetweenSpace;
+            float newX = -relative_x * InBetweenSpace;
             float newY = relative_y * InBetweenSpace;
 
             //Debug.Log("Creating a cell at " + new Vector3(newX, DefaultY, newY));
@@ -260,81 +260,6 @@ public class BoardManager : MonoBehaviour
 
         yield return null;
     }
-
-    //public void Build(int width, int height, 
-    //    Vector2Int player_deployment_start, Vector2Int player_deployment_end,
-    //    Vector2Int enemy_deployment_start, Vector2Int enemy_deployment_end,
-    //    Vector3 cellsPosition,
-    //    GameObject boardObject, Vector3 boardPosition)
-    //{
-
-
-    //    return;
-
-    //    foreach (Transform t in CellsObj.transform)
-    //    {
-    //        Destroy(t.gameObject);
-    //    }
-    //    Board.Clear();
-    //    if (CurBoard_obj != null) CurBoard_obj.SetActive(false);
-
-    //    PlayerDeployment_start = player_deployment_start; PlayerDeployment_end = player_deployment_end;
-    //    EnemyDeployment_start = enemy_deployment_start; EnemyDeployment_end = enemy_deployment_end;
-
-    //    Board = new List<Column>();
-    //    for (int x = 0; x < width; x++)
-    //    {
-    //        Column column = new Column();
-    //        column.Cells = new List<Cell>();
-
-    //        for (int y = 0; y < height; y++)
-    //        {
-    //            #region Setup cells in a script table
-    //            Cell cell = new Cell();
-    //            cell.Coordinates = new Vector2Int(x, y);
-    //            cell.Position = transform.position + new Vector3(
-    //                    InBetweenSpace + x * (InBetweenSpace + CellSize), 
-    //                    DefaultY, 
-    //                    -1 * (InBetweenSpace + y * (InBetweenSpace + CellSize)) );
-    //            cell.CoveredBy = CoverType.None;
-
-    //            #region Check if zone is a player deployment zone
-    //            if (x >= player_deployment_start.x && x <= player_deployment_end.x &&
-    //                y >= enemy_deployment_end.y && y <= enemy_deployment_end.y)
-    //            {
-    //                cell.Tags.Add(CellTag.PlayerDeploymentZone);
-    //            }
-    //            #endregion
-
-    //            #region Check if zone is an enemy deployment zone
-    //            if (x >= enemy_deployment_start.x && x <= enemy_deployment_start.x &&
-    //                y >= enemy_deployment_end.y && y <= enemy_deployment_end.y)
-    //            {
-    //                cell.Tags.Add(CellTag.EnemyDeploymentZone);
-    //            }
-    //            #endregion
-
-    //            column.Cells.Add(cell);
-    //            #endregion
-
-    //            #region Create cell objects in the world
-    //            BoardCell newCell = Instantiate(BoardCellObj, cell.Position, Quaternion.identity, CellsObj.transform).GetComponent<BoardCell>();
-
-    //            if (ShouldDebug) Debug.Log("Placing the cell " + newCell.gameObject.name + " at " + cell.Position + " actual position: " + newCell.transform.position);
-
-    //            newCell.gameObject.name = "Cell " + cell.Coordinates.ToString();
-    //            newCell.Coordinates = cell.Coordinates;
-    //            #endregion
-    //        }
-    //        Board.Add(column);
-    //    }
-
-    //    CellsObj.transform.localPosition = cellsPosition;
-
-    //    if (CurBoard_obj != null) { CurBoard_obj.SetActive(false); }
-    //    CurBoard_obj = boardObject; CurBoard_obj.SetActive(true);
-    //    CurBoard_obj.transform.localPosition = boardPosition;
-    //}
 
     public List<Vector2Int> SortPoss(List<Vector2Int> l)
     {

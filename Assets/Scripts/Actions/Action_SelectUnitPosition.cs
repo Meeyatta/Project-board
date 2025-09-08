@@ -11,7 +11,7 @@ public static class Action_SelectUnitPosition
     public static bool IsAwaitingAClickBack = true;
     static bool ShouldCancel = false;
 
-    static bool ShouldDebug = false;
+    static bool ShouldDebug = true;
 
     static void Cancel()
     {
@@ -78,26 +78,33 @@ public static class Action_SelectUnitPosition
 
             if (CurUnit != null)
             {
+                List<Vector2Int> newPositions = new List<Vector2Int>();
                 for (int i = 0; i < CurUnit.Size.Positions.Count; i++)
                 {
-                    List<Vector2Int> nv = new List<Vector2Int>();
+                    newPositions.Add(v + unit.Size.Positions[i] - unit.Size.Positions[0]);
+                }
 
-                    for (int ii = 0; ii < unit.Size.Positions.Count; ii++)
-                    {
-                        nv.Add(v + unit.Size.Positions[i] - unit.Size.Positions[ii]);
-                    }
-                    //Debug.Log("Will send " + (v[i] + CurUnit.Size.Positions[i]) + " back to GameManager");
+                if (BoardManager.Instance.AreInBounds(newPositions)) ESendPositionBack.Invoke(newPositions);
+
+                //for (int i = 0; i < CurUnit.Size.Positions.Count; i++)
+                //{
+                //    List<Vector2Int> nv = new List<Vector2Int>();
+
+                //    for (int ii = 0; ii < unit.Size.Positions.Count; ii++)
+                //    {
+                //        nv.Add(v + unit.Size.Positions[i] - unit.Size.Positions[ii]);
+                //    }
 
                     
-                    bool areAll = BoardManager.Instance.AreInBounds(nv);
+                //    bool areAll = BoardManager.Instance.AreInBounds(nv);
 
-                    //If all of these coordinates are within a border, return  these positions
-                    if (areAll)
-                    {
-                        ESendPositionBack.Invoke(nv);
-                    }
+                //    //If all of these coordinates are within a border, return  these positions
+                //    if (areAll)
+                //    {
+                //        ESendPositionBack.Invoke(nv);
+                //    }
 
-                }
+                //}
 
             }
 

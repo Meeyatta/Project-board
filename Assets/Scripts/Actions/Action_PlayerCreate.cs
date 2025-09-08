@@ -14,7 +14,7 @@ public static class Action_PlayerCreate
 
     public static bool IsWaitingForData;
 
-    public static bool CanCreateThere(Unit u, Vector2Int pos)
+    public static bool IsViablePosition(Unit u, Vector2Int pos)
     {
         //Debug.Log("Checking if can create " + u.gameObject.name + " at " + pos);
 
@@ -37,7 +37,6 @@ public static class Action_PlayerCreate
     public static IEnumerator PlayerCreate(ActionParameters parameters)
     {
         GameObject Object = parameters.Object;
-        List<Vector2Int> zone = parameters.CellsCoordinates;
 
         UnitPlacementHolderObj = GameObject.Find(UnitPlacementHolderStr);
         Vector3 holdPos = Vector3.zero; if (UnitPlacementHolderObj != null) { holdPos = UnitPlacementHolderObj.transform.position; }
@@ -46,15 +45,39 @@ public static class Action_PlayerCreate
         CurUnit = null;
         if (parameters.ActionTargetUnits != null && !parameters.ActionTargetUnits[0].IsPrefab)
         {
-            CurUnit = parameters.ActionTargetUnits[0];
+            yield return PlayerCreate(parameters.ActionTargetUnits[0]);
         }
         else
         {
-            CurUnit = GameManager.Instantiate(Object, holdPos, Quaternion.identity).GetComponent<Unit>();
+            yield return PlayerCreate(parameters.Object);
         }
         #endregion
 
-        List<Unit> unitList = new List<Unit>(); unitList.Add(CurUnit);
+        yield return new WaitForSeconds(Time.deltaTime);
+        GameManager.Instance.RemoveAction(parameters);
+    }
+
+    public static IEnumerator PlayerCreate(Unit unit)
+    {
+        UnitPlacementHolderObj = GameObject.Find(UnitPlacementHolderStr);
+        Vector3 holdPos = Vector3.zero; if (UnitPlacementHolderObj != null) { holdPos = UnitPlacementHolderObj.transform.position; }
+
+        CurUnit = unit;
+        yield return Created_Placement(CurUnit);
+    }
+
+    public static IEnumerator PlayerCreate(GameObject gameobject)
+    {
+        UnitPlacementHolderObj = GameObject.Find(UnitPlacementHolderStr);
+        Vector3 holdPos = Vector3.zero; if (UnitPlacementHolderObj != null) { holdPos = UnitPlacementHolderObj.transform.position; }
+
+        CurUnit = GameManager.Instantiate(gameobject, holdPos, Quaternion.identity).GetComponent<Unit>();
+        yield return Created_Placement(CurUnit);      
+    }
+
+    public static IEnumerator Created_Placement(Unit unit)
+    {
+        List<Unit> unitList = new List<Unit>(); unitList.Add(unit);
 
         //Add a listener what executes after players selects a position and returns it
 
@@ -64,7 +87,7 @@ public static class Action_PlayerCreate
         {
             if (ShouldDebug) Debug.Log("Action_PlayerCreate Received ESendPositionBack");
 
-            if (CanCreateThere(unitList[0], v2[0]))
+            if (IsViablePosition(unitList[0], v2[0]))
             {
                 ViablePos = true;
                 IsWaitingForData = false;
@@ -103,10 +126,7 @@ public static class Action_PlayerCreate
             if (ShouldDebug) Debug.Log("Non viable position");
         }
         #endregion
-
-        
-        yield return new WaitForSeconds(0.1f * Time.fixedDeltaTime);
-        GameManager.Instance.RemoveAction(parameters);
     }
+
 
 }

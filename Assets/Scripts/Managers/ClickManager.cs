@@ -307,7 +307,7 @@ public class ClickManager : MonoBehaviour
         if (TutorialManager.Instance.CanClickOnCells)
         {
             #region Are we selecting a position for creating a unit?
-            if (Action_PlayerCreate.IsWaitingForData && Action_PlayerCreate.CanCreateThere(Action_PlayerCreate.CurUnit, coords))
+            if (Action_PlayerCreate.IsWaitingForData && Action_PlayerCreate.IsViablePosition(Action_PlayerCreate.CurUnit, coords))
             #region Yes - Invoke an event to send coordinates where the unit is going to be created (If can be created)
             { //a1
               //Debug.Log("Creating a unit"); 
@@ -404,7 +404,7 @@ public class ClickManager : MonoBehaviour
         if (ShouldDebugCellClicks) Debug.Log("Cell click detected");
 
         #region Are we selecting a position for creating a unit?
-        if (Action_PlayerCreate.IsWaitingForData && Action_PlayerCreate.CanCreateThere(Action_PlayerCreate.CurUnit, coords))
+        if (Action_PlayerCreate.IsWaitingForData && Action_PlayerCreate.IsViablePosition(Action_PlayerCreate.CurUnit, coords))
         #region Yes - Invoke an event to send coordinates where the unit is going to be created (If can be created)
         { //a1
             if (ShouldDebugCellClicks) Debug.Log("Creating a unit");

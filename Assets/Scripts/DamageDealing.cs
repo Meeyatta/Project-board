@@ -35,9 +35,12 @@ public static class DamageDealing
                 needsSorting = false;
 
                 List<Vector2Int> positions = BoardManager.Instance.Get_UnitPositions(temp[i]);
+         
+                List<Vector2Int> l1 = BoardManager.Instance.Get_UnitPositions(temp[i]); List<Vector2Int> l2 = BoardManager.Instance.Get_UnitPositions(temp[i + 1]);
+                if (positions.Count - 1 < 0 || positions.Count - 1 >= l1.Count || positions.Count - 1 >= l2.Count) return temp;
 
-                Vector2Int lastPositioni = BoardManager.Instance.Get_UnitPositions(temp[i])[positions.Count - 1];
-                Vector2Int lastPositionip = BoardManager.Instance.Get_UnitPositions(temp[i + 1])[positions.Count - 1];
+                Vector2Int lastPositioni = l1[positions.Count - 1];
+                Vector2Int lastPositionip = l2[positions.Count - 1];
 
                 int xi = lastPositioni.x;
                 int yi = lastPositioni.y;

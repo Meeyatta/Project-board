@@ -9,7 +9,6 @@ public static class Action_Redeploy
 {
     static bool RedeployCond()
     {
-        //STOPPED HERES
         return false;
     }
 
@@ -50,33 +49,49 @@ public static class Action_Redeploy
     {
         List<List<Vector2Int>> res = new List<List<Vector2Int>>();
 
-        List<Vector2Int> zone = new List<Vector2Int>();
-        if (u.CurKeywords.Contains(Keyword.Player)) { zone = new List<Vector2Int> { BoardManager.Instance.PlayerDeployment_start, BoardManager.Instance.PlayerDeployment_end }; } 
-        else { zone = new List<Vector2Int> { BoardManager.Instance.EnemyDeployment_start, BoardManager.Instance.EnemyDeployment_end }; }
+        List<Vector2Int> zone = u.CurKeywords.Contains(Keyword.Player)
+        ? new List<Vector2Int> { BoardManager.Instance.PlayerDeployment_start, BoardManager.Instance.PlayerDeployment_end }
+        : new List<Vector2Int> { BoardManager.Instance.EnemyDeployment_start, BoardManager.Instance.EnemyDeployment_end };
 
         #region Going through all deployment zone positions and fitting unit inside of them
         for (int x = zone[0].x; x <= zone[1].x; x++) 
         {
             for (int y = zone[0].y; y <= zone[1].y; y++)
             {
-                List<Vector2Int> positions = new List<Vector2Int>(); positions.AddRange( u.Size.Positions);
+                List<Vector2Int> positions = new List<Vector2Int>(); positions.AddRange(u.Size.Positions);
                 for (int i = 0; i < positions.Count; i++) { positions[i] += new Vector2Int(x, y); }
 
                 bool isApplicable = true;
                 #region Check if all positions are within the deployment zone
+
                 foreach (var v in positions)
                 {
-                    if (v.x < zone[0].x || v.x > zone[1].x || v.y < zone[0].y || v.y > zone[1].y) { isApplicable = false; break; }
-                    if (BoardManager.Instance.Board[x].Cells[y].CurUnit != null) { isApplicable = false; break; }
+                    if (v.x < zone[0].x || v.x > zone[1].x || v.y < zone[0].y || v.y > zone[1].y) 
+                    { 
+                        isApplicable = false; break; 
+                    }
+                    if (BoardManager.Instance.Board[v.x].Cells[v.y].CurUnit != null && BoardManager.Instance.Board[v.x].Cells[v.y].CurUnit != u) { isApplicable = false; break; }
                 }
                 #endregion
 
                 if (isApplicable) { res.Add(positions); }
+                else {  }
             }
         }
         #endregion
 
         return res;
+    }
+
+    static List<Vector2Int> CanBeRedeployed(Unit unit, List<Vector2Int> desiredCoords)
+    {
+        Debug.Log("Trying to move to " + desiredCoords);
+        foreach (var posSet in Get_PossibleDeployments(unit))
+        {
+            if (posSet.Contains(desiredCoords[0])) return posSet;
+        }
+
+        return null;
     }
 
     public static IEnumerator Redeploy(ActionParameters parameters)
@@ -85,19 +100,12 @@ public static class Action_Redeploy
 
 
         Unit target = parameters.ActionTargetUnits[0];
-        List<Vector2Int> coordinates = parameters.CellsCoordinates;
 
         //Debug.Log("Redeploying " + target.UnitName + " to " + coordinates[0]);
 
-        List<List<Vector2Int>> posses = Get_PossibleDeployments(target);
+        List<Vector2Int> posses = CanBeRedeployed(target, parameters.CellsCoordinates);
 
-        // |    Scary vodoo expression I've copy-pasted
-        // v
-        if (!posses.Any(p => p.SequenceEqual(coordinates)) || BoardManager.Instance.AreAnyOccupied(coordinates))
-        {
-           // Debug.Log("Positions do not fit in the deployment zone");
-            yield break;
-        }
+        if (posses == null) yield break;
 
         #region Moving the unit
         List<Vector2Int> oldPos = BoardManager.Instance.Get_UnitPositions(target);
@@ -109,7 +117,7 @@ public static class Action_Redeploy
             }
         }
         
-        yield return BoardManager.Instance.StartCoroutine(BoardManager.Instance.PlaceUnit(target, coordinates));
+        yield return BoardManager.Instance.StartCoroutine(BoardManager.Instance.PlaceUnit(target, posses));
         AudioManager.Instance.Play(SoundName.Step, target.transform);
         #endregion
 
