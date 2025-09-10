@@ -241,7 +241,7 @@ public class BoardManager : MonoBehaviour
 
         #endregion
 
-        yield return new WaitForSeconds(0.5f);
+        yield return new WaitForSeconds(Time.fixedDeltaTime);
 
         #region Deploy objectives
         if (objectivePositions == null || objectivePositions.Count == 0) yield break;

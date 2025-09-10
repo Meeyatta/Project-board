@@ -118,6 +118,9 @@ namespace PSXShaderKit
         {
             if (_PixelationFactor >= 1.0f)
             {
+                FilterMode prevMode = source.filterMode;
+                source.filterMode = FilterMode.Point;
+                
                 Graphics.Blit(source, destination);
                 return;
             }

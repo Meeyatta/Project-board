@@ -76,7 +76,7 @@ public class ClickManager : MonoBehaviour
     #region Checking if we can click on things
     bool CanClickOnThings()
     {
-        if (ShouldDebug) Debug.Log("CanClickOnUnits()");
+        if (ShouldDebug) Debug.Log("CanClickOnThings()");
 
         if (nextClickTime >= Time.time) 
         {
@@ -245,7 +245,7 @@ public class ClickManager : MonoBehaviour
         #endregion
 
         #region Moving a unit to the position
-        else if (GameManager.Instance.CurUnitSelected != null && BoardManager.Instance.Board[coords.x].Cells[coords.y].CurUnit == null && BattleStatsManager.Instance.PlayerTurnActionCondition()
+        else if (GameManager.Instance.CurUnitSelected != null /*&& BoardManager.Instance.Board[coords.x].Cells[coords.y].CurUnit == null*/ && BattleStatsManager.Instance.PlayerTurnActionCondition()
             && BattleStatsManager.Instance.CurRound > 0)
         {
             if (ShouldDebugCellClicks) Debug.Log("Moving the unit to position");
@@ -289,7 +289,7 @@ public class ClickManager : MonoBehaviour
 
         else
         {
-            if (ShouldDebugCellClicks) Debug.Log("Clicked on nothing");
+            if (ShouldDebugCellClicks) Debug.Log("Clicked behaviour not set up");
             ClickBackEvent.Invoke(coords);
         }
 

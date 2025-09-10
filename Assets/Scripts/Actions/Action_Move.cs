@@ -157,59 +157,79 @@ public static class Action_Move
     }
 
     #region Goes through possible positions unit can move and picks the earliest one
-    public static List<Vector2Int> Get_MovementPositionsFromSingleCoordinate(Unit ActionTargetUnit, List<Vector2Int> CellsCoordinates)
+    public static List<Vector2Int> Get_MovementPositionsFromSingleCoordinate(Unit unit, Vector2Int clickedCoordinates)
     {
-        List<List<List<Vector2Int>>> res = Get_PossibleMovement(ActionTargetUnit);
-  
+        List<Vector2Int> clickedToUnitPos = new List<Vector2Int>();
+        foreach (var p in unit.Size.Positions)
+        {
+            clickedToUnitPos.Add(p + clickedCoordinates);
+        }
+
+        List<List<List<Vector2Int>>> linesOfPositions = Get_PossibleMovement(unit);
+        //When trying to find appropriate postion, assign index to each position based on how much it fits. Pick the top one
+        List<Vector2Int> bestFit_pos = new List<Vector2Int>();
+        int bestFit_index = 0;
+
         for (int i = 0; i < BoardManager.Instance.Get_Height(); i++)
         {
-            foreach (var line in res)
+            foreach (var line in linesOfPositions)
             {
-                if (line.Count <= i || line[i] == null) {  continue; }
+                if (line.Count <= i) continue;
 
-                if (line[i].Intersect<Vector2Int>(CellsCoordinates).Any()) { return line[i]; }
+                List<Vector2Int> position = line[i];
+                if (line.Count <= i || position == null) {  continue; }
+
+                int index = 0;
+                foreach (var p in position)
+                {
+                    if (clickedToUnitPos.Contains(p)) { index++; }
+                }
+
+                if (index >= bestFit_index) { bestFit_index = index; bestFit_pos = position; }
+                if (index >= unit.Size.Positions.Count) return position;
             }
         }
-        return null;   
+
+        return bestFit_pos;
     }
     #endregion
 
-    public static IEnumerator Move(ActionParameters parameters)
+    public static IEnumerator Move(Unit unit, Vector2Int coordinates)
     {
-        Unit ActionTargetUnit = parameters.ActionTargetUnits[0]; 
-        List< Vector2Int > CellsCoordinates = parameters.CellsCoordinates;
+        if (unit == null || coordinates == null) Debug.LogError("INVALID ACTION PARAMETERS - MOVE(ActionTargetUnit, CellCoordinates)");
 
-        if (ActionTargetUnit == null || CellsCoordinates.Count == 0) Debug.LogError("INVALID ACTION PARAMETERS - MOVE(ActionTargetUnit, CellCoordinates)");
+        if (!UnitCanMove(unit)) { yield break; }
 
-        if (!UnitCanMove(ActionTargetUnit)) { yield break; }
+        List<Vector2Int> newPoss = Get_MovementPositionsFromSingleCoordinate(unit, coordinates);
 
-        List<Vector2Int> newPoss = Get_MovementPositionsFromSingleCoordinate(ActionTargetUnit, CellsCoordinates);
-
-        if (newPoss == null || newPoss.Count == 0 || ActionTargetUnit.Moved)
+        if (newPoss == null || newPoss.Count == 0 || unit.Moved)
         {
-            E_AfterMove.Invoke(ActionTargetUnit);
-            yield return new WaitForSeconds(Time.fixedDeltaTime);
-            GameManager.Instance.RemoveAction(parameters);
+            E_AfterMove.Invoke(unit);
             yield break;
         }
 
         if (!BoardManager.Instance.AreInBounds(newPoss)) { Debug.LogError("ERROR: POSITION OUT OF BOUNDS"); yield break; }
 
-        List<Vector2Int> oldPos = BoardManager.Instance.Get_UnitPositions(ActionTargetUnit);
+        List<Vector2Int> oldPos = BoardManager.Instance.Get_UnitPositions(unit);
         foreach (Vector2Int v in oldPos)
         {
             BoardManager.Instance.Board[v.x].Cells[v.y].CurUnit = null;
         }
-        ActionTargetUnit.Moved = true;
+        unit.Moved = true;
 
-        AudioManager.Instance.Play(SoundName.Step, ActionTargetUnit.transform);
+        AudioManager.Instance.Play(SoundName.Step, unit.transform);
 
-        yield return BoardManager.Instance.StartCoroutine(BoardManager.Instance.PlaceUnit(ActionTargetUnit, newPoss));
+        yield return BoardManager.Instance.StartCoroutine(BoardManager.Instance.PlaceUnit(unit, newPoss));
 
-        yield return AbilityTriggers(ActionTargetUnit);
-        
+        yield return AbilityTriggers(unit);
 
-        E_AfterMove.Invoke(ActionTargetUnit);
+        E_AfterMove.Invoke(unit);
+    }
+
+    public static IEnumerator Move(ActionParameters parameters)
+    {
+        yield return Move(parameters.ActionTargetUnits[0], parameters.CellsCoordinates[0]); 
+
         yield return new WaitForSeconds(Time.fixedDeltaTime);
         GameManager.Instance.RemoveAction(parameters);
     }

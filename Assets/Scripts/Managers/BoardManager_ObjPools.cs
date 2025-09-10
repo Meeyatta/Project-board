@@ -51,7 +51,7 @@ public class BoardManager_ObjPools : MonoBehaviour
             Cur_Pools.Add(p.Name, objPool);
         }
 
-        Debug.Log("Created " + Cur_Pools["cell"].Count + " cells");
+       // Debug.Log("Created " + Cur_Pools["cell"].Count + " cells");
     }
 
     #region Working with object pools
