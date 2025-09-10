@@ -37,6 +37,7 @@ using System;
     List<Unit> Get_UnitsWithKeywordsInRange - Returns list of units within "r" cells of the "u" unit what have all "keywords" keywords
     
     Vector2Int Get_CenterOfZone(List<Vector2Int> zone) - Finds the coordinate closest to the center
+
  */
 #endregion
 

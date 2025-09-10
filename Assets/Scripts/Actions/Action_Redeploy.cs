@@ -5,7 +5,7 @@ using UnityEngine;
 using System.Linq;
 
 //Moves the target unit into position if it is being redeployed during deployment (round 0)
-public static class Action_Redeploy 
+public static class Action_Redeploy
 {
     static bool RedeployCond()
     {
@@ -54,7 +54,7 @@ public static class Action_Redeploy
         : new List<Vector2Int> { BoardManager.Instance.EnemyDeployment_start, BoardManager.Instance.EnemyDeployment_end };
 
         #region Going through all deployment zone positions and fitting unit inside of them
-        for (int x = zone[0].x; x <= zone[1].x; x++) 
+        for (int x = zone[0].x; x <= zone[1].x; x++)
         {
             for (int y = zone[0].y; y <= zone[1].y; y++)
             {
@@ -66,16 +66,16 @@ public static class Action_Redeploy
 
                 foreach (var v in positions)
                 {
-                    if (v.x < zone[0].x || v.x > zone[1].x || v.y < zone[0].y || v.y > zone[1].y) 
-                    { 
-                        isApplicable = false; break; 
+                    if (v.x < zone[0].x || v.x > zone[1].x || v.y < zone[0].y || v.y > zone[1].y)
+                    {
+                        isApplicable = false; break;
                     }
                     if (BoardManager.Instance.Board[v.x].Cells[v.y].CurUnit != null && BoardManager.Instance.Board[v.x].Cells[v.y].CurUnit != u) { isApplicable = false; break; }
                 }
                 #endregion
 
                 if (isApplicable) { res.Add(positions); }
-                else {  }
+                else { }
             }
         }
         #endregion
@@ -83,43 +83,65 @@ public static class Action_Redeploy
         return res;
     }
 
-    static List<Vector2Int> CanBeRedeployed(Unit unit, List<Vector2Int> desiredCoords)
+    static List<Vector2Int> CanBeRedeployed(Unit unit, Vector2Int clickedCoords)
     {
-        Debug.Log("Trying to move to " + desiredCoords);
-        foreach (var posSet in Get_PossibleDeployments(unit))
+        List<Vector2Int> desiredPos = new List<Vector2Int>(); 
+        foreach (var s in unit.Size.Positions)
         {
-            if (posSet.Contains(desiredCoords[0])) return posSet;
+            desiredPos.Add(clickedCoords + s);
         }
 
-        return null;
+        List<Vector2Int> bestFit_pos = null;
+        int bestFit_index = 0;
+
+        foreach (var posSet in Get_PossibleDeployments(unit))
+        {
+            int ind = 0;
+            foreach (var v in desiredPos)
+            {
+                if (posSet.Contains(v)) { ind++; }
+            }
+
+            if (ind == unit.Size.Positions.Count) return posSet;
+
+            if (ind > bestFit_index)
+            {
+                bestFit_pos = posSet;
+                bestFit_index = ind;
+            }
+        }
+
+        return bestFit_pos;
     }
 
-    public static IEnumerator Redeploy(ActionParameters parameters)
+    public static IEnumerator Redeploy(Unit unit, Vector2Int clickedCoord)
     {
         yield return new WaitForSeconds(Time.deltaTime * 0.5f);
 
-
-        Unit target = parameters.ActionTargetUnits[0];
-
         //Debug.Log("Redeploying " + target.UnitName + " to " + coordinates[0]);
 
-        List<Vector2Int> posses = CanBeRedeployed(target, parameters.CellsCoordinates);
+        List<Vector2Int> position = CanBeRedeployed(unit, clickedCoord);
 
-        if (posses == null) yield break;
+        if (position == null) yield break;
 
-        #region Moving the unit
-        List<Vector2Int> oldPos = BoardManager.Instance.Get_UnitPositions(target);
-        if (oldPos != null && oldPos.Count > 0) 
+        #region Redeploying the unit
+        List<Vector2Int> oldPos = BoardManager.Instance.Get_UnitPositions(unit);
+        if (oldPos != null && oldPos.Count > 0)
         {
             foreach (Vector2Int v in oldPos)
             {
                 BoardManager.Instance.Board[v.x].Cells[v.y].CurUnit = null;
             }
         }
-        
-        yield return BoardManager.Instance.StartCoroutine(BoardManager.Instance.PlaceUnit(target, posses));
-        AudioManager.Instance.Play(SoundName.Step, target.transform);
+
+        yield return BoardManager.Instance.StartCoroutine(BoardManager.Instance.PlaceUnit(unit, position));
+        AudioManager.Instance.Play(SoundName.Step, unit.transform);
         #endregion
+    }
+
+    public static IEnumerator Redeploy(ActionParameters parameters)
+    {
+        yield return Redeploy(parameters.ActionTargetUnits[0], parameters.CellsCoordinates[0]);
 
         yield return new WaitForSeconds(Time.deltaTime);
         GameManager.Instance.RemoveAction(parameters);
