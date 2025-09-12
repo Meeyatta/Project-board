@@ -1,0 +1,67 @@
+Infantry & Synapse Creatures
+
+    Barbgaunts – 40mm
+    Genestealers – 32mm
+    Hormagaunts – 28.5mm
+    Neurogaunts – 25mm
+    Neurogaunts: Nodebeasts – 28.5mm
+    Neurolictor – 50mm
+    Neurotyrant – 50mm
+    Parasite of Mortrex – 40mm
+    Ripper Swarms – 40mm
+    Termagants – 28.5mm
+    Tyranid Warriors (Melee/Ranged) – 50mm
+    Tyrant Guard – 50mm
+    Venomthropes – 40mm
+    Von Ryan’s Leapers – 40mm
+    Zoanthropes – 40mm
+
+Characters & Elite Beasts
+
+    Broodlord – 75x42mm Oval Base
+    Deathleaper – 60mm Standard Base
+    Hive Tyrant – 50mm
+    Lictor – 50mm
+    Old One Eye – 105x70mm Oval Base
+    The Swarmlord – 60mm
+    Winged Hive Tyrant – 60mm
+    Winged Tyranid Prime – 50mm
+
+Monsters & Bio-artillery
+
+    Biovores – 80mm
+    Carnifexes – 105x70mm Oval Base
+    Exocrine – 120x92mm Oval Base
+    Haruspex – 120x92mm Oval Base
+    Maleceptor – 120x92mm Oval Base
+    Mawloc – 120x92mm Oval Base
+    Psychophage – 120x92mm Oval Base
+    Pyrovores – 80mm
+    Screamer-killer – 90mm
+    Tervigon – 120x92mm Oval Base
+    Toxicrene – 120x92mm Oval Base
+    Trygon – 120x92mm Oval Base
+    Tyrannocyte – 100mm
+    Tyrannofex – 120x92mm Oval Base
+
+Flying Units
+
+    Gargoyles – Small Flying Base
+    Harpy – 120x92mm Oval Base
+    Hive Crone – 120x92mm Oval Base
+
+Spore Units & Fortifications
+
+    Mucolid Spores – 40mm
+    Spore Mines – 25mm
+    Sporocyst – Hull
+
+Norn Beasts
+
+    Norn Assimilator – 100mm
+    Norn Emissary – 100mm
+
+Imperial Armour – Tyranids
+
+    Harridan – Unique*
+    Hierophant – Hull*

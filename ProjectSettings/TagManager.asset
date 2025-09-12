@@ -5,6 +5,9 @@ TagManager:
   serializedVersion: 2
   tags:
   - Unit
+  - Cell
+  - turnclock
+  - item
   layers:
   - Default
   - TransparentFX
@@ -15,8 +18,8 @@ TagManager:
   - 
   - 
   - 
-  - 
-  - 
+  - Cell
+  - SpriteModels
   - 
   - 
   - 

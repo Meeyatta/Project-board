@@ -1,0 +1,183 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.Events;
+
+//This is deprecated, functions as a part of Action_DrawPlayerResources
+public static class Action_DeployNewPlayerUnit
+{
+    public static bool IsDeploying;
+    public static UnityEvent<Unit> E_DeployedNewPlayerUnit = new UnityEvent<Unit>();
+
+    static int PulledNumber = 3;
+    static float SpaceBetweenUnits = 2;
+
+    const string IsHoveringStr = "isHovering";
+    const string IsRaisedStr = "isRaised";
+
+    #region GetUnitWithTransform() - Finds a unit from a list using its transform
+    static Unit GetUnitWithTransform(List<Unit> units, Transform t)
+    {
+        foreach (var v in units)
+        {
+            if (t.IsChildOf(v.transform)) { return v; }
+            if (t.parent != null && t.parent.transform == t) { return v; }
+            if (v.transform == t) { return v; }
+        }
+        return null;
+    }
+    #endregion
+
+    #region SetPos () - Sets the pulled units beside the listed point
+    static void SetPos(GameObject center, List<Unit> units)
+    {
+        for (int i = 0; i < units.Count; i++)
+        {
+            float half = (float)((units.Count - 1f) / 2f);
+            float offsetMod = (half - i) * -1; //Offset modifier to the current unit
+
+            Vector3 offset = new Vector3(SpaceBetweenUnits, 0, 0) * offsetMod;
+
+            //Debug.Log(i + " " + offset);
+            units[i].transform.position = center.transform.position + offset;
+
+        }
+    }
+    #endregion
+
+    #region IsFocused() - Checks if player is focused on units in front of camera or is looking somewhere else
+    static bool IsFocused()
+    {
+        if (CameraManager.Instance.CurPos == CameraManager.Instance.InFrontOfBoad) return true;
+
+        return false;
+    }
+    #endregion
+
+    public static IEnumerator DeployNewUnit(ActionParameters parameters)
+    {
+        yield return new WaitForSeconds(Time.fixedDeltaTime);
+
+        #region If we have no units to deploy
+        if (PlayerManager.Instance.Army_NotPlaced.Count == 0 || BattleStatsManager.Instance.CurRound == 1)
+        {
+            yield return new WaitForSeconds(Time.fixedDeltaTime);
+            E_DeployedNewPlayerUnit.Invoke(null);
+            GameManager.Instance.RemoveAction(parameters);
+            yield break;
+        }
+        #endregion
+
+        /*
+         1) Camera is drawn in front of the board
+            The bag plays a shuffle animation and a sound
+         2) Up to 3 units are pulled out in an arc to the right, then to the left
+
+         3) 3 unit models hover in front of the player up and down
+            Player can move camera after that, but cannot interact with other things
+            If camera is not looking at the units, they are placed closer to the board, clicking on them gets player back to the unit selection
+            Hovering over the model raises the model slightly, shows a prompt (M1 - select, M2 - Check data)
+
+            4Select) The rest of the units are dragged back into the bag with a shuffling sound, player now places a new unit within the deployment zone
+            4CheckData) TODO:
+         */
+        IsDeploying = true;
+
+        //Camera is drawn in front of the board
+        CameraManager.Instance.SetCam(CameraManager.Instance.InFrontOfBoad);
+
+        //The bag plays a shuffle animation and a sound
+        UnitPlacementBag.Instance.PullOutUnits();
+
+        //3 unit models hover in front of the player up and down 
+        List<Unit> shuffled = PlayerManager.Instance.ShuffleList(PlayerManager.Instance.Army_NotPlaced);
+        List<Unit> pulledUnits = new List<Unit>();
+        for (int i = 0; i < Mathf.Min(PulledNumber, shuffled.Count); i++)
+        {
+            shuffled[i].gameObject.SetActive(true);
+            pulledUnits.Add(shuffled[i]);
+            //Debug.Log("Pulled out a " + shuffled[i]);
+        }
+
+        #region Hovering the possible units until player selects one
+        Unit selectedUnit = null;
+        foreach (var v in pulledUnits) { v.Anim.SetBool(IsHoveringStr, true); } //Making units hover 
+
+        #region Adding an event for selecting a unit player clicked on
+        void stopAwaitingSelection(Unit u) { selectedUnit = u; }
+
+        ClickManager.Instance.E_Click_unit.RemoveListener(stopAwaitingSelection);
+        ClickManager.Instance.E_Click_unit.AddListener(stopAwaitingSelection);
+        #endregion
+
+        while (selectedUnit == null)
+        {
+            yield return new WaitForSeconds(Time.fixedDeltaTime / 1000);
+
+            #region If player foces on new units
+            if (IsFocused())
+            {
+                SetPos(UnitPlacementBag.Instance.UnitsPos_InFront, pulledUnits);
+
+                if (ClickManager.Instance.CurrentPointedAtUnit != null)
+                {
+                    foreach (var v in pulledUnits) 
+                    { 
+                        if (v == ClickManager.Instance.CurrentPointedAtUnit)
+                        {
+                            v.Anim.SetBool(IsRaisedStr, true);
+                        }
+                        else
+                        {
+                            v.Anim.SetBool(IsRaisedStr, false);
+                        }
+                    }
+                }
+            }
+            #endregion
+            #region If looking somewhere else
+            else
+            {
+                SetPos(UnitPlacementBag.Instance.UnitsPos_Below, pulledUnits);
+            }
+            #endregion
+        }
+        #endregion
+
+        #region Hiding the unselected units
+        foreach (var unit in pulledUnits)
+        {
+            if (selectedUnit != unit) { unit.gameObject.SetActive(false); }
+            unit.Anim.SetBool(IsHoveringStr, false);
+        }
+        #endregion
+
+        CameraManager.Instance.SetCam(CameraManager.Instance.TopDown);
+
+        #region Placing the selected unit
+        if (selectedUnit != null)
+        {
+            selectedUnit.Anim.SetBool(IsHoveringStr, false);
+            selectedUnit.Anim.SetBool(IsRaisedStr, false);
+            PlayerManager.Instance.RecordPlacedUnit(selectedUnit);
+
+            GameManager.Instance.E_ShowDeployment.Invoke(new List<Unit> { selectedUnit });
+            ActionParameters createPar = new ActionParameters(
+                        GameManager.ActionType.PlayerCreate, new List<Unit> { selectedUnit }, null, null, null, 0);
+            yield return Action_PlayerCreate.PlayerCreate(createPar);
+            GameManager.Instance.E_HideDeployment.Invoke();
+        }
+        #endregion
+
+        UnitPlacementBag.Instance.StopPullingUnits();
+
+        E_DeployedNewPlayerUnit.Invoke(selectedUnit);
+        GameManager.Instance.CurUnitSelected = null;
+
+        ClickManager.Instance.E_Click_unit.RemoveListener(stopAwaitingSelection);
+        GameManager.Instance.RemoveAction(parameters);
+        IsDeploying = false;
+
+    }
+
+}
